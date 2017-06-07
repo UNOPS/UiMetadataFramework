@@ -567,12 +567,17 @@
 	<s:Boolean x:Key="/Default/Environment/GenerateMru/GroupByType/=Implementations/@EntryIndexedValue">False</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/GenerateMru/SortByName/=Constructor/@EntryIndexedValue">False</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/GenerateMru/SortByName/=Implementations/@EntryIndexedValue">False</s:Boolean>
-	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=0ACDD440CDF5EA4BAE234C9B2B08A7D6/@KeyIndexDefined">True</s:Boolean>
-	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=0ACDD440CDF5EA4BAE234C9B2B08A7D6/AbsolutePath/@EntryValue">C:\Data\Projects\gramms-git\UiMetadataFramework.sln.DotSettings</s:String>
-	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=0ACDD440CDF5EA4BAE234C9B2B08A7D6/RelativePath/@EntryValue"></s:String>
-	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File0ACDD440CDF5EA4BAE234C9B2B08A7D6/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=9EA7A2CB8C34C94EA111FF9D3A42F5A4/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=9EA7A2CB8C34C94EA111FF9D3A42F5A4/AbsolutePath/@EntryValue">C:\UiMetadataFramework\UiMetadataFramework.sln.DotSettings</s:String>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=9EA7A2CB8C34C94EA111FF9D3A42F5A4/RelativePath/@EntryValue"></s:String>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File9EA7A2CB8C34C94EA111FF9D3A42F5A4/@KeyIndexDefined">True</s:Boolean>
+	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File9EA7A2CB8C34C94EA111FF9D3A42F5A4/RelativePriority/@EntryValue">2</s:Double>
 	
-	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File0ACDD440CDF5EA4BAE234C9B2B08A7D6/RelativePriority/@EntryValue">2</s:Double>
+	
+	
+	
+	
+	
 	
 	
 	
