@@ -1,0 +1,6 @@
+C:\UiMetadataFramework\UiMetadataFramework\UiMetadataFramework\bin\Debug\netstandard1.6\UiMetadataFramework.deps.json
+C:\UiMetadataFramework\UiMetadataFramework\UiMetadataFramework\obj\Debug\netstandard1.6\UiMetadataFramework.AssemblyInfo.cs
+C:\UiMetadataFramework\UiMetadataFramework\UiMetadataFramework\bin\Debug\netstandard1.6\UiMetadataFramework.dll
+C:\UiMetadataFramework\UiMetadataFramework\UiMetadataFramework\bin\Debug\netstandard1.6\UiMetadataFramework.pdb
+C:\UiMetadataFramework\UiMetadataFramework\UiMetadataFramework\obj\Debug\netstandard1.6\UiMetadataFramework.dll
+C:\UiMetadataFramework\UiMetadataFramework\UiMetadataFramework\obj\Debug\netstandard1.6\UiMetadataFramework.pdb

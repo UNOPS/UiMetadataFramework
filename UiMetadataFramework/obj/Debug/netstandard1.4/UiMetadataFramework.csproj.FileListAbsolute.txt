@@ -1,0 +1,4 @@
+C:\UiMetadataFramework\UiMetadataFramework\UiMetadataFramework\bin\Debug\netstandard1.4\UiMetadataFramework.deps.json
+C:\UiMetadataFramework\UiMetadataFramework\UiMetadataFramework\bin\Debug\netstandard1.4\UiMetadataFramework.dll
+C:\UiMetadataFramework\UiMetadataFramework\UiMetadataFramework\obj\Debug\netstandard1.4\UiMetadataFramework.csprojResolveAssemblyReference.cache
+C:\UiMetadataFramework\UiMetadataFramework\UiMetadataFramework\obj\Debug\netstandard1.4\UiMetadataFramework.AssemblyInfo.cs

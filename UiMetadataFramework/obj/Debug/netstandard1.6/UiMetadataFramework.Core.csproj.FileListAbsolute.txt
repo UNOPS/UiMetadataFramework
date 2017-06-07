@@ -1,0 +1,7 @@
+C:\UiMetadataFramework\UiMetadataFramework\UiMetadataFramework\bin\Debug\netstandard1.6\UiMetadataFramework.Core.deps.json
+C:\UiMetadataFramework\UiMetadataFramework\UiMetadataFramework\obj\Debug\netstandard1.6\UiMetadataFramework.Core.csprojResolveAssemblyReference.cache
+C:\UiMetadataFramework\UiMetadataFramework\UiMetadataFramework\obj\Debug\netstandard1.6\UiMetadataFramework.Core.AssemblyInfo.cs
+C:\UiMetadataFramework\UiMetadataFramework\UiMetadataFramework\bin\Debug\netstandard1.6\UiMetadataFramework.Core.dll
+C:\UiMetadataFramework\UiMetadataFramework\UiMetadataFramework\bin\Debug\netstandard1.6\UiMetadataFramework.Core.pdb
+C:\UiMetadataFramework\UiMetadataFramework\UiMetadataFramework\obj\Debug\netstandard1.6\UiMetadataFramework.Core.dll
+C:\UiMetadataFramework\UiMetadataFramework\UiMetadataFramework\obj\Debug\netstandard1.6\UiMetadataFramework.Core.pdb
