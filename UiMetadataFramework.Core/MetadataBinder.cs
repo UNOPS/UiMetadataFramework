@@ -7,9 +7,7 @@ namespace UiMetadataFramework.Core
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using UiMetadataFramework.Core.Attributes;
-	using UiMetadataFramework.Core.Metadata;
-	using UiMetadataFramework.Core.UI.Actions;
-	using UiMetadataFramework.Core.UI.Outputs;
+	using UiMetadataFramework.Core.Outputs;
 
 	/// <summary>
 	/// Represents bindings between property metadata and model classes.
@@ -63,16 +61,6 @@ namespace UiMetadataFramework.Core
 			return this.Cache[containerType];
 		}
 
-		public ObjectMetadata<TModel> In<TModel>()
-		{
-			return new ObjectMetadata<TModel>();
-		}
-
-		public PropertyMetadata In<TModel, TProperty>(Expression<Func<TModel, TProperty>> property)
-		{
-			return this.Property(property);
-		}
-
 		public PropertyMetadata Property<TModel, TProperty>(string container, Expression<Func<TModel, TProperty>> property)
 		{
 			var propertyInfo = property.GetPropertyInfo();
@@ -86,10 +74,9 @@ namespace UiMetadataFramework.Core
 
 		private static string GetPropertyPath(string container, string propertyName)
 		{
-			var propertyPath = !string.IsNullOrWhiteSpace(container)
+			return !string.IsNullOrWhiteSpace(container)
 				? container + "." + propertyName
 				: propertyName;
-			return propertyPath;
 		}
 
 		private static bool IsEnumerable(PropertyInfo propertyInfo)
@@ -139,8 +126,6 @@ namespace UiMetadataFramework.Core
 						var propertyMetadata = new PropertyMetadata(GetPropertyPath(container, propertyInfo.Name), uiPropertyAttribute.Type)
 						{
 							OrderIndex = uiPropertyAttribute.OrderIndex,
-							IsList = isEnumerable,
-							Hidden = uiPropertyAttribute.Hidden,
 							Label = uiPropertyAttribute.Label
 						};
 
@@ -202,26 +187,9 @@ namespace UiMetadataFramework.Core
 
 			if (uiPropertyAttribute != null)
 			{
-				var uiActionAttribute = uiPropertyAttribute as UiActionAttribute;
 				var linkAttribute = uiPropertyAttribute as UiLinkAttribute;
 
-				if (uiActionAttribute != null)
-				{
-					var actionAttribute = uiActionAttribute;
-
-					var formLinkProperty = new FormLinkProperty(actionAttribute.Form, propertyPath)
-					{
-						AnchorText = actionAttribute.AnchorText ?? propertyPath,
-						Target = actionAttribute.Target,
-						Parameters = property
-							.GetCustomAttributes<UiActionParameterAttribute>()
-							.Select(t => new FormParameter(t.Parameter, GetPropertyPath(container, t.Property)))
-							.ToArray()
-					};
-
-					metadata = formLinkProperty;
-				}
-				else if (linkAttribute != null)
+				if (linkAttribute != null)
 				{
 					metadata = linkAttribute.ToProperty(propertyPath);
 				}
@@ -231,7 +199,6 @@ namespace UiMetadataFramework.Core
 				}
 
 				metadata.OrderIndex = uiPropertyAttribute.OrderIndex;
-				metadata.Hidden = uiPropertyAttribute.Hidden;
 				metadata.Label = uiPropertyAttribute.Label;
 
 				// Override metadata type if needed.

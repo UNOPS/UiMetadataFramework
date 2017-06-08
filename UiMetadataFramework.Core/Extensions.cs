@@ -1,36 +1,11 @@
 namespace UiMetadataFramework.Core
 {
 	using System;
-	using System.IO;
-	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using System.Threading.Tasks;
 
 	internal static class Extensions
 	{
-		public static string Acronymize(this string value)
-		{
-			var firstLetterOfEachWord = value.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(t => t[0]).ToList();
-			return string.Join("", firstLetterOfEachWord).ToUpper();
-		}
-
-		public static string GetEmbeddedResourceText(this Assembly assembly, string embeddedResourceName)
-		{
-			using (var stream = assembly.GetManifestResourceStream(embeddedResourceName))
-			{
-				if (stream == null)
-				{
-					return null;
-				}
-
-				using (var ms = new StreamReader(stream))
-				{
-					return ms.ReadToEnd();
-				}
-			}
-		}
-
 		public static PropertyInfo GetPropertyInfo<TSource, TProperty>(this Expression<Func<TSource, TProperty>> propertyLambda)
 		{
 			var type = typeof(TSource);
@@ -53,13 +28,6 @@ namespace UiMetadataFramework.Core
 			}
 
 			return propInfo;
-		}
-
-		public static async Task<object> InvokeAsync(this MethodInfo @this, object obj, params object[] parameters)
-		{
-			dynamic awaitable = @this.Invoke(obj, parameters);
-			await awaitable;
-			return awaitable.GetAwaiter().GetResult();
 		}
 
 		internal static bool IsNullableEnum(this Type t)

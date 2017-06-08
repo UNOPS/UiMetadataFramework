@@ -4,17 +4,11 @@ namespace UiMetadataFramework.Core.Attributes
 
 	public class UiPropertyAttribute : Attribute
 	{
-		public bool Hidden { get; set; }
-
 		public string Label { get; set; }
 
-		/// <summary>
-		/// Gets or sets value to indicate UI behavior when property's value is null.
-		/// </summary>
-		public NullDisplayBehavior OnNull { get; set; }
-
 		public int OrderIndex { get; set; }
-		public virtual object Parameters { get; set; }
+
+		public object Parameters { get; set; }
 
 		/// <summary>
 		/// Gets or sets name of the associated UI control.

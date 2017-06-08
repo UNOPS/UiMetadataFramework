@@ -1,7 +1,6 @@
 namespace UiMetadataFramework.Core.Attributes
 {
-	using UiMetadataFramework.Core.Metadata;
-	using UiMetadataFramework.Core.UI.Outputs;
+	using UiMetadataFramework.Core.Outputs;
 
 	public sealed class UiLinkAttribute : UiPropertyAttribute
 	{

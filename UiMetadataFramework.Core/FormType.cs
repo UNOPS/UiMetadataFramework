@@ -4,8 +4,6 @@ namespace UiMetadataFramework.Core
 	{
 		Form,
 		Report,
-		Record,
-		Page,
-		Wizard
+		Record
 	}
 }

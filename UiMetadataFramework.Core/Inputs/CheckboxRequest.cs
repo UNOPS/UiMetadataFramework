@@ -1,12 +1,12 @@
-namespace UiMetadataFramework.Core.Models
+namespace UiMetadataFramework.Core.Inputs
 {
 	using System.Collections.Generic;
 
-	public abstract class TypeaheadRequest : TypeaheadRequest<long>
+	public abstract class CheckboxRequest : CheckboxRequest<bool>
 	{
 	}
 
-	public class TypeaheadRequest<TItemValue>
+	public class CheckboxRequest<TItemValue>
 	{
 		/// <summary>
 		/// Gets value indicating whether request is a query (user searching) or is a request
