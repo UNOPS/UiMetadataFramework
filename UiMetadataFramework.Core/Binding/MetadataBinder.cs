@@ -69,9 +69,14 @@
 			this.AddBinding(new OutputFieldBinding(typeof(TServerType), clientType));
 		}
 
-		public IEnumerable<InputFieldMetadata> BindInputFields<T>()
+		public IEnumerable<OutputFieldMetadata> BindInputFields<T>()
 		{
-			var properties = typeof(T).GetFields();
+			return this.BindOutputFields(typeof(T));
+		}
+
+		public IEnumerable<InputFieldMetadata> BindInputFields(Type type)
+		{
+			var properties = type.GetFields();
 
 			foreach (var property in properties)
 			{
@@ -100,9 +105,9 @@
 			}
 		}
 
-		public IEnumerable<OutputFieldMetadata> BindOutputFields<T>()
+		public IEnumerable<OutputFieldMetadata> BindOutputFields(Type type)
 		{
-			var properties = typeof(T).GetFields();
+			var properties = type.GetFields();
 
 			foreach (var property in properties)
 			{
@@ -126,6 +131,11 @@
 
 				yield return metadata;
 			}
+		}
+
+		public IEnumerable<OutputFieldMetadata> BindOutputFields<T>()
+		{
+			return this.BindOutputFields(typeof(T));
 		}
 
 		/// <summary>

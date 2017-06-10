@@ -14,5 +14,6 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\UiMetadataFramework.BasicFields\UiMetadataFramework.BasicFields.csproj" />
 	  <ProjectReference Include="..\UiMetadataFramework.Core\UiMetadataFramework.Core.csproj" />
+	  <ProjectReference Include="..\UiMetadataFramework.MediatR\UiMetadataFramework.MediatR.csproj" />
 	</ItemGroup>
 </Project>
