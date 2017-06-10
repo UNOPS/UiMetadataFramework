@@ -44,6 +44,16 @@ _ReSharper*/
 # StyleCop
 StyleCop.Cache
 
+# Sonar
+.sonar/
+sonar-project.properties
+
+# Node.js
+node_modules
+
+# Bower
+*/wwwroot/lib
+
 # NuGet
 *.nupkg
 /packages/*
