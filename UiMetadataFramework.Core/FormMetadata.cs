@@ -2,6 +2,9 @@
 {
 	using System.Collections.Generic;
 
+	/// <summary>
+	/// Encapsulates all information needed to render a form.
+	/// </summary>
 	public class FormMetadata
 	{
 		/// <summary>

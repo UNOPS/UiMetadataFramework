@@ -6,6 +6,10 @@
 	using System.Linq;
 	using System.Reflection;
 
+	/// <summary>
+	/// This class helps holds mapping between server-side types and client-side UI controls. 
+	/// It provides a number of APIs to simplify creation of metadata.
+	/// </summary>
 	public class MetadataBinder
 	{
 		private readonly ConcurrentDictionary<Type, InputFieldBinding> inputFieldMetadataMap = new ConcurrentDictionary<Type, InputFieldBinding>();
