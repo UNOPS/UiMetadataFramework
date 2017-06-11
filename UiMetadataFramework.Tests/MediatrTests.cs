@@ -61,7 +61,7 @@
 			var formRegister = new FormRegister(binder);
 			formRegister.RegisterAssembly(typeof(DoMagic).GetTypeInfo().Assembly);
 			
-			var formMetadata = formRegister.GetForm(typeof(DoMagic).FullName);
+			var formMetadata = formRegister.GetFormInfo(typeof(DoMagic).FullName)?.Metadata;
 
 			Assert.NotNull(formMetadata);
 			Assert.True(formMetadata.Id == typeof(DoMagic).FullName);

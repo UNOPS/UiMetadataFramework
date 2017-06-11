@@ -1,0 +1,7 @@
+{
+  "name": "umf-vanilla-js",
+  "private": true,
+  "dependencies": {
+    "promise-polyfill": "^6.0.2"
+  }
+}

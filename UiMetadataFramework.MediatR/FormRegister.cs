@@ -13,7 +13,7 @@
 	public class FormRegister
 	{
 		private readonly MetadataBinder binder;
-		private readonly ConcurrentDictionary<string, FormMetadata> registeredForms = new ConcurrentDictionary<string, FormMetadata>();
+		private readonly ConcurrentDictionary<string, FormInfo> registeredForms = new ConcurrentDictionary<string, FormInfo>();
 
 		public FormRegister(MetadataBinder binder)
 		{
@@ -23,14 +23,14 @@
 		/// <summary>
 		/// Gets list of all registered forms.
 		/// </summary>
-		public IEnumerable<FormMetadata> RegisteredForms => this.registeredForms.Values;
+		public IEnumerable<FormInfo> RegisteredForms => this.registeredForms.Values;
 
 		/// <summary>
-		/// Gets form with the specified id.
+		/// Gets <see cref="FormInfo"/> by form's id.
 		/// </summary>
 		/// <param name="id">Id of the form.</param>
 		/// <returns>FormMetadata instance.</returns>
-		public FormMetadata GetForm(string id)
+		public FormInfo GetFormInfo(string id)
 		{
 			return this.registeredForms[id];
 		}
@@ -72,14 +72,20 @@
 				var requestType = iformInterface.GetTypeInfo().GenericTypeArguments[0];
 				var responseType = iformInterface.GetTypeInfo().GenericTypeArguments[1];
 
-				this.registeredForms.TryAdd(form.Type.FullName, new FormMetadata
-				{
-					Label = form.Attribute.Label,
-					Id = form.Type.FullName,
-					PostOnLoad = form.Attribute.PostOnLoad,
-					OutputFields = this.binder.BindOutputFields(responseType).ToList(),
-					InputFields = this.binder.BindInputFields(requestType).ToList()
-				});
+				this.registeredForms.TryAdd(form.Type.FullName,
+					new FormInfo
+					{
+						RequestType = requestType,
+						ResponseType = responseType,
+						Metadata = new FormMetadata
+						{
+							Label = form.Attribute.Label,
+							Id = form.Type.FullName,
+							PostOnLoad = form.Attribute.PostOnLoad,
+							OutputFields = this.binder.BindOutputFields(responseType).ToList(),
+							InputFields = this.binder.BindInputFields(requestType).ToList()
+						}
+					});
 			}
 		}
 	}
