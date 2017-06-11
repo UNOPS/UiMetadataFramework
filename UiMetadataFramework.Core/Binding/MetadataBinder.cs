@@ -69,9 +69,9 @@
 			this.AddBinding(new OutputFieldBinding(typeof(TServerType), clientType));
 		}
 
-		public IEnumerable<OutputFieldMetadata> BindInputFields<T>()
+		public IEnumerable<InputFieldMetadata> BindInputFields<T>()
 		{
-			return this.BindOutputFields(typeof(T));
+			return this.BindInputFields(typeof(T));
 		}
 
 		public IEnumerable<InputFieldMetadata> BindInputFields(Type type)

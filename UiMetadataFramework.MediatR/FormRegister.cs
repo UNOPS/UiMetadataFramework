@@ -1,6 +1,5 @@
 ﻿namespace UiMetadataFramework.MediatR
 {
-	using System;
 	using System.Collections.Concurrent;
 	using System.Collections.Generic;
 	using System.Linq;
@@ -8,25 +7,38 @@
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
-	public class FormRegistry
+	/// <summary>
+	/// This class represents a register, which holds collection of form metadata.
+	/// </summary>
+	public class FormRegister
 	{
-		private readonly ConcurrentDictionary<string, FormMetadata> registeredForms = new ConcurrentDictionary<string, FormMetadata>();
 		private readonly MetadataBinder binder;
+		private readonly ConcurrentDictionary<string, FormMetadata> registeredForms = new ConcurrentDictionary<string, FormMetadata>();
 
-		public FormRegistry(MetadataBinder binder)
+		public FormRegister(MetadataBinder binder)
 		{
 			this.binder = binder;
 		}
 
+		/// <summary>
+		/// Gets list of all registered forms.
+		/// </summary>
 		public IEnumerable<FormMetadata> RegisteredForms => this.registeredForms.Values;
 
-		public FormMetadata GetForm(string name)
+		/// <summary>
+		/// Gets form with the specified id.
+		/// </summary>
+		/// <param name="id">Id of the form.</param>
+		/// <returns>FormMetadata instance.</returns>
+		public FormMetadata GetForm(string id)
 		{
-			FormMetadata type;
-			this.registeredForms.TryGetValue(name.ToLowerInvariant(), out type);
-			return type;
+			return this.registeredForms[id];
 		}
 
+		/// <summary>
+		/// Scans assembly for all forms and adds them to the register.
+		/// </summary>
+		/// <param name="assembly">Assembly to scan.</param>
 		public void RegisterAssembly(Assembly assembly)
 		{
 			// Get all classes decorated with FormAttribute.
@@ -44,11 +56,17 @@
 			{
 				var iformInterface = form.Type.GetTypeInfo()
 					.GetInterfaces()
-					.SingleOrDefault(t => t == typeof(IForm<,>));
+					.Select(t => t)
+					.SingleOrDefault(t =>
+					{
+						var type = t.GetGenericTypeDefinition();
+						return type == typeof(IForm<,>) || type == typeof(IAsyncForm<,>);
+					});
 
 				if (iformInterface == null)
 				{
-					throw new InvalidConfigurationException($"Type '{form.Type.FullName}' was decorated with FormAttribute, but does not implement IForm<,> interface.");
+					throw new InvalidConfigurationException(
+						$"Type '{form.Type.FullName}' was decorated with FormAttribute, but does not implement IForm<,> interface.");
 				}
 
 				var requestType = iformInterface.GetTypeInfo().GenericTypeArguments[0];
@@ -59,7 +77,8 @@
 					Label = form.Attribute.Label,
 					Id = form.Type.FullName,
 					PostOnLoad = form.Attribute.PostOnLoad,
-					OutputFields = this.binder.BindOutputFields<>()
+					OutputFields = this.binder.BindOutputFields(responseType).ToList(),
+					InputFields = this.binder.BindInputFields(requestType).ToList()
 				});
 			}
 		}

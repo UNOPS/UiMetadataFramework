@@ -19,15 +19,5 @@
 		/// reports and to generally show data without user having to post the form manually.
 		/// </summary>
 		public bool PostOnLoad { get; set; }
-
-		///// <summary>
-		///// Gets or sets <see cref="Type"/> of the request object required by the <see cref="IForm{TRequest,TResponse}"/>.
-		///// </summary>
-		//public Type Request { get; set; }
-
-		///// <summary>
-		///// Gets or sets <see cref="Type"/> of the response object returned by the <see cref="IForm{TRequest,TResponse}"/>.
-		///// </summary>
-		//public Type Response { get; set; }
 	}
 }
