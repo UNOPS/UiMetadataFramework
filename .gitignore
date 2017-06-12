@@ -53,6 +53,7 @@ node_modules
 
 # Bower
 */wwwroot/lib
+bower_modules
 
 # NuGet
 *.nupkg

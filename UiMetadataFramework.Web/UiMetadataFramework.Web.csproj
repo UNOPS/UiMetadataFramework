@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <Content Include="wwwroot\index.html" />
+    <Content Include="wwwroot\vanilla-js\app.js" />
     <Content Include="wwwroot\vanilla-js\app.ts" />
     <Content Include="wwwroot\vanilla-js\index.html" />
     <Content Include="wwwroot\vanilla-js\tsconfig.json" />
