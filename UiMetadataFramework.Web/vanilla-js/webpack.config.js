@@ -6,7 +6,7 @@ module.exports = {
 	entry: "./window.umf.ts",
 	output: {
 		filename: "umf.js",
-		path: path.resolve(__dirname, "dist")
+		path: path.resolve(__dirname, "../wwwroot/vanilla-js")
 	},
 	devServer: {
 		contentBase: "./",

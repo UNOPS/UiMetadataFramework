@@ -26,6 +26,7 @@
 			loggerFactory.AddConsole(this.Configuration.GetSection("Logging"));
 			loggerFactory.AddDebug();
 
+			app.UseStaticFiles();
 			app.UseMvc();
 		}
 
