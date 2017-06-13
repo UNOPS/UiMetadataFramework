@@ -1,11 +1,16 @@
-export class $ {
-    static get(url) {
+(function () {
+'use strict';
+
+var $ = (function () {
+    function $() {
+    }
+    $.get = function (url) {
         // Return a new promise.
-        return new Promise((resolve, reject) => {
+        return new Promise(function (resolve, reject) {
             // Do the usual XHR stuff
             var req = new XMLHttpRequest();
             req.open('GET', url);
-            req.onload = () => {
+            req.onload = function () {
                 // This is called even on 404 etc
                 // so check the status
                 if (req.status === 200) {
@@ -19,12 +24,34 @@ export class $ {
                 }
             };
             // Handle network errors
-            req.onerror = () => {
+            req.onerror = function () {
                 reject(Error("Network Error"));
             };
             // Make the request
             req.send();
         });
+    };
+    return $;
+}());
+
+var UmfApp = (function () {
+    function UmfApp() {
     }
-}
-//# sourceMappingURL=$.js.map
+    UmfApp.prototype.getMetadata = function (formId) {
+        return $.get("/form/metadata/" + formId).then(function (response) {
+            console.log(response);
+            return response;
+        });
+    };
+    UmfApp.prototype.getAllMetadata = function () {
+        return null;
+    };
+    return UmfApp;
+}());
+
+console.log("we're in!!");
+var app = new UmfApp();
+console.log(app);
+
+}());
+//# sourceMappingURL=app.js.map
