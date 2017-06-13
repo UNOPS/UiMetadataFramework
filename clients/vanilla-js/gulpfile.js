@@ -40,6 +40,6 @@ gulp.task("browser-sync", function () {
 });
 
 gulp.task("watch", ["build", "browser-sync"], function () {
-    gulp.watch("src/**/*.ts", ["build-umf+app"]);
+    gulp.watch("src/**/*.ts", ["build"]);
     gulp.watch("demo/src/**/*.ts", ["build-app"]);
 });
