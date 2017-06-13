@@ -13,18 +13,17 @@
 
   <ItemGroup>
     <Content Include="wwwroot\index.html" />
-    <Content Include="wwwroot\vanilla-js\app.js" />
-    <Content Include="wwwroot\vanilla-js\app.ts" />
-    <Content Include="wwwroot\vanilla-js\index.html" />
-    <Content Include="wwwroot\vanilla-js\tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" Version="3.0.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="2.0.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.3" />
     <PackageReference Include="microsoft.aspnetcore.staticfiles" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
+    <PackageReference Include="StructureMap.AspNetCore" Version="1.0.0" />
+    <PackageReference Include="StructureMap.Microsoft.DependencyInjection" Version="1.3.0" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.1" />

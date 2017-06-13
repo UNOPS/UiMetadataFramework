@@ -20,8 +20,7 @@
 			this.formRegister = formRegister;
 		}
 
-		[HttpPost]
-		[Route("run")]
+		[HttpPost("run")]
 		public async Task<List<InvokeForm.Response>> Run([FromBody] IEnumerable<InvokeForm.Request> requests)
 		{
 			var results = new List<InvokeForm.Response>();
@@ -38,15 +37,13 @@
 			return results;
 		}
 
-		[HttpGet]
-		[Route("metadata/{id}")]
+		[HttpGet("metadata/{id}")]
 		public FormMetadata Metadata(string id)
 		{
 			return this.formRegister.GetFormInfo(id).Metadata;
 		}
 
-		[HttpGet]
-		[Route("metadata")]
+		[HttpGet("metadata")]
 		public IEnumerable<FormMetadata> Metadata()
 		{
 			return this.formRegister.RegisteredForms.Select(t => t.Metadata);

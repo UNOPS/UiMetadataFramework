@@ -38,13 +38,16 @@ var UmfApp = (function () {
     function UmfApp() {
     }
     UmfApp.prototype.getMetadata = function (formId) {
-        return $.get("/form/metadata/" + formId).then(function (response) {
+        return $.get("http://localhost:62790/api/form/metadata/" + formId).then(function (response) {
             console.log(response);
             return response;
         });
     };
     UmfApp.prototype.getAllMetadata = function () {
-        return null;
+        return $.get("http://localhost:62790/api/form/metadata/").then(function (response) {
+            console.log(response);
+            return response;
+        });
     };
     return UmfApp;
 }());
