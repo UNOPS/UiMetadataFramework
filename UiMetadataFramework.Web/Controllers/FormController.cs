@@ -4,11 +4,13 @@
 	using System.Linq;
 	using System.Threading.Tasks;
 	using global::MediatR;
+	using Microsoft.AspNetCore.Cors;
 	using Microsoft.AspNetCore.Mvc;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.MediatR;
 
 	[Route("api/form")]
+	[EnableCors(Startup.CorsAllowAllPolicy)]
 	public class FormController : Controller
 	{
 		private readonly FormRegister formRegister;
