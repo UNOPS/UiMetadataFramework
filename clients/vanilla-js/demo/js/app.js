@@ -39,23 +39,25 @@ var UmfApp = (function () {
     }
     UmfApp.prototype.getMetadata = function (formId) {
         return $.get("http://localhost:62790/api/form/metadata/" + formId).then(function (response) {
-            console.log(response);
             return response;
+        }).catch(function (e) {
+            console.warn("Did not find form \"" + formId + "\".");
+            return null;
         });
     };
     UmfApp.prototype.getAllMetadata = function () {
         return $.get("http://localhost:62790/api/form/metadata/").then(function (response) {
-            console.log(response);
             return response;
         });
     };
     return UmfApp;
 }());
 
-console.log("we're in!!");
+console.log("Vanilla JS client for UiMetadataFramework ");
 var app = new UmfApp();
-app.getAllMetadata();
-console.log();
+app.getMetadata("UiMetadataFramework.Web.Forms.DoMagic").then(function (response) {
+    console.log(response);
+});
 
 }());
 //# sourceMappingURL=app.js.map
