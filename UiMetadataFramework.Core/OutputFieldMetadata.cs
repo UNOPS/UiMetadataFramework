@@ -1,5 +1,7 @@
 ﻿namespace UiMetadataFramework.Core
 {
+	using Newtonsoft.Json;
+
 	/// <summary>
 	/// Represents metadata for a single output field.
 	/// </summary>
@@ -18,6 +20,7 @@
 		/// <summary>
 		/// Gets or sets additional parameters for the client control.
 		/// </summary>
+		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
 		public object CustomProperties { get; set; }
 
 		/// <summary>
@@ -28,6 +31,7 @@
 		/// <summary>
 		/// Gets or sets label for the output field.
 		/// </summary>
+		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
 		public string Label { get; set; }
 
 		/// <summary>
