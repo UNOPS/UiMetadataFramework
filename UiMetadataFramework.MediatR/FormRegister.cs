@@ -32,7 +32,8 @@
 		/// <returns>FormMetadata instance.</returns>
 		public FormInfo GetFormInfo(string id)
 		{
-			return this.registeredForms[id];
+			this.registeredForms.TryGetValue(id, out FormInfo formInfo);
+			return formInfo;
 		}
 
 		/// <summary>

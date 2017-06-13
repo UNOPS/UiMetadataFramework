@@ -42,7 +42,7 @@
 		[HttpGet("metadata/{id}")]
 		public FormMetadata Metadata(string id)
 		{
-			return this.formRegister.GetFormInfo(id).Metadata;
+			return this.formRegister.GetFormInfo(id)?.Metadata;
 		}
 
 		[HttpGet("metadata")]
