@@ -22,8 +22,9 @@ function build(entry, tsconfig, outfile) {
         });
 }
 
-gulp.task("build-umf", function () {
+gulp.task("build", function () {
     build("src/umf-vanilla.ts", "src/tsconfig.json", "demo/js/umf-vanilla.js");
+    build("demo/src/app.ts", "demo/src/tsconfig.json", "demo/js/app.js");
 });
 
 gulp.task("build-app", function () {
@@ -38,7 +39,7 @@ gulp.task("browser-sync", function () {
     });
 });
 
-gulp.task("watch", ["build-umf", "build-app", "browser-sync"], function () {
-    gulp.watch("src/**/*.ts", ["build-umf"]);
+gulp.task("watch", ["build", "browser-sync"], function () {
+    gulp.watch("src/**/*.ts", ["build-umf+app"]);
     gulp.watch("demo/src/**/*.ts", ["build-app"]);
 });

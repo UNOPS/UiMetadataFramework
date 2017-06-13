@@ -3,8 +3,8 @@
   "name": "umf-vanilla-js",
   "private": true,
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w"
+    "build": "gulp build",
+    "dev": "gulp watch"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
