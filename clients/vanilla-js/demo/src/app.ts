@@ -2,8 +2,9 @@
 
 console.log("Vanilla JS client for UiMetadataFramework ");
 
-var app = new umf.UmfApp();
+var server = new umf.UmfServer("http://localhost:62790/api/form/metadata");
+var app = new umf.UmfApp(server);
 
-app.getMetadata("UiMetadataFramework.Web.Forms.DoMagic").then(response => {
-    console.log(response);
+app.load().then(response => {
+    console.log(app.getForm("UiMetadataFramework.Web.Forms.DoMagic"));
 });

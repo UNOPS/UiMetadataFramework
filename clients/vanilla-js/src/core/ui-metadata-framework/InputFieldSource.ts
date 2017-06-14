@@ -6,10 +6,10 @@ export class InputFieldSource {
 	/**
 	 * Gets or sets id of the item within the source.
 	 */
-	public Id: string;
+	public id: string;
 
 	/**
 	 * Gets or sets type of the source.
 	 */
-	public Type: string;
+	public type: string;
 }

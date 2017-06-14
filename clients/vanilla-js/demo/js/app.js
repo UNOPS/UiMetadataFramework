@@ -34,29 +34,55 @@ var $ = (function () {
     return $;
 }());
 
-var UmfApp = (function () {
-    function UmfApp() {
+var UmfServer = (function () {
+    /**
+     * Creates a new instance of UmfApp.
+     */
+    function UmfServer(getMetadataUrl) {
+        this.getMetadataUrl = getMetadataUrl;
     }
-    UmfApp.prototype.getMetadata = function (formId) {
-        return $.get("http://localhost:62790/api/form/metadata/" + formId).then(function (response) {
-            return response;
+    UmfServer.prototype.getMetadata = function (formId) {
+        return $.get(this.getMetadataUrl + "/" + formId).then(function (response) {
+            return JSON.parse(response);
         }).catch(function (e) {
             console.warn("Did not find form \"" + formId + "\".");
             return null;
         });
     };
-    UmfApp.prototype.getAllMetadata = function () {
-        return $.get("http://localhost:62790/api/form/metadata/").then(function (response) {
-            return response;
+    UmfServer.prototype.getAllMetadata = function () {
+        return $.get(this.getMetadataUrl).then(function (response) {
+            return JSON.parse(response);
         });
+    };
+    return UmfServer;
+}());
+var UmfApp = (function () {
+    function UmfApp(server) {
+        this.formsById = {};
+        this.server = server;
+    }
+    UmfApp.prototype.load = function () {
+        var _this = this;
+        return this.server.getAllMetadata()
+            .then(function (response) {
+            _this.forms = response;
+            for (var _i = 0, _a = _this.forms; _i < _a.length; _i++) {
+                var form = _a[_i];
+                _this.formsById[form.id] = form;
+            }
+        });
+    };
+    UmfApp.prototype.getForm = function (id) {
+        return this.formsById[id];
     };
     return UmfApp;
 }());
 
 console.log("Vanilla JS client for UiMetadataFramework ");
-var app = new UmfApp();
-app.getMetadata("UiMetadataFramework.Web.Forms.DoMagic").then(function (response) {
-    console.log(response);
+var server = new UmfServer("http://localhost:62790/api/form/metadata");
+var app = new UmfApp(server);
+app.load().then(function (response) {
+    console.log(app.getForm("UiMetadataFramework.Web.Forms.DoMagic"));
 });
 
 }());

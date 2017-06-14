@@ -15,6 +15,7 @@
 	{
 		private readonly FormRegister formRegister;
 		private readonly IMediator mediator;
+		private const string ContentType = "application/json";
 
 		public FormController(IMediator mediator, FormRegister formRegister)
 		{
@@ -36,18 +37,21 @@
 				});
 			}
 
+			this.Response.ContentType = ContentType;
 			return results;
 		}
 
 		[HttpGet("metadata/{id}")]
 		public FormMetadata Metadata(string id)
 		{
+			this.Response.ContentType = ContentType;
 			return this.formRegister.GetFormInfo(id)?.Metadata;
 		}
 
 		[HttpGet("metadata")]
 		public IEnumerable<FormMetadata> Metadata()
 		{
+			this.Response.ContentType = ContentType;
 			return this.formRegister.RegisteredForms.Select(t => t.Metadata);
 		}
 	}

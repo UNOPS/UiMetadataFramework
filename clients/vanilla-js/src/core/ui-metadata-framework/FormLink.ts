@@ -5,15 +5,15 @@ export class FormLink {
 	/**
 	 * Gets or sets name of the form to link to.
 	 */
-	public Form: string;
+	public form: string;
 
 	/**
 	 * Gets or sets values for the input fields of the form (i.e. - <see cref="FormMetadata.InputFields"/>).
 	 */
-	public InputFieldValues: any;
+	public inputFieldValues: any;
 
 	/**
 	 * Gets or sets label to be shown on the client when rendering the link.
 	 */
-	public Label: string;
+	public label: string;
 }

@@ -9,5 +9,5 @@ export class FormResponse {
 		* least need to have an "object" handler, which will simply render the response. Other
 		* handlers might include "redirect" handler, which will redirect to another form or URL.
 	 */
-	public ResponseHandler: string ;
+	public responseHandler: string ;
 }
