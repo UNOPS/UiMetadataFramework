@@ -51,3 +51,5 @@ export class UmfApp {
 		return this.formsById[id];
 	}
 }
+
+export * from "./ui-metadata-framework/index";

@@ -34,6 +34,61 @@ var $ = (function () {
     return $;
 }());
 
+/**
+ * Encapsulates all information needed to render a form.
+ */
+var FormMetadata = (function () {
+    function FormMetadata() {
+    }
+    return FormMetadata;
+}());
+
+/**
+ * Represents a reference to a form.
+ */
+var FormLink = (function () {
+    function FormLink() {
+    }
+    return FormLink;
+}());
+
+/**
+ * Represents response of a form.
+ */
+var FormResponse = (function () {
+    function FormResponse() {
+    }
+    return FormResponse;
+}());
+
+/**
+ * Represents metadata for a single input field. *
+ */
+var InputFieldMetadata = (function () {
+    function InputFieldMetadata() {
+    }
+    return InputFieldMetadata;
+}());
+
+/**
+* Represents a source from which a value can be retrieved. This class can be useful for
+* binding input field values to a specific data source.
+*/
+var InputFieldSource = (function () {
+    function InputFieldSource() {
+    }
+    return InputFieldSource;
+}());
+
+/**
+ * Represents metadata for a single output field.
+ */
+var OutputFieldMetadata = (function () {
+    function OutputFieldMetadata() {
+    }
+    return OutputFieldMetadata;
+}());
+
 var UmfServer = (function () {
     /**
      * Creates a new instance of UmfApp.
@@ -82,7 +137,13 @@ var UmfApp = (function () {
 
 var umf = Object.freeze({
 	UmfServer: UmfServer,
-	UmfApp: UmfApp
+	UmfApp: UmfApp,
+	FormMetadata: FormMetadata,
+	FormLink: FormLink,
+	FormResponse: FormResponse,
+	InputFieldMetadata: InputFieldMetadata,
+	InputFieldSource: InputFieldSource,
+	OutputFieldMetadata: OutputFieldMetadata
 });
 
 window.umf = umf;

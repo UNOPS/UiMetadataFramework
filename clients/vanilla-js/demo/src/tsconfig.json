@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
 		"outDir": "../es2015",
+		"allowJs": true,
 		"noImplicitAny": false,
 		"noEmitOnError": true,
 		"removeComments": false,
