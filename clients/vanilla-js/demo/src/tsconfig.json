@@ -8,8 +8,7 @@
 		"sourceMap": true,
 		"module": "es2015",
 		"target": "es5",
-		"lib": [ "es2015", "dom", "es5" ],
-		"watch": true
+		"lib": [ "es2015", "dom", "es5" ]
 	},
 	"files": [
 		"./app.ts"

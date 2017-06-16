@@ -1,17 +1,25 @@
 var gulp = require("gulp"),
     rollup = require("rollup"),
     typescript = require("rollup-plugin-typescript2"),
+    commonjs = require('rollup-plugin-commonjs'),
     browserSync = require('browser-sync').create(),
-    gulpSvelte = require('gulp-svelte');
+    gulpSvelte = require('gulp-svelte'),
+    resolve = require('rollup-plugin-node-resolve'),
+    builtins = require('rollup-plugin-node-builtins'),
+    globals = require('rollup-plugin-node-globals');
 
 function build(entry, tsconfig, outfile) {
     return rollup.rollup(
         {
             entry: entry,
             plugins: [
+                resolve({ jsnext: true, main: true }),
+                commonjs(),
                 typescript({
                     tsconfig: tsconfig
-                })
+                }),
+                globals(),
+                builtins()
             ]
         })
         .then(function (bundle) {
