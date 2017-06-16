@@ -1,21 +1,45 @@
 ﻿import * as umf from "../../src/core/index";
+import * as abstractStateRouter from '../../node_modules/abstract-state-router/index';
+import * as svelteStateRenderer from '../../node_modules/svelte-state-renderer/index';
+
 import Menu from "../svelte-components/menu";
 import Form from "../svelte-components/form";
-
-console.log("Vanilla JS client for UiMetadataFramework ");
+import Home from "../svelte-components/home";
 
 var server = new umf.UmfServer("http://localhost:62790/api/form/metadata");
 var app = new umf.UmfApp(server);
 
 app.load().then(response => {
+    const stateRenderer = (<any>svelteStateRenderer).default({});
+    const stateRouter = abstractStateRouter.StateProvider(stateRenderer, document.getElementById("main"));
+
+    stateRouter.addState({
+        name: "home",
+        data: {},
+        route: "/home",
+        template: Home
+    });
+
+    stateRouter.addState({
+        name: "form",
+        data: {},
+        route: "/form/:id",
+        template: Form,
+        resolve: function(data, parameters, cb) {
+            cb(false, {
+                metadata: app.getForm(parameters.id)
+            });
+        }
+    });
+
+    stateRouter.evaluateCurrentRoute('home');
+    
     var menu = new Menu({
-        target: document.getElementById("main"),
+        target: document.getElementById("menu"),
         data: {
             name: "Vanilla JS",
             forms: app.forms,
-            getUrl: function(form:umf.FormMetadata) {
-                return `#/f/${form.id}`;
-            }
+            asr: stateRouter
         }
     });
 });
