@@ -6,7 +6,10 @@ import Menu from "../svelte-components/menu";
 import Form from "../svelte-components/form";
 import Home from "../svelte-components/home";
 
-var server = new umf.UmfServer("http://localhost:62790/api/form/metadata");
+var server = new umf.UmfServer(
+    "http://localhost:62790/api/form/metadata",
+    "http://localhost:62790/api/form/run");
+
 var app = new umf.UmfApp(server);
 
 app.load().then(response => {
@@ -26,8 +29,13 @@ app.load().then(response => {
         route: "/form/:id",
         template: Form,
         resolve: function(data, parameters, cb) {
+            let metadata = app.getForm(parameters.id);
+            let formInstance = new umf.FormInstance(metadata);
+
             cb(false, {
-                metadata: app.getForm(parameters.id)
+                metadata: metadata,
+                form: formInstance,
+                app: app
             });
         }
     });

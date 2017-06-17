@@ -31,6 +31,24 @@ var $ = (function () {
             req.send();
         });
     };
+    $.post = function (url, data) {
+        return new Promise(function (resolve, reject) {
+            var params = typeof data == 'string' ? data : Object.keys(data).map(function (k) { return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]); }).join('&');
+            var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+            xhr.open('POST', url);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState > 3 && xhr.status == 200) {
+                    resolve(xhr.responseText);
+                }
+                else {
+                    reject(Error(xhr.status));
+                }
+            };
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.send(params);
+        });
+    };
     return $;
 }());
 
@@ -93,8 +111,9 @@ var UmfServer = (function () {
     /**
      * Creates a new instance of UmfApp.
      */
-    function UmfServer(getMetadataUrl) {
+    function UmfServer(getMetadataUrl, postFormUrl) {
         this.getMetadataUrl = getMetadataUrl;
+        this.postFormUrl = postFormUrl;
     }
     UmfServer.prototype.getMetadata = function (formId) {
         return $.get(this.getMetadataUrl + "/" + formId).then(function (response) {
@@ -108,6 +127,13 @@ var UmfServer = (function () {
         return $.get(this.getMetadataUrl).then(function (response) {
             return JSON.parse(response);
         });
+    };
+    UmfServer.prototype.postForm = function (formInstance) {
+        return $.post(this.postFormUrl, [{
+                requestId: 1,
+                form: formInstance.metadata.id,
+                inputFieldValues: formInstance.inputFieldValues,
+            }]);
     };
     return UmfServer;
 }());
@@ -130,7 +156,18 @@ var UmfApp = (function () {
     UmfApp.prototype.getForm = function (id) {
         return this.formsById[id];
     };
+    UmfApp.prototype.postForm = function (formInstance) {
+        return this.server.postForm(formInstance);
+    };
     return UmfApp;
+}());
+
+var FormInstance = (function () {
+    function FormInstance(metadata) {
+        this.inputFieldValues = {};
+        this.metadata = metadata;
+    }
+    return FormInstance;
 }());
 
 
@@ -143,7 +180,8 @@ var umf = Object.freeze({
 	FormResponse: FormResponse,
 	InputFieldMetadata: InputFieldMetadata,
 	InputFieldSource: InputFieldSource,
-	OutputFieldMetadata: OutputFieldMetadata
+	OutputFieldMetadata: OutputFieldMetadata,
+	FormInstance: FormInstance
 });
 
 window.umf = umf;

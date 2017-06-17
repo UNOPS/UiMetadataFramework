@@ -5,8 +5,11 @@ declare global {
 	}
 }
 
+declare var XMLHttpRequest: any;
+declare var ActiveXObject: any;
+
 export class $ {
-	static get(url) {
+	static get(url: string) {
 		// Return a new promise.
 		return new Promise((resolve, reject) => {
 			// Do the usual XHR stuff
@@ -34,6 +37,28 @@ export class $ {
 
 			// Make the request
 			req.send();
+		});
+	}
+
+	static post(url: string, data: any) {
+		return new Promise((resolve, reject) => {
+			var params = typeof data == 'string' ? data : Object.keys(data).map(
+				function (k) { return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]) }
+			).join('&');
+
+			var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+			xhr.open('POST', url);
+			xhr.onreadystatechange = function () {
+				if (xhr.readyState > 3 && xhr.status == 200) {
+					resolve(xhr.responseText);
+				}
+				else {
+					reject(Error(xhr.status));
+				}
+			};
+			xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+			xhr.send(params);
 		});
 	}
 }

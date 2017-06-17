@@ -1,14 +1,17 @@
 ﻿import * as umf from "./ui-metadata-framework/index";
 import { $ } from "./$";
+import { FormInstance } from "./FormInstance";
 
 export class UmfServer {
 	private readonly getMetadataUrl: string;
+	private readonly postFormUrl: string;
 
 	/**
 	 * Creates a new instance of UmfApp.
 	 */
-	constructor(getMetadataUrl: string) {
+	constructor(getMetadataUrl: string, postFormUrl: string) {
 		this.getMetadataUrl = getMetadataUrl;
+		this.postFormUrl = postFormUrl;
 	}
 
 	getMetadata(formId: string): Promise<umf.FormMetadata> {
@@ -25,6 +28,14 @@ export class UmfServer {
 			return <umf.FormMetadata[]>JSON.parse(response);
 		});
 	}
+
+	postForm(formInstance: FormInstance) {
+		return $.post(this.postFormUrl, [{
+			requestId: 1,
+			form: formInstance.metadata.id,
+			inputFieldValues: formInstance.inputFieldValues,
+		}]);
+	}
 }
 
 export class UmfApp {
@@ -40,7 +51,7 @@ export class UmfApp {
 		return this.server.getAllMetadata()
 			.then(response => {
 				this.forms = response;
-				
+
 				for (let form of this.forms) {
 					this.formsById[form.id] = form;
 				}
@@ -49,6 +60,10 @@ export class UmfApp {
 
 	getForm(id: string) {
 		return this.formsById[id];
+	}
+
+	postForm(formInstance: FormInstance) {
+		return this.server.postForm(formInstance);
 	}
 }
 
