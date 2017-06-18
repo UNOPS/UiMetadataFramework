@@ -13,6 +13,7 @@
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
 	using UiMetadataFramework.Web.Forms;
+	using UiMetadataFramework.Web.Middleware;
 
 	public class Startup
 	{
@@ -41,6 +42,7 @@
 				app.UseDeveloperExceptionPage();
 			}
 
+			app.UseMiddleware(typeof(ErrorHandlingMiddleware));
 			app.UseDefaultFiles();
 			app.UseStaticFiles();
 
