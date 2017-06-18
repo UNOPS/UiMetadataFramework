@@ -43,6 +43,8 @@
 
 			app.UseDefaultFiles();
 			app.UseStaticFiles();
+
+			app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 			app.UseMvc();
 		}
 
@@ -60,6 +62,7 @@
 			services.AddMvc();
 
 			services.AddMediatR(typeof(DoMagic));
+			services.AddMediatR(typeof(InvokeForm));
 
 			var container = new Container();
 			container.Configure(config =>

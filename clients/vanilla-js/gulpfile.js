@@ -6,14 +6,20 @@ var gulp = require("gulp"),
     gulpSvelte = require('gulp-svelte'),
     resolve = require('rollup-plugin-node-resolve'),
     builtins = require('rollup-plugin-node-builtins'),
-    globals = require('rollup-plugin-node-globals');
+    globals = require('rollup-plugin-node-globals'),
+    json = require('rollup-plugin-json');
 
 function build(entry, tsconfig, outfile) {
     return rollup.rollup(
         {
             entry: entry,
             plugins: [
-                resolve({ jsnext: true, main: true }),
+                json(),
+                resolve({
+                    jsnext: true,
+                    main: true,
+                    browser: true
+                }),
                 commonjs(),
                 typescript({
                     tsconfig: tsconfig
@@ -47,7 +53,7 @@ gulp.task("browser-sync", function () {
     });
 });
 
-gulp.task("build-svelte", function() {
+gulp.task("build-svelte", function () {
     const svelteComponentsDir = "demo/svelte-components";
     gulp.src("node_modules/svelte/shared.js")
         .pipe(gulp.dest(svelteComponentsDir));

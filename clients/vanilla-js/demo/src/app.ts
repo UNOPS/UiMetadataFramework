@@ -31,6 +31,8 @@ app.load().then(response => {
         resolve: function(data, parameters, cb) {
             let metadata = app.getForm(parameters.id);
             let formInstance = new umf.FormInstance(metadata);
+            
+            app.postForm(formInstance);
 
             cb(false, {
                 metadata: metadata,

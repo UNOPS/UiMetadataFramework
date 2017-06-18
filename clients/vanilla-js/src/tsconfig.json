@@ -5,9 +5,14 @@
 		"noEmitOnError": true,
 		"removeComments": false,
 		"sourceMap": true,
+		"moduleResolution": "node",
 		"module": "es2015",
 		"target": "es5",
-		"lib": [ "es2015", "dom", "es5" ]
+		"lib": [
+			"es2015",
+			"dom",
+			"es5"
+		]
 	},
 	"files": [
 		"./umf-vanilla.ts"

@@ -24,7 +24,7 @@
 		}
 
 		[HttpPost("run")]
-		public async Task<List<InvokeForm.Response>> Run([FromBody] IEnumerable<InvokeForm.Request> requests)
+		public async Task<List<InvokeForm.Response>> Run([FromBody] InvokeForm.Request[] requests)
 		{
 			var results = new List<InvokeForm.Response>();
 			foreach (var request in requests)
@@ -38,6 +38,8 @@
 			}
 
 			this.Response.ContentType = ContentType;
+			this.Response.Headers["Access-Control-Allow-Origin"] = "*";
+
 			return results;
 		}
 

@@ -7,7 +7,6 @@ namespace UiMetadataFramework.MediatR
 	using System.Threading.Tasks;
 	using global::MediatR;
 	using Newtonsoft.Json;
-	using Newtonsoft.Json.Linq;
 
 	/// <summary>
 	/// Invokes form and returns its result.
@@ -69,7 +68,7 @@ namespace UiMetadataFramework.MediatR
 			/// <summary>
 			/// Gets or sets form parameters.
 			/// </summary>
-			public JObject InputFieldValues { get; set; }
+			public object InputFieldValues { get; set; }
 		}
 
 		public class Response
