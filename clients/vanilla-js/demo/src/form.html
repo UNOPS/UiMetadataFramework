@@ -4,7 +4,8 @@
     {{#each metadata.inputFields as inputField}}
     <div>
         <label>{{inputField.label}}
-        <input bind:value="form.inputFieldValues[inputField.id]">
+        <input bind:value="form.inputFieldValues[inputField.id].data" 
+            required="{{form.inputFieldValues[inputField.id].metadata.required}}">
     </label>
     </div>
     {{/each}}
@@ -22,7 +23,7 @@
                 event.preventDefault();
                 app.postForm(formInstance)
                     .then(response => {
-                        console.log(response);
+                        console.log(formInstance.parseResponse(response));
                     });
             }
         }

@@ -11,7 +11,13 @@
 	{
 		public Response Handle(Request message)
 		{
-			return new Response();
+			return new Response
+			{
+				FirstName = message.FirstName,
+				Weight = message.Weight,
+				DateOfBirth = message.DateOfBirth,
+				Height = message.Height
+			};
 		}
 
 		public class Response : FormResponse

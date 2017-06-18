@@ -1,7 +1,7 @@
 /**
  * Represents response of a form.
  */
-export class FormResponse {
+export class FormResponse extends Object {
 	
 	/**
 	 * Gets or sets name of the client-side handler which will be responsible for processing this <see cref="FormResponse"/>.

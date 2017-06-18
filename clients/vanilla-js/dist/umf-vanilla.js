@@ -1588,14 +1588,42 @@ var FormLink = (function () {
     return FormLink;
 }());
 
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+/* global Reflect, Promise */
+
+var extendStatics = Object.setPrototypeOf ||
+    ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+    function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+
+function __extends(d, b) {
+    extendStatics(d, b);
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
+
 /**
  * Represents response of a form.
  */
-var FormResponse = (function () {
+var FormResponse = (function (_super) {
+    __extends(FormResponse, _super);
     function FormResponse() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     return FormResponse;
-}());
+}(Object));
 
 /**
  * Represents metadata for a single input field. *
@@ -1654,8 +1682,44 @@ var FormInstance = (function () {
     function FormInstance(metadata) {
         this.inputFieldValues = {};
         this.metadata = metadata;
+        for (var _i = 0, _a = metadata.inputFields; _i < _a.length; _i++) {
+            var field = _a[_i];
+            this.inputFieldValues[field.id] = {
+                metadata: field,
+                data: null
+            };
+        }
     }
+    FormInstance.prototype.parseResponse = function (response) {
+        var fields = Array();
+        var _loop_1 = function (field) {
+            if (response.hasOwnProperty(field) && field != "responseHandler") {
+                fields.push({
+                    metadata: this_1.metadata.outputFields.find(function (t) { return t.id.toLowerCase() == field.toLowerCase(); }),
+                    data: response[field]
+                });
+            }
+        };
+        var this_1 = this;
+        for (var field in response) {
+            _loop_1(field);
+        }
+        fields.sort(function (a, b) {
+            return a.metadata.orderIndex - b.metadata.orderIndex;
+        });
+        return fields;
+    };
     return FormInstance;
+}());
+var InputFieldValue = (function () {
+    function InputFieldValue() {
+    }
+    return InputFieldValue;
+}());
+var OutputFieldValue = (function () {
+    function OutputFieldValue() {
+    }
+    return OutputFieldValue;
 }());
 
 
@@ -1669,7 +1733,9 @@ var umf = Object.freeze({
 	InputFieldMetadata: InputFieldMetadata,
 	InputFieldSource: InputFieldSource,
 	OutputFieldMetadata: OutputFieldMetadata,
-	FormInstance: FormInstance
+	FormInstance: FormInstance,
+	InputFieldValue: InputFieldValue,
+	OutputFieldValue: OutputFieldValue
 });
 
 window.umf = umf;
