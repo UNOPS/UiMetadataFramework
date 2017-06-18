@@ -23,7 +23,7 @@
 		public class Response : FormResponse
 		{
 			[OutputField(Label = "DoB", OrderIndex = 2)]
-			public DateTime DateOfBirth { get; set; }
+			public DateTime? DateOfBirth { get; set; }
 
 			[OutputField(Label = "First name", OrderIndex = 1)]
 			public string FirstName { get; set; }
@@ -37,8 +37,8 @@
 
 		public class Request : IRequest<Response>
 		{
-			[InputField(Label = "DoB", OrderIndex = 2, Required = true)]
-			public DateTime DateOfBirth { get; set; }
+			[InputField(Label = "DoB", OrderIndex = 2)]
+			public DateTime? DateOfBirth { get; set; }
 
 			[InputField(Label = "First name", OrderIndex = 1, Required = true)]
 			public string FirstName { get; set; }
@@ -46,7 +46,7 @@
 			[InputField(Hidden = true)]
 			public int Height { get; set; }
 
-			public bool IsRegistered { get; set; }
+			public bool? IsRegistered { get; set; }
 
 			[InputField(Hidden = true)]
 			public decimal Weight { get; set; }

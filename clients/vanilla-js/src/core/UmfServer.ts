@@ -35,7 +35,7 @@ export class UmfServer {
         return axios.post(this.postFormUrl, JSON.stringify([{
             Form: formInstance.metadata.id,
             RequestId: 1,
-            InputFieldValues: formInstance.inputFieldValues
+            InputFieldValues: formInstance.getData()
         }]), <axiosLib.AxiosRequestConfig>{
             headers: {
                 "Content-Type": "application/json"

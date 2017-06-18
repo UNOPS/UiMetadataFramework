@@ -5,7 +5,7 @@ import { FormInstance } from "./FormInstance";
 export class UmfApp {
 	forms: FormMetadata[];
 	private readonly formsById: { [id: string]: FormMetadata } = {};
-	private readonly server: UmfServer;
+	public readonly server: UmfServer;
 
 	constructor(server: UmfServer) {
 		this.server = server;

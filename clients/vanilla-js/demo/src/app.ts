@@ -24,14 +24,26 @@ app.load().then(response => {
     });
 
     stateRouter.addState({
+        name: "menu",
+        route: "/menu",
+        template: Menu,
+        resolve: function (data, parameters, cb) {
+            cb(false, {
+                forms: app.forms,
+                asr: stateRouter
+            });
+        }
+    });
+
+    stateRouter.addState({
         name: "form",
         data: {},
         route: "/form/:id",
         template: Form,
-        resolve: function(data, parameters, cb) {
+        resolve: function (data, parameters, cb) {
             let metadata = app.getForm(parameters.id);
             let formInstance = new umf.FormInstance(metadata);
-            
+
             cb(false, {
                 metadata: metadata,
                 form: formInstance,
@@ -41,13 +53,4 @@ app.load().then(response => {
     });
 
     stateRouter.evaluateCurrentRoute("home");
-    
-    var menu = new Menu({
-        target: document.getElementById("menu"),
-        data: {
-            name: "Vanilla JS",
-            forms: app.forms,
-            asr: stateRouter
-        }
-    });
 });

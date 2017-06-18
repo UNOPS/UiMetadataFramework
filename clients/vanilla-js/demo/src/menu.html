@@ -1,5 +1,4 @@
 <ul>
-    <li><a href="{{asr.makePath('home')}}">Home</a></li>
     {{#each forms as form}}
     <li><a href="{{asr.makePath('form', {id:form.id})}}">{{form.id}}</a></li>
     {{/each}}

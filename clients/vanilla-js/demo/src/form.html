@@ -3,29 +3,46 @@
 <form on:submit="submit(app, form, event)">
     {{#each metadata.inputFields as inputField}}
     <div>
-        <label>{{inputField.label}}
-        <input bind:value="form.inputFieldValues[inputField.id].data" 
+        <label for="{{inputField.id}}">{{inputField.label}}</label>
+        <input id="{{inputField.id}}"
+            bind:value="form.inputFieldValues[inputField.id].data" 
             required="{{form.inputFieldValues[inputField.id].metadata.required}}">
-    </label>
     </div>
     {{/each}}
 
     <button type="submit">submit</button>
 </form>
 
-<div>
+{{#if outputFieldValues != null}}
+<div class="response">
+    {{#each outputFieldValues as outputField}}
+    <div>
+        <strong>{{outputField.metadata.label}}:</strong> {{outputField.data}}
+    </div>
+    {{/each}}
 </div>
+{{/if}}
 
 <script>
     export default {
         methods: {
-            submit: (app, formInstance, event) => {
+            submit: function (app, formInstance, event) {
+                var self = this;
                 event.preventDefault();
-                app.postForm(formInstance)
+                app.server.postForm(formInstance)
                     .then(response => {
-                        console.log(formInstance.parseResponse(response));
+                        formInstance.setOutputFieldValues(response);
+
+                        self.set({
+                            outputFieldValues: formInstance.outputFieldValues
+                        });
                     });
             }
         }
     }
+
 </script>
+
+<style>
+    .response {margin-top:50px}
+</style>

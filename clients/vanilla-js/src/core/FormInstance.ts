@@ -2,7 +2,7 @@ import * as umf from "./ui-metadata-framework/index";
 
 export class FormInstance {
     public readonly metadata: umf.FormMetadata;
-
+    public outputFieldValues: Array<OutputFieldValue> = [];
     public inputFieldValues: { [id: string]: InputFieldValue } = {};
 
     constructor(metadata: umf.FormMetadata) {
@@ -16,23 +16,44 @@ export class FormInstance {
         }
     }
 
-    parseResponse(response: umf.FormResponse): OutputFieldValue[] {
+    setOutputFieldValues(response: umf.FormResponse) {
         var fields = Array<OutputFieldValue>();
 
-        for (let field in response) {
-            if (response.hasOwnProperty(field) && field != "responseHandler") {
-                fields.push({
-                    metadata: this.metadata.outputFields.find(t => t.id.toLowerCase() == field.toLowerCase()),
-                    data: response[field]
-                });
-            }
+        var normalizedResponse = this.getNormalizedObject(response);
+
+        for (let field of this.metadata.outputFields) {
+            fields.push({
+                metadata: field,
+                data: normalizedResponse[field.id.toLowerCase()]
+            });
         }
 
         fields.sort((a: OutputFieldValue, b: OutputFieldValue) => {
             return a.metadata.orderIndex - b.metadata.orderIndex;
         })
 
-        return fields;
+        this.outputFieldValues = fields;
+    }
+
+    getData(): any {
+        var data = {};
+
+        for (let inputField of this.metadata.inputFields) {
+            data[inputField.id] = this.inputFieldValues[inputField.id].data;
+        }
+
+        return data;
+    }
+
+    private getNormalizedObject(response: umf.FormResponse): any {
+        var normalizedResponse = {};
+        for (let field in response) {
+            if (response.hasOwnProperty(field) && field !== "responseHandler") {
+                normalizedResponse[field.toLowerCase()] = response[field];
+            }
+        }
+
+        return normalizedResponse;
     }
 }
 

@@ -32,11 +32,11 @@
     "tslib": "^1.7.1",
     "typescript": "^2.3.4",
     "webpack": "^2.6.1",
-    "webpack-dev-server": "^2.4.5"
-  },
-  "dependencies": {
-    "@types/axios": "^0.14.0",
+    "webpack-dev-server": "^2.4.5",
     "abstract-state-router": "^5.16.2",
     "svelte-state-renderer": "^1.2.1"
+  },
+  "dependencies": {
+    "@types/axios": "^0.14.0"
   }
 }

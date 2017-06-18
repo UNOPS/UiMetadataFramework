@@ -1557,7 +1557,7 @@ var UmfServer = (function () {
         return axios.post(this.postFormUrl, JSON.stringify([{
                 Form: formInstance.metadata.id,
                 RequestId: 1,
-                InputFieldValues: formInstance.inputFieldValues
+                InputFieldValues: formInstance.getData()
             }]), {
             headers: {
                 "Content-Type": "application/json"
@@ -1680,6 +1680,7 @@ var UmfApp = (function () {
 
 var FormInstance = (function () {
     function FormInstance(metadata) {
+        this.outputFieldValues = [];
         this.inputFieldValues = {};
         this.metadata = metadata;
         for (var _i = 0, _a = metadata.inputFields; _i < _a.length; _i++) {
@@ -1690,24 +1691,37 @@ var FormInstance = (function () {
             };
         }
     }
-    FormInstance.prototype.parseResponse = function (response) {
+    FormInstance.prototype.setOutputFieldValues = function (response) {
         var fields = Array();
-        var _loop_1 = function (field) {
-            if (response.hasOwnProperty(field) && field != "responseHandler") {
-                fields.push({
-                    metadata: this_1.metadata.outputFields.find(function (t) { return t.id.toLowerCase() == field.toLowerCase(); }),
-                    data: response[field]
-                });
-            }
-        };
-        var this_1 = this;
-        for (var field in response) {
-            _loop_1(field);
+        var normalizedResponse = this.getNormalizedObject(response);
+        for (var _i = 0, _a = this.metadata.outputFields; _i < _a.length; _i++) {
+            var field = _a[_i];
+            fields.push({
+                metadata: field,
+                data: normalizedResponse[field.id.toLowerCase()]
+            });
         }
         fields.sort(function (a, b) {
             return a.metadata.orderIndex - b.metadata.orderIndex;
         });
-        return fields;
+        this.outputFieldValues = fields;
+    };
+    FormInstance.prototype.getData = function () {
+        var data = {};
+        for (var _i = 0, _a = this.metadata.inputFields; _i < _a.length; _i++) {
+            var inputField = _a[_i];
+            data[inputField.id] = this.inputFieldValues[inputField.id].data;
+        }
+        return data;
+    };
+    FormInstance.prototype.getNormalizedObject = function (response) {
+        var normalizedResponse = {};
+        for (var field in response) {
+            if (response.hasOwnProperty(field) && field !== "responseHandler") {
+                normalizedResponse[field.toLowerCase()] = response[field];
+            }
+        }
+        return normalizedResponse;
     };
     return FormInstance;
 }());
