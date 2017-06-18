@@ -1563,7 +1563,8 @@ var UmfServer = (function () {
                 "Content-Type": "application/json"
             }
         }).then(function (response) {
-            return response.data;
+            var invokeFormResponses = response.data;
+            return invokeFormResponses[0].data;
         });
     };
     return UmfServer;

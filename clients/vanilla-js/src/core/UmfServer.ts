@@ -1,4 +1,4 @@
-import { FormMetadata } from "./ui-metadata-framework/index";
+import { FormMetadata, FormResponse } from "./ui-metadata-framework/index";
 import { FormInstance } from "./FormInstance";
 import * as axiosLib from "../../node_modules/axios/index.js";
 
@@ -31,7 +31,7 @@ export class UmfServer {
         });
     }
 
-    postForm(formInstance: FormInstance) {
+    postForm(formInstance: FormInstance):Promise<FormResponse> {
         return axios.post(this.postFormUrl, JSON.stringify([{
             Form: formInstance.metadata.id,
             RequestId: 1,
@@ -41,7 +41,14 @@ export class UmfServer {
                 "Content-Type": "application/json"
             }
         }).then((response:axiosLib.AxiosResponse) => {
-            return response.data;
+            var invokeFormResponses = <InvokeFormResponse[]>response.data;
+            return invokeFormResponses[0].data;
         });
     }
+}
+
+class InvokeFormResponse
+{
+    public data:FormResponse;
+    public requestId:string;
 }

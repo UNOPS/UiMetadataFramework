@@ -12,12 +12,18 @@
     <button type="submit">submit</button>
 </form>
 
+<div>
+</div>
+
 <script>
     export default {
         methods: {
             submit: (app, formInstance, event) => {
                 event.preventDefault();
-                app.postForm(formInstance);
+                app.postForm(formInstance)
+                    .then(response => {
+                        console.log(response);
+                    });
             }
         }
     }
