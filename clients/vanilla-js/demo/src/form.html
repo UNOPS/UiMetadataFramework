@@ -16,9 +16,7 @@
     export default {
         methods: {
             submit: (app, formInstance, event) => {
-                //event.preventDefault();
-                //console.log("POST:");
-                //console.log(formInstance.inputFieldValues);
+                event.preventDefault();
                 app.postForm(formInstance);
             }
         }
