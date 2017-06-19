@@ -1681,14 +1681,14 @@ var UmfApp = (function () {
 var FormInstance = (function () {
     function FormInstance(metadata) {
         this.outputFieldValues = [];
-        this.inputFieldValues = {};
+        this.inputFieldValues = [];
         this.metadata = metadata;
         for (var _i = 0, _a = metadata.inputFields; _i < _a.length; _i++) {
-            var field = _a[_i];
-            this.inputFieldValues[field.id] = {
-                metadata: field,
+            var fieldMetadata = _a[_i];
+            this.inputFieldValues.push({
+                metadata: fieldMetadata,
                 data: null
-            };
+            });
         }
     }
     FormInstance.prototype.setOutputFieldValues = function (response) {
@@ -1708,9 +1708,9 @@ var FormInstance = (function () {
     };
     FormInstance.prototype.getData = function () {
         var data = {};
-        for (var _i = 0, _a = this.metadata.inputFields; _i < _a.length; _i++) {
+        for (var _i = 0, _a = this.inputFieldValues; _i < _a.length; _i++) {
             var inputField = _a[_i];
-            data[inputField.id] = this.inputFieldValues[inputField.id].data;
+            data[inputField.metadata.id] = inputField.data;
         }
         return data;
     };

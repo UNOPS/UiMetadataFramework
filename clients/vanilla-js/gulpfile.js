@@ -62,12 +62,12 @@ gulp.task("build-svelte", function () {
         .pipe(gulpSvelte({
             format: "es",
             generate: "dom",
-            shared: "./shared.js"
+            shared: true //"./shared.js"
         }))
         .pipe(gulp.dest(svelteComponentsDir));
 });
 
-gulp.task("watch", ["build", "build-svelte", "browser-sync"], function () {
+gulp.task("watch", ["build-svelte", "build", "browser-sync"], function () {
     gulp.watch("src/**/*.ts", ["build"]);
     gulp.watch("demo/src/**/*.ts", ["build-app"]);
     gulp.watch("demo/src/**/*.html", ["build-svelte", "build-app"]);

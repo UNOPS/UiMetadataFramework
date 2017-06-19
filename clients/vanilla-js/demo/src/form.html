@@ -1,13 +1,8 @@
 <h2>{{metadata.label}}</h2>
 
 <form on:submit="submit(app, form, event)">
-    {{#each metadata.inputFields as inputField}}
-    <div>
-        <label for="{{inputField.id}}">{{inputField.label}}</label>
-        <input id="{{inputField.id}}"
-            bind:value="form.inputFieldValues[inputField.id].data" 
-            required="{{form.inputFieldValues[inputField.id].metadata.required}}">
-    </div>
+    {{#each form.inputFieldValues as inputField}}
+    <FormInput field="{{inputField}}" />
     {{/each}}
 
     <button type="submit">submit</button>
@@ -24,6 +19,8 @@
 {{/if}}
 
 <script>
+    import FormInput from "../svelte-components/input";
+
     export default {
         methods: {
             submit: function (app, formInstance, event) {
@@ -38,9 +35,11 @@
                         });
                     });
             }
+        },
+        components: {
+            FormInput
         }
-    }
-
+    };
 </script>
 
 <style>
