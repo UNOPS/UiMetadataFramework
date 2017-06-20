@@ -1710,7 +1710,9 @@ var FormInstance = (function () {
         var data = {};
         for (var _i = 0, _a = this.inputFieldValues; _i < _a.length; _i++) {
             var inputField = _a[_i];
-            data[inputField.metadata.id] = inputField.data;
+            if (inputField.data != null) {
+                data[inputField.metadata.id] = inputField.data;
+            }
         }
         return data;
     };

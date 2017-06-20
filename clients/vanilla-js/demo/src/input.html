@@ -1,4 +1,7 @@
-<div class="i"></div>
+<div>
+    <label for="{{field.metadata.id}}">{{field.metadata.label}}</label>
+    <div ref:container class="inline"></div>
+</div>
 
 <script>
     import TextInput from "./inputs/text";
@@ -18,11 +21,18 @@
             var input = inputCollection[field.metadata.type] || TextInput;
 
             new input({
-                target: document.querySelector("form"),
+                target: this.refs.container,
                 data: {
                     field: field
                 }
             });
         }
     }
+
 </script>
+
+<style>
+    .inline {
+        display: inline-block
+    }
+</style>
