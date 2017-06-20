@@ -1,24 +1,28 @@
-<div>
-    <label for="{{field.metadata.id}}">{{field.metadata.label}}</label>
-    {{#if field.metadata.type == "text"}}
-    <TextInput field="{{field}}" />
-    {{elseif field.metadata.type == "number"}}
-    <NumberInput field="{{field}}" />
-    {{elseif field.metadata.type == "datetime"}}
-    <DateTimeInput field="{{field}}" />
-    {{/if}}
-</div>
+<div class="i"></div>
 
 <script>
-    import TextInput from "../svelte-components/inputs/text";
-    import NumberInput from "../svelte-components/inputs/number";
-    import DateTimeInput from "../svelte-components/inputs/datetime";
+    import TextInput from "./inputs/text";
+    import NumberInput from "./inputs/number";
+    import DateTimeInput from "./inputs/datetime";
+    import * as umf from "../../src/core/index";
+
+    let inputCollection = {
+        text: TextInput,
+        number: NumberInput,
+        datetime: DateTimeInput
+    };
 
     export default {
-        components: {
-            TextInput,
-            NumberInput,
-            DateTimeInput
+        oncreate() {
+            let field = this.get("field");
+            var input = inputCollection[field.metadata.type] || TextInput;
+
+            new input({
+                target: document.querySelector("form"),
+                data: {
+                    field: field
+                }
+            });
         }
-    };
+    }
 </script>
