@@ -39,7 +39,9 @@ export class FormInstance {
         var data = {};
 
         for (let inputField of this.inputFieldValues) {
-            data[inputField.metadata.id] = inputField.data;
+            if (inputField.data != null) {
+                data[inputField.metadata.id] = inputField.data;
+            }
         }
 
         return data;
