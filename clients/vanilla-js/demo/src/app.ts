@@ -1,4 +1,5 @@
 ﻿import * as umf from "../../src/core/index";
+import * as handlers from "./handlers/index";
 import * as abstractStateRouter from "../../node_modules/abstract-state-router/index";
 import * as svelteStateRenderer from "../../node_modules/svelte-state-renderer/index";
 
@@ -53,4 +54,8 @@ app.load().then(response => {
     });
 
     stateRouter.evaluateCurrentRoute("home");
+
+    app.registerResponseHandler(new handlers.MessageResponseHandler());
+    app.registerResponseHandler(new handlers.RedirectResponseHandler((form, data) => stateRouter.go("form", { id: form })));
 });
+

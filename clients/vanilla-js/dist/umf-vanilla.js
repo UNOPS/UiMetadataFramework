@@ -1656,8 +1656,12 @@ var OutputFieldMetadata = (function () {
 var UmfApp = (function () {
     function UmfApp(server) {
         this.formsById = {};
+        this.formResponseHandlers = {};
         this.server = server;
     }
+    UmfApp.prototype.registerResponseHandler = function (handler) {
+        this.formResponseHandlers[handler.name] = handler;
+    };
     UmfApp.prototype.load = function () {
         var _this = this;
         return this.server.getAllMetadata()
@@ -1674,6 +1678,13 @@ var UmfApp = (function () {
     };
     UmfApp.prototype.postForm = function (formInstance) {
         return this.server.postForm(formInstance);
+    };
+    UmfApp.prototype.handleResponse = function (response, form) {
+        var handler = this.formResponseHandlers[response.responseHandler];
+        if (handler == null) {
+            throw new Error("Cannot find FormResponseHandler \"" + response.responseHandler + "\".");
+        }
+        return handler.handle(response, form);
     };
     return UmfApp;
 }());

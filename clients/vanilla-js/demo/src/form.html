@@ -5,39 +5,61 @@
     <FormInput field="{{inputField}}" />
     {{/each}}
 
-    <button type="submit">submit</button>
+    <button type="submit" disabled="{{disabled}}">submit</button>
 </form>
 
 {{#if outputFieldValues != null}}
 <div class="response">
     {{#each outputFieldValues as outputField}}
-    <div>
-        <strong>{{outputField.metadata.label}}:</strong> {{outputField.data}}
-    </div>
+    <FormOutput field="{{outputField}}"/>
     {{/each}}
 </div>
 {{/if}}
 
 <script>
     import FormInput from "./input";
+    import FormOutput from "./output";
 
     export default {
         methods: {
             submit: function (app, formInstance, event) {
                 var self = this;
                 event.preventDefault();
+                
+                // Disable double-posts.
+                self.set({ disabled: true });
+
                 app.server.postForm(formInstance)
                     .then(response => {
                         formInstance.setOutputFieldValues(response);
-
+                        
                         self.set({
-                            outputFieldValues: formInstance.outputFieldValues
+                            // Remove previous output, this is needed for repainting.
+                            outputFieldValues: null,
+
+                            // Enable post.
+                            disabled: false
                         });
+
+                        if (response.responseHandler == "") {
+                            self.set({
+                                outputFieldValues: formInstance.outputFieldValues
+                            });
+                        }
+                        else {
+                            app.handleResponse(response, formInstance);
+                        }
                     });
             }
         },
+        data: function() {
+            return {
+                disabled: false
+            };
+        },
         components: {
-            FormInput
+            FormInput,
+            FormOutput
         }
     };
 </script>

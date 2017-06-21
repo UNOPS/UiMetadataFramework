@@ -1,0 +1,13 @@
+{{format(field.data)}}
+
+<script>
+	import moment from "moment";
+
+	export default {
+		helpers: {
+			format: function(datetime) {
+				return moment(datetime).format("DD/MM/YYYY");
+			}
+		}
+	};
+</script>

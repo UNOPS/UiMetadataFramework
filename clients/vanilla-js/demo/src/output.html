@@ -1,24 +1,24 @@
 <div>
-    <label for="{{field.metadata.id}}">{{field.metadata.label}}</label>
+	<strong>{{field.metadata.label}}:</strong>
     <div ref:container class="inline"></div>
 </div>
 
 <script>
-    import TextInput from "./inputs/text";
-    import NumberInput from "./inputs/number";
-    import DateTimeInput from "./inputs/datetime";
+    import TextOutput from "./outputs/text";
+	import NumberOutput from "./outputs/number";
+	import DateTimeOutput from "./outputs/datetime";
     import * as umf from "../../src/core/index";
 
     var all = {
-        text: TextInput,
-        number: NumberInput,
-        datetime: DateTimeInput
+        text: TextOutput,
+        number: NumberOutput,
+        datetime: DateTimeOutput
     };
 
     export default {
         oncreate() {
             let field = this.get("field");
-            var input = all[field.metadata.type] || TextInput;
+            var input = all[field.metadata.type] || TextOutput;
 
             new input({
                 target: this.refs.container,
