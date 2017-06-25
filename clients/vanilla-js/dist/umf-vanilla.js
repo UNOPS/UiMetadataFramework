@@ -1565,6 +1565,8 @@ var UmfServer = (function () {
         }).then(function (response) {
             var invokeFormResponses = response.data;
             return invokeFormResponses[0].data;
+        }).catch(function (error) {
+            alert(error.response.data.error);
         });
     };
     return UmfServer;

@@ -20,6 +20,16 @@
     import FormInput from "./input";
     import FormOutput from "./output";
 
+    function enableForm(form) {
+        form.set({
+            // Remove previous output, this is needed for repainting.
+            outputFieldValues: null,
+
+            // Enable post.
+            disabled: false
+        });
+    }
+
     export default {
         methods: {
             submit: function (app, formInstance, event) {
@@ -33,13 +43,7 @@
                     .then(response => {
                         formInstance.setOutputFieldValues(response);
                         
-                        self.set({
-                            // Remove previous output, this is needed for repainting.
-                            outputFieldValues: null,
-
-                            // Enable post.
-                            disabled: false
-                        });
+                        enableForm(self);
 
                         if (response.responseHandler == "") {
                             self.set({
@@ -49,6 +53,9 @@
                         else {
                             app.handleResponse(response, formInstance);
                         }
+                    })
+                    .catch(response => {
+                        enableForm(self);
                     });
             }
         },

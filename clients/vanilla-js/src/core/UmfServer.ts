@@ -43,6 +43,8 @@ export class UmfServer {
         }).then((response:axiosLib.AxiosResponse) => {
             var invokeFormResponses = <InvokeFormResponse[]>response.data;
             return invokeFormResponses[0].data;
+        }).catch((error:axiosLib.AxiosError) => {
+            alert(error.response.data.error);
         });
     }
 }
