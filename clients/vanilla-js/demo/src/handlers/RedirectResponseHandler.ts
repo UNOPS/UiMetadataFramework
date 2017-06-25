@@ -10,7 +10,6 @@ export class RedirectResponseHandler implements umf.IFormResponseHandler {
 	}
 
 	handle(response: RedirectResponse, form: umf.FormInstance) {
-		console.log(response);
 		this.stateRouter(response.form);
 	}
 }
