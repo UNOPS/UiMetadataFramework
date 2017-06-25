@@ -2,15 +2,14 @@ import * as umf from "../../../src/core/index";
 
 export class RedirectResponseHandler implements umf.IFormResponseHandler {
 	public readonly name: string = "redirect";
-	private readonly stateRouter: any;
+	private readonly goToForm: (form: string, inputFieldValues: any) => void;
 
-	constructor(stateRouter: any) {
-		//debugger;
-		this.stateRouter = stateRouter;
+	constructor(goToForm: (form: string, inputFieldValues: any) => void) {
+		this.goToForm = goToForm;
 	}
 
 	handle(response: RedirectResponse, form: umf.FormInstance) {
-		this.stateRouter(response.form);
+		this.goToForm(response.form, response.inputFieldValues);
 	}
 }
 

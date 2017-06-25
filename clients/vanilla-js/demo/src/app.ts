@@ -43,6 +43,12 @@ app.load().then(response => {
         template: Form,
         resolve: function (data, parameters, cb) {
             let metadata = app.getForm(parameters.id);
+
+            if (metadata == null) {
+                console.error(`Form ${parameters.id} not found.`);
+                return;
+            }
+
             let formInstance = new umf.FormInstance(metadata);
 
             cb(false, {
@@ -56,6 +62,9 @@ app.load().then(response => {
     stateRouter.evaluateCurrentRoute("home");
 
     app.registerResponseHandler(new handlers.MessageResponseHandler());
-    app.registerResponseHandler(new handlers.RedirectResponseHandler((form, data) => stateRouter.go("form", { id: form })));
+    app.registerResponseHandler(new handlers.RedirectResponseHandler((form, inputFieldValues) => {
+        var data = Object.assign({}, inputFieldValues, { id: form });
+        stateRouter.go("form", data);
+    }));
 });
 
