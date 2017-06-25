@@ -45,7 +45,7 @@
                         
                         enableForm(self);
 
-                        if (response.responseHandler == "") {
+                        if (response.responseHandler == "" || response.responseHandler == null) {
                             self.set({
                                 outputFieldValues: formInstance.outputFieldValues
                             });
