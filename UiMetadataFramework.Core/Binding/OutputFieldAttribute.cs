@@ -22,5 +22,14 @@ namespace UiMetadataFramework.Core.Binding
 		/// in relationship to other output fields in <see cref="FormMetadata.OutputFields"/>.
 		/// </summary>
 		public int OrderIndex { get; set; }
+		
+		/// <summary>
+		/// Gets custom properties of the output field.
+		/// </summary>
+		/// <returns>Object representing custom properties for the output field or null if there are none.</returns>
+		public virtual object GetCustomProperties()
+		{
+			return null;
+		}
 	}
 }

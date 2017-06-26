@@ -18,12 +18,15 @@
     export default {
         oncreate() {
             let field = this.get("field");
+            let tabindex = this.get("tabindex");
+
             var input = all[field.metadata.type] || TextInput;
 
             new input({
                 target: this.refs.container,
                 data: {
-                    field: field
+                    field: field,
+                    tabindex: tabindex
                 }
             });
         }

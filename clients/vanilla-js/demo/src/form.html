@@ -2,10 +2,10 @@
 
 <form on:submit="submit(app, form, event)">
     {{#each form.inputFieldValues as inputField}}
-    <FormInput field="{{inputField}}" />
+    <FormInput field="{{inputField}}" tabindex="{{tabindex * 100 + inputField.metadata.orderIndex}}" />
     {{/each}}
 
-    <button type="submit" disabled="{{disabled}}">submit</button>
+    <button type="submit" disabled="{{disabled}}" tabindex="-1">submit</button>
 </form>
 
 {{#if outputFieldValues != null}}
@@ -20,6 +20,8 @@
     import FormInput from "./input";
     import FormOutput from "./output";
 
+    let tabindex = 1;
+
     function enableForm(form) {
         form.set({
             // Remove previous output, this is needed for repainting.
@@ -31,6 +33,9 @@
     }
 
     export default {
+        oncreate() {
+            tabindex += 1;
+        },
         methods: {
             submit: function (app, formInstance, event) {
                 var self = this;
@@ -61,7 +66,8 @@
         },
         data: function() {
             return {
-                disabled: false
+                disabled: false,
+                tabindex:tabindex
             };
         },
         components: {

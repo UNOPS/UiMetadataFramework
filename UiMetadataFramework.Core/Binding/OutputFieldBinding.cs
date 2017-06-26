@@ -31,15 +31,5 @@
 		/// Gets the server-side types being bound.
 		/// </summary>
 		public IEnumerable<Type> ServerTypes { get; set; }
-
-		/// <summary>
-		/// Gets custom properties of the output field.
-		/// </summary>
-		/// <param name="attribute"><see cref="OutputFieldAttribute"/> which was applied to the output field.</param>
-		/// <returns>Object representing custom properties for the output field or null if there are none.</returns>
-		public virtual object GetCustomProperties(OutputFieldAttribute attribute)
-		{
-			return null;
-		}
 	}
 }

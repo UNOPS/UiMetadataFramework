@@ -1,23 +1,25 @@
 <div>
-	<strong>{{field.metadata.label}}:</strong>
-    <div ref:container class="inline"></div>
+    <strong>{{field.metadata.label}}:</strong>
+    <div ref:container class="{{class}}"></div>
 </div>
 
 <script>
     import TextOutput from "./outputs/text";
-	import NumberOutput from "./outputs/number";
-	import DateTimeOutput from "./outputs/datetime";
-    import * as umf from "../../src/core/index";
+    import NumberOutput from "./outputs/number";
+    import DateTimeOutput from "./outputs/datetime";
+    import TableOutput from "./outputs/table";
 
     var all = {
         text: TextOutput,
         number: NumberOutput,
-        datetime: DateTimeOutput
+        datetime: DateTimeOutput,
+        table: TableOutput
     };
 
     export default {
         oncreate() {
-            let field = this.get("field");
+            var field = this.get("field");
+            console.info(field);
             var input = all[field.metadata.type] || TextOutput;
 
             new input({
@@ -26,6 +28,14 @@
                     field: field
                 }
             });
+
+            // Set correct css class based on the field type.
+            if (["table"].indexOf(field.metadata.type) !== -1) {
+                this.set({ class: "block" });
+            }
+            else {
+                this.set({ class: "inline" });
+            }
         }
     }
 

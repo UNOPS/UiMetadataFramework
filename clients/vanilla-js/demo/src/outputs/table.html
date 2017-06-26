@@ -1,0 +1,44 @@
+<table>
+	<thead>
+		<tr>
+			{{#each field.metadata.customProperties.columns as column}}
+			<th>{{column.label}}</th>
+			{{/each}}
+		</tr>
+	</thead>
+	<tbody>
+		{{#each field.data as row}}
+		<tr>
+			{{#each field.metadata.customProperties.columns as column}}
+			<td>{{row[map[column.id.toLowerCase()]]}}</td>
+			{{/each}}
+		</tr>
+		{{/each}}
+	</tbody>
+</table>
+
+<script>
+	export default {
+		oncreate() {
+			var data = this.get("field").data;
+
+			// Create map, with key being the lowercase version of the property name
+			// and value being the actual property name. 
+			var map = {};
+			if (data.length > 0) {
+				let firstRow = data[0];
+
+				for (let property in firstRow) {
+					if (firstRow.hasOwnProperty(property)) {
+						map[property.toLowerCase()] = property;
+					}
+				}
+			}
+
+			this.set({
+				map: map
+			});
+		}
+	};
+
+</script>

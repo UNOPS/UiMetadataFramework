@@ -14,6 +14,10 @@ export class FormInstance {
                 data: null
             });
         }
+
+        this.inputFieldValues.sort((a: InputFieldValue, b: InputFieldValue) => {
+            return a.metadata.orderIndex - b.metadata.orderIndex;
+        });
     }
 
     setOutputFieldValues(response: umf.FormResponse) {
@@ -30,7 +34,7 @@ export class FormInstance {
 
         fields.sort((a: OutputFieldValue, b: OutputFieldValue) => {
             return a.metadata.orderIndex - b.metadata.orderIndex;
-        })
+        });
 
         this.outputFieldValues = fields;
     }

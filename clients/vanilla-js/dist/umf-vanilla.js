@@ -1703,6 +1703,9 @@ var FormInstance = (function () {
                 data: null
             });
         }
+        this.inputFieldValues.sort(function (a, b) {
+            return a.metadata.orderIndex - b.metadata.orderIndex;
+        });
     }
     FormInstance.prototype.setOutputFieldValues = function (response) {
         var fields = Array();

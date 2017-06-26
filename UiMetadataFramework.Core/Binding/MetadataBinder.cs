@@ -12,6 +12,7 @@
 	/// </summary>
 	public class MetadataBinder
 	{
+		public const string EnumerableClientControlName = "table";
 		private readonly ConcurrentDictionary<Type, InputFieldBinding> inputFieldMetadataMap = new ConcurrentDictionary<Type, InputFieldBinding>();
 		private readonly ConcurrentDictionary<Type, OutputFieldBinding> outputFieldMetadataMap = new ConcurrentDictionary<Type, OutputFieldBinding>();
 
@@ -111,22 +112,38 @@
 
 			foreach (var property in properties)
 			{
-				var propertyType = property.PropertyType;
+				this.outputFieldMetadataMap.TryGetValue(property.PropertyType, out OutputFieldBinding binding);
 
-				if (!this.outputFieldMetadataMap.TryGetValue(propertyType, out OutputFieldBinding binding))
+				bool isEnumerable = IsEnumerable(property);
+
+				if (!isEnumerable && binding == null)
 				{
-					throw new KeyNotFoundException($"Type '{propertyType.FullName}' is not bound to any output field control.");
+					throw new KeyNotFoundException($"Type '{property.PropertyType.FullName}' is not bound to any output field control.");
 				}
 
+				object customProperties;
 				var attribute = property.GetCustomAttribute<OutputFieldAttribute>();
 
-				var metadata = new OutputFieldMetadata(binding.ClientType)
+				if (isEnumerable)
+				{
+					customProperties = new EnumerableOutputFieldProperties
+					{
+						Columns = this.BindOutputFields(property.PropertyType.GenericTypeArguments[0]).ToList(),
+						Customizations = attribute?.GetCustomProperties()
+					};
+				}
+				else
+				{
+					customProperties = attribute?.GetCustomProperties();
+				}
+
+				var metadata = new OutputFieldMetadata(isEnumerable ? EnumerableClientControlName : binding.ClientType)
 				{
 					Id = property.Name,
 					Hidden = attribute?.Hidden ?? false,
 					Label = attribute?.Label ?? property.Name,
 					OrderIndex = attribute?.OrderIndex ?? 0,
-					CustomProperties = binding.GetCustomProperties(attribute)
+					CustomProperties = customProperties
 				};
 
 				yield return metadata;
@@ -175,6 +192,13 @@
 			{
 				this.AddBinding(binding);
 			}
+		}
+
+		private static bool IsEnumerable(PropertyInfo propertyInfo)
+		{
+			return
+				propertyInfo.PropertyType.GetTypeInfo().IsGenericType &&
+				propertyInfo.PropertyType.GetGenericTypeDefinition().GetTypeInfo().GetInterfaces().Any(t => t == typeof(System.Collections.IEnumerable));
 		}
 	}
 }

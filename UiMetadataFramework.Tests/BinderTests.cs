@@ -1,6 +1,7 @@
 ﻿namespace UiMetadataFramework.Tests
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
 	using UiMetadataFramework.BasicFields.Input;
@@ -24,6 +25,8 @@
 
 			[OutputField(Hidden = true)]
 			public decimal Weight { get; set; }
+
+			public IList<Person> OtherPeople { get; set; }
 		}
 
 		public class Request
@@ -40,6 +43,21 @@
 			public bool IsRegistered { get; set; }
 
 			[InputField(Hidden = true)]
+			public decimal Weight { get; set; }
+		}
+
+		public class Person
+		{
+			[OutputField(Label = "DoB", OrderIndex = 2)]
+			public DateTime? DateOfBirth { get; set; }
+
+			[OutputField(Label = "First name", OrderIndex = 1)]
+			public string FirstName { get; set; }
+
+			[OutputField(Hidden = true)]
+			public int Height { get; set; }
+
+			[OutputField(Hidden = true)]
 			public decimal Weight { get; set; }
 		}
 
@@ -67,11 +85,20 @@
 
 			var outputFields = binder.BindOutputFields<Response>().OrderBy(t => t.OrderIndex).ToList();
 
-			Assert.Equal(4, outputFields.Count);
+			Assert.Equal(5, outputFields.Count);
 			outputFields.AssertHasOutputField(nameof(Response.FirstName), StringOutputFieldBinding.ControlName, "First name", false, 1);
 			outputFields.AssertHasOutputField(nameof(Response.DateOfBirth), DateTimeOutputFieldBinding.ControlName, "DoB", false, 2);
 			outputFields.AssertHasOutputField(nameof(Response.Height), NumberOutputFieldBinding.ControlName, nameof(Response.Height), true);
 			outputFields.AssertHasOutputField(nameof(Response.Weight), NumberOutputFieldBinding.ControlName, nameof(Response.Weight), true);
+			outputFields.AssertHasOutputField(nameof(Response.OtherPeople), MetadataBinder.EnumerableClientControlName, nameof(Response.OtherPeople));
+
+			var ienumerableProperty = outputFields.Single(t => t.Id == nameof(Response.OtherPeople));
+
+			var columns = ((EnumerableOutputFieldProperties)ienumerableProperty.CustomProperties).Columns;
+			columns.AssertHasOutputField(nameof(Person.FirstName), StringOutputFieldBinding.ControlName, "First name", false, 1);
+			columns.AssertHasOutputField(nameof(Person.DateOfBirth), DateTimeOutputFieldBinding.ControlName, "DoB", false, 2);
+			columns.AssertHasOutputField(nameof(Person.Height), NumberOutputFieldBinding.ControlName, nameof(Response.Height), true);
+			columns.AssertHasOutputField(nameof(Person.Weight), NumberOutputFieldBinding.ControlName, nameof(Response.Weight), true);
 		}
 	}
 }
