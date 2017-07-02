@@ -19,8 +19,14 @@
     export default {
         oncreate() {
             var field = this.get("field");
-            console.info(field);
-            var input = all[field.metadata.type] || TextOutput;
+
+            // if (field == null) {
+            //     return;
+            // }
+            
+            var input = field != null 
+                ? all[field.metadata.type] || TextOutput
+                : TextOutput;
 
             new input({
                 target: this.refs.container,
