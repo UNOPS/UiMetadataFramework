@@ -2,6 +2,7 @@
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using global::MediatR;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
@@ -12,35 +13,20 @@
 	{
 		public Response Handle(Request message)
 		{
+			var height = message.Height == 0 ? 170 : message.Height;
+			var weight = message.Weight == 0 ? 65 : message.Weight;
+
 			return new Response
 			{
 				FirstName = message.FirstName,
-				Weight = message.Weight,
+				Weight = weight,
 				DateOfBirth = message.DateOfBirth,
-				Height = message.Height,
-				OtherPeople = new List<Person>
+				Height = height,
+				OtherPeople = new List<FamilyPerson>
 				{
-					new Person
-					{
-						DateOfBirth = DateTime.Today.AddYears(-20),
-						FirstName = "Jack",
-						Height = 180,
-						Weight = 70
-					},
-					new Person
-					{
-						DateOfBirth = DateTime.Today.AddYears(-23),
-						FirstName = "Jane",
-						Height = 164,
-						Weight = 55
-					},
-					new Person
-					{
-						DateOfBirth = DateTime.Today.AddYears(-27),
-						FirstName = "John",
-						Height = 176,
-						Weight = 71
-					}
+					FamilyPerson.RandomFamilyPerson(height * 1.23m, weight * 1.23m),
+					FamilyPerson.RandomFamilyPerson(height * 1.51m, weight * 1.51m),
+					FamilyPerson.RandomFamilyPerson(height * 1.14m, weight * 1.11m)
 				}
 			};
 		}
@@ -57,18 +43,41 @@
 			public int Height { get; set; }
 
 			[OutputField(OrderIndex = 10)]
-			public IList<Person> OtherPeople { get; set; }
+			public IList<FamilyPerson> OtherPeople { get; set; }
 
 			[OutputField(Hidden = true)]
 			public decimal Weight { get; set; }
 		}
 
+		public class FamilyPerson : Person
+		{
+			[OutputField(OrderIndex = 20)]
+			public List<Person> Relatives { get; set; }
+
+			public static FamilyPerson RandomFamilyPerson(decimal height, decimal weight)
+			{
+				var person = Random(height, weight);
+				var random = new Random((int)Math.Round(height * weight)).Next(0, 5);
+
+				return new FamilyPerson
+				{
+					FirstName = person.FirstName,
+					DateOfBirth = person.DateOfBirth,
+					Height = person.Height,
+					Weight = person.Weight,
+					Relatives = Enumerable.Range(0, random).Select(t => Random(170 + t, 65 + t)).ToList()
+				};
+			}
+		}
+
 		public class Person
 		{
+			private static readonly string[] Names = { "Jack", "John", "Jane", "Jeanne", "Joe", "Alice", "Moh", "Andreh", "Elly" };
+
 			[OutputField(Label = "DoB", OrderIndex = 2)]
 			public DateTime? DateOfBirth { get; set; }
 
-			[OutputField(Label = "First name", OrderIndex = 1)]
+			[OutputField(Label = "First name", OrderIndex = -1)]
 			public string FirstName { get; set; }
 
 			[OutputField(Hidden = true)]
@@ -76,6 +85,19 @@
 
 			[OutputField(Hidden = true)]
 			public decimal Weight { get; set; }
+
+			public static Person Random(decimal height, decimal weight)
+			{
+				var random = new Random((int)Math.Round(height * weight)).Next(0, Names.Length - 1);
+
+				return new Person
+				{
+					DateOfBirth = DateTime.Today.AddYears(-20),
+					FirstName = Names[random],
+					Height = (int)height,
+					Weight = (int)weight
+				};
+			}
 		}
 
 		public class Request : IRequest<Response>

@@ -1,7 +1,11 @@
+{{#if showLabel === true}}
 <div>
     <strong>{{field.metadata.label}}:</strong>
     <div ref:container class="{{class}}"></div>
 </div>
+{{else}}
+<div ref:container class="{{class}}"></div>
+{{/if}}
 
 <script>
     import TextOutput from "./outputs/text";
@@ -20,11 +24,11 @@
         oncreate() {
             var field = this.get("field");
 
-            var input = field != null 
+            var output = field != null 
                 ? all[field.metadata.type] || TextOutput
                 : TextOutput;
 
-            new input({
+            new output({
                 target: this.refs.container,
                 data: {
                     field: field
@@ -38,6 +42,11 @@
             else {
                 this.set({ class: "inline" });
             }
+        },
+        data () {
+            return {
+                showLabel: true
+            };
         }
     }
 

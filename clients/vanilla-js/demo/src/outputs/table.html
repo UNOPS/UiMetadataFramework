@@ -1,7 +1,8 @@
+{{#if field.data.length > 0}}
 <table>
 	<thead>
 		<tr>
-			{{#each field.metadata.customProperties.columns as column}}
+			{{#each columnsOrdered as column}}
 			<th>{{column.label}}</th>
 			{{/each}}
 		</tr>
@@ -10,16 +11,25 @@
 		{{#if map != null}}
 		{{#each field.data as row}}
 		<tr>
-			{{#each field.metadata.customProperties.columns as column}}
-			<td>{{row[map[column.id.toLowerCase()]]}}</td>
+			{{#each columnsOrdered as column}}
+			<td>
+				<FormOutput field="{{getField(row, column)}}" showLabel="false" />
+			</td>
 			{{/each}}
 		</tr>
 		{{/each}}
 		{{/if}}
 	</tbody>
 </table>
+{{else}}
+<div class="alert-nodata">
+	No data.
+</div>
+{{/if}}
 
 <script>
+	import FormOutput from "../output";
+
 	export default {
 		oncreate() {
 			var data = this.get("field").data;
@@ -38,9 +48,33 @@
 			}
 
 			this.set({
-				map: map
+				map: map,
+				getField: function(row, column) {
+					var data = row[map[column.id.toLowerCase()]];
+					
+					return {
+						data: data,
+						metadata: column
+					};
+				}
 			});
-		}
+		},
+		computed: {
+			columnsOrdered: (field) => {
+				return field.metadata.customProperties.columns.sort((a, b) => {
+            		return a.orderIndex - b.orderIndex;
+        		});
+			}
+		},
+        components: {
+            FormOutput
+        }
 	};
-
 </script>
+
+<style>
+	.alert-nodata {
+		padding: 5px 15px;
+    	font-style: italic;
+	}
+</style>
