@@ -20,10 +20,6 @@
         oncreate() {
             var field = this.get("field");
 
-            // if (field == null) {
-            //     return;
-            // }
-            
             var input = field != null 
                 ? all[field.metadata.type] || TextOutput
                 : TextOutput;

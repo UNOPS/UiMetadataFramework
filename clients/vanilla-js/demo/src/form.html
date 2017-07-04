@@ -11,9 +11,7 @@
 {{#if outputFieldValues != null}}
 <div class="response">
     {{#each outputFieldValues as outputField}}
-    {{#if outputField != null}}
     <FormOutput field="{{outputField}}"/>
-    {{/if}}
     {{/each}}
 </div>
 {{/if}}

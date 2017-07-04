@@ -7,6 +7,7 @@
 		</tr>
 	</thead>
 	<tbody>
+		{{#if map != null}}
 		{{#each field.data as row}}
 		<tr>
 			{{#each field.metadata.customProperties.columns as column}}
@@ -14,6 +15,7 @@
 			{{/each}}
 		</tr>
 		{{/each}}
+		{{/if}}
 	</tbody>
 </table>
 
