@@ -5,13 +5,30 @@ export class FormInstance {
     public outputFieldValues: Array<OutputFieldValue> = [];
     public inputFieldValues: Array<InputFieldValue> = [];
 
-    constructor(metadata: umf.FormMetadata) {
+    constructor(metadata: umf.FormMetadata, data?:any) {
         this.metadata = metadata;
 
-        for (let fieldMetadata of metadata.inputFields) {
+        this.setInputFieldValues(data);        
+    }
+
+    setInputFieldValues(data:any) {
+        this.inputFieldValues = [];
+
+        for (let fieldMetadata of this.metadata.inputFields) {
+            let value = null;
+
+            if (data != null) {
+                for (let prop in data) {
+                    if (data.hasOwnProperty(prop) && prop.toLowerCase() == fieldMetadata.id.toLowerCase()){
+                        value = data[prop];
+                        break;
+                    }
+                }
+            }
+
             this.inputFieldValues.push({
                 metadata: fieldMetadata,
-                data: null
+                data: value
             });
         }
 
@@ -40,9 +57,13 @@ export class FormInstance {
     }
 
     getData(): any {
+        return FormInstance.getDataFromInputFieldValues(this.inputFieldValues);
+    }
+
+    static getDataFromInputFieldValues(inputFieldValues:InputFieldValue[]) {
         var data = {};
 
-        for (let inputField of this.inputFieldValues) {
+        for (let inputField of inputFieldValues) {
             if (inputField.data != null) {
                 data[inputField.metadata.id] = inputField.data;
             }

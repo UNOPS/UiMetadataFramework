@@ -1692,21 +1692,34 @@ var UmfApp = (function () {
 }());
 
 var FormInstance = (function () {
-    function FormInstance(metadata) {
+    function FormInstance(metadata, data) {
         this.outputFieldValues = [];
         this.inputFieldValues = [];
         this.metadata = metadata;
-        for (var _i = 0, _a = metadata.inputFields; _i < _a.length; _i++) {
+        this.setInputFieldValues(data);
+    }
+    FormInstance.prototype.setInputFieldValues = function (data) {
+        this.inputFieldValues = [];
+        for (var _i = 0, _a = this.metadata.inputFields; _i < _a.length; _i++) {
             var fieldMetadata = _a[_i];
+            var value = null;
+            if (data != null) {
+                for (var prop in data) {
+                    if (data.hasOwnProperty(prop) && prop.toLowerCase() == fieldMetadata.id.toLowerCase()) {
+                        value = data[prop];
+                        break;
+                    }
+                }
+            }
             this.inputFieldValues.push({
                 metadata: fieldMetadata,
-                data: null
+                data: value
             });
         }
         this.inputFieldValues.sort(function (a, b) {
             return a.metadata.orderIndex - b.metadata.orderIndex;
         });
-    }
+    };
     FormInstance.prototype.setOutputFieldValues = function (response) {
         var fields = Array();
         var normalizedResponse = this.getNormalizedObject(response);
@@ -1723,9 +1736,12 @@ var FormInstance = (function () {
         this.outputFieldValues = fields;
     };
     FormInstance.prototype.getData = function () {
+        return FormInstance.getDataFromInputFieldValues(this.inputFieldValues);
+    };
+    FormInstance.getDataFromInputFieldValues = function (inputFieldValues) {
         var data = {};
-        for (var _i = 0, _a = this.inputFieldValues; _i < _a.length; _i++) {
-            var inputField = _a[_i];
+        for (var _i = 0, inputFieldValues_1 = inputFieldValues; _i < inputFieldValues_1.length; _i++) {
+            var inputField = inputFieldValues_1[_i];
             if (inputField.data != null) {
                 data[inputField.metadata.id] = inputField.data;
             }

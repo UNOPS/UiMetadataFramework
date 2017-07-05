@@ -44,6 +44,9 @@
                 // Disable double-posts.
                 self.set({ disabled: true });
 
+                // Update url in the browser.
+                app.go(formInstance.metadata.id, formInstance.inputFieldValues);
+                
                 app.server.postForm(formInstance)
                     .then(response => {
                         formInstance.setOutputFieldValues(response);

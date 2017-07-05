@@ -23,7 +23,7 @@ app.load().then(response => {
         route: "/home",
         template: Home
     });
-
+    
     stateRouter.addState({
         name: "menu",
         route: "/menu",
@@ -39,17 +39,17 @@ app.load().then(response => {
     stateRouter.addState({
         name: "form",
         data: {},
-        route: "/form/:id",
+        route: "/form/:_id",
         template: Form,
         resolve: function (data, parameters, cb) {
-            let metadata = app.getForm(parameters.id);
-
+            let metadata = app.getForm(parameters._id);
+            
             if (metadata == null) {
-                console.error(`Form ${parameters.id} not found.`);
+                console.error(`Form ${parameters._id} not found.`);
                 return;
             }
 
-            let formInstance = new umf.FormInstance(metadata);
+            let formInstance = new umf.FormInstance(metadata, parameters);
 
             cb(false, {
                 metadata: metadata,
@@ -63,8 +63,15 @@ app.load().then(response => {
 
     app.registerResponseHandler(new handlers.MessageResponseHandler());
     app.registerResponseHandler(new handlers.RedirectResponseHandler((form, inputFieldValues) => {
-        var data = Object.assign({}, inputFieldValues, { id: form });
+        var data = Object.assign({}, inputFieldValues, { _id: form });
         stateRouter.go("form", data);
     }));
+
+    app.go = (form:string, inputFieldValues:umf.InputFieldValue[]) => {
+        var values = umf.FormInstance.getDataFromInputFieldValues(inputFieldValues);
+        var data = Object.assign({}, values, { _id: form });
+        
+        stateRouter.go("form", data);
+    };
 });
 

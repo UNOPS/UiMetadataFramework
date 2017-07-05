@@ -88,7 +88,8 @@
 
 			public static Person Random(decimal height, decimal weight)
 			{
-				var random = new Random((int)Math.Round(height * weight)).Next(0, Names.Length - 1);
+				var random = new Random((int)Math.Round(height * weight)
+					).Next(0, Names.Length - 1);
 
 				return new Person
 				{
