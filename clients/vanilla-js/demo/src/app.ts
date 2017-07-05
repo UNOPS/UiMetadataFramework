@@ -67,8 +67,7 @@ app.load().then(response => {
         stateRouter.go("form", data);
     }));
 
-    app.go = (form:string, inputFieldValues:umf.InputFieldValue[]) => {
-        var values = umf.FormInstance.getDataFromInputFieldValues(inputFieldValues);
+    app.go = (form:string, values) => {
         var data = Object.assign({}, values, { _id: form });
         
         stateRouter.go("form", data);

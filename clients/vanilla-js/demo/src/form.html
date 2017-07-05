@@ -35,18 +35,40 @@
     export default {
         oncreate() {
             tabindex += 1;
+
+            var form = this.get("form");
+
+            if (form.metadata.postOnLoad) {
+                var app = this.get("app");
+                this.submit(app, form);
+            }
         },
         methods: {
             submit: function (app, formInstance, event) {
                 var self = this;
-                event.preventDefault();
-                
+
+                if (event != null) {
+                    event.preventDefault();
+                }
+
+                // Ensure all required inputs were entered, before posting.
+                var missingRequiredInputs = formInstance.inputFieldValues.filter(i => i.metadata.required && (i.data == null || i.data === ""));
+                if (missingRequiredInputs.length > 0) {
+                    return;
+                }
+
                 // Disable double-posts.
                 self.set({ disabled: true });
 
+                // Get input field values in a serialized format.
+                var stateParameters = {};
+                for (let inputField of formInstance.inputFieldValues.filter(t => t.data != null && t.data !== "")) {
+                    stateParameters[inputField.metadata.id] = inputField.manager.serialize();
+                }
+
                 // Update url in the browser.
-                app.go(formInstance.metadata.id, formInstance.inputFieldValues);
-                
+                app.go(formInstance.metadata.id, stateParameters);
+
                 app.server.postForm(formInstance)
                     .then(response => {
                         formInstance.setOutputFieldValues(response);

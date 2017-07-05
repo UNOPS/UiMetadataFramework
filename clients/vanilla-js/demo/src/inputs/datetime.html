@@ -3,3 +3,34 @@
     bind:value="field.data"
     required="{{field.metadata.required}}"
     tabindex="{{tabindex}}">
+
+<script>
+    function format2DecimalPlaces (n) {
+        return ("0" + n).slice(-2);
+    }
+
+    export default {
+        oncreate() {
+            this.initialize();
+        },
+        methods: {
+            initialize() {
+                var field = this.get("field");
+
+                // Parse input.
+                var date = new Date(field.data);
+                //field.data = `${date.getFullYear()}/${format2DecimalPlaces(date.getMonth() + 1)}/${format2DecimalPlaces(date.getDate())}`;
+
+                this.set({
+                    value: field
+                });
+            },
+            serialize() {
+                var field = this.get("field");
+
+                var date = new Date(field.data);
+                return `${date.getFullYear()}-${format2DecimalPlaces(date.getMonth() + 1)}-${format2DecimalPlaces(date.getDate())}`;
+            }
+        }
+    }
+</script>

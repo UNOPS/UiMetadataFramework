@@ -1554,6 +1554,10 @@ var UmfServer = (function () {
         });
     };
     UmfServer.prototype.postForm = function (formInstance) {
+        var missingRequiredInputs = formInstance.inputFieldValues.filter(function (i) { return i.metadata.required && i.data == null; }).map(function (i) { return i.metadata.id; }).join(", ");
+        if (missingRequiredInputs.length > 0) {
+            throw new Error("Cannot post form, because some required inputs are blank (" + missingRequiredInputs + ").");
+        }
         return axios.post(this.postFormUrl, JSON.stringify([{
                 Form: formInstance.metadata.id,
                 RequestId: 1,

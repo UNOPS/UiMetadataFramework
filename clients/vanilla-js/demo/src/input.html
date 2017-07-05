@@ -22,13 +22,21 @@
 
             var input = all[field.metadata.type] || TextInput;
 
-            new input({
+            var i = new input({
                 target: this.refs.container,
                 data: {
                     field: field,
                     tabindex: tabindex
                 }
             });
+
+            this.set({ input: i });
+
+            field.manager = {
+                serialize() {
+                    return i.serialize != null ? i.serialize() : field.data.toString();
+                }
+            };
         }
     }
 

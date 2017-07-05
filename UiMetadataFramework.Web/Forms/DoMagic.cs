@@ -8,7 +8,7 @@
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
 
-	[Form(Label = "Do some magic", PostOnLoad = false)]
+	[Form(Label = "Do some magic", PostOnLoad = true)]
 	public class DoMagic : IForm<DoMagic.Request, DoMagic.Response>
 	{
 		public Response Handle(Request message)
