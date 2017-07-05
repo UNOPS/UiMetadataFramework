@@ -9,7 +9,7 @@
 	using Microsoft.Extensions.Logging;
 	using StructureMap;
 	using StructureMap.TypeRules;
-	using UiMetadataFramework.BasicFields.Input;
+	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
 	using UiMetadataFramework.Web.Forms;

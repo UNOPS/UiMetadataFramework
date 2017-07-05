@@ -3,7 +3,7 @@
 	using System;
 	using System.Reflection;
 	using global::MediatR;
-	using UiMetadataFramework.BasicFields.Output;
+	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
@@ -60,7 +60,7 @@
 
 			var formRegister = new FormRegister(binder);
 			formRegister.RegisterAssembly(typeof(DoMagic).GetTypeInfo().Assembly);
-			
+
 			var formMetadata = formRegister.GetFormInfo(typeof(DoMagic).FullName)?.Metadata;
 
 			Assert.NotNull(formMetadata);

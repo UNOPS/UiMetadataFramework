@@ -4,8 +4,8 @@
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
-	using UiMetadataFramework.BasicFields.Input;
-	using UiMetadataFramework.BasicFields.Output;
+	using UiMetadataFramework.Basic.Input;
+	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 	using Xunit;

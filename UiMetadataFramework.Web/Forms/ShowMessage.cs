@@ -1,7 +1,7 @@
 ﻿namespace UiMetadataFramework.Web.Forms
 {
 	using global::MediatR;
-	using UiMetadataFramework.BasicFields.Response;
+	using UiMetadataFramework.Basic.Response;
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
 

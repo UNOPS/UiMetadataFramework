@@ -1,4 +1,4 @@
-﻿namespace UiMetadataFramework.BasicFields.Output
+﻿namespace UiMetadataFramework.Basic.Output
 {
 	using UiMetadataFramework.Core.Binding;
 

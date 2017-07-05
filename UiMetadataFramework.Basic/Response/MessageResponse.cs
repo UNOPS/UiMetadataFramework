@@ -1,4 +1,4 @@
-﻿namespace UiMetadataFramework.BasicFields.Response
+﻿namespace UiMetadataFramework.Basic.Response
 {
 	using UiMetadataFramework.Core;
 

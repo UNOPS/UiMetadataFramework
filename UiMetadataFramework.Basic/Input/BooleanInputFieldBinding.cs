@@ -1,4 +1,4 @@
-﻿namespace UiMetadataFramework.BasicFields.Input
+﻿namespace UiMetadataFramework.Basic.Input
 {
 	using UiMetadataFramework.Core.Binding;
 

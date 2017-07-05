@@ -29,7 +29,7 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UiMetadataFramework.BasicFields\UiMetadataFramework.BasicFields.csproj" />
+    <ProjectReference Include="..\UiMetadataFramework.Basic\UiMetadataFramework.Basic.csproj" />
     <ProjectReference Include="..\UiMetadataFramework.Core\UiMetadataFramework.Core.csproj" />
     <ProjectReference Include="..\UiMetadataFramework.MediatR\UiMetadataFramework.MediatR.csproj" />
   </ItemGroup>
