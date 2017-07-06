@@ -1,15 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard1.6</TargetFramework>
+		<AssemblyName>UiMetadataFramework.MediatR</AssemblyName>
+		<RootNamespace>UiMetadataFramework.MediatR</RootNamespace>
+		<Description>UiMetadataFramework implementation on top of MediatR's IRequestHandler.</Description>
+		<Version>0.0.1-beta</Version>
+		<Authors>UNOPS</Authors>
+		<FileVersion>0.0.1.0</FileVersion>
+		<PackageTags>ui metadata forms</PackageTags>
+		<RepositoryUrl>https://github.com/UNOPS/UiMetadataFramework</RepositoryUrl>
+		<Copyright>Copyright 2017 (c) UNOPS. All rights reserved.</Copyright>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MediatR" Version="3.0.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MediatR" Version="3.0.1" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\UiMetadataFramework.Core\UiMetadataFramework.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\UiMetadataFramework.Core\UiMetadataFramework.Core.csproj" />
+	</ItemGroup>
 
 </Project>
