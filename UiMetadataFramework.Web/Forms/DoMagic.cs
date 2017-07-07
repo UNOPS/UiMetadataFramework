@@ -13,8 +13,8 @@
 	{
 		public Response Handle(Request message)
 		{
-			var height = message.Height == 0 ? 170 : message.Height;
-			var weight = message.Weight == 0 ? 65 : message.Weight;
+			var height = message.Height == 0 || message.Height == null ? 170 : message.Height.Value;
+			var weight = message.Weight == 0 || message.Weight == null ? 65 : message.Weight.Value;
 
 			return new Response
 			{
@@ -110,12 +110,12 @@
 			public string FirstName { get; set; }
 
 			[InputField(Hidden = true)]
-			public int Height { get; set; }
+			public int? Height { get; set; }
 
 			public bool? IsRegistered { get; set; }
 
 			[InputField(Hidden = true)]
-			public decimal Weight { get; set; }
+			public decimal? Weight { get; set; }
 		}
 	}
 }

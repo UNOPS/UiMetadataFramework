@@ -17,8 +17,8 @@
 {{/if}}
 
 <script>
-    import FormInput from "./input";
-    import FormOutput from "./output";
+    import FormInput from "./Input";
+    import FormOutput from "./Output";
 
     let tabindex = 1;
 
@@ -35,9 +35,10 @@
     export default {
         oncreate() {
             tabindex += 1;
-
+            
             var form = this.get("form");
-
+            
+            // Auto-submit form if necessary.
             if (form.metadata.postOnLoad) {
                 var app = this.get("app");
                 this.submit(app, form);
@@ -46,53 +47,55 @@
         methods: {
             submit: function (app, formInstance, event) {
                 var self = this;
-
+                
                 if (event != null) {
                     event.preventDefault();
                 }
 
-                // Ensure all required inputs were entered, before posting.
-                var missingRequiredInputs = formInstance.inputFieldValues.filter(i => i.metadata.required && (i.data == null || i.data === ""));
-                if (missingRequiredInputs.length > 0) {
-                    return;
-                }
+                formInstance.prepareForm().then(data => {
+                    // If not all required inputs are filled.
+                    if (data == null) {
+                        return;
+                    }
 
-                // Disable double-posts.
-                self.set({ disabled: true });
+                    // Disable double-posts.
+                    self.set({ disabled: true });
 
-                // Get input field values in a serialized format.
-                var stateParameters = {};
-                for (let inputField of formInstance.inputFieldValues.filter(t => t.data != null && t.data !== "")) {
-                    stateParameters[inputField.metadata.id] = inputField.manager.serialize();
-                }
-
-                // Update url in the browser.
-                app.go(formInstance.metadata.id, stateParameters);
-
-                app.server.postForm(formInstance)
-                    .then(response => {
-                        formInstance.setOutputFieldValues(response);
-                        
-                        enableForm(self);
-
-                        if (response.responseHandler == "" || response.responseHandler == null) {
-                            self.set({
-                                outputFieldValues: formInstance.outputFieldValues
-                            });
-                        }
-                        else {
-                            app.handleResponse(response, formInstance);
-                        }
-                    })
-                    .catch(response => {
-                        enableForm(self);
+                    formInstance.getSerializedInputValues().then(urlParams => {
+                        // Update url in the browser.
+                        app.go(formInstance.metadata.id, urlParams);
                     });
+
+                    app.server.postForm(formInstance.metadata.id, data)
+                        .then(response => {
+                            if (response == null) {
+                                return;
+                            }
+
+                            formInstance.setOutputFieldValues(response);
+                            
+                            enableForm(self);
+
+                            if (response.responseHandler == "" || response.responseHandler == null) {
+                                self.set({
+                                    outputFieldValues: formInstance.outputFieldValues
+                                });
+                            }
+                            else {
+                                app.handleResponse(response, formInstance);
+                            }
+                        })
+                        .catch(response => {
+                            enableForm(self);
+                        });
+                });
             }
         },
         data: function() {
             return {
                 disabled: false,
-                tabindex:tabindex
+                tabindex:tabindex,
+                urlData:null
             };
         },
         components: {

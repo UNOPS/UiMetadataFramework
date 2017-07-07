@@ -3,16 +3,22 @@ import * as handlers from "./handlers/index";
 import * as abstractStateRouter from "../../node_modules/abstract-state-router/index";
 import * as svelteStateRenderer from "../../node_modules/svelte-state-renderer/index";
 
-import Menu from "../svelte-components/menu";
-import Form from "../svelte-components/form";
-import Home from "../svelte-components/home";
+import Menu from "../svelte-components/Menu";
+import Form from "../svelte-components/Form";
+import Home from "../svelte-components/Home";
+
+import {DateInputController} from "./inputs/DateInputController";
+import {NumberInputController} from "./inputs/NumberInputController";
+
+var inputRegister = new umf.InputControllerRegister();
+inputRegister.controllers["date"] = DateInputController;
+inputRegister.controllers["number"] = NumberInputController;
 
 var server = new umf.UmfServer(
     "http://localhost:62790/api/form/metadata",
     "http://localhost:62790/api/form/run");
 
 var app = new umf.UmfApp(server);
-
 app.load().then(response => {
     const stateRenderer = (<any>svelteStateRenderer).default({});
     const stateRouter = (<any>abstractStateRouter).default(stateRenderer, document.getElementById("main"));
@@ -49,12 +55,13 @@ app.load().then(response => {
                 return;
             }
 
-            let formInstance = new umf.FormInstance(metadata, parameters);
-
-            cb(false, {
-                metadata: metadata,
-                form: formInstance,
-                app: app
+            let formInstance = new umf.FormInstance(metadata, inputRegister);
+            formInstance.initializeInputFields(parameters).then(() => {
+                cb(false, {
+                    metadata: metadata,
+                    form: formInstance,
+                    app: app
+                });
             });
         }
     });

@@ -1,14 +1,5 @@
 <input type="number"
     id="{{field.metadata.id}}"
-    bind:value="field.data"
+    bind:value="field.value"
     required="{{field.metadata.required}}"
     tabindex="{{tabindex}}">
-
-<script>
-    export default {
-        oncreate() {
-            // initialization logic goes here.
-            // var field = this.get("field");
-        }
-    }
-</script>

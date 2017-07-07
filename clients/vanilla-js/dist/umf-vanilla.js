@@ -1553,15 +1553,11 @@ var UmfServer = (function () {
             return response.data;
         });
     };
-    UmfServer.prototype.postForm = function (formInstance) {
-        var missingRequiredInputs = formInstance.inputFieldValues.filter(function (i) { return i.metadata.required && i.data == null; }).map(function (i) { return i.metadata.id; }).join(", ");
-        if (missingRequiredInputs.length > 0) {
-            throw new Error("Cannot post form, because some required inputs are blank (" + missingRequiredInputs + ").");
-        }
+    UmfServer.prototype.postForm = function (form, data) {
         return axios.post(this.postFormUrl, JSON.stringify([{
-                Form: formInstance.metadata.id,
+                Form: form,
                 RequestId: 1,
-                InputFieldValues: formInstance.getData()
+                InputFieldValues: data
             }]), {
             headers: {
                 "Content-Type": "application/json"
@@ -1682,9 +1678,6 @@ var UmfApp = (function () {
     UmfApp.prototype.getForm = function (id) {
         return this.formsById[id];
     };
-    UmfApp.prototype.postForm = function (formInstance) {
-        return this.server.postForm(formInstance);
-    };
     UmfApp.prototype.handleResponse = function (response, form) {
         var handler = this.formResponseHandlers[response.responseHandler];
         if (handler == null) {
@@ -1696,33 +1689,74 @@ var UmfApp = (function () {
 }());
 
 var FormInstance = (function () {
-    function FormInstance(metadata, data) {
+    function FormInstance(metadata, inputControllerRegister) {
         this.outputFieldValues = [];
         this.inputFieldValues = [];
         this.metadata = metadata;
-        this.setInputFieldValues(data);
+        this.inputFieldValues = inputControllerRegister.createControllers(this.metadata.inputFields);
     }
-    FormInstance.prototype.setInputFieldValues = function (data) {
-        this.inputFieldValues = [];
-        for (var _i = 0, _a = this.metadata.inputFields; _i < _a.length; _i++) {
+    FormInstance.prototype.initializeInputFields = function (data) {
+        var promises = [];
+        for (var _i = 0, _a = this.inputFieldValues; _i < _a.length; _i++) {
             var fieldMetadata = _a[_i];
             var value = null;
             if (data != null) {
                 for (var prop in data) {
-                    if (data.hasOwnProperty(prop) && prop.toLowerCase() == fieldMetadata.id.toLowerCase()) {
+                    if (data.hasOwnProperty(prop) && prop.toLowerCase() == fieldMetadata.metadata.id.toLowerCase()) {
                         value = data[prop];
                         break;
                     }
                 }
             }
-            this.inputFieldValues.push({
-                metadata: fieldMetadata,
-                data: value
-            });
+            promises.push(fieldMetadata.init(value));
         }
-        this.inputFieldValues.sort(function (a, b) {
-            return a.metadata.orderIndex - b.metadata.orderIndex;
+        return Promise.all(promises);
+    };
+    FormInstance.prototype.prepareForm = function () {
+        var data = {};
+        var promises = [];
+        var hasRequiredMissingInput = false;
+        var _loop_1 = function (input) {
+            promise = input.getValue().then(function (value) {
+                data[input.metadata.id] = value;
+                if (input.metadata.required && (value == null || value == "")) {
+                    hasRequiredMissingInput = true;
+                }
+            });
+            promises.push(promise);
+        };
+        var promise;
+        for (var _i = 0, _a = this.inputFieldValues; _i < _a.length; _i++) {
+            var input = _a[_i];
+            _loop_1(input);
+        }
+        return Promise.all(promises).then(function () {
+            // If not all required inputs were entered, then do not post.
+            if (hasRequiredMissingInput) {
+                return null;
+            }
+            return data;
         });
+    };
+    FormInstance.prototype.getSerializedInputValues = function () {
+        var data = {};
+        var promises = [];
+        var _loop_2 = function (input) {
+            promise = input.serialize().then(function (t) {
+                // Don't include inputs without values, because we only
+                // want to serialize "non-default" values.
+                if (t.value != null && t.value != "") {
+                    data[input.metadata.id] = t.value;
+                }
+            });
+            promises.push(promise);
+        };
+        var promise;
+        for (var _i = 0, _a = this.inputFieldValues; _i < _a.length; _i++) {
+            var input = _a[_i];
+            _loop_2(input);
+        }
+        return Promise.all(promises).then(function () { return data; });
     };
     FormInstance.prototype.setOutputFieldValues = function (response) {
         var fields = Array();
@@ -1739,19 +1773,6 @@ var FormInstance = (function () {
         });
         this.outputFieldValues = fields;
     };
-    FormInstance.prototype.getData = function () {
-        return FormInstance.getDataFromInputFieldValues(this.inputFieldValues);
-    };
-    FormInstance.getDataFromInputFieldValues = function (inputFieldValues) {
-        var data = {};
-        for (var _i = 0, inputFieldValues_1 = inputFieldValues; _i < inputFieldValues_1.length; _i++) {
-            var inputField = inputFieldValues_1[_i];
-            if (inputField.data != null) {
-                data[inputField.metadata.id] = inputField.data;
-            }
-        }
-        return data;
-    };
     FormInstance.prototype.getNormalizedObject = function (response) {
         var normalizedResponse = {};
         for (var field in response) {
@@ -1763,11 +1784,63 @@ var FormInstance = (function () {
     };
     return FormInstance;
 }());
+
+var InputController = (function () {
+    function InputController(metadata) {
+        this.metadata = metadata;
+    }
+    return InputController;
+}());
+var StringInputController = (function (_super) {
+    __extends(StringInputController, _super);
+    function StringInputController(metadata) {
+        return _super.call(this, metadata) || this;
+    }
+    StringInputController.prototype.serialize = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            resolve({
+                value: _this.value != null ? _this.value.toString() : null,
+                input: _this
+            });
+        });
+    };
+    StringInputController.prototype.init = function (value) {
+        this.value = value;
+        return Promise.resolve(this);
+    };
+    StringInputController.prototype.getValue = function () {
+        return Promise.resolve(this.value);
+    };
+    return StringInputController;
+}(InputController));
+
+var InputControllerRegister = (function () {
+    function InputControllerRegister() {
+        this.controllers = {};
+    }
+    InputControllerRegister.prototype.createControllers = function (fields) {
+        var result = [];
+        for (var _i = 0, fields_1 = fields; _i < fields_1.length; _i++) {
+            var field = fields_1[_i];
+            // Instantiate new input controller.
+            var ctor = this.controllers[field.type] || StringInputController;
+            result.push(new ctor(field));
+        }
+        result.sort(function (a, b) {
+            return a.metadata.orderIndex - b.metadata.orderIndex;
+        });
+        return result;
+    };
+    return InputControllerRegister;
+}());
+
 var InputFieldValue = (function () {
     function InputFieldValue() {
     }
     return InputFieldValue;
 }());
+
 var OutputFieldValue = (function () {
     function OutputFieldValue() {
     }
@@ -1786,6 +1859,9 @@ var umf = Object.freeze({
 	InputFieldSource: InputFieldSource,
 	OutputFieldMetadata: OutputFieldMetadata,
 	FormInstance: FormInstance,
+	InputController: InputController,
+	StringInputController: StringInputController,
+	InputControllerRegister: InputControllerRegister,
 	InputFieldValue: InputFieldValue,
 	OutputFieldValue: OutputFieldValue
 });

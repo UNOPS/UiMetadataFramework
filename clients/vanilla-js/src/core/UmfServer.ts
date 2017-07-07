@@ -31,31 +31,25 @@ export class UmfServer {
         });
     }
 
-    postForm(formInstance: FormInstance):Promise<FormResponse> {
-        var missingRequiredInputs = formInstance.inputFieldValues.filter(i => i.metadata.required && i.data == null).map(i => i.metadata.id).join(", ");
-        if (missingRequiredInputs.length > 0) {
-            throw new Error (`Cannot post form, because some required inputs are blank (${missingRequiredInputs}).`);
-        }
-
+    postForm(form: string, data: any): Promise<FormResponse> {
         return axios.post(this.postFormUrl, JSON.stringify([{
-            Form: formInstance.metadata.id,
+            Form: form,
             RequestId: 1,
-            InputFieldValues: formInstance.getData()
+            InputFieldValues: data
         }]), <axiosLib.AxiosRequestConfig>{
             headers: {
                 "Content-Type": "application/json"
             }
-        }).then((response:axiosLib.AxiosResponse) => {
+        }).then((response: axiosLib.AxiosResponse) => {
             var invokeFormResponses = <InvokeFormResponse[]>response.data;
             return invokeFormResponses[0].data;
-        }).catch((error:axiosLib.AxiosError) => {
+        }).catch((error: axiosLib.AxiosError) => {
             alert(error.response.data.error);
         });
     }
 }
 
-class InvokeFormResponse
-{
-    public data:FormResponse;
-    public requestId:string;
+class InvokeFormResponse {
+    public data: FormResponse;
+    public requestId: string;
 }

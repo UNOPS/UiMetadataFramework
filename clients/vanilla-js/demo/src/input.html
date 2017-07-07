@@ -4,15 +4,15 @@
 </div>
 
 <script>
-    import TextInput from "./inputs/text";
-    import NumberInput from "./inputs/number";
-    import DateTimeInput from "./inputs/datetime";
+    import TextInput from "./inputs/Text";
+    import NumberInput from "./inputs/Number";
+    import DateInput from "./inputs/Date";
     import * as umf from "../../src/core/index";
 
     var all = {
         text: TextInput,
         number: NumberInput,
-        datetime: DateTimeInput
+        datetime: DateInput
     };
 
     export default {
@@ -29,14 +29,6 @@
                     tabindex: tabindex
                 }
             });
-
-            this.set({ input: i });
-
-            field.manager = {
-                serialize() {
-                    return i.serialize != null ? i.serialize() : field.data.toString();
-                }
-            };
         }
     }
 

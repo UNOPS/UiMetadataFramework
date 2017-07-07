@@ -1,40 +1,84 @@
 import * as umf from "./ui-metadata-framework/index";
+import { InputFieldValue } from "./InputFieldValue";
+import { OutputFieldValue } from "./OutputFieldValue";
+import { InputController } from "./InputController";
+import { InputControllerRegister } from "./InputControllerRegister";
 
 export class FormInstance {
     public readonly metadata: umf.FormMetadata;
     public outputFieldValues: Array<OutputFieldValue> = [];
-    public inputFieldValues: Array<InputFieldValue> = [];
+    public inputFieldValues: Array<InputController<any>> = [];
 
-    constructor(metadata: umf.FormMetadata, data?:any) {
+    constructor(metadata: umf.FormMetadata, inputControllerRegister:InputControllerRegister) {
         this.metadata = metadata;
-
-        this.setInputFieldValues(data);        
+        this.inputFieldValues = inputControllerRegister.createControllers(this.metadata.inputFields);
     }
 
-    setInputFieldValues(data:any) {
-        this.inputFieldValues = [];
+    initializeInputFields(data: any) {
+        var promises = [];
 
-        for (let fieldMetadata of this.metadata.inputFields) {
+        for (let fieldMetadata of this.inputFieldValues) {
             let value = null;
 
             if (data != null) {
                 for (let prop in data) {
-                    if (data.hasOwnProperty(prop) && prop.toLowerCase() == fieldMetadata.id.toLowerCase()){
+                    if (data.hasOwnProperty(prop) && prop.toLowerCase() == fieldMetadata.metadata.id.toLowerCase()) {
                         value = data[prop];
                         break;
                     }
                 }
             }
 
-            this.inputFieldValues.push({
-                metadata: fieldMetadata,
-                data: value
-            });
+            promises.push(fieldMetadata.init(value));
         }
 
-        this.inputFieldValues.sort((a: InputFieldValue, b: InputFieldValue) => {
-            return a.metadata.orderIndex - b.metadata.orderIndex;
+        return Promise.all(promises);
+    }
+
+    prepareForm():any {
+        var data = {};
+		var promises = [];
+		var hasRequiredMissingInput = false;
+
+		for (let input of this.inputFieldValues) {
+			var promise = input.getValue().then(value => {
+				data[input.metadata.id] = value;
+
+				if (input.metadata.required && (value == null || value == "")) {
+					hasRequiredMissingInput = true;
+				}
+			});
+
+			promises.push(promise);
+		}
+
+		return Promise.all(promises).then(() => {
+			// If not all required inputs were entered, then do not post.
+			if (hasRequiredMissingInput) {
+				return null;
+			}
+
+            return data;
         });
+    }
+
+    getSerializedInputValues():any {
+        var data = {};
+        var promises = [];
+
+        for (let input of this.inputFieldValues) {
+            var promise = input.serialize().then(t => {
+                // Don't include inputs without values, because we only
+                // want to serialize "non-default" values.
+                if (t.value != null && t.value != "") {
+                    data[input.metadata.id] = t.value;
+                }
+            });
+
+            promises.push(promise);
+        }
+
+        return Promise.all(promises).then(() => data);
     }
 
     setOutputFieldValues(response: umf.FormResponse) {
@@ -56,22 +100,6 @@ export class FormInstance {
         this.outputFieldValues = fields;
     }
 
-    getData(): any {
-        return FormInstance.getDataFromInputFieldValues(this.inputFieldValues);
-    }
-
-    static getDataFromInputFieldValues(inputFieldValues:InputFieldValue[]) {
-        var data = {};
-
-        for (let inputField of inputFieldValues) {
-            if (inputField.data != null) {
-                data[inputField.metadata.id] = inputField.data;
-            }
-        }
-
-        return data;
-    }
-
     private getNormalizedObject(response: umf.FormResponse): any {
         var normalizedResponse = {};
         for (let field in response) {
@@ -82,14 +110,4 @@ export class FormInstance {
 
         return normalizedResponse;
     }
-}
-
-export class InputFieldValue {
-    public metadata: umf.InputFieldMetadata;
-    public data: any;
-}
-
-export class OutputFieldValue {
-    public metadata: umf.OutputFieldMetadata;
-    public data: any;
 }

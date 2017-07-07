@@ -1,15 +1,16 @@
 ﻿import { FormMetadata, FormResponse } from "./ui-metadata-framework/index";
 import { UmfServer } from "./UmfServer";
-import { FormInstance, InputFieldValue } from "./FormInstance";
+import { FormInstance } from "./FormInstance";
 import { IFormResponseHandler } from "./IFormResponseHandler";
+import { InputFieldValue } from "./InputFieldValue";
 
 export class UmfApp {
 	forms: FormMetadata[];
 	private readonly formsById: { [id: string]: FormMetadata } = {};
 	public readonly server: UmfServer;
 	public readonly formResponseHandlers: { [id: string]: IFormResponseHandler } = {};
-	public go: (form:string,inputFieldValues:InputFieldValue[]) => void;
-	
+	public go: (form: string, inputFieldValues: InputFieldValue[]) => void;
+
 	constructor(server: UmfServer) {
 		this.server = server;
 	}
@@ -31,10 +32,6 @@ export class UmfApp {
 
 	getForm(id: string) {
 		return this.formsById[id];
-	}
-
-	postForm(formInstance: FormInstance) {
-		return this.server.postForm(formInstance);
 	}
 
 	handleResponse(response: FormResponse, form: FormInstance) {
