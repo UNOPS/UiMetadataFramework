@@ -118,7 +118,7 @@
 			[InputField(Hidden = true)]
 			public decimal? Weight { get; set; }
 
-			public DropdownValue<DayOfWeek?> FavouriteDayOfTheWeek { get; set; }
+			public DropdownValue<DayOfWeek?> FavouriteDayOfWeek { get; set; }
 
 			[Option(DayOfWeek.Sunday)]
 			[Option(DayOfWeek.Monday)]
