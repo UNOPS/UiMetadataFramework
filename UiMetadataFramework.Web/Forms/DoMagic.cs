@@ -4,6 +4,7 @@
 	using System.Collections.Generic;
 	using System.Linq;
 	using global::MediatR;
+	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
@@ -116,6 +117,13 @@
 
 			[InputField(Hidden = true)]
 			public decimal? Weight { get; set; }
+
+			public DropdownValue<DayOfWeek?> FavouriteDayOfTheWeek { get; set; }
+
+			[Option(DayOfWeek.Sunday)]
+			[Option(DayOfWeek.Monday)]
+			[InputField(Required = true)]
+			public DropdownValue<DayOfWeek> FirstDayOfWeek { get; set; }
 		}
 	}
 }

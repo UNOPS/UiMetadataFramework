@@ -1,13 +1,15 @@
 ﻿namespace UiMetadataFramework.Tests
 {
+	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Reflection.Metadata.Ecma335;
 	using UiMetadataFramework.Core;
 	using Xunit;
 
 	public static class AssertionExtensions
 	{
-		public static void AssertHasInputField(
+		public static InputFieldMetadata AssertHasInputField(
 			this IEnumerable<InputFieldMetadata> fields,
 			string id,
 			string type,
@@ -18,7 +20,7 @@
 			string defaultValueSourceType = null,
 			string defaultValueSourceId = null)
 		{
-			var hasField = fields.Any(t =>
+			var field = fields.FirstOrDefault(t =>
 				t.Id == id &&
 				t.Hidden == hidden &&
 				t.Type == type &&
@@ -28,10 +30,12 @@
 				t.DefaultValue?.Type == defaultValueSourceType &&
 				t.DefaultValue?.Id == defaultValueSourceId);
 
-			Assert.True(hasField);
+			Assert.NotNull(field);
+
+			return field;
 		}
 
-		public static void AssertHasOutputField(
+		public static OutputFieldMetadata AssertHasOutputField(
 			this IEnumerable<OutputFieldMetadata> fields,
 			string id,
 			string type,
@@ -39,14 +43,28 @@
 			bool hidden = false,
 			int orderIndex = 0)
 		{
-			var hasField = fields.Any(t =>
+			var field = fields.FirstOrDefault(t =>
 				t.Id == id &&
 				t.Hidden == hidden &&
 				t.Type == type &&
 				t.OrderIndex == orderIndex &&
 				t.Label == label);
 
-			Assert.True(hasField);
+			Assert.NotNull(field);
+
+			return field;
+		}
+
+		public static InputFieldMetadata HasCustomProperties<T>(this InputFieldMetadata field, Func<T, bool> assertion, string message)
+			where T : class
+		{
+			var customProperties = (T)field.CustomProperties;
+
+			Assert.NotNull(customProperties);
+
+			Assert.True(assertion(customProperties), message);
+
+			return field;
 		}
 	}
 }

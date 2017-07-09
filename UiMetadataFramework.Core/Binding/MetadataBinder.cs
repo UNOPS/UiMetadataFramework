@@ -81,7 +81,9 @@
 
 			foreach (var property in properties)
 			{
-				var propertyType = property.PropertyType;
+				var propertyType = property.PropertyType.IsConstructedGenericType && !IsNullabble(property)
+					? property.PropertyType.GetGenericTypeDefinition()
+					: property.PropertyType;
 
 				if (!this.inputFieldMetadataMap.TryGetValue(propertyType, out InputFieldBinding binding))
 				{
@@ -99,7 +101,7 @@
 					OrderIndex = attribute?.OrderIndex ?? 0,
 					Required = attribute?.Required ?? false,
 					DefaultValue = defaultValueAttribute?.AsInputFieldSource(),
-					CustomProperties = binding.GetCustomProperties(attribute)
+					CustomProperties = binding.GetCustomProperties(attribute, property)
 				};
 
 				yield return metadata;
@@ -199,6 +201,17 @@
 			return
 				propertyInfo.PropertyType.GetTypeInfo().IsGenericType &&
 				propertyInfo.PropertyType.GetGenericTypeDefinition().GetTypeInfo().GetInterfaces().Any(t => t == typeof(System.Collections.IEnumerable));
+		}
+
+		private static bool IsNullabble(PropertyInfo propertyInfo)
+		{
+			Type type = propertyInfo.PropertyType;
+			if (!type.GetTypeInfo().IsValueType)
+			{
+				return false; // ref-type
+			}
+
+			return Nullable.GetUnderlyingType(type) != null;
 		}
 	}
 }

@@ -7,12 +7,14 @@ import Menu from "../svelte-components/Menu";
 import Form from "../svelte-components/Form";
 import Home from "../svelte-components/Home";
 
-import {DateInputController} from "./inputs/DateInputController";
-import {NumberInputController} from "./inputs/NumberInputController";
+import { DateInputController } from "./inputs/DateInputController";
+import { NumberInputController } from "./inputs/NumberInputController";
+import { DropdownInputController } from "./inputs/DropdownInputController";
 
 var inputRegister = new umf.InputControllerRegister();
 inputRegister.controllers["date"] = DateInputController;
 inputRegister.controllers["number"] = NumberInputController;
+inputRegister.controllers["dropdown"] = DropdownInputController;
 
 var server = new umf.UmfServer(
     "http://localhost:62790/api/form/metadata",
@@ -29,7 +31,7 @@ app.load().then(response => {
         route: "/home",
         template: Home
     });
-    
+
     stateRouter.addState({
         name: "menu",
         route: "/menu",
@@ -49,7 +51,7 @@ app.load().then(response => {
         template: Form,
         resolve: function (data, parameters, cb) {
             let metadata = app.getForm(parameters._id);
-            
+
             if (metadata == null) {
                 console.error(`Form ${parameters._id} not found.`);
                 return;
@@ -74,9 +76,9 @@ app.load().then(response => {
         stateRouter.go("form", data);
     }));
 
-    app.go = (form:string, values) => {
+    app.go = (form: string, values) => {
         var data = Object.assign({}, values, { _id: form });
-        
+
         stateRouter.go("form", data);
     };
 });

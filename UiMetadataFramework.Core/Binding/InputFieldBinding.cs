@@ -2,6 +2,7 @@ namespace UiMetadataFramework.Core.Binding
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Reflection;
 
 	/// <summary>
 	/// Represents a binding between a <see cref="Type"/> of field and the client-side
@@ -36,8 +37,9 @@ namespace UiMetadataFramework.Core.Binding
 		/// Gets custom properties of the input field.
 		/// </summary>
 		/// <param name="attribute"><see cref="InputFieldAttribute"/> which was applied to the input field.</param>
+		/// <param name="property">Property representing the input field for which to get metadata.</param>
 		/// <returns>Object representing custom properties for the input field or null if there are none.</returns>
-		public virtual object GetCustomProperties(InputFieldAttribute attribute)
+		public virtual object GetCustomProperties(InputFieldAttribute attribute, PropertyInfo property)
 		{
 			return null;
 		}

@@ -23,22 +23,33 @@
 			[OutputField(Hidden = true)]
 			public int Height { get; set; }
 
+			public IList<Person> OtherPeople { get; set; }
+
 			[OutputField(Hidden = true)]
 			public decimal Weight { get; set; }
-
-			public IList<Person> OtherPeople { get; set; }
 		}
 
 		public class Request
 		{
+			[Option("Low", "L")]
+			[Option("Mid", "M")]
+			[Option("High", "H")]
+			public DropdownValue<string> Category { get; set; }
+
 			[InputField(Label = "DoB", OrderIndex = 2, Required = true)]
 			public DateTime DateOfBirth { get; set; }
+
+			public DropdownValue<DayOfWeek?> Day { get; set; }
+
+			[Option(DayOfWeek.Sunday)]
+			[Option(DayOfWeek.Monday)]
+			public DropdownValue<DayOfWeek> FirstDayOfWeek { get; set; }
 
 			[InputField(Label = "First name", OrderIndex = 1, Required = true)]
 			public string FirstName { get; set; }
 
 			[InputField(Hidden = true)]
-			public int Height { get; set; }
+			public int? Height { get; set; }
 
 			public bool IsRegistered { get; set; }
 
@@ -69,12 +80,21 @@
 
 			var inputFields = binder.BindInputFields<Request>().OrderBy(t => t.OrderIndex).ToList();
 
-			Assert.Equal(5, inputFields.Count);
+			Assert.Equal(8, inputFields.Count);
 			inputFields.AssertHasInputField(nameof(Request.FirstName), StringInputFieldBinding.ControlName, "First name", orderIndex: 1, required: true);
 			inputFields.AssertHasInputField(nameof(Request.DateOfBirth), DateTimeInputFieldBinding.ControlName, "DoB", orderIndex: 2, required: true);
 			inputFields.AssertHasInputField(nameof(Request.Height), NumberInputFieldBinding.ControlName, nameof(Request.Height), hidden: true);
 			inputFields.AssertHasInputField(nameof(Request.Weight), NumberInputFieldBinding.ControlName, nameof(Request.Weight), hidden: true);
 			inputFields.AssertHasInputField(nameof(Request.IsRegistered), BooleanInputFieldBinding.ControlName, nameof(Request.IsRegistered));
+
+			inputFields.AssertHasInputField(nameof(Request.Day), DropdownInputFieldBinding.ControlName, nameof(Request.Day))
+				.HasCustomProperties<DropdownProperties>(t => t.Items.Count == 7, "Dropdown has incorrect number of items.");
+
+			inputFields.AssertHasInputField(nameof(Request.FirstDayOfWeek), DropdownInputFieldBinding.ControlName, nameof(Request.FirstDayOfWeek))
+				.HasCustomProperties<DropdownProperties>(t => t.Items.Count == 2, "Dropdown has incorrect number of items.");
+
+			inputFields.AssertHasInputField(nameof(Request.Category), DropdownInputFieldBinding.ControlName, nameof(Request.Category))
+				.HasCustomProperties<DropdownProperties>(t => t.Items.Count == 3, "Dropdown has incorrect number of items.");
 		}
 
 		[Fact]
