@@ -1,5 +1,5 @@
 <div>
-    <label for="{{field.metadata.id}}">{{field.metadata.label}}</label>
+    <label for="{{id}}">{{field.metadata.label}}</label>
     <div ref:container class="inline"></div>
 </div>
 
@@ -15,6 +15,8 @@
         datetime: DateInput
     };
 
+    var inputId = 0;
+
     export default {
         oncreate() {
             let field = this.get("field");
@@ -26,9 +28,16 @@
                 target: this.refs.container,
                 data: {
                     field: field,
-                    tabindex: tabindex
+                    tabindex: tabindex,
+                    id: this.get("id")
                 }
             });
+        },
+        data() {
+            inputId += 1;
+            return {
+                id: "i" + inputId
+            }
         }
     }
 
