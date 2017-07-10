@@ -28,8 +28,6 @@
 			[OutputField(Hidden = true)]
 			public decimal Weight { get; set; }
 
-			public ValueList<string> Tags { get; set; }
-
 			public IList<string> Categories { get; set; }
 		}
 
@@ -40,8 +38,10 @@
 			[Option("High", "H")]
 			public DropdownValue<string> Category { get; set; }
 
-			[InputField(Label = "DoB", OrderIndex = 2, Required = true)]
+			[InputField(Label = "DoB", OrderIndex = 2)]
 			public DateTime DateOfBirth { get; set; }
+
+			public DateTime? SubmissionDate { get; set; }
 
 			public DropdownValue<DayOfWeek?> Day { get; set; }
 
@@ -84,12 +84,13 @@
 
 			var inputFields = binder.BindInputFields<Request>().OrderBy(t => t.OrderIndex).ToList();
 
-			Assert.Equal(8, inputFields.Count);
+			Assert.Equal(9, inputFields.Count);
 			inputFields.AssertHasInputField(nameof(Request.FirstName), StringInputFieldBinding.ControlName, "First name", orderIndex: 1, required: true);
 			inputFields.AssertHasInputField(nameof(Request.DateOfBirth), DateTimeInputFieldBinding.ControlName, "DoB", orderIndex: 2, required: true);
-			inputFields.AssertHasInputField(nameof(Request.Height), NumberInputFieldBinding.ControlName, nameof(Request.Height), hidden: true);
-			inputFields.AssertHasInputField(nameof(Request.Weight), NumberInputFieldBinding.ControlName, nameof(Request.Weight), hidden: true);
-			inputFields.AssertHasInputField(nameof(Request.IsRegistered), BooleanInputFieldBinding.ControlName, nameof(Request.IsRegistered));
+			inputFields.AssertHasInputField(nameof(Request.SubmissionDate), DateTimeInputFieldBinding.ControlName, nameof(Request.SubmissionDate), required: false);
+			inputFields.AssertHasInputField(nameof(Request.Height), NumberInputFieldBinding.ControlName, nameof(Request.Height), hidden: true, required:false);
+			inputFields.AssertHasInputField(nameof(Request.Weight), NumberInputFieldBinding.ControlName, nameof(Request.Weight), hidden: true, required:true);
+			inputFields.AssertHasInputField(nameof(Request.IsRegistered), BooleanInputFieldBinding.ControlName, nameof(Request.IsRegistered), required:true);
 
 			inputFields.AssertHasInputField(nameof(Request.Day), DropdownInputFieldBinding.ControlName, nameof(Request.Day))
 				.HasCustomProperties<DropdownProperties>(t => t.Items.Count == 7, "Dropdown has incorrect number of items.");
@@ -109,13 +110,12 @@
 
 			var outputFields = binder.BindOutputFields<Response>().OrderBy(t => t.OrderIndex).ToList();
 
-			Assert.Equal(7, outputFields.Count);
+			Assert.Equal(6, outputFields.Count);
 			outputFields.AssertHasOutputField(nameof(Response.FirstName), StringOutputFieldBinding.ControlName, "First name", false, 1);
 			outputFields.AssertHasOutputField(nameof(Response.DateOfBirth), DateTimeOutputFieldBinding.ControlName, "DoB", false, 2);
 			outputFields.AssertHasOutputField(nameof(Response.Height), NumberOutputFieldBinding.ControlName, nameof(Response.Height), true);
 			outputFields.AssertHasOutputField(nameof(Response.Weight), NumberOutputFieldBinding.ControlName, nameof(Response.Weight), true);
 			outputFields.AssertHasOutputField(nameof(Response.OtherPeople), MetadataBinder.ObjectListOutputControlName, nameof(Response.OtherPeople));
-			outputFields.AssertHasOutputField(nameof(Response.Tags), ListOutputFieldBinding.ControlName, nameof(Response.Tags));
 			outputFields.AssertHasOutputField(nameof(Response.Categories), MetadataBinder.ValueListOutputControlName, nameof(Response.Categories));
 
 			var ienumerableProperty = outputFields.Single(t => t.Id == nameof(Response.OtherPeople));

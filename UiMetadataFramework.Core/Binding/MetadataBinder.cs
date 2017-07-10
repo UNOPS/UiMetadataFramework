@@ -95,13 +95,20 @@
 				var attribute = property.GetCustomAttribute<InputFieldAttribute>();
 				var defaultValueAttribute = property.GetCustomAttribute<DefaultValueAttribute>();
 
+				var required = propertyType.GetTypeInfo().IsValueType
+					// non-nullable value types are automatically required,
+					// nullable types are automatically NOT required.
+					? Nullable.GetUnderlyingType(propertyType) == null
+					// reference types use attribute
+					: attribute?.Required ?? false;
+
 				var metadata = new InputFieldMetadata(binding.ClientType)
 				{
 					Id = property.Name,
 					Hidden = attribute?.Hidden ?? false,
 					Label = attribute?.Label ?? property.Name,
 					OrderIndex = attribute?.OrderIndex ?? 0,
-					Required = attribute?.Required ?? false,
+					Required = required,
 					DefaultValue = defaultValueAttribute?.AsInputFieldSource(),
 					CustomProperties = binding.GetCustomProperties(attribute, property)
 				};
