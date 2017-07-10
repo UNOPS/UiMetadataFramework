@@ -12,7 +12,9 @@ export class BooleanInputController extends umf.InputController<boolean> {
 
 	init(value: string): Promise<BooleanInputController> {
 		return new Promise((resolve, reject) => {
-			this.value = !!value;
+			this.value = value != null 
+				? value.toString() == "true" 
+				: this.metadata.required ? false : null;
 			resolve(this);
 		});
 	}
