@@ -5,12 +5,13 @@
     <AssemblyName>UiMetadataFramework.Core</AssemblyName>
     <RootNamespace>UiMetadataFramework.Core</RootNamespace>
     <Description>UiMetadataFramework is a very simple .NET Standard library to help you making forms quickly. This package includes core functionality without UI implementation.</Description>
-    <Version>0.0.1-beta</Version>
+    <Version>0.0.2-beta</Version>
     <Authors>UNOPS</Authors>
     <FileVersion>0.0.1.0</FileVersion>
     <PackageTags>ui metadata forms</PackageTags>
     <RepositoryUrl>https://github.com/UNOPS/UiMetadataFramework</RepositoryUrl>
     <Copyright>Copyright 2017 (c) UNOPS. All rights reserved.</Copyright>
+    <PackageProjectUrl>https://github.com/UNOPS/UiMetadataFramework</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
