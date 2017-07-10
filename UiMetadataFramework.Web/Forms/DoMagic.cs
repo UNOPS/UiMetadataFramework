@@ -5,6 +5,7 @@
 	using System.Linq;
 	using global::MediatR;
 	using UiMetadataFramework.Basic.Input;
+	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
@@ -79,7 +80,7 @@
 			public DateTime? DateOfBirth { get; set; }
 
 			[OutputField(Label = "First name", OrderIndex = -1)]
-			public string FirstName { get; set; }
+			public FormLink FirstName { get; set; }
 
 			[OutputField(Hidden = true)]
 			public int Height { get; set; }
@@ -89,13 +90,29 @@
 
 			public static Person Random(decimal height, decimal weight)
 			{
-				var random = new Random((int)Math.Round(height * weight)
-					).Next(0, Names.Length - 1);
+				var r = new Random((int)Math.Round(height * weight));
+
+				var name = Names[r.Next(0, Names.Length - 1)];
+				var dateOfBirth = DateTime.Today.AddYears(-r.Next(16, 40));
 
 				return new Person
 				{
-					DateOfBirth = DateTime.Today.AddYears(-20),
-					FirstName = Names[random],
+					DateOfBirth = dateOfBirth,
+					FirstName = new FormLink
+					{
+						Label = name,
+						Form = typeof(DoMagic).FullName,
+						InputFieldValues = new Dictionary<string, object>
+						{
+							{ nameof(Request.FirstName), name },
+							{ nameof(Request.Height), (int)height },
+							{ nameof(Request.Weight), (int)weight },
+							{ nameof(Request.DateOfBirth), dateOfBirth.ToString("yyyy-MM-dd") },
+							{ nameof(Request.FavouriteDayOfWeek), ((DayOfWeek)r.Next(0, 6)).ToString() },
+							{ nameof(Request.FirstDayOfWeek), ((DayOfWeek)r.Next(0, 1)).ToString() },
+							{ nameof(Request.IsRegistered), r.Next(0, 1) == 1 }
+						}
+					},
 					Height = (int)height,
 					Weight = (int)weight
 				};
@@ -107,6 +124,13 @@
 			[InputField(Label = "DoB", OrderIndex = 2)]
 			public DateTime? DateOfBirth { get; set; }
 
+			public DropdownValue<DayOfWeek?> FavouriteDayOfWeek { get; set; }
+
+			[Option(DayOfWeek.Sunday)]
+			[Option(DayOfWeek.Monday)]
+			[InputField(Required = true)]
+			public DropdownValue<DayOfWeek> FirstDayOfWeek { get; set; }
+
 			[InputField(Label = "First name", OrderIndex = 1, Required = true)]
 			public string FirstName { get; set; }
 
@@ -117,13 +141,6 @@
 
 			[InputField(Hidden = true)]
 			public decimal Weight { get; set; }
-
-			public DropdownValue<DayOfWeek?> FavouriteDayOfWeek { get; set; }
-
-			[Option(DayOfWeek.Sunday)]
-			[Option(DayOfWeek.Monday)]
-			[InputField(Required = true)]
-			public DropdownValue<DayOfWeek> FirstDayOfWeek { get; set; }
 		}
 	}
 }

@@ -11,7 +11,7 @@
 {{#if outputFieldValues != null}}
 <div class="response">
     {{#each outputFieldValues as outputField}}
-    <FormOutput field="{{outputField}}"/>
+    <FormOutput field="{{outputField}}" app="{{app}}" />
     {{/each}}
 </div>
 {{/if}}

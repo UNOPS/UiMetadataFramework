@@ -12,26 +12,30 @@
     import NumberOutput from "./outputs/Number";
     import DateTimeOutput from "./outputs/Datetime";
     import TableOutput from "./outputs/Table";
+    import FormLink from "./outputs/FormLink";
 
     var all = {
         text: TextOutput,
         number: NumberOutput,
         datetime: DateTimeOutput,
-        table: TableOutput
+        table: TableOutput,
+        formlink: FormLink
     };
 
     export default {
         oncreate() {
             var field = this.get("field");
-
+            var app = this.get("app");
+            
             var output = field != null 
                 ? all[field.metadata.type] || TextOutput
                 : TextOutput;
-
+            
             new output({
                 target: this.refs.container,
                 data: {
-                    field: field
+                    field: field,
+                    app: app
                 }
             });
 

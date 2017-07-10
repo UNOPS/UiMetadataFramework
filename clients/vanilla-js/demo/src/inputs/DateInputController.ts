@@ -2,7 +2,9 @@ import * as umf from "../../../src/core/index";
 
 export class DateInputController extends umf.InputController<Date> {
 	serialize(): Promise<{ value: string, input: DateInputController }> {
-		var serialized = `${this.value.getFullYear()}-${this.format2DecimalPlaces(this.value.getMonth() + 1)}-${this.format2DecimalPlaces(this.value.getDate())}`;
+		var serialized = this.value != null 
+			? `${this.value.getFullYear()}-${this.format2DecimalPlaces(this.value.getMonth() + 1)}-${this.format2DecimalPlaces(this.value.getDate())}`
+			: null;
 		
 		return new Promise((resolve, reject) => {
 			resolve({

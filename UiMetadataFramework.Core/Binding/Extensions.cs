@@ -13,5 +13,13 @@
 				.Where(t => t.GetCustomAttribute<NotFieldAttribute>() == null)
 				.ToList();
 		}
+
+		public static void ForEach<T>(this IEnumerable<T> items, Action<T> action)
+		{
+			foreach (var item in items)
+			{
+				action(item);
+			}
+		}
 	}
 }

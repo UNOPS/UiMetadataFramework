@@ -13,7 +13,7 @@ import { DropdownInputController } from "./inputs/DropdownInputController";
 import { BooleanInputController } from "./inputs/BooleanInputController";
 
 var inputRegister = new umf.InputControllerRegister();
-inputRegister.controllers["date"] = DateInputController;
+inputRegister.controllers["datetime"] = DateInputController;
 inputRegister.controllers["number"] = NumberInputController;
 inputRegister.controllers["dropdown"] = DropdownInputController;
 inputRegister.controllers["boolean"] = BooleanInputController;
@@ -22,7 +22,7 @@ var server = new umf.UmfServer(
     "http://localhost:62790/api/form/metadata",
     "http://localhost:62790/api/form/run");
 
-var app = new umf.UmfApp(server);
+var app = new umf.UmfApp(server, inputRegister);
 app.load().then(response => {
     const stateRenderer = (<any>svelteStateRenderer).default({});
     const stateRouter = (<any>abstractStateRouter).default(stateRenderer, document.getElementById("main"));
@@ -45,24 +45,20 @@ app.load().then(response => {
             });
         }
     });
-
+    debugger;
     stateRouter.addState({
         name: "form",
         data: {},
         route: "/form/:_id",
         template: Form,
         resolve: function (data, parameters, cb) {
-            let metadata = app.getForm(parameters._id);
+            console.log("opening form " + parameters._id);
 
-            if (metadata == null) {
-                console.error(`Form ${parameters._id} not found.`);
-                return;
-            }
+            var formInstance = app.getFormInstance(parameters._id);
 
-            let formInstance = new umf.FormInstance(metadata, inputRegister);
             formInstance.initializeInputFields(parameters).then(() => {
                 cb(false, {
-                    metadata: metadata,
+                    metadata: formInstance.metadata,
                     form: formInstance,
                     app: app
                 });
@@ -82,6 +78,13 @@ app.load().then(response => {
         var data = Object.assign({}, values, { _id: form });
 
         stateRouter.go("form", data);
+        stateRouter.evaluateCurrentRoute("home");
+    };
+
+    app.makeUrl = (form: string, values): string => {
+        var data = Object.assign({}, values, { _id: form });
+        
+        return stateRouter.makePath('form', data);
     };
 });
 

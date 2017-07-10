@@ -1,10 +1,13 @@
-﻿namespace UiMetadataFramework.Core
+﻿namespace UiMetadataFramework.Basic.Output
 {
 	using System.Collections.Generic;
+	using UiMetadataFramework.Core;
+	using UiMetadataFramework.Core.Binding;
 
 	/// <summary>
 	/// Represents a reference to a form.
 	/// </summary>
+	[OutputFieldType("formlink")]
 	public class FormLink
 	{
 		/// <summary>

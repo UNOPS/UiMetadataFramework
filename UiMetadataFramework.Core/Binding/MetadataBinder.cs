@@ -20,6 +20,22 @@
 
 		public void AddBinding(OutputFieldBinding binding)
 		{
+			var existingBinding = this.outputFieldMetadataMap.Values.FirstOrDefault(t => t.ClientType == binding.ClientType);
+			if (existingBinding != null)
+			{
+				throw new BindingException(
+					$"Bindings '{binding.GetType().FullName}' and '{existingBinding.GetType().FullName}' " +
+					$"indicate same client type '{binding.ClientType}'. Each binding must have a unique client type.");
+			}
+
+			if (binding.ClientType == ObjectListOutputControlName ||
+				binding.ClientType == ValueListOutputControlName)
+			{
+				throw new BindingException(
+					$"Binding '{binding.GetType().FullName}' attempts to bind to built-in " +
+					$"client type '{binding.ClientType}', which is not allowed.");
+			}
+
 			foreach (var serverType in binding.ServerTypes)
 			{
 				if (this.outputFieldMetadataMap.ContainsKey(serverType))
@@ -42,6 +58,14 @@
 
 		public void AddBinding(InputFieldBinding binding)
 		{
+			var existingBinding = this.inputFieldMetadataMap.Values.FirstOrDefault(t => t.ClientType == binding.ClientType);
+			if (existingBinding != null)
+			{
+				throw new BindingException(
+					$"Bindings '{binding.GetType().FullName}' and '{existingBinding.GetType().FullName}' " +
+					$"indicate same client type '{binding.ClientType}'. Each binding must have a unique client type.");
+			}
+
 			foreach (var serverType in binding.ServerTypes)
 			{
 				if (this.inputFieldMetadataMap.ContainsKey(serverType))
@@ -195,24 +219,18 @@
 
 			foreach (var binding in outputFieldBindings)
 			{
-				if (binding.ClientType == ObjectListOutputControlName ||
-					binding.ClientType == ValueListOutputControlName)
-				{
-					throw new BindingException(
-						$"Binding '{binding.GetType().FullName}' attempts to bind to built-in " +
-						$"client type '{binding.ClientType}', which is not allowed.");
-				}
-
-				var existingBinding = this.outputFieldMetadataMap.Values.FirstOrDefault(t => t.ClientType == binding.ClientType);
-				if (existingBinding != null)
-				{
-					throw new BindingException(
-						$"Bindings '{binding.GetType().FullName}' and '{existingBinding.GetType().FullName}' " +
-						$"indicate same client type '{binding.ClientType}'. Each binding must have a unique client type.");
-				}
-
 				this.AddBinding(binding);
 			}
+
+			assembly.ExportedTypes.ForEach(t =>
+			{
+				var attribute = t.GetTypeInfo().GetCustomAttribute<OutputFieldTypeAttribute>();
+
+				if (attribute != null)
+				{
+					this.AddBinding(new OutputFieldBinding(t, attribute.ClientType));
+				}
+			});
 
 			var inputFieldBindings = assembly.ExportedTypes
 				.Where(t =>
@@ -227,14 +245,6 @@
 
 			foreach (var binding in inputFieldBindings)
 			{
-				var existingBinding = this.inputFieldMetadataMap.Values.FirstOrDefault(t => t.ClientType == binding.ClientType);
-				if (existingBinding != null)
-				{
-					throw new BindingException(
-						$"Bindings '{binding.GetType().FullName}' and '{existingBinding.GetType().FullName}' " +
-						$"indicate same client type '{binding.ClientType}'. Each binding must have a unique client type.");
-				}
-
 				this.AddBinding(binding);
 			}
 		}

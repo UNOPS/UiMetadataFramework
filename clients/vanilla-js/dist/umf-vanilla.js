@@ -1572,122 +1572,6 @@ var UmfServer = (function () {
     return UmfServer;
 }());
 
-/**
- * Encapsulates all information needed to render a form.
- */
-var FormMetadata = (function () {
-    function FormMetadata() {
-    }
-    return FormMetadata;
-}());
-
-/**
- * Represents a reference to a form.
- */
-var FormLink = (function () {
-    function FormLink() {
-    }
-    return FormLink;
-}());
-
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0
-
-THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-MERCHANTABLITY OR NON-INFRINGEMENT.
-
-See the Apache Version 2.0 License for specific language governing permissions
-and limitations under the License.
-***************************************************************************** */
-/* global Reflect, Promise */
-
-var extendStatics = Object.setPrototypeOf ||
-    ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-    function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-
-function __extends(d, b) {
-    extendStatics(d, b);
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-}
-
-/**
- * Represents response of a form.
- */
-var FormResponse = (function (_super) {
-    __extends(FormResponse, _super);
-    function FormResponse() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return FormResponse;
-}(Object));
-
-/**
- * Represents metadata for a single input field. *
- */
-var InputFieldMetadata = (function () {
-    function InputFieldMetadata() {
-    }
-    return InputFieldMetadata;
-}());
-
-/**
-* Represents a source from which a value can be retrieved. This class can be useful for
-* binding input field values to a specific data source.
-*/
-var InputFieldSource = (function () {
-    function InputFieldSource() {
-    }
-    return InputFieldSource;
-}());
-
-/**
- * Represents metadata for a single output field.
- */
-var OutputFieldMetadata = (function () {
-    function OutputFieldMetadata() {
-    }
-    return OutputFieldMetadata;
-}());
-
-var UmfApp = (function () {
-    function UmfApp(server) {
-        this.formsById = {};
-        this.formResponseHandlers = {};
-        this.server = server;
-    }
-    UmfApp.prototype.registerResponseHandler = function (handler) {
-        this.formResponseHandlers[handler.name] = handler;
-    };
-    UmfApp.prototype.load = function () {
-        var _this = this;
-        return this.server.getAllMetadata()
-            .then(function (response) {
-            _this.forms = response;
-            for (var _i = 0, _a = _this.forms; _i < _a.length; _i++) {
-                var form = _a[_i];
-                _this.formsById[form.id] = form;
-            }
-        });
-    };
-    UmfApp.prototype.getForm = function (id) {
-        return this.formsById[id];
-    };
-    UmfApp.prototype.handleResponse = function (response, form) {
-        var handler = this.formResponseHandlers[response.responseHandler];
-        if (handler == null) {
-            throw new Error("Cannot find FormResponseHandler \"" + response.responseHandler + "\".");
-        }
-        return handler.handle(response, form);
-    };
-    return UmfApp;
-}());
-
 var FormInstance = (function () {
     function FormInstance(metadata, inputControllerRegister) {
         this.outputFieldValues = [];
@@ -1783,6 +1667,131 @@ var FormInstance = (function () {
         return normalizedResponse;
     };
     return FormInstance;
+}());
+
+/**
+ * Encapsulates all information needed to render a form.
+ */
+var FormMetadata = (function () {
+    function FormMetadata() {
+    }
+    return FormMetadata;
+}());
+
+/**
+ * Represents a reference to a form.
+ */
+var FormLink = (function () {
+    function FormLink() {
+    }
+    return FormLink;
+}());
+
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+/* global Reflect, Promise */
+
+var extendStatics = Object.setPrototypeOf ||
+    ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+    function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+
+function __extends(d, b) {
+    extendStatics(d, b);
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
+
+/**
+ * Represents response of a form.
+ */
+var FormResponse = (function (_super) {
+    __extends(FormResponse, _super);
+    function FormResponse() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return FormResponse;
+}(Object));
+
+/**
+ * Represents metadata for a single input field. *
+ */
+var InputFieldMetadata = (function () {
+    function InputFieldMetadata() {
+    }
+    return InputFieldMetadata;
+}());
+
+/**
+* Represents a source from which a value can be retrieved. This class can be useful for
+* binding input field values to a specific data source.
+*/
+var InputFieldSource = (function () {
+    function InputFieldSource() {
+    }
+    return InputFieldSource;
+}());
+
+/**
+ * Represents metadata for a single output field.
+ */
+var OutputFieldMetadata = (function () {
+    function OutputFieldMetadata() {
+    }
+    return OutputFieldMetadata;
+}());
+
+var UmfApp = (function () {
+    function UmfApp(server, inputRegister) {
+        this.formsById = {};
+        this.formResponseHandlers = {};
+        this.server = server;
+        this.inputControllerRegister = inputRegister;
+    }
+    UmfApp.prototype.registerResponseHandler = function (handler) {
+        this.formResponseHandlers[handler.name] = handler;
+    };
+    UmfApp.prototype.load = function () {
+        var _this = this;
+        return this.server.getAllMetadata()
+            .then(function (response) {
+            _this.forms = response;
+            for (var _i = 0, _a = _this.forms; _i < _a.length; _i++) {
+                var form = _a[_i];
+                _this.formsById[form.id] = form;
+            }
+        });
+    };
+    UmfApp.prototype.getForm = function (id) {
+        return this.formsById[id];
+    };
+    UmfApp.prototype.getFormInstance = function (formId) {
+        var metadata = this.getForm(formId);
+        if (metadata == null) {
+            console.error("Form " + formId + " not found.");
+            return;
+        }
+        return new FormInstance(metadata, this.inputControllerRegister);
+    };
+    UmfApp.prototype.handleResponse = function (response, form) {
+        var handler = this.formResponseHandlers[response.responseHandler];
+        if (handler == null) {
+            throw new Error("Cannot find FormResponseHandler \"" + response.responseHandler + "\".");
+        }
+        return handler.handle(response, form);
+    };
+    return UmfApp;
 }());
 
 var InputController = (function () {

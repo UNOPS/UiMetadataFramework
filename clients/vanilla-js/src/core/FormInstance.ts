@@ -65,7 +65,7 @@ export class FormInstance {
     getSerializedInputValues():any {
         var data = {};
         var promises = [];
-
+        
         for (let input of this.inputFieldValues) {
             var promise = input.serialize().then(t => {
                 // Don't include inputs without values, because we only
