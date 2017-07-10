@@ -10,11 +10,13 @@ import Home from "../svelte-components/Home";
 import { DateInputController } from "./inputs/DateInputController";
 import { NumberInputController } from "./inputs/NumberInputController";
 import { DropdownInputController } from "./inputs/DropdownInputController";
+import { BooleanInputController } from "./inputs/BooleanInputController";
 
 var inputRegister = new umf.InputControllerRegister();
 inputRegister.controllers["date"] = DateInputController;
 inputRegister.controllers["number"] = NumberInputController;
 inputRegister.controllers["dropdown"] = DropdownInputController;
+inputRegister.controllers["boolean"] = BooleanInputController;
 
 var server = new umf.UmfServer(
     "http://localhost:62790/api/form/metadata",

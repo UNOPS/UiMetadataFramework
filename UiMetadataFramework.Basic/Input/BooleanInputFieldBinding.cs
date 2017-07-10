@@ -4,7 +4,7 @@
 
 	public class BooleanInputFieldBinding : InputFieldBinding
 	{
-		public const string ControlName = "checkbox";
+		public const string ControlName = "boolean";
 
 		public BooleanInputFieldBinding() : base(typeof(bool), ControlName)
 		{
