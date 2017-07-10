@@ -12,7 +12,9 @@
 	/// </summary>
 	public class MetadataBinder
 	{
-		public const string EnumerableClientControlName = "table";
+		public const string ObjectListOutputControlName = "table";
+		public const string ValueListOutputControlName = "list";
+
 		private readonly ConcurrentDictionary<Type, InputFieldBinding> inputFieldMetadataMap = new ConcurrentDictionary<Type, InputFieldBinding>();
 		private readonly ConcurrentDictionary<Type, OutputFieldBinding> outputFieldMetadataMap = new ConcurrentDictionary<Type, OutputFieldBinding>();
 
@@ -114,7 +116,11 @@
 
 			foreach (var property in properties)
 			{
-				this.outputFieldMetadataMap.TryGetValue(property.PropertyType, out OutputFieldBinding binding);
+				var propertyType = property.PropertyType.IsConstructedGenericType && !IsNullabble(property)
+					? property.PropertyType.GetGenericTypeDefinition()
+					: property.PropertyType;
+
+				this.outputFieldMetadataMap.TryGetValue(propertyType, out OutputFieldBinding binding);
 
 				bool isEnumerable = IsEnumerable(property);
 
@@ -126,7 +132,13 @@
 				object customProperties;
 				var attribute = property.GetCustomAttribute<OutputFieldAttribute>();
 
-				if (isEnumerable)
+				var clientControlName = isEnumerable
+					? (IsSimpleType(property.PropertyType.GenericTypeArguments[0])
+						? ValueListOutputControlName
+						: ObjectListOutputControlName)
+					: binding.ClientType;
+
+				if (clientControlName == ObjectListOutputControlName)
 				{
 					customProperties = new EnumerableOutputFieldProperties
 					{
@@ -139,7 +151,7 @@
 					customProperties = attribute?.GetCustomProperties();
 				}
 
-				var metadata = new OutputFieldMetadata(isEnumerable ? EnumerableClientControlName : binding.ClientType)
+				var metadata = new OutputFieldMetadata(clientControlName)
 				{
 					Id = property.Name,
 					Hidden = attribute?.Hidden ?? false,
@@ -176,6 +188,22 @@
 
 			foreach (var binding in outputFieldBindings)
 			{
+				if (binding.ClientType == ObjectListOutputControlName ||
+					binding.ClientType == ValueListOutputControlName)
+				{
+					throw new BindingException(
+						$"Binding '{binding.GetType().FullName}' attempts to bind to built-in " +
+						$"client type '{binding.ClientType}', which is not allowed.");
+				}
+
+				var existingBinding = this.outputFieldMetadataMap.Values.FirstOrDefault(t => t.ClientType == binding.ClientType);
+				if (existingBinding != null)
+				{
+					throw new BindingException(
+						$"Bindings '{binding.GetType().FullName}' and '{existingBinding.GetType().FullName}' " +
+						$"indicate same client type '{binding.ClientType}'. Each binding must have a unique client type.");
+				}
+
 				this.AddBinding(binding);
 			}
 
@@ -192,6 +220,14 @@
 
 			foreach (var binding in inputFieldBindings)
 			{
+				var existingBinding = this.inputFieldMetadataMap.Values.FirstOrDefault(t => t.ClientType == binding.ClientType);
+				if (existingBinding != null)
+				{
+					throw new BindingException(
+						$"Bindings '{binding.GetType().FullName}' and '{existingBinding.GetType().FullName}' " +
+						$"indicate same client type '{binding.ClientType}'. Each binding must have a unique client type.");
+				}
+
 				this.AddBinding(binding);
 			}
 		}
@@ -205,13 +241,12 @@
 
 		private static bool IsNullabble(PropertyInfo propertyInfo)
 		{
-			Type type = propertyInfo.PropertyType;
-			if (!type.GetTypeInfo().IsValueType)
-			{
-				return false; // ref-type
-			}
+			return Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null;
+		}
 
-			return Nullable.GetUnderlyingType(type) != null;
+		private static bool IsSimpleType(Type itemType)
+		{
+			return itemType == typeof(string) || itemType.GetTypeInfo().IsValueType;
 		}
 	}
 }

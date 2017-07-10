@@ -27,6 +27,10 @@
 
 			[OutputField(Hidden = true)]
 			public decimal Weight { get; set; }
+
+			public ValueList<string> Tags { get; set; }
+
+			public IList<string> Categories { get; set; }
 		}
 
 		public class Request
@@ -105,12 +109,14 @@
 
 			var outputFields = binder.BindOutputFields<Response>().OrderBy(t => t.OrderIndex).ToList();
 
-			Assert.Equal(5, outputFields.Count);
+			Assert.Equal(7, outputFields.Count);
 			outputFields.AssertHasOutputField(nameof(Response.FirstName), StringOutputFieldBinding.ControlName, "First name", false, 1);
 			outputFields.AssertHasOutputField(nameof(Response.DateOfBirth), DateTimeOutputFieldBinding.ControlName, "DoB", false, 2);
 			outputFields.AssertHasOutputField(nameof(Response.Height), NumberOutputFieldBinding.ControlName, nameof(Response.Height), true);
 			outputFields.AssertHasOutputField(nameof(Response.Weight), NumberOutputFieldBinding.ControlName, nameof(Response.Weight), true);
-			outputFields.AssertHasOutputField(nameof(Response.OtherPeople), MetadataBinder.EnumerableClientControlName, nameof(Response.OtherPeople));
+			outputFields.AssertHasOutputField(nameof(Response.OtherPeople), MetadataBinder.ObjectListOutputControlName, nameof(Response.OtherPeople));
+			outputFields.AssertHasOutputField(nameof(Response.Tags), ListOutputFieldBinding.ControlName, nameof(Response.Tags));
+			outputFields.AssertHasOutputField(nameof(Response.Categories), MetadataBinder.ValueListOutputControlName, nameof(Response.Categories));
 
 			var ienumerableProperty = outputFields.Single(t => t.Id == nameof(Response.OtherPeople));
 
