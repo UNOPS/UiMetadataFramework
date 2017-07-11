@@ -1,16 +1,20 @@
 import * as umf from "../../../src/core/index";
 
 export class DateInputController extends umf.InputController<Date> {
+	valueAsText: string = null;
+
 	serialize(): Promise<{ value: string, input: DateInputController }> {
-		var serialized = this.value != null 
-			? `${this.value.getFullYear()}-${this.format2DecimalPlaces(this.value.getMonth() + 1)}-${this.format2DecimalPlaces(this.value.getDate())}`
-			: null;
-		
-		return new Promise((resolve, reject) => {
-			resolve({
-				value: serialized,
-				input: this
-			})
+		return this.getValue().then(date => {
+			var serialized = date != null
+				? `${date.getFullYear()}-${this.format2DecimalPlaces(date.getMonth() + 1)}-${this.format2DecimalPlaces(date.getDate())}`
+				: null;
+
+			return new Promise((resolve, reject) => {
+				resolve({
+					value: serialized,
+					input: this
+				})
+			});
 		});
 	}
 
@@ -21,11 +25,14 @@ export class DateInputController extends umf.InputController<Date> {
 		});
 	}
 
-	getValue():Promise<Date> {
-		return Promise.resolve(this.value);
+	getValue(): Promise<Date> {
+		let dateAsNumber = Date.parse(this.valueAsText);
+		let date = isNaN(dateAsNumber) ? null : new Date(dateAsNumber);
+		
+		return Promise.resolve(date);
 	}
 
-	private format2DecimalPlaces (n) {
-        return ("0" + n).slice(-2);
-    }
+	private format2DecimalPlaces(n) {
+		return ("0" + n).slice(-2);
+	}
 }

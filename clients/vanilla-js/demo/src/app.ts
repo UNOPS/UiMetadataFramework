@@ -45,12 +45,14 @@ app.load().then(response => {
             });
         }
     });
-    debugger;
+
     stateRouter.addState({
         name: "form",
         data: {},
         route: "/form/:_id",
         template: Form,
+        querystringParameters: ["_x"],
+        defaultParameters: { _x: 123 },
         resolve: function (data, parameters, cb) {
             console.log("opening form " + parameters._id);
 
@@ -75,15 +77,17 @@ app.load().then(response => {
     }));
 
     app.go = (form: string, values) => {
-        var data = Object.assign({}, values, { _id: form });
+        var x = new Date().getMilliseconds();
+        var data = Object.assign({ _x: x }, values, { _id: form });
 
         stateRouter.go("form", data);
-        stateRouter.evaluateCurrentRoute("home");
+        //stateRouter.evaluateCurrentRoute("home");
     };
 
     app.makeUrl = (form: string, values): string => {
-        var data = Object.assign({}, values, { _id: form });
-        
+        var x = new Date().getMilliseconds();
+        var data = Object.assign({ _x: x }, values, { _id: form });
+
         return stateRouter.makePath('form', data);
     };
 });
