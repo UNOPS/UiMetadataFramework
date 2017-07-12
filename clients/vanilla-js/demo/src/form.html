@@ -1,12 +1,14 @@
 <h2>{{metadata.label}}</h2>
 
-<form on:submit="submit(app, form, event)">
+{{#if initialized}}
+<form on:submit="submit(app, form, event, true)">
     {{#each form.inputFieldValues as inputField}}
     <FormInput field="{{inputField}}" tabindex="{{tabindex * 100 + inputField.metadata.orderIndex}}" />
     {{/each}}
 
     <button type="submit" disabled="{{disabled}}" tabindex="-1">submit</button>
 </form>
+{{/if}}
 
 {{#if outputFieldValues != null}}
 <div class="response">
@@ -33,29 +35,22 @@
     }
 
     export default {
-        oncreate() {
-            tabindex += 1;
-            console.log("form created");
-            
-            this.init();
-        },
         methods: {
             init: function() {
-                var isInitialized = this.get("initialized");
-                if (!isInitialized) {
+                if (!this.get("initialized")) {
                     this.set({ initialized: true });
-                    
-                    var form = this.get("form");
-                    console.log("init");
 
+                    tabindex += 1;
+                    
                     // Auto-submit form if necessary.
+                    var form = this.get("form");
                     if (form.metadata.postOnLoad) {
                         var app = this.get("app");
                         this.submit(app, form);
                     }
                 }
             },
-            submit: function (app, formInstance, event) {
+            submit: function (app, formInstance, event, redirect) {
                 var self = this;
                 
                 if (event != null) {
@@ -71,10 +66,14 @@
                     // Disable double-posts.
                     self.set({ disabled: true });
 
-                    formInstance.getSerializedInputValues().then(urlParams => {
-                        // Update url in the browser.
-                        app.go(formInstance.metadata.id, urlParams);
-                    });
+                    if (redirect) {
+                        formInstance.getSerializedInputValues().then(urlParams => {
+                            // Update url in the browser.
+                            app.go(formInstance.metadata.id, urlParams);
+                        });
+
+                        return;
+                    }
 
                     app.server.postForm(formInstance.metadata.id, data)
                         .then(response => {
@@ -101,11 +100,12 @@
                 });
             }
         },
-        data: function() {
+        data: function () {
             return {
                 disabled: false,
-                tabindex:tabindex,
-                urlData:null
+                tabindex: tabindex,
+                urlData: null,
+                initialized: false
             };
         },
         components: {

@@ -26,6 +26,7 @@ var app = new umf.UmfApp(server, inputRegister);
 app.load().then(response => {
     const stateRenderer = (<any>svelteStateRenderer).default({});
     const stateRouter = (<any>abstractStateRouter).default(stateRenderer, document.getElementById("main"));
+    let rpb = new RouteParameterBuilder("_");
 
     stateRouter.addState({
         name: "home",
@@ -41,45 +42,39 @@ app.load().then(response => {
         resolve: function (data, parameters, cb) {
             cb(false, {
                 forms: app.forms,
-                asr: stateRouter
+                app: app
             });
         }
     });
-
-    // stateRouter.addState({
-    //     name: "form-redirect",
-    //     data: {},
-    //     route: "/form-redirect/:_id",
-    //     template: "",
-    //     resolve: function(data, parameters, cb) {
-    //         cb.redirect("form", parameters);
-    //     }
-    // });
 
     stateRouter.addState({
         name: "form",
         data: {},
         route: "/form/:_id",
         template: Form,
-        querystringParameters: ["_x"],
-        defaultParameters: { _x: 123 },
-        activate: function(context) {
-            //console.log(context);
+
+        // Force route reload when value of _d parameter changes. This is
+        // needed because by default the router will not reload route even if
+        // any of the parameters change, unless they are specified in "querystringParameters".
+        // This means that if we are trying to reload same form, but with different parameters,
+        // nothing will happen, unless _d changes too.
+        querystringParameters: [rpb.parameterName],
+        defaultParameters: rpb.defaultParameters,
+
+        activate: function (context) {
             context.domApi.init();
-            debugger;
-            //context.domApi.asrReset(context.content);
+
+            rpb.currentForm = context.parameters._id;
+            context.on("destroy", () => rpb.currentForm = null);
         },
         resolve: function (data, parameters, cb) {
-            console.log("opening form " + parameters._id);
-            //debugger;
             var formInstance = app.getFormInstance(parameters._id);
 
             formInstance.initializeInputFields(parameters).then(() => {
                 cb(false, {
                     metadata: formInstance.metadata,
                     form: formInstance,
-                    app: app,
-                    x: parameters._x
+                    app: app
                 });
             });
         }
@@ -94,17 +89,49 @@ app.load().then(response => {
     }));
 
     app.go = (form: string, values) => {
-        var x = new Date().getMilliseconds();
-        var data = Object.assign({ _x: x }, values, { _id: form });
-
-        stateRouter.go("form", data);
+        stateRouter.go("form", rpb.buildFormRouteParameters(form, values));
     };
 
     app.makeUrl = (form: string, values): string => {
-        var x = new Date().getMilliseconds();
-        var data = Object.assign({ _x: x }, values, { _id: form });
-
-        return stateRouter.makePath('form', data);
+        return stateRouter.makePath('form', rpb.buildFormRouteParameters(form, values));
     };
 });
 
+class RouteParameterBuilder {
+    readonly parameterName: string;
+    currentForm: string;
+    defaultParameters: any = {};
+
+    constructor(parameterName: string) {
+        this.parameterName = parameterName;
+        this.defaultParameters[parameterName] = "";
+    }
+
+    buildFormRouteParameters(form, values) {
+        var base = <any>{};
+        
+        if (form === this.currentForm) {
+            var d = RouteParameterBuilder.parseQueryStringParameters(location.hash)[this.parameterName] || 0;
+            var dAsNumber = parseInt(d, 10);
+            base[this.parameterName] = isNaN(dAsNumber) ? 0 : dAsNumber + 1;
+        }
+
+        return Object.assign(base, values, { _id: form });
+    }
+
+    static parseQueryStringParameters(url): any {
+        var queryStartsAt = url.indexOf("?");
+
+        var result = {};
+
+        // If there is a query string.
+        if (queryStartsAt !== -1 && url.length > queryStartsAt) {
+            url.substr(queryStartsAt + 1).split("&").filter(t => {
+                var value = t.split("=");
+                result[value[0]] = value[1];
+            });
+        }
+
+        return result;
+    }
+}
