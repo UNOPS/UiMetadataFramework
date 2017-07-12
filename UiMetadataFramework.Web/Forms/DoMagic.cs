@@ -93,7 +93,7 @@
 				var r = new Random((int)Math.Round(height * weight));
 
 				var name = Names[r.Next(0, Names.Length - 1)];
-				var dateOfBirth = DateTime.Today.AddYears(-r.Next(16, 40));
+				var dateOfBirth = new DateTime(r.Next(1970, 2001), r.Next(1, 12), r.Next(1, 28));
 
 				return new Person
 				{
