@@ -5,22 +5,26 @@ export class DateInputController extends umf.InputController<Date> {
 
 	serialize(): Promise<{ value: string, input: DateInputController }> {
 		return this.getValue().then(date => {
-			var serialized = date != null
-				? `${date.getFullYear()}-${this.format2DecimalPlaces(date.getMonth() + 1)}-${this.format2DecimalPlaces(date.getDate())}`
-				: null;
-
 			return new Promise((resolve, reject) => {
 				resolve({
-					value: serialized,
+					value: this.asString(date),
 					input: this
-				})
+				});
 			});
 		});
+	}
+
+	private asString(date: Date): string {
+		return date != null
+			? `${date.getFullYear()}-${this.format2DecimalPlaces(date.getMonth() + 1)}-${this.format2DecimalPlaces(date.getDate())}`
+			: null;
 	}
 
 	init(value: string): Promise<DateInputController> {
 		return new Promise((resolve, reject) => {
 			this.value = new Date(value);
+			this.valueAsText = this.asString(this.value);
+
 			resolve(this);
 		});
 	}
@@ -28,7 +32,7 @@ export class DateInputController extends umf.InputController<Date> {
 	getValue(): Promise<Date> {
 		let dateAsNumber = Date.parse(this.valueAsText);
 		let date = isNaN(dateAsNumber) ? null : new Date(dateAsNumber);
-		
+
 		return Promise.resolve(date);
 	}
 
