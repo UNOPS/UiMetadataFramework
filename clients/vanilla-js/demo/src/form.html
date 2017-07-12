@@ -66,7 +66,12 @@
                     // Disable double-posts.
                     self.set({ disabled: true });
 
-                    if (redirect) {
+                    // If postOnLoad == true, then the input field values should appear in the url.
+                    // Reason is that postOnLoad == true is used by "report" pages, which need
+                    // their filters to be saved in the url. This does not apply to forms
+                    // with postOnLoad == false, because those forms are usually for creating new data
+                    // and hence should not be tracked in browser's history based on parameters.
+                    if (formInstance.metadata.postOnLoad && redirect) {
                         formInstance.getSerializedInputValues().then(urlParams => {
                             // Update url in the browser.
                             app.go(formInstance.metadata.id, urlParams);
