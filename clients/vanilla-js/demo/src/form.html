@@ -36,15 +36,25 @@
         oncreate() {
             tabindex += 1;
             console.log("form created");
-            var form = this.get("form");
             
-            // Auto-submit form if necessary.
-            if (form.metadata.postOnLoad) {
-                var app = this.get("app");
-                this.submit(app, form);
-            }
+            this.init();
         },
         methods: {
+            init: function() {
+                var isInitialized = this.get("initialized");
+                if (!isInitialized) {
+                    this.set({ initialized: true });
+                    
+                    var form = this.get("form");
+                    console.log("init");
+
+                    // Auto-submit form if necessary.
+                    if (form.metadata.postOnLoad) {
+                        var app = this.get("app");
+                        this.submit(app, form);
+                    }
+                }
+            },
             submit: function (app, formInstance, event) {
                 var self = this;
                 

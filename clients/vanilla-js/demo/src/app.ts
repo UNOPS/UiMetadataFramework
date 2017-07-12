@@ -46,6 +46,16 @@ app.load().then(response => {
         }
     });
 
+    // stateRouter.addState({
+    //     name: "form-redirect",
+    //     data: {},
+    //     route: "/form-redirect/:_id",
+    //     template: "",
+    //     resolve: function(data, parameters, cb) {
+    //         cb.redirect("form", parameters);
+    //     }
+    // });
+
     stateRouter.addState({
         name: "form",
         data: {},
@@ -53,16 +63,23 @@ app.load().then(response => {
         template: Form,
         querystringParameters: ["_x"],
         defaultParameters: { _x: 123 },
+        activate: function(context) {
+            //console.log(context);
+            context.domApi.init();
+            debugger;
+            //context.domApi.asrReset(context.content);
+        },
         resolve: function (data, parameters, cb) {
             console.log("opening form " + parameters._id);
-
+            //debugger;
             var formInstance = app.getFormInstance(parameters._id);
 
             formInstance.initializeInputFields(parameters).then(() => {
                 cb(false, {
                     metadata: formInstance.metadata,
                     form: formInstance,
-                    app: app
+                    app: app,
+                    x: parameters._x
                 });
             });
         }
@@ -81,7 +98,6 @@ app.load().then(response => {
         var data = Object.assign({ _x: x }, values, { _id: form });
 
         stateRouter.go("form", data);
-        //stateRouter.evaluateCurrentRoute("home");
     };
 
     app.makeUrl = (form: string, values): string => {
