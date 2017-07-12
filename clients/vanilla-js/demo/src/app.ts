@@ -109,7 +109,7 @@ class RouteParameterBuilder {
 
     buildFormRouteParameters(form, values) {
         var base = <any>{};
-        
+
         if (form === this.currentForm) {
             var d = RouteParameterBuilder.parseQueryStringParameters(location.hash)[this.parameterName] || 0;
             var dAsNumber = parseInt(d, 10);
