@@ -1,6 +1,6 @@
 import { FormMetadata, FormResponse } from "./ui-metadata-framework/index";
 import { FormInstance } from "./FormInstance";
-import * as axiosLib from "../../node_modules/axios/index.js";
+import * as axiosLib from "axios";
 
 var axios = axiosLib.default;
 

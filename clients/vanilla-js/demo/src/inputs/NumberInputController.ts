@@ -1,4 +1,4 @@
-import * as umf from "../../../src/core/index";
+import * as umf from "../../../src/index";
 
 export class NumberInputController extends umf.InputController<number> {
 	serialize(): Promise<{ value: string, input: NumberInputController }> {

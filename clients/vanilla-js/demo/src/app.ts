@@ -1,4 +1,4 @@
-﻿import * as umf from "../../src/core/index";
+﻿import * as umf from "../../src/index";
 import * as handlers from "./handlers/index";
 import * as abstractStateRouter from "../../node_modules/abstract-state-router/index";
 import * as svelteStateRenderer from "../../node_modules/svelte-state-renderer/index";

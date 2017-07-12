@@ -15,6 +15,6 @@
 		]
 	},
 	"files": [
-		"./umf-vanilla.ts"
+		"./index.ts"
 	]
 }

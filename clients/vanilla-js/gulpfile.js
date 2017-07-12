@@ -9,7 +9,7 @@ var gulp = require("gulp"),
     globals = require('rollup-plugin-node-globals'),
     json = require('rollup-plugin-json');
 
-function build(entry, tsconfig, outfile) {
+function build(entry, tsconfig, outfile, moduleName) {
     return rollup.rollup(
         {
             entry: entry,
@@ -32,13 +32,14 @@ function build(entry, tsconfig, outfile) {
             bundle.write({
                 format: "iife",
                 dest: outfile,
-                sourceMap: true
+                sourceMap: true,
+                moduleName: moduleName
             });
         });
 }
 
 gulp.task("build", ["build-app"], function () {
-    build("src/umf-vanilla.ts", "src/tsconfig.json", "dist/umf-vanilla.js");
+    build("src/index.ts", "src/tsconfig.json", "dist/uimf-vanilla.js", "uimfvanilla");
 });
 
 gulp.task("build-app", ["build-svelte"], function () {

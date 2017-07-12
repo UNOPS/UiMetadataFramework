@@ -1,4 +1,4 @@
-import * as umf from "../../../src/core/index";
+import * as umf from "../../../src/index";
 
 export class BooleanInputController extends umf.InputController<boolean> {
 	serialize(): Promise<{ value: string, input: BooleanInputController }> {

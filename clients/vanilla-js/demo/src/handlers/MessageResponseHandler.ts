@@ -1,4 +1,4 @@
-import * as umf from "../../../src/core/index";
+import * as umf from "../../../src/index";
 
 export class MessageResponseHandler implements umf.IFormResponseHandler {
 	public readonly name: string = "message";
