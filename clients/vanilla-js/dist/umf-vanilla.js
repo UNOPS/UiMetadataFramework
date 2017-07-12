@@ -1776,11 +1776,14 @@ var UmfApp = (function () {
     UmfApp.prototype.getForm = function (id) {
         return this.formsById[id];
     };
-    UmfApp.prototype.getFormInstance = function (formId) {
+    UmfApp.prototype.getFormInstance = function (formId, throwError) {
+        if (throwError === void 0) { throwError = false; }
         var metadata = this.getForm(formId);
         if (metadata == null) {
-            console.error("Form " + formId + " not found.");
-            return;
+            if (throwError) {
+                throw Error("Form " + formId + " not found.");
+            }
+            return null;
         }
         return new FormInstance(metadata, this.inputControllerRegister);
     };

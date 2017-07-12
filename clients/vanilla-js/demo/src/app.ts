@@ -68,7 +68,7 @@ app.load().then(response => {
             context.on("destroy", () => rpb.currentForm = null);
         },
         resolve: function (data, parameters, cb) {
-            var formInstance = app.getFormInstance(parameters._id);
+            var formInstance = app.getFormInstance(parameters._id, true);
 
             formInstance.initializeInputFields(parameters).then(() => {
                 cb(false, {

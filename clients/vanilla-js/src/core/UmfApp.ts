@@ -38,12 +38,15 @@ export class UmfApp {
 		return this.formsById[id];
 	}
 
-	getFormInstance(formId: string) {
+	getFormInstance(formId: string, throwError: boolean = false) {
 		let metadata = this.getForm(formId);
 
 		if (metadata == null) {
-			console.error(`Form ${formId} not found.`);
-			return;
+			if (throwError) {
+				throw Error(`Form ${formId} not found.`);
+			}
+
+			return null;
 		}
 
 		return new FormInstance(metadata, this.inputControllerRegister);
