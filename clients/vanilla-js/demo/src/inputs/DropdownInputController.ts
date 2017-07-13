@@ -3,7 +3,11 @@ import * as umf from "../../../src/index";
 export class DropdownInputController extends umf.InputController<DropdownValue> {
 	selected: string;
 
-	serializeValue(value: DropdownValue): string {
+	serializeValue(value: DropdownValue | string): string {
+		if (typeof (value) === "string") {
+			return value;
+		}
+
 		return value != null ? value.value : null;
 	}
 

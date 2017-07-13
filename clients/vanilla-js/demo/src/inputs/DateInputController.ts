@@ -17,9 +17,15 @@ export class DateInputController extends umf.InputController<Date> {
 		return Promise.resolve(date);
 	}
 
-	serializeValue(date: Date): string {
-		return date != null
-			? `${date.getFullYear()}-${this.format2DecimalPlaces(date.getMonth() + 1)}-${this.format2DecimalPlaces(date.getDate())}`
+	serializeValue(date: Date | string): string {
+		var asDate = null;
+
+		if (typeof(date) === "string") {
+			asDate = this.parseDate(date);
+		}
+
+		return asDate != null
+			? `${asDate.getFullYear()}-${this.format2DecimalPlaces(asDate.getMonth() + 1)}-${this.format2DecimalPlaces(asDate.getDate())}`
 			: null;
 	}
 

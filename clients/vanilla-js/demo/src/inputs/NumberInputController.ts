@@ -1,7 +1,7 @@
 import * as umf from "../../../src/index";
 
 export class NumberInputController extends umf.InputController<number> {
-	serializeValue(value: number): string {
+	serializeValue(value: number | string): string {
 		return value != null ? value.toString() : null
 	}
 

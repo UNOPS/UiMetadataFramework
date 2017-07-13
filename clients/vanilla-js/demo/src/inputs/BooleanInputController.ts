@@ -1,7 +1,7 @@
 import * as umf from "../../../src/index";
 
 export class BooleanInputController extends umf.InputController<boolean> {
-	serializeValue(value: boolean): string {
+	serializeValue(value: boolean | string): string {
 		return value != null ? value.toString() : null;
 	}
 
