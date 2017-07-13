@@ -9,9 +9,19 @@ export abstract class InputController<T> {
 		this.metadata = metadata;
 	}
 
-	abstract serialize(): Promise<{ value: string, input: InputController<T> }>;
+	abstract serializeValue(value: T): string;
 	abstract init(value: string): Promise<InputController<T>>;
 	abstract getValue(): Promise<T>;
+
+	serialize(): Promise<{ value: string, input: InputController<T> }>{
+		return this.getValue().then(t => {
+			var valueAsString = this.serializeValue(t);
+			return {
+				value: valueAsString,
+				input: this
+			}
+		});
+	}
 }
 
 export class StringInputController extends InputController<string> {
@@ -19,13 +29,9 @@ export class StringInputController extends InputController<string> {
 		super(metadata);
 	}
 
-	serialize(): Promise<{ value: string, input: StringInputController }> {
-		return new Promise((resolve, reject) => {
-			resolve({
-				value: this.value != null ? this.value.toString() : null,
-				input: this
-			})
-		});
+	serializeValue(value:string): string {
+		// Ensure we don't return "undefined", but return null instead.
+		return value != null ? value.toString() : null;
 	}
 
 	init(value: string): Promise<StringInputController> {

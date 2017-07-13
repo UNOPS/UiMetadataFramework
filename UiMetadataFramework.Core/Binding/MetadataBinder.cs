@@ -24,8 +24,8 @@
 			if (existingBinding != null)
 			{
 				throw new BindingException(
-					$"Bindings '{binding.GetType().FullName}' and '{existingBinding.GetType().FullName}' " +
-					$"indicate same client type '{binding.ClientType}'. Each binding must have a unique client type.");
+					$"Multiple output field bindings are trying to use client type '{binding.ClientType}'. " +
+					"Each binding must have a unique client type.");
 			}
 
 			if (binding.ClientType == ObjectListOutputControlName ||

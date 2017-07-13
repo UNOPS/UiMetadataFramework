@@ -1642,6 +1642,25 @@ var FormInstance = (function () {
         }
         return Promise.all(promises).then(function () { return data; });
     };
+    FormInstance.prototype.getSerializedInputValuesFromObject = function (value) {
+        var data = {};
+        var normalizedObject = {};
+        for (var prop in value) {
+            if (value.hasOwnProperty(prop)) {
+                normalizedObject[prop.toLowerCase()] = value[prop];
+            }
+        }
+        for (var _i = 0, _a = this.inputFieldValues; _i < _a.length; _i++) {
+            var input = _a[_i];
+            var valueAsString = input.serializeValue(normalizedObject[input.metadata.id.toLowerCase()]);
+            // Don't include inputs without values, because we only
+            // want to serialize "non-default" values.
+            if (valueAsString != null && valueAsString != "") {
+                data[input.metadata.id] = valueAsString;
+            }
+        }
+        return data;
+    };
     FormInstance.prototype.setOutputFieldValues = function (response) {
         var fields = Array();
         var normalizedResponse = this.getNormalizedObject(response);
@@ -1801,6 +1820,16 @@ var InputController = (function () {
     function InputController(metadata) {
         this.metadata = metadata;
     }
+    InputController.prototype.serialize = function () {
+        var _this = this;
+        return this.getValue().then(function (t) {
+            var valueAsString = _this.serializeValue(t);
+            return {
+                value: valueAsString,
+                input: _this
+            };
+        });
+    };
     return InputController;
 }());
 var StringInputController = (function (_super) {
@@ -1808,14 +1837,9 @@ var StringInputController = (function (_super) {
     function StringInputController(metadata) {
         return _super.call(this, metadata) || this;
     }
-    StringInputController.prototype.serialize = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            resolve({
-                value: _this.value != null ? _this.value.toString() : null,
-                input: _this
-            });
-        });
+    StringInputController.prototype.serializeValue = function (value) {
+        // Ensure we don't return "undefined", but return null instead.
+        return value != null ? value.toString() : null;
     };
     StringInputController.prototype.init = function (value) {
         this.value = value;

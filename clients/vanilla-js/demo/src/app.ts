@@ -108,15 +108,16 @@ class RouteParameterBuilder {
     }
 
     buildFormRouteParameters(form, values) {
-        var base = <any>{};
-
+        var formInstance = app.getFormInstance(form, true);
+        var base = formInstance.getSerializedInputValuesFromObject(values);
+        
         if (form === this.currentForm) {
             var d = RouteParameterBuilder.parseQueryStringParameters(location.hash)[this.parameterName] || 0;
             var dAsNumber = parseInt(d, 10);
             base[this.parameterName] = isNaN(dAsNumber) ? 0 : dAsNumber + 1;
         }
 
-        return Object.assign(base, values, { _id: form });
+        return Object.assign(base, { _id: form });
     }
 
     static parseQueryStringParameters(url): any {

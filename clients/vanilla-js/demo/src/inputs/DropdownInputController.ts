@@ -3,13 +3,8 @@ import * as umf from "../../../src/index";
 export class DropdownInputController extends umf.InputController<DropdownValue> {
 	selected: string;
 
-	serialize(): Promise<{ value: string, input: DropdownInputController }> {
-		return new Promise((resolve, reject) => {
-			resolve({
-				value: this.selected,
-				input: this
-			})
-		});
+	serializeValue(value: DropdownValue): string {
+		return value != null ? value.value : null;
 	}
 
 	init(value: string): Promise<DropdownInputController> {

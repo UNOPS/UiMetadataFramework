@@ -1,19 +1,14 @@
 import * as umf from "../../../src/index";
 
 export class BooleanInputController extends umf.InputController<boolean> {
-	serialize(): Promise<{ value: string, input: BooleanInputController }> {
-		return new Promise((resolve, reject) => {
-			resolve({
-				value: this.value != null ? this.value.toString() : null,
-				input: this
-			})
-		});
+	serializeValue(value: boolean): string {
+		return value != null ? value.toString() : null;
 	}
 
 	init(value: string): Promise<BooleanInputController> {
 		return new Promise((resolve, reject) => {
-			this.value = value != null 
-				? value.toString() == "true" 
+			this.value = value != null
+				? value.toString() == "true"
 				: this.metadata.required ? false : null;
 			resolve(this);
 		});

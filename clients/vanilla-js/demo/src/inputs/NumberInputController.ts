@@ -1,13 +1,8 @@
 import * as umf from "../../../src/index";
 
 export class NumberInputController extends umf.InputController<number> {
-	serialize(): Promise<{ value: string, input: NumberInputController }> {
-		return new Promise((resolve, reject) => {
-			resolve({
-				value: this.value != null ? this.value.toString() : null,
-				input: this
-			})
-		});
+	serializeValue(value: number): string {
+		return value != null ? value.toString() : null
 	}
 
 	init(value: string): Promise<NumberInputController> {

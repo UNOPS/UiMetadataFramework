@@ -56,6 +56,18 @@
 			[OutputField(OrderIndex = 20)]
 			public List<Person> Relatives { get; set; }
 
+			public static FamilyPerson RandomFamilyPerson(string name)
+			{
+				var r = new Random(name.GetHashCode());
+				return RandomFamilyPerson(r.Next(150, 200), r.Next(40, 120));
+			}
+
+			public static FamilyPerson RandomFamilyPerson()
+			{
+				var r = new Random();
+				return RandomFamilyPerson(r.Next(150, 200), r.Next(40, 120));
+			}
+
 			public static FamilyPerson RandomFamilyPerson(decimal height, decimal weight)
 			{
 				var person = Random(height, weight);
@@ -88,6 +100,12 @@
 			[OutputField(Hidden = true)]
 			public decimal Weight { get; set; }
 
+			public static Person Random()
+			{
+				var r = new Random();
+				return Random(r.Next(150, 200), r.Next(40, 120));
+			}
+
 			public static Person Random(decimal height, decimal weight)
 			{
 				var r = new Random((int)Math.Round(height * weight));
@@ -107,9 +125,9 @@
 							{ nameof(Request.FirstName), name },
 							{ nameof(Request.Height), (int)height },
 							{ nameof(Request.Weight), (int)weight },
-							{ nameof(Request.DateOfBirth), dateOfBirth.ToString("yyyy-MM-dd") },
-							{ nameof(Request.FavouriteDayOfWeek), ((DayOfWeek)r.Next(0, 6)).ToString() },
-							{ nameof(Request.FirstDayOfWeek), ((DayOfWeek)r.Next(0, 1)).ToString() },
+							{ nameof(Request.DateOfBirth), dateOfBirth },
+							{ nameof(Request.FavouriteDayOfWeek), new DropdownValue<DayOfWeek>((DayOfWeek)r.Next(0, 6)) },
+							{ nameof(Request.FirstDayOfWeek), new DropdownValue<DayOfWeek>((DayOfWeek)r.Next(0, 1)) },
 							{ nameof(Request.IsRegistered), r.Next(0, 1) == 1 }
 						}
 					},

@@ -9,7 +9,7 @@ export class FormInstance {
     public outputFieldValues: Array<OutputFieldValue> = [];
     public inputFieldValues: Array<InputController<any>> = [];
 
-    constructor(metadata: umf.FormMetadata, inputControllerRegister:InputControllerRegister) {
+    constructor(metadata: umf.FormMetadata, inputControllerRegister: InputControllerRegister) {
         this.metadata = metadata;
         this.inputFieldValues = inputControllerRegister.createControllers(this.metadata.inputFields);
     }
@@ -35,37 +35,37 @@ export class FormInstance {
         return Promise.all(promises);
     }
 
-    prepareForm():any {
+    prepareForm(): any {
         var data = {};
-		var promises = [];
-		var hasRequiredMissingInput = false;
+        var promises = [];
+        var hasRequiredMissingInput = false;
 
-		for (let input of this.inputFieldValues) {
-			var promise = input.getValue().then(value => {
-				data[input.metadata.id] = value;
+        for (let input of this.inputFieldValues) {
+            var promise = input.getValue().then(value => {
+                data[input.metadata.id] = value;
 
-				if (input.metadata.required && (value == null || value == "")) {
-					hasRequiredMissingInput = true;
-				}
-			});
+                if (input.metadata.required && (value == null || value == "")) {
+                    hasRequiredMissingInput = true;
+                }
+            });
 
-			promises.push(promise);
-		}
+            promises.push(promise);
+        }
 
-		return Promise.all(promises).then(() => {
-			// If not all required inputs were entered, then do not post.
-			if (hasRequiredMissingInput) {
-				return null;
-			}
+        return Promise.all(promises).then(() => {
+            // If not all required inputs were entered, then do not post.
+            if (hasRequiredMissingInput) {
+                return null;
+            }
 
             return data;
         });
     }
 
-    getSerializedInputValues():any {
+    getSerializedInputValues(): any {
         var data = {};
         var promises = [];
-        
+
         for (let input of this.inputFieldValues) {
             var promise = input.serialize().then(t => {
                 // Don't include inputs without values, because we only
@@ -79,6 +79,29 @@ export class FormInstance {
         }
 
         return Promise.all(promises).then(() => data);
+    }
+
+    getSerializedInputValuesFromObject(value: any): any {
+        var data = {};
+
+        var normalizedObject = {};
+        for (let prop in value) {
+            if (value.hasOwnProperty(prop)) {
+                normalizedObject[prop.toLowerCase()] = value[prop];
+            }
+        }
+
+        for (let input of this.inputFieldValues) {
+            var valueAsString = input.serializeValue(normalizedObject[input.metadata.id.toLowerCase()]);
+
+            // Don't include inputs without values, because we only
+            // want to serialize "non-default" values.
+            if (valueAsString != null && valueAsString != "") {
+                data[input.metadata.id] = valueAsString;
+            }
+        }
+
+        return data;
     }
 
     setOutputFieldValues(response: umf.FormResponse) {
