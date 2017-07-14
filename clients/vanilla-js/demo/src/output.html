@@ -1,4 +1,4 @@
-{{#if showLabel === true}}
+{{#if showLabel === true && !alwaysHideLabel }}
 <div>
     <strong>{{field.metadata.label}}:</strong>
     <div ref:container class="{{class}}"></div>
@@ -13,23 +13,40 @@
     import DateTimeOutput from "./outputs/Datetime";
     import TableOutput from "./outputs/Table";
     import FormLink from "./outputs/FormLink";
+    import Tabstrip from "./outputs/Tabstrip";
 
     var all = {
         text: TextOutput,
         number: NumberOutput,
         datetime: DateTimeOutput,
         table: TableOutput,
-        formlink: FormLink
+        formlink: FormLink,
+        tabstrip: Tabstrip
+    };
+
+    all.tabstrip.constants = { 
+        alwaysHideLabel: true,
+        block: true
+    };
+
+    all.table.constants = {
+        block: true
     };
 
     export default {
         oncreate() {
             var field = this.get("field");
             var app = this.get("app");
-            
+           
             var output = field != null 
                 ? all[field.metadata.type] || TextOutput
                 : TextOutput;
+            
+            // Never show label if `alwaysHideLabel` is set to true.
+            var outputDisplayConfig = output.constants || {};
+            this.set({
+                alwaysHideLabel: outputDisplayConfig.alwaysHideLabel
+            });
             
             new output({
                 target: this.refs.container,
@@ -40,7 +57,7 @@
             });
 
             // Set correct css class based on the field type.
-            if (["table"].indexOf(field.metadata.type) !== -1) {
+            if (outputDisplayConfig.block) {
                 this.set({ class: "block" });
             }
             else {

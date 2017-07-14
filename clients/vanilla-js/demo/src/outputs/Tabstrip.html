@@ -1,0 +1,34 @@
+<div class="tabstrip">
+	{{#each field.data.tabs as tab}}
+	<div>
+		<a href="{{app.makeUrl(tab.form, tab.inputFieldValues)}}">{{tab.label}}</a>
+	</div>
+	{{/each}}
+</div>
+
+<style>
+	.tabstrip {
+		border-bottom: 1px solid #ccc;
+		margin: 10px 0;
+		padding: 0 5px;
+	}
+
+	.tabstrip>div {
+		display: inline-block;
+	}
+
+	.tabstrip>div>a {
+		background: #fefefe;
+		border-width: 1px 1px 0 1px;
+		border-style: solid;
+		border-color: #ccc;
+		padding: 10px 15px;
+		margin: 0 5px 0 0;
+		display: inline-block;
+		text-decoration: none;
+	}
+
+	.tabstrip>div>a:hover {
+		text-decoration: underline;
+	}
+</style>
