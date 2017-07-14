@@ -6,14 +6,12 @@
 	using global::MediatR;
 	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Basic.Output;
-	using UiMetadataFramework.Basic.Response;
 	using UiMetadataFramework.Core.Binding;
-	using UiMetadataFramework.MediatR;
 	using UiMetadataFramework.Web.Forms.Person;
 	using UiMetadataFramework.Web.Metadata;
 
-	[Form(Label = "Search people", PostOnLoad = true)]
-	public class SearchPeople : Metadata.IMyForm<SearchPeople.Request, SearchPeople.Response>
+	[MyForm(Label = "Search people", PostOnLoad = true, SubmitButtonLabel = "Search")]
+	public class SearchPeople : IMyForm<SearchPeople.Request, SearchPeople.Response>
 	{
 		public Response Handle(Request message)
 		{

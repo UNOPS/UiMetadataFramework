@@ -8,7 +8,7 @@
         {{/if}}
     {{/each}}
 
-    <button type="submit" disabled="{{disabled}}" tabindex="-1">submit</button>
+    <button type="submit" disabled="{{disabled}}" tabindex="-1">{{submitButtonLabel}}</button>
 </form>
 {{/if}}
 
@@ -42,8 +42,13 @@
                 if (!this.get("initialized")) {
                     var form = this.get("form");
 
-                    this.set({ initialized: true });
-                    this.set({ visibleInputFieldCount: form.inputFieldValues.filter(t => t.metadata.hidden == false).length });
+                    this.set({ 
+                        initialized: true,
+                        visibleInputFieldCount: form.inputFieldValues.filter(t => t.metadata.hidden == false).length,
+                        submitButtonLabel: form.metadata.customProperties != null && form.metadata.customProperties.submitButtonLabel 
+                            ? form.metadata.customProperties.submitButtonLabel 
+                            : "Submit"
+                    });
 
                     tabindex += 1;
                     
