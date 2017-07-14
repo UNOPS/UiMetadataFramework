@@ -5,17 +5,36 @@
 	/// <summary>
 	/// Represents response of a form.
 	/// </summary>
-	public class FormResponse
+	public class FormResponse<T>
+		where T : FormResponseMetadata
 	{
 		/// <summary>
-		/// Gets or sets name of the client-side handler which will be responsible for
-		/// processing this <see cref="FormResponse"/>.
+		/// Represents response which has additional metadata describing how to render the results.
 		/// </summary>
-		/// <remarks>Client can implement an arbitrary number of handlers,
-		/// however usually it will at least need to have an "object" handler,
-		/// which will simply render the response. Other handlers might include "redirect" handler,
-		/// which will redirect to another form or URL.</remarks>
 		[NotField]
-		public string ResponseHandler { get; set; }
+		public T Metadata { get; set; }
+	}
+
+	/// <summary>
+	/// Default form response type without any custom metadata.
+	/// </summary>
+	public class FormResponse : FormResponse<FormResponseMetadata>
+	{
+		public FormResponse()
+		{
+		}
+
+		/// <summary>
+		/// Creates a new instances of <see cref="FormResponse"/> class, with specified 
+		/// <see cref="FormResponse"/> handler.
+		/// </summary>
+		/// <param name="handler"></param>
+		public FormResponse(string handler)
+		{
+			this.Metadata = new FormResponseMetadata
+			{
+				Handler = handler
+			};
+		}
 	}
 }

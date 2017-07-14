@@ -61,7 +61,9 @@
 					.SingleOrDefault(t =>
 					{
 						var type = t.GetGenericTypeDefinition();
-						return type == typeof(IForm<,>) || type == typeof(IAsyncForm<,>);
+						return 
+							type == typeof(IForm<,,>) ||
+							type == typeof(IAsyncForm<,,>);
 					});
 
 				if (iformInterface == null)

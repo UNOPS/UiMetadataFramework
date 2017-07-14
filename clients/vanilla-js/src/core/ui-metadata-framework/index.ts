@@ -4,3 +4,4 @@ export * from "./FormResponse";
 export * from "./InputFieldMetadata";
 export * from "./InputFieldSource";
 export * from "./OutputFieldMetadata";
+export * from "./FormResponseMetadata";

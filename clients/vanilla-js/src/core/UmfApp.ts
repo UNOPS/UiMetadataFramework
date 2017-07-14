@@ -1,4 +1,4 @@
-﻿import { FormMetadata, FormResponse } from "./ui-metadata-framework/index";
+﻿import { FormMetadata, FormResponse, FormResponseMetadata } from "./ui-metadata-framework/index";
 import { UmfServer } from "./UmfServer";
 import { FormInstance } from "./FormInstance";
 import { IFormResponseHandler } from "./IFormResponseHandler";
@@ -53,10 +53,11 @@ export class UmfApp {
 	}
 
 	handleResponse(response: FormResponse, form: FormInstance) {
-		var handler = this.formResponseHandlers[response.responseHandler];
+		var responseMetadata = response.metadata || new FormResponseMetadata();
+		var handler = this.formResponseHandlers[responseMetadata.handler];
 
 		if (handler == null) {
-			throw new Error(`Cannot find FormResponseHandler "${response.responseHandler}".`);
+			throw new Error(`Cannot find FormResponseHandler "${responseMetadata.handler}".`);
 		}
 
 		return handler.handle(response, form);

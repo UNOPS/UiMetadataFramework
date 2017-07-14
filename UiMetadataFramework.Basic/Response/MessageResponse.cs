@@ -4,9 +4,8 @@
 
 	public class MessageResponse : FormResponse
 	{
-		public MessageResponse()
+		public MessageResponse() : base("message")
 		{
-			this.ResponseHandler = "message";
 		}
 
 		public string Message { get; set; }

@@ -1,4 +1,4 @@
-<h2>{{metadata.label}}</h2>
+<h2>{{responseMetadata.title || metadata.label}}</h2>
 
 {{#if initialized && visibleInputFieldCount > 0}}
 <form on:submit="submit(app, form, event, true)">
@@ -93,10 +93,11 @@
                             formInstance.setOutputFieldValues(response);
                             
                             enableForm(self);
-
-                            if (response.responseHandler == "" || response.responseHandler == null) {
+                            
+                            if (response.metadata.handler == "" || response.metadata.handler == null) {
                                 self.set({
-                                    outputFieldValues: formInstance.outputFieldValues
+                                    outputFieldValues: formInstance.outputFieldValues,
+                                    responseMetadata: response.metadata
                                 });
                             }
                             else {
@@ -114,7 +115,8 @@
                 disabled: false,
                 tabindex: tabindex,
                 urlData: null,
-                initialized: false
+                initialized: false,
+                responseMetadata: {}
             };
         },
         components: {

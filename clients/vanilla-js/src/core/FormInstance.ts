@@ -126,7 +126,7 @@ export class FormInstance {
     private getNormalizedObject(response: umf.FormResponse): any {
         var normalizedResponse = {};
         for (let field in response) {
-            if (response.hasOwnProperty(field) && field !== "responseHandler") {
+            if (response.hasOwnProperty(field) && field !== "metadata") {
                 normalizedResponse[field.toLowerCase()] = response[field];
             }
         }

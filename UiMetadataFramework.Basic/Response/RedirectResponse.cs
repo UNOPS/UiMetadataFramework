@@ -4,9 +4,8 @@ namespace UiMetadataFramework.Basic.Response
 
 	public class RedirectResponse : FormResponse
 	{
-		public RedirectResponse()
+		public RedirectResponse() : base("redirect")
 		{
-			this.ResponseHandler = "redirect";
 		}
 
 		public string Form { get; set; }

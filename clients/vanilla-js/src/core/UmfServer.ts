@@ -1,4 +1,4 @@
-import { FormMetadata, FormResponse } from "./ui-metadata-framework/index";
+import { FormMetadata, FormResponse, FormResponseMetadata } from "./ui-metadata-framework/index";
 import { FormInstance } from "./FormInstance";
 import * as axiosLib from "axios";
 
@@ -42,6 +42,10 @@ export class UmfServer {
             }
         }).then((response: axiosLib.AxiosResponse) => {
             var invokeFormResponses = <InvokeFormResponse[]>response.data;
+
+            // Make sure metadata is never null.
+            invokeFormResponses[0].data.metadata = invokeFormResponses[0].data.metadata || new FormResponseMetadata();
+
             return invokeFormResponses[0].data;
         }).catch((error: axiosLib.AxiosError) => {
             alert(error.response.data.error);
