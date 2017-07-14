@@ -1,10 +1,24 @@
 <div class="tabstrip">
 	{{#each field.data.tabs as tab}}
 	<div>
-		<a href="{{app.makeUrl(tab.form, tab.inputFieldValues)}}">{{tab.label}}</a>
+		<a href="{{app.makeUrl(tab.form, tab.inputFieldValues)}}"
+			class="{{getCssClass(tab, field.data)}}">{{tab.label}}</a>
 	</div>
 	{{/each}}
 </div>
+
+<script>
+	export default {
+		helpers: {
+			getCssClass(tab, tabstrip) {
+				console.log(tab);
+				return tab.form == tabstrip.currentTab
+					? "active"
+					: "";
+			}
+		}
+	}
+</script>
 
 <style>
 	.tabstrip {
@@ -18,7 +32,7 @@
 	}
 
 	.tabstrip>div>a {
-		background: #fefefe;
+		background: #e6e6e6;
 		border-width: 1px 1px 0 1px;
 		border-style: solid;
 		border-color: #ccc;
@@ -30,5 +44,11 @@
 
 	.tabstrip>div>a:hover {
 		text-decoration: underline;
+	}
+
+	.tabstrip>div>a.active {
+		margin-bottom: -1px;
+		padding-bottom: 11px;
+		background: #f8f8f8;
 	}
 </style>

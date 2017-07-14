@@ -15,7 +15,7 @@
 			var person = SearchPeople.FamilyPerson.RandomFamilyPerson(message.Name);
 			return new Response
 			{
-				Tabs = PersonInfo.GetTabs(typeof(PersonInfo).FullName, message.Name),
+				Tabs = PersonInfo.GetTabs(typeof(Relatives).FullName, message.Name),
 				Relatives = person.Relatives,
 				Metadata = new MyFormResponseMetadata
 				{
