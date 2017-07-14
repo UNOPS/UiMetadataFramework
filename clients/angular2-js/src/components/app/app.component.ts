@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { FormService } from '../../services/form.service';
 import { RestService } from '../../services/rest.service';
 import { FormData, Question } from '../../models';
+import { FormMetadata } from "../../core/ui-metadata-framework/index";
+import { MetadataService } from "../../services/metadata.service";
 
 @Component({
     selector: 'dynamic-form-app',
@@ -10,11 +12,12 @@ import { FormData, Question } from '../../models';
 })
 export class AppComponent {
     forms: FormData[] = null;
+    metadata: FormMetadata[] = null;
     selectedForm: FormData = null;
 
-    constructor(private formService: FormService, private restService: RestService) {
-        restService.getForms().subscribe((forms: FormData[]) => {
-            this.formService.setForms(forms);
+    constructor(private metadataService: MetadataService, private restService: RestService) {
+         restService.getAllMetadata().subscribe((metadata: FormMetadata[]) => {
+            this.metadataService.setMetadata(metadata);
         });
     }
 }
