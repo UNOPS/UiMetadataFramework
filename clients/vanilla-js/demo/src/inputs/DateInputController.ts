@@ -18,11 +18,9 @@ export class DateInputController extends umf.InputController<Date> {
 	}
 
 	serializeValue(date: Date | string): string {
-		var asDate = null;
-
-		if (typeof(date) === "string") {
-			asDate = this.parseDate(date);
-		}
+		var asDate = typeof(date) === "string" 
+			? this.parseDate(date)
+			: date;
 
 		return asDate != null
 			? `${asDate.getFullYear()}-${this.format2DecimalPlaces(asDate.getMonth() + 1)}-${this.format2DecimalPlaces(asDate.getDate())}`
