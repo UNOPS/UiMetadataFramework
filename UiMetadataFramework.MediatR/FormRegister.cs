@@ -61,7 +61,7 @@
 					.SingleOrDefault(t =>
 					{
 						var type = t.GetGenericTypeDefinition();
-						return 
+						return
 							type == typeof(IForm<,,>) ||
 							type == typeof(IAsyncForm<,,>);
 					});
@@ -86,7 +86,8 @@
 							Id = form.Type.FullName,
 							PostOnLoad = form.Attribute.PostOnLoad,
 							OutputFields = this.binder.BindOutputFields(responseType).ToList(),
-							InputFields = this.binder.BindInputFields(requestType).ToList()
+							InputFields = this.binder.BindInputFields(requestType).ToList(),
+							CustomProperties = form.Attribute.GetCustomProperties()
 						}
 					});
 			}

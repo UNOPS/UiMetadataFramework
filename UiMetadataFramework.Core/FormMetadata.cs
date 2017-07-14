@@ -8,6 +8,11 @@
 	public class FormMetadata
 	{
 		/// <summary>
+		/// Gets or sets additional parameters for the client.
+		/// </summary>
+		public object CustomProperties { get; set; }
+
+		/// <summary>
 		/// Gets or sets id of the form, to which this metadata belongs.
 		/// </summary>
 		public string Id { get; set; }

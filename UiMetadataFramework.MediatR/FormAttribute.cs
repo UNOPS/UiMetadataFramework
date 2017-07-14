@@ -19,5 +19,14 @@
 		/// reports and to generally show data without user having to post the form manually.
 		/// </summary>
 		public bool PostOnLoad { get; set; }
+
+		/// <summary>
+		/// Gets custom properties of the form.
+		/// </summary>
+		/// <returns>Object representing custom properties for the form or null if there are none.</returns>
+		public virtual object GetCustomProperties()
+		{
+			return null;
+		}
 	}
 }
