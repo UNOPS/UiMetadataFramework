@@ -25,17 +25,30 @@
 			};
 		}
 
+		public static FormLink Link(string name)
+		{
+			return new FormLink
+			{
+				Label = name,
+				Form = typeof(PersonInfo).FullName,
+				InputFieldValues = new Dictionary<string, object>
+				{
+					{ nameof(Request.Name), name }
+				}
+			};
+		}
+
 		internal static Tabstrip GetTabs(string currentTab, string name)
 		{
 			return new Tabstrip
 			{
 				CurrentTab = currentTab,
-				Tabs =
+				Tabs = new List<Tab>
 				{
 					new Tab
 					{
 						Label = "Basic info",
-						Form = nameof(PersonInfo),
+						Form = typeof(PersonInfo).FullName,
 						InputFieldValues = new Dictionary<string, object>
 						{
 							{ nameof(Request.Name), name }
@@ -44,7 +57,7 @@
 					new Tab
 					{
 						Label = "Relatives",
-						Form = nameof(Relatives),
+						Form = typeof(Relatives).FullName,
 						InputFieldValues = new Dictionary<string, object>
 						{
 							{ nameof(Relatives.Request.Name), name }

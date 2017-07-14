@@ -9,6 +9,7 @@
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
+	using UiMetadataFramework.Web.Forms.Person;
 
 	[Form(Label = "Do some magic", PostOnLoad = true)]
 	public class DoMagic : IForm<DoMagic.Request, DoMagic.Response>
@@ -20,7 +21,7 @@
 
 			return new Response
 			{
-				FirstName = message.FirstName,
+				FirstName = PersonInfo.Link(message.FirstName),
 				Weight = weight,
 				DateOfBirth = message.DateOfBirth,
 				Height = height,
@@ -39,7 +40,7 @@
 			public DateTime? DateOfBirth { get; set; }
 
 			[OutputField(Label = "First name", OrderIndex = 1)]
-			public string FirstName { get; set; }
+			public FormLink FirstName { get; set; }
 
 			[OutputField(Hidden = true)]
 			public int Height { get; set; }
@@ -157,7 +158,7 @@
 
 			public bool? IsRegistered { get; set; }
 
-			[InputField(Hidden = true)]
+			[InputField(Hidden = false)]
 			public decimal Weight { get; set; }
 		}
 	}
