@@ -3,26 +3,30 @@
 	using System.Collections.Generic;
 	using global::MediatR;
 	using UiMetadataFramework.Basic.Output;
-	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
+	using UiMetadataFramework.Web.Metadata;
 
 	[Form(PostOnLoad = true)]
-	public class Relatives : IForm<Relatives.Request, Relatives.Response>
+	public class Relatives : IMyForm<Relatives.Request, Relatives.Response>
 	{
 		public Response Handle(Request message)
 		{
-			var person = DoMagic.FamilyPerson.RandomFamilyPerson(message.Name);
+			var person = SearchPeople.FamilyPerson.RandomFamilyPerson(message.Name);
 			return new Response
 			{
 				Tabs = PersonInfo.GetTabs(typeof(PersonInfo).FullName, message.Name),
-				Relatives = person.Relatives
+				Relatives = person.Relatives,
+				Metadata = new MyFormResponseMetadata
+				{
+					Title = message.Name
+				}
 			};
 		}
 
-		public class Response : FormResponse
+		public class Response : MyFormResponse
 		{
-			public List<DoMagic.Person> Relatives { get; set; }
+			public List<SearchPeople.Person> Relatives { get; set; }
 
 			[OutputField(OrderIndex = -1)]
 			public Tabstrip Tabs { get; set; }

@@ -4,16 +4,16 @@
 	using System.Collections.Generic;
 	using global::MediatR;
 	using UiMetadataFramework.Basic.Output;
-	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
+	using UiMetadataFramework.Web.Metadata;
 
-	[Form(Label = "Person", PostOnLoad = true)]
-	public class PersonInfo : IForm<PersonInfo.Request, PersonInfo.Response>
+	[Form(PostOnLoad = true)]
+	public class PersonInfo : IMyForm<PersonInfo.Request, PersonInfo.Response>
 	{
 		public Response Handle(Request message)
 		{
-			var person = DoMagic.FamilyPerson.RandomFamilyPerson(message.Name);
+			var person = SearchPeople.FamilyPerson.RandomFamilyPerson(message.Name);
 			return new Response
 			{
 				Tabs = GetTabs(typeof(PersonInfo).FullName, message.Name),
@@ -21,7 +21,11 @@
 				Weight = person.Weight,
 				Height = person.Height,
 				FirstName = message.Name,
-				Relatives = person.Relatives
+				Relatives = person.Relatives,
+				Metadata = new MyFormResponseMetadata
+				{
+					Title = message.Name
+				}
 			};
 		}
 
@@ -68,7 +72,7 @@
 			};
 		}
 
-		public class Response : FormResponse
+		public class Response : MyFormResponse
 		{
 			[OutputField(Label = "DoB", OrderIndex = 2)]
 			public DateTime? DateOfBirth { get; set; }
@@ -80,7 +84,7 @@
 			public int Height { get; set; }
 
 			[OutputField(OrderIndex = 100)]
-			public List<DoMagic.Person> Relatives { get; set; }
+			public List<SearchPeople.Person> Relatives { get; set; }
 
 			[OutputField(OrderIndex = -10)]
 			public Tabstrip Tabs { get; set; }

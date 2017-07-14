@@ -67,7 +67,7 @@
 				options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Include;
 			});
 
-			services.AddMediatR(typeof(DoMagic));
+			services.AddMediatR(typeof(SearchPeople));
 			services.AddMediatR(typeof(InvokeForm));
 
 			var container = new Container();
@@ -96,7 +96,7 @@
 		private static FormRegister GetFormRegister(IContext context)
 		{
 			var register = new FormRegister(context.GetInstance<MetadataBinder>());
-			register.RegisterAssembly(typeof(DoMagic).GetAssembly());
+			register.RegisterAssembly(typeof(SearchPeople).GetAssembly());
 			return register;
 		}
 

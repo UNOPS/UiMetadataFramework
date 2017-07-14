@@ -6,13 +6,14 @@
 	using global::MediatR;
 	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Basic.Output;
-	using UiMetadataFramework.Core;
+	using UiMetadataFramework.Basic.Response;
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
 	using UiMetadataFramework.Web.Forms.Person;
+	using UiMetadataFramework.Web.Metadata;
 
-	[Form(Label = "Do some magic", PostOnLoad = true)]
-	public class DoMagic : IForm<DoMagic.Request, DoMagic.Response>
+	[Form(Label = "Search people", PostOnLoad = true)]
+	public class SearchPeople : Metadata.IMyForm<SearchPeople.Request, SearchPeople.Response>
 	{
 		public Response Handle(Request message)
 		{
@@ -30,11 +31,15 @@
 					FamilyPerson.RandomFamilyPerson(height * 1.23m, weight * 1.23m),
 					FamilyPerson.RandomFamilyPerson(height * 1.51m, weight * 1.51m),
 					FamilyPerson.RandomFamilyPerson(height * 1.14m, weight * 1.11m)
+				},
+				Metadata = new MyFormResponseMetadata
+				{
+					Title = "Searching for " + message.FirstName
 				}
 			};
 		}
 
-		public class Response : FormResponse
+		public class Response : MyFormResponse
 		{
 			[OutputField(Label = "DoB", OrderIndex = 2)]
 			public DateTime? DateOfBirth { get; set; }
@@ -120,7 +125,7 @@
 					FirstName = new FormLink
 					{
 						Label = name,
-						Form = typeof(DoMagic).FullName,
+						Form = typeof(SearchPeople).FullName,
 						InputFieldValues = new Dictionary<string, object>
 						{
 							{ nameof(Request.FirstName), name },
