@@ -1,9 +1,11 @@
 <h2>{{metadata.label}}</h2>
 
-{{#if initialized}}
+{{#if initialized && visibleInputFieldCount > 0}}
 <form on:submit="submit(app, form, event, true)">
     {{#each form.inputFieldValues as inputField}}
-    <FormInput field="{{inputField}}" tabindex="{{tabindex * 100 + inputField.metadata.orderIndex}}" />
+        {{#if inputField.metadata.hidden == false}}
+        <FormInput field="{{inputField}}" tabindex="{{tabindex * 100 + inputField.metadata.orderIndex}}" />
+        {{/if}}
     {{/each}}
 
     <button type="submit" disabled="{{disabled}}" tabindex="-1">submit</button>
@@ -38,12 +40,14 @@
         methods: {
             init: function() {
                 if (!this.get("initialized")) {
+                    var form = this.get("form");
+
                     this.set({ initialized: true });
+                    this.set({ visibleInputFieldCount: form.inputFieldValues.filter(t => t.metadata.hidden == false).length });
 
                     tabindex += 1;
                     
                     // Auto-submit form if necessary.
-                    var form = this.get("form");
                     if (form.metadata.postOnLoad) {
                         var app = this.get("app");
                         this.submit(app, form);
@@ -52,7 +56,7 @@
             },
             submit: function (app, formInstance, event, redirect) {
                 var self = this;
-                
+
                 if (event != null) {
                     event.preventDefault();
                 }
