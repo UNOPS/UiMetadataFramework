@@ -18,6 +18,7 @@ import {
     FormListComponent,
     FormViewerComponent
 } from './components';
+import { MetadataService } from "./services/metadata.service";
 
 @NgModule({
     bootstrap: [ AppComponent ],
@@ -37,7 +38,8 @@ import {
     ],
     providers: [
         FormService,
-        RestService
+        RestService,
+        MetadataService
     ]
 })
 export class AppModule {}

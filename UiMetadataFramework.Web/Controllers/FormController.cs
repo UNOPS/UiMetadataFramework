@@ -54,7 +54,8 @@
 		public IEnumerable<FormMetadata> Metadata()
 		{
 			this.Response.ContentType = ContentType;
-			return this.formRegister.RegisteredForms.Select(t => t.Metadata);
+		    this.Response.Headers["Access-Control-Allow-Origin"] = "*";
+            return this.formRegister.RegisteredForms.Select(t => t.Metadata);
 		}
 	}
 }
