@@ -33,7 +33,6 @@ import { MetadataService } from "./services/metadata.service";
         AppRoutingModule,
         BrowserModule,
         HttpModule,
-        InMemoryWebApiModule.forRoot(FauxFormsService),
         ReactiveFormsModule
     ],
     providers: [

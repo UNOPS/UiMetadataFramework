@@ -17,7 +17,7 @@ export class AppComponent {
     selectedForm: FormData = null;
 
     constructor(private metadataService: MetadataService, private restService: RestService) {
-         restService.getAllMetadata().subscribe((metadata: FormMetadata[]) => {
+         restService.getAllMetadata().then((metadata: FormMetadata[]) => {
             this.metadataService.setMetadata(metadata);
         });
     }

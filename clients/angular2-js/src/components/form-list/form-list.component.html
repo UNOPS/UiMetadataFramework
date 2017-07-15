@@ -1,20 +1,16 @@
-<!--{{myMetadata | json}}-->
-<!--<table border="1" cellpadding="2" cellspacing="0" style="width: 40%">
+<table border="1" cellpadding="2" cellspacing="0" style="width: 40%">
     <thead>
         <tr>
             <th>Form</th>
-            <th>Link</th>
+            <th>Label</th>
 
         </tr>
     </thead>
 
     <tbody>
-        <tr *ngFor="let form of forms">
-            <td>{{ form.title }}</td>
-            <td>{{ form.questions.length }}</td>
-            <td>
-                <button (click)="displayForm(form.id)">Display</button>
-            </td>
+        <tr *ngFor="let form of myMetadata">
+            <td>{{ form.id }}</td>
+            <td>{{ form.label }}</td>
         </tr>
     </tbody>
-</table>-->
+</table>
