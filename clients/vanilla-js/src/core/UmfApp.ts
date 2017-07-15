@@ -6,17 +6,28 @@ import { InputFieldValue } from "./InputFieldValue";
 import { InputControllerRegister } from "./InputControllerRegister";
 import { IAppRouter } from "./IAppRouter";
 
-export class UmfApp {
+export class UmfApp implements IAppRouter {
 	forms: FormMetadata[];
 	private readonly formsById: { [id: string]: FormMetadata } = {};
 	public readonly server: UmfServer;
 	public readonly formResponseHandlers: { [id: string]: IFormResponseHandler } = {};
 	public inputControllerRegister: InputControllerRegister;
-	public router: IAppRouter;
+	go: (form: string, values: any) => void;
+	makeUrl: (form: string, values: any) => string;
 
 	constructor(server: UmfServer, inputRegister: InputControllerRegister) {
 		this.server = server;
 		this.inputControllerRegister = inputRegister;
+	}
+
+	useRouter(router:IAppRouter) {
+		this.go = (form: string, values: any) => {
+			return router.go(form, values);
+		}
+
+		this.makeUrl = (form: string, values: any) => {
+			return router.makeUrl(form, values);
+		}
 	}
 
 	registerResponseHandler(handler: IFormResponseHandler) {

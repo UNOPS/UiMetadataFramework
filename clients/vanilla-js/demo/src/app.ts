@@ -11,11 +11,12 @@ var server = new umf.UmfServer(
 var app = new umf.UmfApp(server, inputRegister);
 
 app.load().then(response => {
-    app.router = new AppRouter(document.getElementById("main"), app);
+    var router = new AppRouter(document.getElementById("main"), app);
+    app.useRouter(router);
 
     app.registerResponseHandler(new handlers.MessageResponseHandler());
     app.registerResponseHandler(new handlers.RedirectResponseHandler((form, inputFieldValues) => {
-        app.router.go(form, inputFieldValues);
+        app.go(form, inputFieldValues);
     }));
 });
 

@@ -16,7 +16,7 @@ export class AppRouter implements umf.IAppRouter {
 		this.element = element;
 		this.stateRenderer = (<any>svelteStateRenderer).default({});
 		this.stateRouter = (<any>abstractStateRouter).default(this.stateRenderer, this.element);
-		this.rpb = new RouteParameterBuilder("_", app);
+		var rpb = this.rpb = new RouteParameterBuilder("_", app);
 
 		this.stateRouter.addState({
 			name: "home",
@@ -49,14 +49,14 @@ export class AppRouter implements umf.IAppRouter {
 			// any of the parameters change, unless they are specified in "querystringParameters".
 			// This means that if we are trying to reload same form, but with different parameters,
 			// nothing will happen, unless _d changes too.
-			querystringParameters: [this.rpb.parameterName],
-			defaultParameters: this.rpb.defaultParameters,
+			querystringParameters: [rpb.parameterName],
+			defaultParameters: rpb.defaultParameters,
 
 			activate: function (context) {
 				context.domApi.init();
 
-				this.rpb.currentForm = context.parameters._id;
-				context.on("destroy", () => this.rpb.currentForm = null);
+				rpb.currentForm = context.parameters._id;
+				context.on("destroy", () => rpb.currentForm = null);
 			},
 			resolve: function (data, parameters, cb) {
 				var formInstance = app.getFormInstance(parameters._id, true);
@@ -90,7 +90,7 @@ class RouteParameterBuilder {
 	defaultParameters: any = {};
 
 	constructor(parameterName: string, app: umf.UmfApp) {
-		this.getFormInstance = app.getFormInstance;
+		this.getFormInstance = (formId: string, throwError: boolean) => app.getFormInstance(formId, null);
 		this.parameterName = parameterName;
 		this.defaultParameters[parameterName] = "";
 	}

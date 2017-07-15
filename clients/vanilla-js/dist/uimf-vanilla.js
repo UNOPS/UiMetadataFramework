@@ -1789,6 +1789,14 @@ var UmfApp = (function () {
         this.server = server;
         this.inputControllerRegister = inputRegister;
     }
+    UmfApp.prototype.useRouter = function (router) {
+        this.go = function (form, values) {
+            return router.go(form, values);
+        };
+        this.makeUrl = function (form, values) {
+            return router.makeUrl(form, values);
+        };
+    };
     UmfApp.prototype.registerResponseHandler = function (handler) {
         this.formResponseHandlers[handler.name] = handler;
     };
