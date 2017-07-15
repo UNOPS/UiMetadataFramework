@@ -1,5 +1,6 @@
 ﻿export * from "./UmfServer";
 export * from "./UmfApp";
+export * from "./IAppRouter";
 export * from "./FormInstance";
 export * from "./IFormResponseHandler";
 export * from "./InputController";

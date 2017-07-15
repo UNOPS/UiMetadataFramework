@@ -4,15 +4,15 @@ import { FormInstance } from "./FormInstance";
 import { IFormResponseHandler } from "./IFormResponseHandler";
 import { InputFieldValue } from "./InputFieldValue";
 import { InputControllerRegister } from "./InputControllerRegister";
+import { IAppRouter } from "./IAppRouter";
 
 export class UmfApp {
 	forms: FormMetadata[];
 	private readonly formsById: { [id: string]: FormMetadata } = {};
 	public readonly server: UmfServer;
 	public readonly formResponseHandlers: { [id: string]: IFormResponseHandler } = {};
-	public go: (form: string, inputFieldValues: InputFieldValue[]) => void;
-	public makeUrl: (form: string, values) => string;
 	public inputControllerRegister: InputControllerRegister;
+	public router: IAppRouter;
 
 	constructor(server: UmfServer, inputRegister: InputControllerRegister) {
 		this.server = server;
@@ -27,7 +27,7 @@ export class UmfApp {
 		return this.server.getAllMetadata()
 			.then(response => {
 				this.forms = response;
-
+				
 				for (let form of this.forms) {
 					this.formsById[form.id] = form;
 				}

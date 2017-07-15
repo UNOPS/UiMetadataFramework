@@ -1,15 +1,25 @@
 import * as umf from "./ui-metadata-framework/index";
 import { InputController, StringInputController } from "./InputController";
 
-export class InputControllerRegister {
-	controllers: { [id: string]: { new (metadata:umf.InputFieldMetadata): InputController<any> } } = {};
+interface InputFieldControllerConstructor {
+    new (metadata: umf.InputFieldMetadata): InputController<any>;
+}
 
-	createControllers(fields:umf.InputFieldMetadata[]) {
+class InputControllerRegisterEntry {
+    controller: InputFieldControllerConstructor;
+    component: any;
+}
+
+export class InputControllerRegister {
+    controllers: { [id: string]: InputControllerRegisterEntry } = {};
+
+    createControllers(fields: umf.InputFieldMetadata[]) {
         var result = [];
 
         for (let field of fields) {
-			// Instantiate new input controller.
-			let ctor = this.controllers[field.type] || StringInputController;
+            // Instantiate new input controller.
+            var entry = this.controllers[field.type] || <InputControllerRegisterEntry>{};
+            let ctor = entry.controller || StringInputController;
             result.push(new ctor(field));
         }
 
@@ -17,6 +27,13 @@ export class InputControllerRegister {
             return a.metadata.orderIndex - b.metadata.orderIndex;
         });
 
-		return result;
+        return result;
+    }
+
+    register(name: string, svelteComponent: any, controller: InputFieldControllerConstructor) {
+        this.controllers[name] = {
+            controller: controller,
+            component: svelteComponent
+        };
     }
 }

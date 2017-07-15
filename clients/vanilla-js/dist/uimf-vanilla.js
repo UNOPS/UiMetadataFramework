@@ -1872,13 +1872,20 @@ var InputControllerRegister = (function () {
         for (var _i = 0, fields_1 = fields; _i < fields_1.length; _i++) {
             var field = fields_1[_i];
             // Instantiate new input controller.
-            var ctor = this.controllers[field.type] || StringInputController;
+            var entry = this.controllers[field.type] || {};
+            var ctor = entry.controller || StringInputController;
             result.push(new ctor(field));
         }
         result.sort(function (a, b) {
             return a.metadata.orderIndex - b.metadata.orderIndex;
         });
         return result;
+    };
+    InputControllerRegister.prototype.register = function (name, svelteComponent, controller) {
+        this.controllers[name] = {
+            controller: controller,
+            component: svelteComponent
+        };
     };
     return InputControllerRegister;
 }());
