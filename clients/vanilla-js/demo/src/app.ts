@@ -1,14 +1,14 @@
 ﻿import * as umf from "../../src/index";
 import * as handlers from "./handlers/index";
 
-import inputRegister from "./InputRegister";
+import controlRegister from "./ControlRegister";
 import { AppRouter } from "./AppRouter";
 
 var server = new umf.UmfServer(
     "http://localhost:62790/api/form/metadata",
     "http://localhost:62790/api/form/run");
 
-var app = new umf.UmfApp(server, inputRegister);
+var app = new umf.UmfApp(server, controlRegister);
 
 app.load().then(response => {
     var router = new AppRouter(document.getElementById("main"), app);

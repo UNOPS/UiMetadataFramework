@@ -1667,11 +1667,11 @@ var UmfServer = (function () {
 }());
 
 var FormInstance = (function () {
-    function FormInstance(metadata, inputControllerRegister) {
+    function FormInstance(metadata, controllerRegister) {
         this.outputFieldValues = [];
         this.inputFieldValues = [];
         this.metadata = metadata;
-        this.inputFieldValues = inputControllerRegister.createControllers(this.metadata.inputFields);
+        this.inputFieldValues = controllerRegister.createInputControllers(this.metadata.inputFields);
     }
     FormInstance.prototype.initializeInputFields = function (data) {
         var promises = [];
@@ -1787,7 +1787,7 @@ var UmfApp = (function () {
         this.formsById = {};
         this.formResponseHandlers = {};
         this.server = server;
-        this.inputControllerRegister = inputRegister;
+        this.controlRegister = inputRegister;
     }
     UmfApp.prototype.useRouter = function (router) {
         this.go = function (form, values) {
@@ -1823,7 +1823,7 @@ var UmfApp = (function () {
             }
             return null;
         }
-        return new FormInstance(metadata, this.inputControllerRegister);
+        return new FormInstance(metadata, this.controlRegister);
     };
     UmfApp.prototype.handleResponse = function (response, form) {
         var responseMetadata = response.metadata || new FormResponseMetadata();
@@ -1871,16 +1871,17 @@ var StringInputController = (function (_super) {
     return StringInputController;
 }(InputController));
 
-var InputControllerRegister = (function () {
-    function InputControllerRegister() {
-        this.controllers = {};
+var ControlRegister = (function () {
+    function ControlRegister() {
+        this.inputs = {};
+        this.outputs = {};
     }
-    InputControllerRegister.prototype.createControllers = function (fields) {
+    ControlRegister.prototype.createInputControllers = function (fields) {
         var result = [];
         for (var _i = 0, fields_1 = fields; _i < fields_1.length; _i++) {
             var field = fields_1[_i];
             // Instantiate new input controller.
-            var entry = this.controllers[field.type] || {};
+            var entry = this.inputs[field.type] || {};
             var ctor = entry.controller || StringInputController;
             result.push(new ctor(field));
         }
@@ -1889,13 +1890,25 @@ var InputControllerRegister = (function () {
         });
         return result;
     };
-    InputControllerRegister.prototype.register = function (name, svelteComponent, controller) {
-        this.controllers[name] = {
+    ControlRegister.prototype.getOutput = function (field) {
+        return field != null
+            ? this.outputs[field.metadata.type] || this.outputs["text"]
+            : this.outputs["text"];
+    };
+    ControlRegister.prototype.registerInputFieldControl = function (name, svelteComponent, controller) {
+        this.inputs[name] = {
             controller: controller,
             component: svelteComponent
         };
     };
-    return InputControllerRegister;
+    ControlRegister.prototype.registerOutputFieldControl = function (name, control, constants) {
+        if (constants === void 0) { constants = null; }
+        this.outputs[name] = {
+            constructor: control,
+            constants: constants
+        };
+    };
+    return ControlRegister;
 }());
 
 var InputFieldValue = (function () {
@@ -1922,7 +1935,7 @@ exports.FormResponseMetadata = FormResponseMetadata;
 exports.FormInstance = FormInstance;
 exports.InputController = InputController;
 exports.StringInputController = StringInputController;
-exports.InputControllerRegister = InputControllerRegister;
+exports.ControlRegister = ControlRegister;
 exports.InputFieldValue = InputFieldValue;
 exports.OutputFieldValue = OutputFieldValue;
 

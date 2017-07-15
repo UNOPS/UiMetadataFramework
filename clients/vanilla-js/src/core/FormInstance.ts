@@ -2,16 +2,16 @@ import * as umf from "./ui-metadata-framework/index";
 import { InputFieldValue } from "./InputFieldValue";
 import { OutputFieldValue } from "./OutputFieldValue";
 import { InputController } from "./InputController";
-import { InputControllerRegister } from "./InputControllerRegister";
+import { ControlRegister } from "./ControlRegister";
 
 export class FormInstance {
     public readonly metadata: umf.FormMetadata;
     public outputFieldValues: Array<OutputFieldValue> = [];
     public inputFieldValues: Array<InputController<any>> = [];
 
-    constructor(metadata: umf.FormMetadata, inputControllerRegister: InputControllerRegister) {
+    constructor(metadata: umf.FormMetadata, controllerRegister: ControlRegister) {
         this.metadata = metadata;
-        this.inputFieldValues = inputControllerRegister.createControllers(this.metadata.inputFields);
+        this.inputFieldValues = controllerRegister.createInputControllers(this.metadata.inputFields);
     }
 
     initializeInputFields(data: any) {

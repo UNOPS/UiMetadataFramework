@@ -8,39 +8,12 @@
 {{/if}}
 
 <script>
-    import TextOutput from "./outputs/Text";
-    import NumberOutput from "./outputs/Number";
-    import DateTimeOutput from "./outputs/Datetime";
-    import TableOutput from "./outputs/Table";
-    import FormLink from "./outputs/FormLink";
-    import Tabstrip from "./outputs/Tabstrip";
-
-    var all = {
-        text: TextOutput,
-        number: NumberOutput,
-        datetime: DateTimeOutput,
-        table: TableOutput,
-        formlink: FormLink,
-        tabstrip: Tabstrip
-    };
-
-    all.tabstrip.constants = { 
-        alwaysHideLabel: true,
-        block: true
-    };
-
-    all.table.constants = {
-        block: true
-    };
-
     export default {
         oncreate() {
             var field = this.get("field");
             var app = this.get("app");
            
-            var output = field != null 
-                ? all[field.metadata.type] || TextOutput
-                : TextOutput;
+            var output = app.controlRegister.getOutput(field);
             
             // Never show label if `alwaysHideLabel` is set to true.
             var outputDisplayConfig = output.constants || {};
@@ -48,7 +21,7 @@
                 alwaysHideLabel: outputDisplayConfig.alwaysHideLabel
             });
             
-            new output({
+            new output.constructor({
                 target: this.refs.container,
                 data: {
                     field: field,

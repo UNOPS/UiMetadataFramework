@@ -3,7 +3,7 @@ import { UmfServer } from "./UmfServer";
 import { FormInstance } from "./FormInstance";
 import { IFormResponseHandler } from "./IFormResponseHandler";
 import { InputFieldValue } from "./InputFieldValue";
-import { InputControllerRegister } from "./InputControllerRegister";
+import { ControlRegister } from "./ControlRegister";
 import { IAppRouter } from "./IAppRouter";
 
 export class UmfApp implements IAppRouter {
@@ -11,13 +11,13 @@ export class UmfApp implements IAppRouter {
 	private readonly formsById: { [id: string]: FormMetadata } = {};
 	public readonly server: UmfServer;
 	public readonly formResponseHandlers: { [id: string]: IFormResponseHandler } = {};
-	public inputControllerRegister: InputControllerRegister;
+	public controlRegister: ControlRegister;
 	go: (form: string, values: any) => void;
 	makeUrl: (form: string, values: any) => string;
 
-	constructor(server: UmfServer, inputRegister: InputControllerRegister) {
+	constructor(server: UmfServer, inputRegister: ControlRegister) {
 		this.server = server;
-		this.inputControllerRegister = inputRegister;
+		this.controlRegister = inputRegister;
 	}
 
 	useRouter(router:IAppRouter) {
@@ -60,7 +60,7 @@ export class UmfApp implements IAppRouter {
 			return null;
 		}
 
-		return new FormInstance(metadata, this.inputControllerRegister);
+		return new FormInstance(metadata, this.controlRegister);
 	}
 
 	handleResponse(response: FormResponse, form: FormInstance) {
