@@ -49,6 +49,7 @@ export class UmfServer {
             return invokeFormResponses[0].data;
         }).catch((error: axiosLib.AxiosError) => {
             alert(error.response.data.error);
+            return null;
         });
     }
 }

@@ -1661,6 +1661,7 @@ var UmfServer = (function () {
             return invokeFormResponses[0].data;
         }).catch(function (error) {
             alert(error.response.data.error);
+            return null;
         });
     };
     return UmfServer;
