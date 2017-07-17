@@ -3,9 +3,11 @@ import {
     OnInit
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { MetadataService } from '../../services/metadata.service';
 
 import { FormService } from '../../services/form.service';
 import { FormData } from '../../models';
+import { FormMetadata } from "../../core/ui-metadata-framework/index";
 
 @Component({
     selector: 'form-viewer',
@@ -13,32 +15,23 @@ import { FormData } from '../../models';
     styles: []
 })
 export class FormViewerComponent implements OnInit {
-    private get _blankForm(): FormData {
-        return {
-            id: null,
-            questions: [],
-            title: ''
-        };
-    }
-
-    form: FormData = this._blankForm;
-
-    constructor(private formService: FormService, private route: ActivatedRoute) {}
+  
+form:FormMetadata
+    constructor(private metadataService: MetadataService, private route: ActivatedRoute) {}
 
     ngOnInit() {
-        this.formService.forms.subscribe(() => {
-            this.route.params.map((param) => parseInt(param['id']))
-                .forEach((id: number) => this.selectForm(id));
-        });
+            this.route.params.map((param) => param['id'])
+                .forEach((id: string) => this.selectForm(id));
     }
 
-    private selectForm(id: number) {
-        const selectedForm = this.formService.getForm(id);
-
+    private selectForm(id: string) {
+        debugger
+        const selectedForm = this.metadataService.metadata.value.find(s => s.id == id);
+      
         if (selectedForm) {
             this.form = selectedForm;
-        } else {
-            this.form = this._blankForm;
-        }
+            console.log(selectedForm);
+        } 
+      
     }
 }
