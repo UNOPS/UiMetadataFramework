@@ -1,10 +1,10 @@
-import * as umf from "../../src/index";
-import * as abstractStateRouter from "../../node_modules/abstract-state-router/index";
-import * as svelteStateRenderer from "../../node_modules/svelte-state-renderer/index";
+import * as umf from "core-framework";
+import * as abstractStateRouter from "../node_modules/abstract-state-router/index";
+import * as svelteStateRenderer from "../node_modules/svelte-state-renderer/index";
 
-import Menu from "../svelte-components/Menu";
-import Form from "../svelte-components/Form";
-import Home from "../svelte-components/Home";
+import Form from "core-ui/Form";
+import Menu from "components/Menu";
+import Home from "components/Home";
 
 export class AppRouter implements umf.IAppRouter {
 	private readonly stateRenderer: any;

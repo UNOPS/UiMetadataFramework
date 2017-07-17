@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
 		"outDir": "../es2015",
+		"allowJs": true,
 		"noImplicitAny": false,
 		"noEmitOnError": true,
 		"removeComments": false,
@@ -12,9 +13,16 @@
 			"es2015",
 			"dom",
 			"es5"
-		]
+		],
+		"baseUrl": "./",
+		"paths": {
+			"components/*": ["../build/svelte/components/*"],
+			"core-ui/*": ["../build/svelte/core/ui/*", "./core/ui/*"],
+			"core-framework": ["./core/framework/index"],
+			"core-handlers": ["./core/handlers/index"]
+		}
 	},
 	"files": [
-		"./index.ts"
+		"./app.ts"
 	]
 }

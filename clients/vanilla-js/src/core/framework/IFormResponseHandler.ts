@@ -1,4 +1,4 @@
-import { FormResponse } from "./ui-metadata-framework/index";
+import { FormResponse } from "uimf-core";
 import { FormInstance } from "./FormInstance";
 
 export interface IFormResponseHandler {

@@ -1,6 +1,7 @@
-import * as umf from "../../../src/index";
+import * as umf from "uimf-core";
+import { IFormResponseHandler, FormInstance } from "core-framework";
 
-export class RedirectResponseHandler implements umf.IFormResponseHandler {
+export class RedirectResponseHandler implements IFormResponseHandler {
 	public readonly name: string = "redirect";
 	private readonly goToForm: (form: string, inputFieldValues: any) => void;
 
@@ -8,7 +9,7 @@ export class RedirectResponseHandler implements umf.IFormResponseHandler {
 		this.goToForm = goToForm;
 	}
 
-	handle(response: RedirectResponse, form: umf.FormInstance) {
+	handle(response: RedirectResponse, form: FormInstance) {
 		this.goToForm(response.form, response.inputFieldValues);
 	}
 }

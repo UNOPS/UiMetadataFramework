@@ -33,7 +33,8 @@
     "svelte-state-renderer": "^1.2.1",
     "ts-loader": "^2.1.0",
     "tslib": "^1.7.1",
-    "typescript": "^2.3.4"
+    "typescript": "^2.3.4",
+    "uimf-core": "0.0.1"
   },
   "dependencies": {
     "@types/axios": "^0.14.0"

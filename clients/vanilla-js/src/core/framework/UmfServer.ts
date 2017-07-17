@@ -1,4 +1,4 @@
-import { FormMetadata, FormResponse, FormResponseMetadata } from "./ui-metadata-framework/index";
+import { FormMetadata, FormResponse, FormResponseMetadata } from "uimf-core";
 import { FormInstance } from "./FormInstance";
 import * as axiosLib from "axios";
 
@@ -31,7 +31,7 @@ export class UmfServer {
         });
     }
 
-    postForm(form: string, data: any): Promise<FormResponse> {
+    postForm(form: string, data: any): Promise<any> {
         return axios.post(this.postFormUrl, JSON.stringify([{
             Form: form,
             RequestId: 1,

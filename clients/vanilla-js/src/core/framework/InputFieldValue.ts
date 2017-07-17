@@ -1,4 +1,4 @@
-import * as umf from "./ui-metadata-framework/index";
+import * as umf from "uimf-core";
 import { InputController } from "./InputController";
 
 export class InputFieldValue {

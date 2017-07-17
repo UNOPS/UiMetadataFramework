@@ -1,4 +1,4 @@
-import * as umf from "../../../src/index";
+import * as umf from "core-framework";
 
 export class NumberInputController extends umf.InputController<number> {
 	serializeValue(value: number | string): string {

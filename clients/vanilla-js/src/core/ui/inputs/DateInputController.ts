@@ -1,4 +1,4 @@
-import * as umf from "../../../src/index";
+import * as umf from "core-framework";
 
 export class DateInputController extends umf.InputController<Date> {
 	valueAsText: string = null;

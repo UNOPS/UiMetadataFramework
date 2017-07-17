@@ -1,4 +1,4 @@
-﻿import { FormMetadata, FormResponse, FormResponseMetadata } from "./ui-metadata-framework/index";
+﻿import { FormMetadata, FormResponse, FormResponseMetadata } from "uimf-core";
 import { UmfServer } from "./UmfServer";
 import { FormInstance } from "./FormInstance";
 import { IFormResponseHandler } from "./IFormResponseHandler";
@@ -74,5 +74,3 @@ export class UmfApp implements IAppRouter {
 		return handler.handle(response, form);
 	}
 }
-
-export * from "./ui-metadata-framework/index";

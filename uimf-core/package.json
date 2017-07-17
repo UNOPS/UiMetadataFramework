@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "name": "uimf-core",
+  "homepage": "https://github.com/unops/uimetadataframework",
+  "description": "Core entities of the UI Metadata Framework in TypeScript",
+  "license": "MIT",
+  "types": "src/index.ts",
+  "files": [
+    "src"
+  ]
+}

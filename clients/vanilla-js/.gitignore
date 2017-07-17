@@ -1,5 +1,6 @@
 node_modules
 bower_modules
 .rpt2_cache
-demo/js
-demo/svelte-components
+wwwroot/js
+build
+es2015
