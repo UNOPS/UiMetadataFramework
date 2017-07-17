@@ -4,17 +4,16 @@ import {
     Response
 } from '@angular/http';
 
-import 'rxjs/add/operator/map';
-
 import { FormData } from '../models';
 import { FormMetadata } from "../core/ui-metadata-framework/index";
 
 @Injectable()
 export class RestService {
-    constructor(private http: Http) {}
-
+     public static  url : string = "http://localhost:62790/api/form";
+     constructor(private http: Http) {}
+   
     getAllMetadata() : Promise<FormMetadata[]>{
-        return this.http.get('http://localhost:62790/api/form/metadata/')
+        return this.http.get(RestService.url + '/metadata')
         .toPromise()
         .then(response => response.json() as FormMetadata[])
         .catch(this.logError);

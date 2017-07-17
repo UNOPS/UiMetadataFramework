@@ -13,11 +13,6 @@ export class FormService {
 
     getForm(formId: number): FormData {
         let form = this.forms.value.find((form) => form.id === formId);
-
-        if (!form) {
-            form = null;
-        }
-
         return form;
     }
 }
