@@ -1,9 +1,12 @@
 'use strict';
 
 const HtmlWebpack = require('html-webpack-plugin');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
 const ChunkWebpack = webpack.optimize.CommonsChunkPlugin;
+
+
 
 const rootDir = path.resolve(__dirname, '..');
 
@@ -15,14 +18,24 @@ module.exports = {
     },
     devtool: 'source-map',
     entry: {
-        app: [ path.resolve(rootDir, 'src', 'bootstrap') ],
-        vendor: [ path.resolve(rootDir, 'src', 'vendor') ]
+        app: [path.resolve(rootDir, 'src', 'bootstrap')],
+        vendor: [path.resolve(rootDir, 'src', 'vendor')],
+        
     },
     module: {
         loaders: [
             { loader: 'raw', test: /\.(css|html)$/ },
             { exclude: /node_modules/, loader: 'ts', test: /\.ts$/ }
-        ]
+        ],
+        rules: [
+            {
+                test: /\.scss$/,
+                use: ExtractTextPlugin.extract({
+                fallback: 'style-loader',
+                use: ['css-loader', 'sass-loader']
+                })
+            }
+    ]
     },
     output: {
         filename: '[name].bundle.js',
@@ -34,6 +47,9 @@ module.exports = {
             minChunks: Infinity,
             name: 'vendor'
         }),
+
+        new ExtractTextPlugin({ filename: 'bundle.css', disable: false, allChunks: true }),
+
         new HtmlWebpack({
             filename: 'index.html',
             inject: 'body',
@@ -41,6 +57,6 @@ module.exports = {
         })
     ],
     resolve: {
-        extensions: [ '', '.js', '.ts' ]
+        extensions: ['', '.js', '.ts', '.css', '.scss']
     }
 };
