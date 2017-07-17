@@ -6,14 +6,25 @@ const path = require('path');
 const webpack = require('webpack');
 const ChunkWebpack = webpack.optimize.CommonsChunkPlugin;
 
+const rootDir = path.resolve('./');
+
+var webpackNode = {
+  // do not include poly fills...
+  console: false,
+  process: false,
+  global: false,
+  buffer: false,
+  __filename: false,
+  __dirname: false
+};
 
 
-const rootDir = path.resolve(__dirname, '..');
+console.log(rootDir);
 
 module.exports = {
     debug: true,
     devServer: {
-        contentBase: path.resolve(rootDir, 'dist'),
+        contentBase: path.resolve(rootDir),
         port: 9000
     },
     devtool: 'source-map',
@@ -22,24 +33,17 @@ module.exports = {
         vendor: [path.resolve(rootDir, 'src', 'vendor')],
         
     },
+    node: webpackNode,
     module: {
         loaders: [
             { loader: 'raw', test: /\.(css|html)$/ },
-            { exclude: /node_modules/, loader: 'ts', test: /\.ts$/ }
-        ],
-        rules: [
-            {
-                test: /\.scss$/,
-                use: ExtractTextPlugin.extract({
-                fallback: 'style-loader',
-                use: ['css-loader', 'sass-loader']
-                })
-            }
-    ]
+            { exclude: /node_modules/, loader: 'ts', test: /\.ts$/ },
+            { test: /\.scss$/,  exclude: /node_modules/,  loaders: ['raw-loader','sass-loader?outputStyle=compressed&sourceComments=false'] },
+        ]
     },
     output: {
         filename: '[name].bundle.js',
-        path: path.resolve(rootDir, 'dist')
+        path: path.resolve(rootDir)
     },
     plugins: [
         new ChunkWebpack({
@@ -47,7 +51,9 @@ module.exports = {
             minChunks: Infinity,
             name: 'vendor'
         }),
-
+        new webpack.DefinePlugin({
+            'process.env.BROWSER': JSON.stringify(true),
+        }),
         new ExtractTextPlugin({ filename: 'bundle.css', disable: false, allChunks: true }),
 
         new HtmlWebpack({
@@ -57,6 +63,7 @@ module.exports = {
         })
     ],
     resolve: {
-        extensions: ['', '.js', '.ts', '.css', '.scss']
+        extensions: ['', '.js', '.ts', '.css', '.scss'],
+        root: path.resolve(rootDir),
     }
 };
