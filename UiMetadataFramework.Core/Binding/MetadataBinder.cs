@@ -186,7 +186,9 @@
 				}
 				else
 				{
-					customProperties = attribute?.GetCustomProperties();
+					customProperties = binding != null 
+						? binding.GetCustomProperties(property, attribute) 
+						: attribute?.GetCustomProperties();
 				}
 
 				var metadata = new OutputFieldMetadata(clientControlName)

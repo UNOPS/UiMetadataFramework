@@ -2,6 +2,7 @@
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Reflection;
 
 	/// <summary>
 	/// Represents a binding between a <see cref="Type"/> of an output field and the client-side
@@ -31,5 +32,16 @@
 		/// Gets the server-side types being bound.
 		/// </summary>
 		public IEnumerable<Type> ServerTypes { get; set; }
+
+		/// <summary>
+		/// Gets custom properties of the output field.
+		/// </summary>
+		/// <param name="property">Property representing the output field for which to get metadata.</param>
+		/// <param name="attribute"><see cref="OutputFieldAttribute"/> which was applied to the input field.</param>
+		/// <returns>Object representing custom properties for the output field or null if there are none.</returns>
+		public object GetCustomProperties(PropertyInfo property, OutputFieldAttribute attribute)
+		{
+			return attribute?.GetCustomProperties();
+		}
 	}
 }
