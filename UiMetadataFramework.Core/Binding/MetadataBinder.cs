@@ -126,10 +126,17 @@
 					// reference types use attribute
 					: attribute?.Required ?? false;
 
+				if (binding.IsInputAlwaysHidden && attribute?.Hidden == false)
+				{
+					throw new BindingException(
+						$"Input '{property.DeclaringType.FullName}.{property.Name}' cannot have `Hidden = true`, " +
+						$"because '{propertyType.FullName}' inputs are preconfigured by '{binding.GetType().FullName}' to always be hidden.");
+				}
+
 				var metadata = new InputFieldMetadata(binding.ClientType)
 				{
 					Id = property.Name,
-					Hidden = attribute?.Hidden ?? false,
+					Hidden = binding.IsInputAlwaysHidden || (attribute?.Hidden ?? false),
 					Label = attribute?.Label ?? property.Name,
 					OrderIndex = attribute?.OrderIndex ?? 0,
 					Required = required,

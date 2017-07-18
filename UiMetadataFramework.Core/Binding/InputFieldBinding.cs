@@ -29,6 +29,13 @@ namespace UiMetadataFramework.Core.Binding
 		public string ClientType { get; }
 
 		/// <summary>
+		/// Gets or sets value indicating whether input should never be explicitly rendered on the client.
+		/// If this value is set to true, then <see cref="InputFieldMetadata.Hidden"/> will always
+		/// be true.
+		/// </summary>
+		public bool IsInputAlwaysHidden { get; set; }
+
+		/// <summary>
 		/// Gets the server-side types being bound.
 		/// </summary>
 		public IEnumerable<Type> ServerTypes { get; set; }

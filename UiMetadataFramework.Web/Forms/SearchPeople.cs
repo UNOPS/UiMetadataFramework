@@ -17,6 +17,7 @@
 		{
 			var height = message.Height == 0 || message.Height == null ? 170 : message.Height.Value;
 			var weight = message.Weight;
+			var random = new Random(height);
 
 			return new Response
 			{
@@ -24,12 +25,10 @@
 				Weight = weight,
 				DateOfBirth = message.DateOfBirth,
 				Height = height,
-				OtherPeople = new List<FamilyPerson>
-				{
-					FamilyPerson.RandomFamilyPerson(height * 1.23m, weight * 1.23m),
-					FamilyPerson.RandomFamilyPerson(height * 1.51m, weight * 1.51m),
-					FamilyPerson.RandomFamilyPerson(height * 1.14m, weight * 1.11m)
-				},
+				OtherPeople = Enumerable.Range(0, 100)
+					.Select(t => FamilyPerson.RandomFamilyPerson(random.Next(150, 210), random.Next(40, 130)))
+					.AsQueryable()
+					.Paginate(message),
 				Metadata = new MyFormResponseMetadata
 				{
 					Title = "Searching for " + message.FirstName
@@ -49,7 +48,7 @@
 			public int Height { get; set; }
 
 			[OutputField(OrderIndex = 10)]
-			public IList<FamilyPerson> OtherPeople { get; set; }
+			public PaginatedData<FamilyPerson> OtherPeople { get; set; }
 
 			[OutputField(Hidden = true)]
 			public decimal Weight { get; set; }
@@ -141,7 +140,7 @@
 			}
 		}
 
-		public class Request : IRequest<Response>
+		public class Request : PaginatedRequest, IRequest<Response>
 		{
 			[InputField(Label = "DoB", OrderIndex = 2)]
 			public DateTime? DateOfBirth { get; set; }

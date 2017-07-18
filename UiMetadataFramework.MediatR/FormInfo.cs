@@ -8,6 +8,7 @@ namespace UiMetadataFramework.MediatR
 	/// </summary>
 	public class FormInfo
 	{
+		public Type FormType { get; set; }
 		public FormMetadata Metadata { get; set; }
 		public Type RequestType { get; set; }
 		public Type ResponseType { get; set; }
