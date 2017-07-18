@@ -6,7 +6,6 @@ import { ActivatedRoute } from '@angular/router';
 import { MetadataService } from '../../services/metadata.service';
 
 import { FormService } from '../../services/form.service';
-import { FormData } from '../../models';
 import { FormMetadata } from "../../core/ui-metadata-framework/index";
 
 @Component({

@@ -10,7 +10,6 @@ import { MockActivatedRoute } from '../../mocks/activated-route';
 import { FormService } from '../../services/form.service';
 import { FormViewerComponent } from './form-viewer.component';
 import { DynamicFormComponent } from '../dynamic-form/dynamic-form.component';
-import { DynamicQuestionComponent } from '../dynamic-question/dynamic-question.component';
 
 describe('Component: FormViewerComponent', () => {
     const createComponent = () => {
@@ -30,8 +29,7 @@ describe('Component: FormViewerComponent', () => {
         TestBed.configureTestingModule({
             declarations: [
                 FormViewerComponent,
-                DynamicFormComponent,
-                DynamicQuestionComponent
+                DynamicFormComponent
             ],
             imports: [
                 ReactiveFormsModule

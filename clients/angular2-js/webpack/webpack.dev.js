@@ -30,7 +30,15 @@ module.exports = {
     devtool: 'source-map',
     entry: {
         app: [path.resolve(rootDir, 'src', 'bootstrap')],
-        vendor: [path.resolve(rootDir, 'src', 'vendor')],
+        vendor: [
+            'es6-shim',
+            'reflect-metadata',
+            'zone.js/dist/zone',
+            'zone.js/dist/long-stack-trace-zone',
+            '@angular/platform-browser',
+            'rxjs'
+            
+        ],
         
     },
     node: webpackNode,
@@ -46,11 +54,6 @@ module.exports = {
         path: path.resolve(rootDir)
     },
     plugins: [
-        new ChunkWebpack({
-            filename: 'vendor.bundle.js',
-            minChunks: Infinity,
-            name: 'vendor'
-        }),
         new webpack.DefinePlugin({
             'process.env.BROWSER': JSON.stringify(true),
         }),

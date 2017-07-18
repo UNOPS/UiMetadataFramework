@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { FormData } from '../models';
 
 import { BehaviorSubject } from 'rxjs/Rx';
 
@@ -12,7 +11,7 @@ export class FormService {
     }
 
     getForm(formId: number): FormData {
-        let form = this.forms.value.find((form) => form.id === formId);
+        let form = this.forms.value.find((form) =>1=== formId);
         return form;
     }
 }

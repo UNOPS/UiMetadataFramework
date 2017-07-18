@@ -1,7 +1,6 @@
 <form [formGroup]="formGroup" (ngSubmit)="submit()">
     <div *ngFor="let question of questions" class="row">
-        <dynamic-question [form]="formGroup"
-            [question]="question"></dynamic-question>
+        
     </div>
 
     <div class="row">

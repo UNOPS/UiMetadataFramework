@@ -4,7 +4,6 @@ import {
     Response
 } from '@angular/http';
 
-import { FormData } from '../models';
 import { FormMetadata } from "../core/ui-metadata-framework/index";
 
 @Injectable()
