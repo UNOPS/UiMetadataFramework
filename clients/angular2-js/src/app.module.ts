@@ -11,7 +11,6 @@ import { RestService } from './services/rest.service';
 
 import {
     AppComponent,
-    DynamicFormComponent,
     FormListComponent,
     FormViewerComponent
 } from './components';
@@ -21,7 +20,6 @@ import { MetadataService } from "./services/metadata.service";
     bootstrap: [ AppComponent ],
     declarations: [
         AppComponent,
-        DynamicFormComponent,
         FormListComponent,
         FormViewerComponent
     ],
