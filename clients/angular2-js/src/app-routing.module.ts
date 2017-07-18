@@ -15,11 +15,6 @@ const appRoutes: Routes = [
     {
         path: 'form/:id',
         component: FormViewerComponent
-    },
-    {
-        path: '',
-        pathMatch: 'full',
-        redirectTo: '/forms'
     }
 ];
 

@@ -1,16 +1,14 @@
-<table border="1" cellpadding="2" cellspacing="0" style="width: 40%">
-    <thead>
-        <tr>
-            <th>Form</th>
-            <th>Label</th>
-
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Form</th>
+    </tr>
+  </thead>
+  <tbody>
+        <tr *ngFor="let form of myMetadata; let i = index" [attr.data-index]="i">
+            <th scope="row">{{ i + 1 }}</th>
+            <td><a href="#/form/{{form.id}}">{{form.id}}</a></td>
         </tr>
-    </thead>
-
-    <tbody>
-        <tr *ngFor="let form of myMetadata">
-            <td>{{ form.id }}</td>
-            <td>{{ form.label }}</td>
-        </tr>
-    </tbody>
+  </tbody>
 </table>

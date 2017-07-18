@@ -16,22 +16,20 @@ import { FormMetadata } from "../../core/ui-metadata-framework/index";
 })
 export class FormViewerComponent implements OnInit {
   
-form:FormMetadata
+form:FormMetadata = null;
     constructor(private metadataService: MetadataService, private route: ActivatedRoute) {}
 
     ngOnInit() {
+        debugger;
             this.route.params.map((param) => param['id'])
                 .forEach((id: string) => this.selectForm(id));
     }
 
     private selectForm(id: string) {
-        debugger
-        const selectedForm = this.metadataService.metadata.value.find(s => s.id == id);
-      
-        if (selectedForm) {
-            this.form = selectedForm;
-            console.log(selectedForm);
-        } 
-      
+        debugger;
+        //const selectedForm = this.metadataService.metadata.value.find((form) => form.id == id);
+        
+           this.metadataService.metadata
+            .subscribe((metadata) => this.form = metadata.find(f => f.id == id));
     }
 }

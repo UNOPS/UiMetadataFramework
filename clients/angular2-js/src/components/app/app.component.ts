@@ -14,10 +14,6 @@ import { FormMetadata } from "../../core/ui-metadata-framework/index";
     styles: [ require('./app.component.scss') ]
 })
 export class AppComponent {
-    forms: FormData[] = null;
-    metadata: FormMetadata[] = null;
-    selectedForm: FormData = null;
-
     constructor(private metadataService: MetadataService, private restService: RestService) {
          restService.getAllMetadata().then((metadata: FormMetadata[]) => {
             this.metadataService.setMetadata(metadata);
