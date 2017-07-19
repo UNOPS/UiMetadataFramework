@@ -7,6 +7,21 @@ namespace UiMetadataFramework.Core.Binding
 	/// </summary>
 	public class DefaultValueAttribute : Attribute
 	{
+		/// <summary>
+		/// Configures default value for the input field to be a constant.
+		/// </summary>
+		/// <param name="value">Default value.</param>
+		public DefaultValueAttribute(string value)
+		{
+			this.Type = "const";
+			this.Id = value;
+		}
+
+		/// <summary>
+		/// Configures default value for the input field to be taken from a data source.
+		/// </summary>
+		/// <param name="type">Name of the data source.</param>
+		/// <param name="id">Id of the item within the data source.</param>
 		public DefaultValueAttribute(string type, string id)
 		{
 			this.Type = type;
