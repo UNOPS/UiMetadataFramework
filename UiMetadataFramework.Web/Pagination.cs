@@ -50,22 +50,6 @@
 		public static PaginatedData<TSource> Paginate<TSource, TResult>(
 			this IQueryable<TResult> query,
 			Func<TResult, TSource> transform,
-			int? pageNum,
-			int? pageSize,
-			string orderBy = null,
-			bool? ascending = true)
-		{
-			return query.Paginate(
-				transform,
-				pageNum ?? 1,
-				pageSize ?? 10,
-				orderBy,
-				ascending ?? true);
-		}
-
-		public static PaginatedData<TSource> Paginate<TSource, TResult>(
-			this IQueryable<TResult> query,
-			Func<TResult, TSource> transform,
 			int pageNum,
 			int pageSize,
 			string orderBy = null,

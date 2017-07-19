@@ -8,6 +8,7 @@
 	/// to single "page".
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
+	[OutputFieldType("paginated-data")]
 	public class PaginatedData<T>
 	{
 		/// <summary>
@@ -18,7 +19,6 @@
 		/// <summary>
 		/// Gets or sets total number of matching items in the data store.
 		/// </summary>
-		[OutputField(Hidden = true)]
 		public int TotalCount { get; set; }
 	}
 }
