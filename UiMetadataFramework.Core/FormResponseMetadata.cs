@@ -9,7 +9,7 @@
 		{
 		}
 
-		protected FormResponseMetadata(string handler)
+		public FormResponseMetadata(string handler)
 		{
 			this.Handler = handler;
 		}

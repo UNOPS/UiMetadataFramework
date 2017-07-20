@@ -1,4 +1,4 @@
-﻿namespace UiMetadataFramework.Basic.Input
+﻿namespace UiMetadataFramework.Web.Metadata
 {
 	using UiMetadataFramework.Core.Binding;
 
@@ -15,13 +15,5 @@
 
 		[InputField(Hidden = true)]
 		public int? PageSize { get; set; }
-	}
-
-	public class PaginatedRequestFieldBinding : InputFieldBinding
-	{
-		public PaginatedRequestFieldBinding() : base(typeof(PaginatedRequest), "paginator")
-		{
-			this.IsInputAlwaysHidden = true;
-		}
 	}
 }

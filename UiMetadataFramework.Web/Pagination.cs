@@ -1,10 +1,27 @@
 ﻿namespace UiMetadataFramework.Web
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Linq;
 	using System.Linq.Expressions;
-	using UiMetadataFramework.Basic.Input;
-	using UiMetadataFramework.Basic.Output;
+	using UiMetadataFramework.Web.Metadata;
+
+	/// <summary>
+	/// Represents subset of data from a data store. This subset of data corresponds
+	/// to single "page".
+	/// </summary>
+	public class PaginatedData<T>
+	{
+		/// <summary>
+		/// Gets or sets items.
+		/// </summary>
+		public IEnumerable<T> Results { get; set; }
+
+		/// <summary>
+		/// Gets or sets total number of matching items in the data store.
+		/// </summary>
+		public int TotalCount { get; set; }
+	}
 
 	internal static class Pagination
 	{

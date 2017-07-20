@@ -1,18 +1,23 @@
-﻿namespace UiMetadataFramework.Basic.Output
+namespace UiMetadataFramework.Web.Metadata
 {
 	using System.Collections.Generic;
+	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
-	/// <summary>
-	/// Represents subset of data from a data store. This subset of data corresponds
-	/// to single "page".
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class PaginatedData<T>
+	public class PaginatedResponse<T> : FormResponse<MyFormResponseMetadata>
 	{
+		public PaginatedResponse(string title)
+		{
+			this.Metadata = new MyFormResponseMetadata
+			{
+				Title = title
+			};
+		}
+
 		/// <summary>
 		/// Gets or sets items.
 		/// </summary>
+		[OutputField(OrderIndex = 100)]
 		public IEnumerable<T> Results { get; set; }
 
 		/// <summary>

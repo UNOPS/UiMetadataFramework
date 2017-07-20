@@ -19,25 +19,28 @@
 			var weight = message.Weight;
 			var random = new Random(height);
 
-			return new Response
+			var paginatedResponse = Enumerable.Range(0, 100)
+				.Select(t => FamilyPerson.RandomFamilyPerson(random.Next(150, 210), random.Next(40, 130)))
+				.AsQueryable()
+				.Paginate(message);
+
+			return new Response("Searching for " + message.FirstName)
 			{
 				FirstName = PersonInfo.Link(message.FirstName),
 				Weight = weight,
 				DateOfBirth = message.DateOfBirth,
 				Height = height,
-				OtherPeople = Enumerable.Range(0, 100)
-					.Select(t => FamilyPerson.RandomFamilyPerson(random.Next(150, 210), random.Next(40, 130)))
-					.AsQueryable()
-					.Paginate(message),
-				Metadata = new MyFormResponseMetadata
-				{
-					Title = "Searching for " + message.FirstName
-				}
+				Results = paginatedResponse.Results,
+				TotalCount = paginatedResponse.TotalCount
 			};
 		}
 
-		public class Response : MyFormResponse
+		public class Response : PaginatedResponse<FamilyPerson>
 		{
+			public Response(string title) : base(title)
+			{
+			}
+
 			[OutputField(Label = "DoB", OrderIndex = 2)]
 			public DateTime? DateOfBirth { get; set; }
 
@@ -46,9 +49,6 @@
 
 			[OutputField(Hidden = true)]
 			public int Height { get; set; }
-
-			[OutputField(OrderIndex = 10)]
-			public PaginatedData<FamilyPerson> OtherPeople { get; set; }
 
 			[OutputField(Hidden = true)]
 			public decimal Weight { get; set; }

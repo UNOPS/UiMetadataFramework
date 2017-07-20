@@ -15,7 +15,9 @@
 {{#if outputFieldValues != null}}
 <div class="response">
     {{#each outputFieldValues as outputField}}
+    {{#if outputField.metadata.hidden == false}}
     <FormOutput field="{{outputField}}" app="{{app}}" />
+    {{/if}}
     {{/each}}
 </div>
 {{/if}}

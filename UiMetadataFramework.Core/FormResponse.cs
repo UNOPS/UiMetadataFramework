@@ -1,7 +1,7 @@
 ﻿namespace UiMetadataFramework.Core
 {
 	using UiMetadataFramework.Core.Binding;
-
+	
 	/// <summary>
 	/// Represents response of a form.
 	/// </summary>
