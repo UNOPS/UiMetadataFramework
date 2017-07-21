@@ -11,9 +11,9 @@
 	using UiMetadataFramework.Web.Metadata;
 
 	[MyForm(Label = "Search people", PostOnLoad = true, SubmitButtonLabel = "Search")]
-	public class SearchPeople : IMyForm<SearchPeople.Request, SearchPeople.Response>
+	public class SearchPeople : IMyForm<SearchPeople.Request, SearchPeople.Data>
 	{
-		public Response Handle(Request message)
+		public Data Handle(Request message)
 		{
 			var height = message.Height == 0 || message.Height == null ? 170 : message.Height.Value;
 			var weight = message.Weight;
@@ -21,26 +21,26 @@
 
 			var paginatedResponse = Enumerable.Range(0, 100)
 				.Select(t => FamilyPerson.RandomFamilyPerson(random.Next(150, 210), random.Next(40, 130)))
+				.ToList()
 				.AsQueryable()
-				.Paginate(message);
+				.Paginate(message.Paginator);
 
-			return new Response("Searching for " + message.FirstName)
+			return new Data
 			{
 				FirstName = PersonInfo.Link(message.FirstName),
 				Weight = weight,
 				DateOfBirth = message.DateOfBirth,
 				Height = height,
-				Results = paginatedResponse.Results,
-				TotalCount = paginatedResponse.TotalCount
+				Results = paginatedResponse,
+				Metadata = new MyFormResponseMetadata
+				{
+					Title = "Searching for " + message.FirstName
+				}
 			};
 		}
 
-		public class Response : PaginatedResponse<FamilyPerson>
+		public class Data : MyFormResponse
 		{
-			public Response(string title) : base(title)
-			{
-			}
-
 			[OutputField(Label = "DoB", OrderIndex = 2)]
 			public DateTime? DateOfBirth { get; set; }
 
@@ -52,6 +52,9 @@
 
 			[OutputField(Hidden = true)]
 			public decimal Weight { get; set; }
+
+			[PaginatedData(nameof(Request.Paginator), OrderIndex = 100)]
+			public PaginatedData<FamilyPerson> Results { get; set; }
 		}
 
 		public class FamilyPerson : Person
@@ -140,10 +143,12 @@
 			}
 		}
 
-		public class Request : PaginatedRequest, IRequest<Response>
+		public class Request : IRequest<Data>
 		{
 			[InputField(Label = "DoB", OrderIndex = 2)]
 			public DateTime? DateOfBirth { get; set; }
+
+			public Paginator Paginator { get; set; }
 
 			public DropdownValue<DayOfWeek?> FavouriteDayOfWeek { get; set; }
 

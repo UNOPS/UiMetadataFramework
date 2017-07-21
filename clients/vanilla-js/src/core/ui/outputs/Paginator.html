@@ -1,17 +1,89 @@
- <!-- <TableOutput field="{{field}}" app="{{app}}" />  -->
-asdf
+<ul class="paginator">
+	{{#each pages as page}}
+	<li><a href="{{app.makeUrl(form.metadata.id, page.params)}}" class="{{page.cssClass}}">{{page.number}}</a></li>
+	{{/each}}
+</ul>
+
+<div ref:container></div>
 
 <script>
 	import TableOutput from "./Table";
+	import { OutputFieldValue } from "core-framework";
 
 	export default {
 		oncreate() {
 			var field = this.get("field");
-			var app = this.get("app");
-			console.log(field);
+
+			var tableField = new OutputFieldValue();
+			tableField.data = field.data.results;
+			tableField.metadata = field.metadata;
+
+			var i = new TableOutput({
+				target: this.refs.container,
+				data: {
+					field: tableField,
+					app: this.get("app")
+				}
+			});
+		},
+		computed: {
+			pages: (field, form) => {
+				var paginatorInput = form.inputFieldValues.find(t => t.metadata.id == field.metadata.customProperties.customizations.paginator);
+
+				var pageCount = Math.ceil(field.data.totalCount / paginatorInput.value.pageSize);
+
+				var params = {};
+				for (let i of form.inputFieldValues) {
+					params[i.metadata.id] = i.value;
+				}
+
+				var pages = [];
+				for (let p = 1; p <= pageCount; ++p) {
+					let pageParams = Object.assign({}, params);
+					pageParams[paginatorInput.metadata.id] = Object.assign({}, pageParams[paginatorInput.metadata.id]);
+					pageParams[paginatorInput.metadata.id].pageIndex = p;
+
+					pages.push({
+						number: p,
+						params: pageParams,
+						cssClass: paginatorInput.value.pageIndex == p ? "current" : ""
+					});
+				}
+
+				return pages;
+			}
+		},
+		data() {
+			return {
+				totalCount: 0
+			}
 		},
 		components: {
 			TableOutput
 		}
 	}
+
 </script>
+
+<style>
+	.paginator {
+		margin: .5rem 0;
+		padding-left: 0;
+	}
+
+	.paginator>li {
+		display: inline-block;
+	}
+
+	.paginator>li>a {
+		padding: 2px 10px;
+		margin: 1px;
+		display: inline-block;
+		background: #eee;
+	}
+
+	.paginator>li>a.current {
+		background: #4f4f4f;
+		color: #fff;
+	}
+</style>

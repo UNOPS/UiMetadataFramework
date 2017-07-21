@@ -4,6 +4,7 @@ import { DateInputController } from "core-ui/inputs/DateInputController";
 import { NumberInputController } from "core-ui/inputs/NumberInputController";
 import { DropdownInputController } from "core-ui/inputs/DropdownInputController";
 import { BooleanInputController } from "core-ui/inputs/BooleanInputController";
+import { PaginatorInputController } from "core-ui/inputs/PaginatorInputController";
 
 import TextInput from "core-ui/inputs/Text";
 import NumberInput from "core-ui/inputs/Number";
@@ -25,6 +26,7 @@ controlRegister.registerInputFieldControl("datetime", DateInput, DateInputContro
 controlRegister.registerInputFieldControl("number", NumberInput, NumberInputController);
 controlRegister.registerInputFieldControl("dropdown", DropdownInput, DropdownInputController);
 controlRegister.registerInputFieldControl("boolean", BooleanInput, BooleanInputController);
+controlRegister.registerInputFieldControl("paginator", null, PaginatorInputController);
 
 controlRegister.registerOutputFieldControl("text", TextOutput);
 controlRegister.registerOutputFieldControl("number", NumberOutput);

@@ -4,20 +4,7 @@
 </div>
 
 <script>
-    import TextInput from "./inputs/Text";
-    import NumberInput from "./inputs/Number";
-    import DateInput from "./inputs/Date";
-    import DropdownInput from "./inputs/Dropdown";
-    import BooleanInput from "./inputs/Boolean";
     import * as umf from "core-framework";
-
-    var all = {
-        text: TextInput,
-        number: NumberInput,
-        datetime: DateInput,
-        dropdown: DropdownInput,
-        boolean: BooleanInput
-    };
 
     var inputId = 0;
 
@@ -25,8 +12,9 @@
         oncreate() {
             let field = this.get("field");
             let tabindex = this.get("tabindex");
+            let app = this.get("app");
 
-            var input = all[field.metadata.type] || TextInput;
+            var input = app.controlRegister.getInput(field.metadata.type).component;
 
             var i = new input({
                 target: this.refs.container,

@@ -4,7 +4,7 @@
 <form on:submit="submit(app, form, event, true)">
     {{#each form.inputFieldValues as inputField}}
         {{#if inputField.metadata.hidden == false}}
-        <FormInput field="{{inputField}}" tabindex="{{tabindex * 100 + inputField.metadata.orderIndex}}" />
+        <FormInput field="{{inputField}}" app="{{app}}" tabindex="{{tabindex * 100 + inputField.metadata.orderIndex}}" />
         {{/if}}
     {{/each}}
 
@@ -16,7 +16,7 @@
 <div class="response">
     {{#each outputFieldValues as outputField}}
     {{#if outputField.metadata.hidden == false}}
-    <FormOutput field="{{outputField}}" app="{{app}}" />
+    <FormOutput field="{{outputField}}" app="{{app}}" form="{{form}}" />
     {{/if}}
     {{/each}}
 </div>

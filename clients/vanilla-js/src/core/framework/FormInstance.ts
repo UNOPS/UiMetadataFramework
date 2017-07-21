@@ -62,7 +62,7 @@ export class FormInstance {
         });
     }
 
-    getSerializedInputValues(): any {
+    getSerializedInputValues(): Promise<any> {
         var data = {};
         var promises = [];
 

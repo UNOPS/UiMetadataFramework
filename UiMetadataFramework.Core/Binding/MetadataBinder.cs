@@ -189,7 +189,7 @@
 					customProperties = binding != null 
 						// All non-enumerable properties (i.e. - custom properties) will
 						// have binding.
-						? binding.GetCustomProperties(property, attribute)
+						? binding.GetCustomProperties(property, attribute, this)
 						// Only for "ValueListOutputControlName" (i.e. - string[], int[], etc) 
 						// will the code come here. 
 						: attribute?.GetCustomProperties();

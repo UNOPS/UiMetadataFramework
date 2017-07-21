@@ -1,27 +1,10 @@
 ﻿namespace UiMetadataFramework.Web
 {
 	using System;
-	using System.Collections.Generic;
 	using System.Linq;
 	using System.Linq.Expressions;
-	using UiMetadataFramework.Web.Metadata;
-
-	/// <summary>
-	/// Represents subset of data from a data store. This subset of data corresponds
-	/// to single "page".
-	/// </summary>
-	public class PaginatedData<T>
-	{
-		/// <summary>
-		/// Gets or sets items.
-		/// </summary>
-		public IEnumerable<T> Results { get; set; }
-
-		/// <summary>
-		/// Gets or sets total number of matching items in the data store.
-		/// </summary>
-		public int TotalCount { get; set; }
-	}
+	using UiMetadataFramework.Basic.Input;
+	using UiMetadataFramework.Basic.Output;
 
 	internal static class Pagination
 	{
@@ -41,27 +24,27 @@
 
 		public static PaginatedData<TSource> Paginate<TSource>(
 			this IQueryable<TSource> query,
-			PaginatedRequest paginationParams)
+			Paginator paginationParams)
 		{
 			return query.Paginate(
 				t => t,
-				paginationParams.PageIndex,
-				paginationParams.PageSize,
-				paginationParams.OrderBy,
-				paginationParams.Ascending);
+				paginationParams?.PageIndex,
+				paginationParams?.PageSize,
+				paginationParams?.OrderBy,
+				paginationParams?.Ascending);
 		}
 
 		public static PaginatedData<TSource> Paginate<TSource, TResult>(
 			this IQueryable<TResult> query,
 			Func<TResult, TSource> transform,
-			PaginatedRequest paginationParams)
+			Paginator paginationParams)
 		{
 			return query.Paginate(
 				transform,
-				paginationParams.PageIndex,
-				paginationParams.PageSize,
-				paginationParams.OrderBy,
-				paginationParams.Ascending);
+				paginationParams?.PageIndex,
+				paginationParams?.PageSize,
+				paginationParams?.OrderBy,
+				paginationParams?.Ascending);
 		}
 
 		public static PaginatedData<TSource> Paginate<TSource, TResult>(

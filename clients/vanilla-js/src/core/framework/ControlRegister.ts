@@ -38,6 +38,12 @@ export class ControlRegister {
             : this.outputs["text"];
     }
 
+    getInput(type:string) {
+        return type != null
+            ? this.inputs[type] || this.inputs["text"]
+            : this.inputs["text"];
+    }
+
     registerInputFieldControl(name: string, svelteComponent: any, controller: InputFieldControllerConstructor) {
         this.inputs[name] = {
             controller: controller,
