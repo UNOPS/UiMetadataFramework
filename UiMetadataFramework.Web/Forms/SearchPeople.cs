@@ -75,6 +75,9 @@
 			[OutputField(OrderIndex = 20)]
 			public List<Person> Relatives { get; set; }
 
+			[OutputField(OrderIndex = 30)]
+			public ActionList Actions { get; set; }
+
 			public static FamilyPerson RandomFamilyPerson(string name)
 			{
 				var r = new Random(name.GetHashCode());
@@ -98,7 +101,10 @@
 					DateOfBirth = person.DateOfBirth,
 					Height = person.Height,
 					Weight = person.Weight,
-					Relatives = Enumerable.Range(0, random).Select(t => Random(170 + t, 65 + t)).ToList()
+					Relatives = Enumerable.Range(0, random).Select(t => Random(170 + t, 65 + t)).ToList(),
+					Actions = new ActionList(
+						ShowMessage.FormLink("Edit"),
+						FormLink("View similar", person.FirstName.Label))
 				};
 			}
 		}

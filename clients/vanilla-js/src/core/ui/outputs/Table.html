@@ -1,5 +1,5 @@
 {{#if field.data.length > 0}}
-<table>
+<table class="table">
 	<thead>
 		<tr>
 			{{#each columnsOrdered as column}}
@@ -77,5 +77,12 @@
 	.alert-nodata {
 		padding: 5px 15px;
     	font-style: italic;
+	}
+
+	.table>tbody>tr>td .actionlist {
+		background: none;
+		border: none;
+		margin: 0;
+		padding: 0;	
 	}
 </style>
