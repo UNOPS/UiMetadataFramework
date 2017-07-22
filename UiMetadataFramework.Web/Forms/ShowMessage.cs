@@ -1,6 +1,7 @@
 ﻿namespace UiMetadataFramework.Web.Forms
 {
 	using global::MediatR;
+	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Basic.Response;
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
@@ -13,6 +14,15 @@
 			return new Response
 			{
 				Message = message.Text
+			};
+		}
+
+		public static FormLink FormLink(string label)
+		{
+			return new FormLink
+			{
+				Label = label,
+				Form = typeof(ShowMessage).FullName
 			};
 		}
 

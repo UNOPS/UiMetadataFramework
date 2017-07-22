@@ -1,0 +1,87 @@
+<ul class="actionlist">
+	{{#each field.data.actions as action}}
+	<li>
+		<button on:click="run(action, app)">{{action.label}}</button>
+	</li>
+	{{/each}}
+</ul>
+
+<input id="modal-{{field.metadata.id}}" type="checkbox" bind:checked="open" class="hidden" />
+<div class="modal">
+	<div class="card">
+		<label for="modal-{{field.metadata.id}}" class="close" on:click="close()"></label>
+		<div ref:container></div>
+	</div>
+</div>
+
+<script>
+	import FormComponent from "core-ui/Form";
+
+	export default {
+		methods: {
+			run(action, app) {
+				this.set({ open: true });
+
+				var app = this.get("app");
+				var formInstance = app.getFormInstance(action.form, true);
+
+				formInstance.initializeInputFields(action.inputFieldValues).then(() => {
+					var f = new FormComponent({
+						target: this.refs.container,
+						data: {
+							metadata: formInstance.metadata,
+							form: formInstance,
+							app: app
+						}
+					});
+
+					f.init();
+
+					this.set({current: f});
+				});
+			},
+			close() {
+				var modalForm = this.get("current");
+				modalForm.destroy();
+			}
+		},
+		data() {
+			return {
+				open: false,
+				current: null
+			}
+		},
+		components: {
+			FormComponent
+		}
+	}
+
+</script>
+
+<style>
+	.modal .card {
+		max-width: 85%;
+	}
+
+	.hidden {
+		width: 0;
+		height: 0;
+		position: absolute;
+		left: -1000px;
+	}
+
+	.actionlist {
+		margin: 10px 0;
+		padding: 0 5px;
+		background: #f5f5f5;
+		border-width: 1px 0;
+		border-style: solid;
+		border-color: #e8e8e8;
+		text-align: right;
+	}
+
+	.actionlist>li {
+		list-style-type: none;
+		display: inline-block;
+	}
+</style>

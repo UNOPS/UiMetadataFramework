@@ -17,6 +17,10 @@
 			{
 				Tabs = PersonInfo.GetTabs(typeof(Relatives).FullName, message.Name),
 				Relatives = person.Relatives,
+				Actions = new ActionList(
+					ShowMessage.FormLink("Edit"),
+					SearchPeople.FormLink("View similar", message.Name)),
+
 				Metadata = new MyFormResponseMetadata
 				{
 					Title = message.Name
@@ -26,6 +30,9 @@
 
 		public class Response : MyFormResponse
 		{
+			[OutputField(OrderIndex = -15)]
+			public ActionList Actions { get; set; }
+
 			public List<SearchPeople.Person> Relatives { get; set; }
 
 			[OutputField(OrderIndex = -1)]

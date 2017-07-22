@@ -11,9 +11,9 @@
 	using UiMetadataFramework.Web.Metadata;
 
 	[MyForm(Label = "Search people", PostOnLoad = true, SubmitButtonLabel = "Search")]
-	public class SearchPeople : IMyForm<SearchPeople.Request, SearchPeople.Data>
+	public class SearchPeople : IMyForm<SearchPeople.Request, SearchPeople.Response>
 	{
-		public Data Handle(Request message)
+		public Response Handle(Request message)
 		{
 			var height = message.Height == 0 || message.Height == null ? 170 : message.Height.Value;
 			var weight = message.Weight;
@@ -25,7 +25,7 @@
 				.AsQueryable()
 				.Paginate(message.Paginator);
 
-			return new Data
+			return new Response
 			{
 				FirstName = PersonInfo.Link(message.FirstName),
 				Weight = weight,
@@ -39,7 +39,20 @@
 			};
 		}
 
-		public class Data : MyFormResponse
+		public static FormLink FormLink(string label, string firstName = null)
+		{
+			return new FormLink
+			{
+				Label = label,
+				Form = typeof(SearchPeople).FullName,
+				InputFieldValues = new Dictionary<string, object>
+				{
+					{ nameof(Request.FirstName), firstName }
+				}
+			};
+		}
+
+		public class Response : MyFormResponse
 		{
 			[OutputField(Label = "DoB", OrderIndex = 2)]
 			public DateTime? DateOfBirth { get; set; }
@@ -50,11 +63,11 @@
 			[OutputField(Hidden = true)]
 			public int Height { get; set; }
 
-			[OutputField(Hidden = true)]
-			public decimal Weight { get; set; }
-
 			[PaginatedData(nameof(Request.Paginator), OrderIndex = 100)]
 			public PaginatedData<FamilyPerson> Results { get; set; }
+
+			[OutputField(Hidden = true)]
+			public decimal Weight { get; set; }
 		}
 
 		public class FamilyPerson : Person
@@ -143,12 +156,10 @@
 			}
 		}
 
-		public class Request : IRequest<Data>
+		public class Request : IRequest<Response>
 		{
 			[InputField(Label = "DoB", OrderIndex = 2)]
 			public DateTime? DateOfBirth { get; set; }
-
-			public Paginator Paginator { get; set; }
 
 			public DropdownValue<DayOfWeek?> FavouriteDayOfWeek { get; set; }
 
@@ -164,6 +175,8 @@
 			public int? Height { get; set; }
 
 			public bool? IsRegistered { get; set; }
+
+			public Paginator Paginator { get; set; }
 
 			[InputField(Hidden = false)]
 			public decimal Weight { get; set; }
