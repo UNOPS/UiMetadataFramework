@@ -96,7 +96,7 @@
 			[OutputField(OrderIndex = -10)]
 			public Tabstrip Tabs { get; set; }
 
-			[OutputField(OrderIndex = 90)]
+			[OutputField(OrderIndex = 101)]
 			public InlineForm Tasks { get; set; }
 
 			[OutputField(Hidden = true)]

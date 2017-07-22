@@ -6,10 +6,14 @@
 	using global::MediatR;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
+	using UiMetadataFramework.Core.Binding;
+	using UiMetadataFramework.MediatR;
 	using UiMetadataFramework.Web.Metadata;
 
+	[Form(Label = "Tasks", PostOnLoad = true)]
 	public class Tasks : IMyForm<Tasks.Request, Tasks.Response>
 	{
+		[OutputFieldType("task-status")]
 		public enum TaskStatus
 		{
 			Pending,
@@ -50,6 +54,7 @@
 
 		public class Request : IRequest<Response>
 		{
+			[InputField(Required = true, Hidden = true)]
 			public string TaskOwnerName { get; set; }
 		}
 
@@ -72,7 +77,9 @@
 				"prepare food"
 			};
 
+			[OutputField(Label = "Due date")]
 			public DateTime DueDate { get; set; }
+
 			public string Name { get; set; }
 			public TaskStatus Status { get; set; }
 

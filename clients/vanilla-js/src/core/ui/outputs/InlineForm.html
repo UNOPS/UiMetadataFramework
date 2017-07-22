@@ -1,4 +1,4 @@
-<div ref:container></div>
+<div ref:container class="inline-form"></div>
 
 <script>
 	import FormComponent from "core-ui/Form";
@@ -7,24 +7,35 @@
 		oncreate() {
 			var app = this.get("app");
 			var field = this.get("field");
+			
+			var formInstance = app.getFormInstance(field.data.form, true);	
+			
+			formInstance.initializeInputFields(field.data.inputFieldValues).then(() => {
+				var f = new FormComponent({
+					target: this.refs.container,
+					data: {
+						metadata: formInstance.metadata,
+						form: formInstance,
+						app: app,
+						useUrl: false
+					}
+				});
 
-			// var formInstance = app.getFormInstance(field.form, true);
+				f.init();
 
-			// formInstance.initializeInputFields(field.inputFieldValues).then(() => {
-			// 	var f = new FormComponent({
-			// 		target: this.refs.container,
-			// 		data: {
-			// 			metadata: formInstance.metadata,
-			// 			form: formInstance,
-			// 			app: app,
-			// 			useUrl: false
-			// 		}
-			// 	});
-
-			// 	f.init();
-
-			// 	this.set({current: f});
-			// });
+				this.set({current: f});
+			});
 		}
 	}
 </script>
+
+<style>
+	.inline-form {
+		border-width: 1px 1px 1px;
+		border-style: solid;
+		border-color: #ccc;
+		margin: 30px 0;
+		padding: 1px 1px;
+		border-radius: 5px;
+	}
+</style>

@@ -54,7 +54,9 @@ export class UmfApp implements IAppRouter {
 
 		if (metadata == null) {
 			if (throwError) {
-				throw Error(`Form ${formId} not found.`);
+				var error = Error(`Form ${formId} not found.`);
+				console.error(error);
+				throw error;
 			}
 
 			return null;
@@ -68,7 +70,9 @@ export class UmfApp implements IAppRouter {
 		var handler = this.formResponseHandlers[responseMetadata.handler];
 
 		if (handler == null) {
-			throw new Error(`Cannot find FormResponseHandler "${responseMetadata.handler}".`);
+			var error = new Error(`Cannot find FormResponseHandler "${responseMetadata.handler}".`);
+			console.error(error);
+			throw error;
 		}
 
 		return handler.handle(response, form);

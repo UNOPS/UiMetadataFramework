@@ -104,6 +104,7 @@
 		{
 			var binder = new MetadataBinder();
 			binder.RegisterAssembly(typeof(StringInputFieldBinding).GetAssembly());
+			binder.RegisterAssembly(typeof(SearchPeople).GetAssembly());
 			return binder;
 		}
 	}

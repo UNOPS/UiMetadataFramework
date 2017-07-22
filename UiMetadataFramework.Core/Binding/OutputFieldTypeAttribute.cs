@@ -7,7 +7,7 @@ namespace UiMetadataFramework.Core.Binding
 	/// A binding will be created based on this attribute, when <see cref="MetadataBinder.RegisterAssembly"/>
 	/// is called.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, Inherited = false)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Enum, Inherited = false)]
 	public class OutputFieldTypeAttribute : Attribute
 	{
 		public OutputFieldTypeAttribute(string clientType)
