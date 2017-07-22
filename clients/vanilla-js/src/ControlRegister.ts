@@ -20,6 +20,7 @@ import FormLink from "core-ui/outputs/FormLink";
 import Tabstrip from "core-ui/outputs/Tabstrip";
 import Paginator from "core-ui/outputs/Paginator";
 import ActionList from "core-ui/outputs/ActionList";
+import InlineForm from "core-ui/outputs/InlineForm";
 
 var controlRegister = new umf.ControlRegister();
 controlRegister.registerInputFieldControl("text", TextInput, umf.StringInputController);
@@ -37,5 +38,6 @@ controlRegister.registerOutputFieldControl("formlink", FormLink);
 controlRegister.registerOutputFieldControl("tabstrip", Tabstrip, { alwaysHideLabel: true, block: true });
 controlRegister.registerOutputFieldControl("paginated-data", Paginator, { block: true });
 controlRegister.registerOutputFieldControl("action-list", ActionList, { alwaysHideLabel: true, block: true });
+controlRegister.registerOutputFieldControl("inline-form", InlineForm, { alwaysHideLabel: true, block: true });
 
 export default controlRegister;

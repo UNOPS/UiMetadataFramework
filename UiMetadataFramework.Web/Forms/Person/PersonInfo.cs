@@ -25,6 +25,7 @@
 				Actions = new ActionList(
 					ShowMessage.FormLink("Edit"),
 					SearchPeople.FormLink("View similar", message.Name)),
+				Tasks = Tasks.Form(message.Name),
 				Metadata = new MyFormResponseMetadata
 				{
 					Title = message.Name
@@ -94,6 +95,9 @@
 
 			[OutputField(OrderIndex = -10)]
 			public Tabstrip Tabs { get; set; }
+
+			[OutputField(OrderIndex = 90)]
+			public InlineForm Tasks { get; set; }
 
 			[OutputField(Hidden = true)]
 			public decimal Weight { get; set; }

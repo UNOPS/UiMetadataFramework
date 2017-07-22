@@ -1,0 +1,30 @@
+<div ref:container></div>
+
+<script>
+	import FormComponent from "core-ui/Form";
+
+	export default {
+		oncreate() {
+			var app = this.get("app");
+			var field = this.get("field");
+
+			// var formInstance = app.getFormInstance(field.form, true);
+
+			// formInstance.initializeInputFields(field.inputFieldValues).then(() => {
+			// 	var f = new FormComponent({
+			// 		target: this.refs.container,
+			// 		data: {
+			// 			metadata: formInstance.metadata,
+			// 			form: formInstance,
+			// 			app: app,
+			// 			useUrl: false
+			// 		}
+			// 	});
+
+			// 	f.init();
+
+			// 	this.set({current: f});
+			// });
+		}
+	}
+</script>
