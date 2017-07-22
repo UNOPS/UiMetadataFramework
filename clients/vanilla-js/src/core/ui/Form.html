@@ -16,7 +16,7 @@
 <div class="response">
     {{#each outputFieldValues as outputField}}
     {{#if outputField.metadata.hidden == false}}
-    <FormOutput field="{{outputField}}" app="{{app}}" form="{{form}}" />
+    <FormOutput field="{{outputField}}" app="{{app}}" form="{{form}}" parent="{{self}}" />
     {{/if}}
     {{/each}}
 </div>
@@ -43,8 +43,9 @@
             init: function() {
                 if (!this.get("initialized")) {
                     var form = this.get("form");
-
+                    
                     this.set({ 
+                        self: this,
                         initialized: true,
                         visibleInputFieldCount: form.inputFieldValues.filter(t => t.metadata.hidden == false).length,
                         submitButtonLabel: form.metadata.customProperties != null && form.metadata.customProperties.submitButtonLabel 
@@ -82,7 +83,7 @@
                     // their filters to be saved in the url. This does not apply to forms
                     // with postOnLoad == false, because those forms are usually for creating new data
                     // and hence should not be tracked in browser's history based on parameters.
-                    if (formInstance.metadata.postOnLoad && redirect) {
+                    if (formInstance.metadata.postOnLoad && redirect && this.get("useUrl")) {
                         formInstance.getSerializedInputValues().then(urlParams => {
                             // Update url in the browser.
                             app.go(formInstance.metadata.id, urlParams);
@@ -123,7 +124,8 @@
                 tabindex: tabindex,
                 urlData: null,
                 initialized: false,
-                responseMetadata: {}
+                responseMetadata: {},
+                useUrl: true
             };
         },
         components: {

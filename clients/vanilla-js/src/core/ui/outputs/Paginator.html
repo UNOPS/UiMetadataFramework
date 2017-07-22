@@ -1,6 +1,10 @@
 <ul class="paginator">
 	{{#each pages as page}}
-	<li><a href="{{app.makeUrl(form.metadata.id, page.params)}}" class="{{page.cssClass}}">{{page.number}}</a></li>
+		{{#if parent.get('useUrl')}}
+		<li><a href="{{app.makeUrl(form.metadata.id, page.params)}}" class="{{page.cssClass}}">{{page.number}}</a></li>
+		{{else}}
+		<li><button on:click="goToPage(page)" class="{{page.cssClass}}">{{page.number}}</button></li>
+		{{/if}}
 	{{/each}}
 </ul>
 
@@ -25,6 +29,18 @@
 					app: this.get("app")
 				}
 			});
+		},
+		methods: {
+			goToPage(page) {
+				var parent = this.get("parent");
+				var form = parent.get("form");
+				var field = this.get("field");
+				var app = this.get("app");
+
+				//var paginatorInput = form.inputFieldValues.find(t => t.metadata.id == field.metadata.customProperties.customizations.paginator);
+				form.setInputFields(page.params);
+				parent.submit(app, form, null, false);
+			}
 		},
 		computed: {
 			pages: (field, form) => {
@@ -75,14 +91,14 @@
 		display: inline-block;
 	}
 
-	.paginator>li>a {
+	.paginator>li>a, .paginator>li>button {
 		padding: 2px 10px;
 		margin: 1px;
 		display: inline-block;
 		background: #eee;
 	}
 
-	.paginator>li>a.current {
+	.paginator>li>a.current, .paginator>li>button.current {
 		background: #4f4f4f;
 		color: #fff;
 	}

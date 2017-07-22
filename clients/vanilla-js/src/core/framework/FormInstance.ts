@@ -35,6 +35,12 @@ export class FormInstance {
         return Promise.all(promises);
     }
 
+    setInputFields(data: any) {
+        for (let field of this.inputFieldValues) {
+            field.value = data[field.metadata.id];
+        }
+    }
+
     prepareForm(): any {
         var data = {};
         var promises = [];
