@@ -26,8 +26,10 @@
 
 				var app = this.get("app");
 				var formInstance = app.getFormInstance(action.form, true);
-
-				formInstance.initializeInputFields(action.inputFieldValues).then(() => {
+				
+				// TODO: find a way to initialize from action.inputFieldValues directly.
+				var serializedInputValues = formInstance.getSerializedInputValuesFromObject(action.inputFieldValues);
+				formInstance.initializeInputFields(serializedInputValues).then(() => {
 					var f = new FormComponent({
 						target: this.refs.container,
 						data: {

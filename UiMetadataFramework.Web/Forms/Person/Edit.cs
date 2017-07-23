@@ -1,0 +1,87 @@
+﻿namespace UiMetadataFramework.Web.Forms.Person
+{
+	using System;
+	using System.Collections.Generic;
+	using UiMetadataFramework.Basic.Input;
+	using UiMetadataFramework.Basic.Output;
+	using UiMetadataFramework.Core;
+	using UiMetadataFramework.Core.Binding;
+	using UiMetadataFramework.MediatR;
+	using UiMetadataFramework.Web.Metadata;
+
+	[Form(PostOnLoad = true)]
+	public class Edit : IMyForm<Edit.Request, Edit.Response>
+	{
+		public Response Handle(Request message)
+		{
+			var person = SearchPeople.FamilyPerson.RandomFamilyPerson(message.Name);
+
+			if (message.Operation.Value == RecordRequestOperation.Post)
+			{
+				person.DateOfBirth = message.DateOfBirth;
+
+				if (message.Height == null)
+				{
+					throw new ArgumentNullException(nameof(message.Height));
+				}
+
+				if (message.Weight == null)
+				{
+					throw new ArgumentNullException(nameof(message.Weight));
+				}
+
+				person.Height = message.Height.Value;
+				person.Weight = message.Weight.Value;
+			}
+
+			return new Response
+			{
+				Name = person.FirstName.Label,
+				DateOfBirth = person.DateOfBirth,
+				Height = person.Height,
+				Weight = person.Weight,
+				Metadata = new MyFormResponseMetadata
+				{
+					Title = person.FirstName.Label
+				}
+			};
+		}
+
+		public static FormLink FormLink(string personName, string label)
+		{
+			return new FormLink
+			{
+				Label = label,
+				Form = typeof(Edit).FullName,
+				InputFieldValues = new Dictionary<string, object>
+				{
+					{ nameof(Request.Name), personName },
+					{ nameof(Request.Operation), new DropdownValue<RecordRequestOperation>(RecordRequestOperation.Get) }
+				}
+			};
+		}
+
+		public class Response : FormResponse<MyFormResponseMetadata>
+		{
+			public DateTime? DateOfBirth { get; set; }
+			public int Height { get; set; }
+			public string Name { get; set; }
+			public decimal Weight { get; set; }
+		}
+
+		public class Request : RecordRequest<Response>
+		{
+			[DefaultValue("response", nameof(DateOfBirth))]
+			public DateTime? DateOfBirth { get; set; }
+
+			[DefaultValue("response", nameof(Height))]
+			public int? Height { get; set; }
+
+			[DefaultValue("response", nameof(Name))]
+			public string Name { get; set; }
+
+			[DefaultValue("response", nameof(Weight))]
+			public int? Weight { get; set; }
+		}
+	}
+}

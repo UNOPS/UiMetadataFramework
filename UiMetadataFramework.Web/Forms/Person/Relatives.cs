@@ -20,7 +20,6 @@
 				Actions = new ActionList(
 					ShowMessage.FormLink("Edit"),
 					SearchPeople.FormLink("View similar", message.Name)),
-
 				Metadata = new MyFormResponseMetadata
 				{
 					Title = message.Name

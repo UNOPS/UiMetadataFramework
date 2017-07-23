@@ -21,6 +21,15 @@
 			Done
 		}
 
+		public enum TaskCategory
+		{
+			Work,
+			Chores,
+			Hobby,
+			Health,
+			Family
+		}
+
 		public Response Handle(Request message)
 		{
 			var random = new Random(message.TaskOwnerName.GetHashCode());
@@ -49,6 +58,7 @@
 
 		public class Response : FormResponse<MyFormResponseMetadata>
 		{
+			[OutputField(Label = "Recent tasks")]
 			public IList<Item> Tasks { get; set; }
 		}
 
@@ -82,6 +92,7 @@
 
 			public string Name { get; set; }
 			public TaskStatus Status { get; set; }
+			public TextValue<TaskCategory> Category { get; set; }
 
 			public static Item Random(int? seed = null)
 			{
@@ -91,7 +102,8 @@
 				{
 					DueDate = DateTime.Today.AddDays(random.Next(0, 14)),
 					Name = Tasks[random.Next(0, Tasks.Length - 1)],
-					Status = (TaskStatus)random.Next(0, 2)
+					Status = (TaskStatus)random.Next(0, 2),
+					Category = new TextValue<TaskCategory>((TaskCategory)random.Next(0, 4))
 				};
 
 				return item;

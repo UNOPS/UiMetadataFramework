@@ -81,7 +81,7 @@
 			public static FamilyPerson RandomFamilyPerson(string name)
 			{
 				var r = new Random(name.GetHashCode());
-				return RandomFamilyPerson(r.Next(150, 200), r.Next(40, 120));
+				return RandomFamilyPerson(r.Next(150, 200), r.Next(40, 120), name);
 			}
 
 			public static FamilyPerson RandomFamilyPerson()
@@ -90,9 +90,9 @@
 				return RandomFamilyPerson(r.Next(150, 200), r.Next(40, 120));
 			}
 
-			public static FamilyPerson RandomFamilyPerson(decimal height, decimal weight)
+			public static FamilyPerson RandomFamilyPerson(decimal height, decimal weight, string name = null)
 			{
-				var person = Random(height, weight);
+				var person = Random(height, weight, name);
 				var random = new Random((int)Math.Round(height * weight)).Next(0, 5);
 
 				return new FamilyPerson
@@ -103,7 +103,7 @@
 					Weight = person.Weight,
 					Relatives = Enumerable.Range(0, random).Select(t => Random(170 + t, 65 + t)).ToList(),
 					Actions = new ActionList(
-						ShowMessage.FormLink("Edit"),
+						Edit.FormLink(person.FirstName.Label, "Edit"),
 						FormLink("View similar", person.FirstName.Label))
 				};
 			}
@@ -131,11 +131,11 @@
 				return Random(r.Next(150, 200), r.Next(40, 120));
 			}
 
-			public static Person Random(decimal height, decimal weight)
+			public static Person Random(decimal height, decimal weight, string name = null)
 			{
 				var r = new Random((int)Math.Round(height * weight));
 
-				var name = Names[r.Next(0, Names.Length - 1)];
+				var calculatedName = name ?? Names[r.Next(0, Names.Length - 1)];
 				var dateOfBirth = new DateTime(r.Next(1970, 2001), r.Next(1, 12), r.Next(1, 28));
 
 				return new Person
@@ -143,11 +143,11 @@
 					DateOfBirth = dateOfBirth,
 					FirstName = new FormLink
 					{
-						Label = name,
+						Label = calculatedName,
 						Form = typeof(SearchPeople).FullName,
 						InputFieldValues = new Dictionary<string, object>
 						{
-							{ nameof(Request.FirstName), name },
+							{ nameof(Request.FirstName), calculatedName },
 							{ nameof(Request.Height), (int)height },
 							{ nameof(Request.Weight), (int)weight },
 							{ nameof(Request.DateOfBirth), dateOfBirth },

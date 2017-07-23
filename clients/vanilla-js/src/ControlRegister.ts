@@ -21,6 +21,7 @@ import Tabstrip from "core-ui/outputs/Tabstrip";
 import Paginator from "core-ui/outputs/Paginator";
 import ActionList from "core-ui/outputs/ActionList";
 import InlineForm from "core-ui/outputs/InlineForm";
+import TextValue from "core-ui/outputs/TextValue";
 
 var controlRegister = new umf.ControlRegister();
 controlRegister.registerInputFieldControl("text", TextInput, umf.StringInputController);
@@ -39,5 +40,6 @@ controlRegister.registerOutputFieldControl("tabstrip", Tabstrip, { alwaysHideLab
 controlRegister.registerOutputFieldControl("paginated-data", Paginator, { block: true });
 controlRegister.registerOutputFieldControl("action-list", ActionList, { alwaysHideLabel: true, block: true });
 controlRegister.registerOutputFieldControl("inline-form", InlineForm, { alwaysHideLabel: true, block: true });
+controlRegister.registerOutputFieldControl("text-value", TextValue);
 
 export default controlRegister;
