@@ -16,8 +16,7 @@
 			bool hidden = false,
 			int orderIndex = 0,
 			bool required = false,
-			string defaultValueSourceType = null,
-			string defaultValueSourceId = null)
+			string[] inputProcessorIds = null)
 		{
 			var field = fields.FirstOrDefault(t =>
 				t.Id == id &&
@@ -26,8 +25,7 @@
 				t.OrderIndex == orderIndex &&
 				t.Label == label &&
 				t.Required == required &&
-				t.DefaultValue?.Type == defaultValueSourceType &&
-				t.DefaultValue?.Id == defaultValueSourceId);
+				inputProcessorIds == null || inputProcessorIds?.All(p => t.Processors.Any(x => x.Id == p)) == true);
 
 			Assert.NotNull(field);
 

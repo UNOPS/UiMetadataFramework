@@ -129,6 +129,35 @@ export class FormInstance {
         this.outputFieldValues = fields;
     }
 
+    runInputFieldProcessors(event: string, params: any, controlRegister: ControlRegister): Promise<any> {
+        var promises = [];
+
+        for (let input of this.inputFieldValues) {
+            if (input.metadata.processors != null) {
+                for (let processorMetadata of input.metadata.processors) {
+                    var processor = controlRegister.inputProcessors[processorMetadata.id];
+                    if (processor != null) {
+                        var promise = processor.process(input, this, params);
+                        promises.push(promise);
+                    }
+                }
+            }
+        }
+
+        return Promise.all(promises);
+    }
+
+    hasInputFieldProcessorsAt(runAt: string): boolean {
+        for (let input of this.inputFieldValues) {
+            var processor = input.metadata.processors.find(t => t.runAt === runAt);
+            if (processor != null) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private getNormalizedObject(response: umf.FormResponse): any {
         var normalizedResponse = {};
         for (let field in response) {

@@ -7,3 +7,4 @@ export * from "./InputController";
 export * from "./ControlRegister";
 export * from "./InputFieldValue";
 export * from "./OutputFieldValue";
+export * from "./InputFieldProcessor";

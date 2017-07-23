@@ -117,7 +117,7 @@
 				}
 
 				var attribute = property.GetCustomAttribute<InputFieldAttribute>();
-				var defaultValueAttribute = property.GetCustomAttribute<DefaultValueAttribute>();
+				var inputFieldProcessorAttributes = property.GetCustomAttributes<InputFieldProcessorAttribute>();
 
 				var required = propertyType.GetTypeInfo().IsValueType
 					// non-nullable value types are automatically required,
@@ -140,7 +140,7 @@
 					Label = attribute?.Label ?? property.Name,
 					OrderIndex = attribute?.OrderIndex ?? 0,
 					Required = required,
-					DefaultValue = defaultValueAttribute?.AsInputFieldSource(),
+					Processors = inputFieldProcessorAttributes.Select(t => t.ToMetadata()).ToList(),
 					CustomProperties = binding.GetCustomProperties(attribute, property)
 				};
 
@@ -186,7 +186,7 @@
 				}
 				else
 				{
-					customProperties = binding != null 
+					customProperties = binding != null
 						// All non-enumerable properties (i.e. - custom properties) will
 						// have binding.
 						? binding.GetCustomProperties(property, attribute, this)

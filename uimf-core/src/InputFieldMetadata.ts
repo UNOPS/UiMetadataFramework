@@ -1,4 +1,4 @@
-import { InputFieldSource } from "./InputFieldSource";
+import { InputFieldProcessorMetadata } from "./InputFieldProcessorMetadata";
 
 /**
  * Represents metadata for a single input field. * 
@@ -10,9 +10,9 @@ export class InputFieldMetadata {
 	public customProperties: any;
 
 	/**
-	 * Gets or sets source from which the default value for the input field will be taken. If null, then the field will not have a default value.
+	 * Gets or sets input field processors.
 	 */
-	public defaultValue: InputFieldSource;
+	public processors: InputFieldProcessorMetadata[];
 
 	/**
 	 * Gets or sets value indicating wheather value for this input field is required before submitting the form.

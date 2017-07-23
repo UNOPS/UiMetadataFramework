@@ -1,5 +1,6 @@
 ﻿namespace UiMetadataFramework.Core
 {
+	using System.Collections.Generic;
 	using Newtonsoft.Json;
 
 	/// <summary>
@@ -24,11 +25,10 @@
 		public object CustomProperties { get; set; }
 
 		/// <summary>
-		/// Gets or sets source from which the default value for the input field will be taken.
-		/// If null, then the field will not have a default value.
+		/// Gets or sets input field processors.
 		/// </summary>
 		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-		public InputFieldSource DefaultValue { get; set; }
+		public IList<InputFieldProcessorMetadata> Processors { get; set; }
 
 		/// <summary>
 		/// Gets or sets value indicating wheather value for this input field is required

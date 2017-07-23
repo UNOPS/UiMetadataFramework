@@ -3,6 +3,7 @@
 	using System;
 	using System.Collections.Generic;
 	using UiMetadataFramework.Basic.Input;
+	using UiMetadataFramework.Basic.InputProcessors;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
@@ -63,24 +64,31 @@
 
 		public class Response : FormResponse<MyFormResponseMetadata>
 		{
+			[OutputField(Hidden = true)]
 			public DateTime? DateOfBirth { get; set; }
+
+			[OutputField(Hidden = true)]
 			public int Height { get; set; }
+
+			[OutputField(Hidden = true)]
 			public string Name { get; set; }
+
+			[OutputField(Hidden = true)]
 			public decimal Weight { get; set; }
 		}
 
 		public class Request : RecordRequest<Response>
 		{
-			[DefaultValue("response", nameof(DateOfBirth))]
+			[BindToOutput(nameof(Response.DateOfBirth))]
 			public DateTime? DateOfBirth { get; set; }
 
-			[DefaultValue("response", nameof(Height))]
+			[BindToOutput(nameof(Response.Height))]
 			public int? Height { get; set; }
 
-			[DefaultValue("response", nameof(Name))]
+			[BindToOutput(nameof(Response.Name))]
 			public string Name { get; set; }
 
-			[DefaultValue("response", nameof(Weight))]
+			[BindToOutput(nameof(Response.Weight))]
 			public int? Weight { get; set; }
 		}
 	}

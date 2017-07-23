@@ -1,6 +1,7 @@
 import * as umf from "uimf-core";
 import { OutputFieldValue } from "./index";
 import { InputController, StringInputController } from "./InputController";
+import { InputFieldProcessor } from "core-framework";
 
 interface InputFieldControllerConstructor {
     new(metadata: umf.InputFieldMetadata): InputController<any>;
@@ -14,6 +15,7 @@ class InputControlEntry {
 export class ControlRegister {
     inputs: { [id: string]: InputControlEntry } = {};
     outputs: { [id: string]: any } = {};
+    inputProcessors: { [id: string]: InputFieldProcessor } = {};
 
     createInputControllers(fields: umf.InputFieldMetadata[]) {
         var result = [];
@@ -32,13 +34,13 @@ export class ControlRegister {
         return result;
     }
 
-    getOutput(field:OutputFieldValue) {
-        return field != null 
+    getOutput(field: OutputFieldValue) {
+        return field != null
             ? this.outputs[field.metadata.type] || this.outputs["text"]
             : this.outputs["text"];
     }
 
-    getInput(type:string) {
+    getInput(type: string) {
         return type != null
             ? this.inputs[type] || this.inputs["text"]
             : this.inputs["text"];
@@ -56,5 +58,9 @@ export class ControlRegister {
             constructor: control,
             constants: constants
         };
+    }
+
+    registerInputFieldProcessor(name: string, processor: InputFieldProcessor) {
+        this.inputProcessors[name] = processor;
     }
 }

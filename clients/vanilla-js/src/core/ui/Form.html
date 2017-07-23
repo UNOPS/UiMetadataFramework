@@ -1,11 +1,9 @@
 <h2>{{responseMetadata.title || metadata.label}}</h2>
 
-{{#if initialized && visibleInputFieldCount > 0}}
+{{#if initialized && visibleInputFields.length > 0}}
 <form on:submit="submit(app, form, event, true)">
-    {{#each form.inputFieldValues as inputField}}
-        {{#if inputField.metadata.hidden == false}}
-        <FormInput field="{{inputField}}" app="{{app}}" tabindex="{{tabindex * 100 + inputField.metadata.orderIndex}}" />
-        {{/if}}
+    {{#each visibleInputFields as inputField}}
+    <FormInput field="{{inputField}}" app="{{app}}" tabindex="{{tabindex * 100 + inputField.metadata.orderIndex}}" />
     {{/each}}
 
     <button type="submit" disabled="{{disabled}}" tabindex="-1">{{submitButtonLabel}}</button>
@@ -47,7 +45,7 @@
                     this.set({ 
                         self: this,
                         initialized: true,
-                        visibleInputFieldCount: form.inputFieldValues.filter(t => t.metadata.hidden == false).length,
+                        visibleInputFields: form.inputFieldValues.filter(t => t.metadata.hidden == false),
                         submitButtonLabel: form.metadata.customProperties != null && form.metadata.customProperties.submitButtonLabel 
                             ? form.metadata.customProperties.submitButtonLabel 
                             : "Submit"
@@ -104,18 +102,25 @@
                             }
 
                             formInstance.setOutputFieldValues(response);
-                            
-                            enableForm(self);
-                            
-                            if (response.metadata.handler == "" || response.metadata.handler == null) {                              
-                                self.set({
-                                    outputFieldValues: formInstance.outputFieldValues,
-                                    responseMetadata: response.metadata
-                                });
-                            }
-                            else {
-                                app.handleResponse(response, formInstance);
-                            }
+
+                            formInstance.runInputFieldProcessors("response", response, app.controlRegister).then(t => {                            
+                                enableForm(self);
+                                
+                                // Hide all inputs, to re-render them. This is needed due to the way that
+                                // Svelte *seems* to work - it doesn't re-render nested components, unless they are recreated.
+                                self.set({ visibleInputFields: [] });
+                                
+                                if (response.metadata.handler == "" || response.metadata.handler == null) {
+                                    self.set({
+                                        visibleInputFields: formInstance.inputFieldValues.filter(t => t.metadata.hidden == false),
+                                        outputFieldValues: formInstance.outputFieldValues,
+                                        responseMetadata: response.metadata
+                                    });
+                                }
+                                else {
+                                    app.handleResponse(response, formInstance);
+                                }
+                            });
                         })
                         .catch(response => {
                             enableForm(self);

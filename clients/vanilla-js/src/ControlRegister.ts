@@ -23,6 +23,8 @@ import ActionList from "core-ui/outputs/ActionList";
 import InlineForm from "core-ui/outputs/InlineForm";
 import TextValue from "core-ui/outputs/TextValue";
 
+import { BindToOutputProcessor } from "core-ui/inputProcessors/BindToOutput";
+
 var controlRegister = new umf.ControlRegister();
 controlRegister.registerInputFieldControl("text", TextInput, umf.StringInputController);
 controlRegister.registerInputFieldControl("datetime", DateInput, DateInputController);
@@ -41,5 +43,7 @@ controlRegister.registerOutputFieldControl("paginated-data", Paginator, { block:
 controlRegister.registerOutputFieldControl("action-list", ActionList, { alwaysHideLabel: true, block: true });
 controlRegister.registerOutputFieldControl("inline-form", InlineForm, { alwaysHideLabel: true, block: true });
 controlRegister.registerOutputFieldControl("text-value", TextValue);
+
+controlRegister.registerInputFieldProcessor("bind-to-output", new BindToOutputProcessor());
 
 export default controlRegister;
