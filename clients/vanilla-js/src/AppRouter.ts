@@ -54,7 +54,7 @@ export class AppRouter implements umf.IAppRouter {
 
 			activate: function (context) {
 				context.domApi.init();
-
+				
 				rpb.currentForm = context.parameters._id;
 				context.on("destroy", () => rpb.currentForm = null);
 			},

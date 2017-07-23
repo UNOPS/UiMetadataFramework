@@ -92,6 +92,11 @@
                         return;
                     }
 
+                    // If this is an initialization call, i.e. - form is being loaded and initialized.
+                    if (event == null && redirect == null) {
+                        formInstance.Default
+                    }
+
                     app.server.postForm(formInstance.metadata.id, data)
                         .then(response => {
                             if (response == null) {
@@ -102,7 +107,7 @@
                             
                             enableForm(self);
                             
-                            if (response.metadata.handler == "" || response.metadata.handler == null) {
+                            if (response.metadata.handler == "" || response.metadata.handler == null) {                              
                                 self.set({
                                     outputFieldValues: formInstance.outputFieldValues,
                                     responseMetadata: response.metadata
