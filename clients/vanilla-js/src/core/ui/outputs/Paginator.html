@@ -37,19 +37,18 @@
 				var field = this.get("field");
 				var app = this.get("app");
 
-				//var paginatorInput = form.inputFieldValues.find(t => t.metadata.id == field.metadata.customProperties.customizations.paginator);
 				form.setInputFields(page.params);
 				parent.submit(app, form, null, false);
 			}
 		},
 		computed: {
 			pages: (field, form) => {
-				var paginatorInput = form.inputFieldValues.find(t => t.metadata.id == field.metadata.customProperties.customizations.paginator);
+				var paginatorInput = form.inputs.find(t => t.metadata.id == field.metadata.customProperties.customizations.paginator);
 
 				var pageCount = Math.ceil(field.data.totalCount / paginatorInput.value.pageSize);
 
 				var params = {};
-				for (let i of form.inputFieldValues) {
+				for (let i of form.inputs) {
 					params[i.metadata.id] = i.value;
 				}
 

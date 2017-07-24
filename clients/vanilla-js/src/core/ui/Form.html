@@ -45,7 +45,7 @@
                     this.set({ 
                         self: this,
                         initialized: true,
-                        visibleInputFields: form.inputFieldValues.filter(t => t.metadata.hidden == false),
+                        visibleInputFields: form.inputs.filter(t => t.metadata.hidden == false),
                         submitButtonLabel: form.metadata.customProperties != null && form.metadata.customProperties.submitButtonLabel 
                             ? form.metadata.customProperties.submitButtonLabel 
                             : "Submit"
@@ -113,8 +113,8 @@
 
                                     self.set({
                                         // Show inputs again.
-                                        visibleInputFields: formInstance.inputFieldValues.filter(t => t.metadata.hidden == false),
-                                        outputFieldValues: formInstance.outputFieldValues,
+                                        visibleInputFields: formInstance.inputs.filter(t => t.metadata.hidden == false),
+                                        outputFieldValues: formInstance.outputs,
                                         responseMetadata: response.metadata
                                     });
                                 }

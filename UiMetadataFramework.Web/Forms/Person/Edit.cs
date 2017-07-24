@@ -7,10 +7,9 @@
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
-	using UiMetadataFramework.MediatR;
 	using UiMetadataFramework.Web.Metadata;
 
-	[Form(PostOnLoad = true)]
+	[MyForm(PostOnLoad = true, SubmitButtonLabel = "Save changes")]
 	public class Edit : IMyForm<Edit.Request, Edit.Response>
 	{
 		public Response Handle(Request message)

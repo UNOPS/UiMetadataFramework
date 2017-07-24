@@ -6,18 +6,18 @@ import { ControlRegister } from "./ControlRegister";
 
 export class FormInstance {
     public readonly metadata: umf.FormMetadata;
-    public outputFieldValues: Array<OutputFieldValue> = [];
-    public inputFieldValues: Array<InputController<any>> = [];
+    public outputs: Array<OutputFieldValue> = [];
+    public inputs: Array<InputController<any>> = [];
 
     constructor(metadata: umf.FormMetadata, controllerRegister: ControlRegister) {
         this.metadata = metadata;
-        this.inputFieldValues = controllerRegister.createInputControllers(this.metadata.inputFields);
+        this.inputs = controllerRegister.createInputControllers(this.metadata.inputFields);
     }
 
     initializeInputFields(data: any) {
         var promises = [];
 
-        for (let fieldMetadata of this.inputFieldValues) {
+        for (let fieldMetadata of this.inputs) {
             let value = null;
 
             if (data != null) {
@@ -36,7 +36,7 @@ export class FormInstance {
     }
 
     setInputFields(data: any) {
-        for (let field of this.inputFieldValues) {
+        for (let field of this.inputs) {
             field.value = data[field.metadata.id];
         }
     }
@@ -46,7 +46,7 @@ export class FormInstance {
         var promises = [];
         var hasRequiredMissingInput = false;
 
-        for (let input of this.inputFieldValues) {
+        for (let input of this.inputs) {
             var promise = input.getValue().then(value => {
                 data[input.metadata.id] = value;
 
@@ -72,7 +72,7 @@ export class FormInstance {
         var data = {};
         var promises = [];
 
-        for (let input of this.inputFieldValues) {
+        for (let input of this.inputs) {
             var promise = input.serialize().then(t => {
                 // Don't include inputs without values, because we only
                 // want to serialize "non-default" values.
@@ -97,7 +97,7 @@ export class FormInstance {
             }
         }
 
-        for (let input of this.inputFieldValues) {
+        for (let input of this.inputs) {
             var valueAsString = input.serializeValue(normalizedObject[input.metadata.id.toLowerCase()]);
 
             // Don't include inputs without values, because we only
@@ -126,13 +126,13 @@ export class FormInstance {
             return a.metadata.orderIndex - b.metadata.orderIndex;
         });
 
-        this.outputFieldValues = fields;
+        this.outputs = fields;
     }
 
     runInputFieldProcessors(event: string, params: any, controlRegister: ControlRegister): Promise<any> {
         var promises = [];
 
-        for (let input of this.inputFieldValues) {
+        for (let input of this.inputs) {
             if (input.metadata.processors != null) {
                 for (let processorMetadata of input.metadata.processors) {
                     var processor = controlRegister.inputProcessors[processorMetadata.id];
@@ -148,7 +148,7 @@ export class FormInstance {
     }
 
     hasInputFieldProcessorsAt(runAt: string): boolean {
-        for (let input of this.inputFieldValues) {
+        for (let input of this.inputs) {
             var processor = input.metadata.processors.find(t => t.runAt === runAt);
             if (processor != null) {
                 return true;
