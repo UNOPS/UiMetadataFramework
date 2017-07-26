@@ -4,7 +4,7 @@
 	using UiMetadataFramework.Core;
 
 	public interface IAsyncForm<in TRequest, TResponse> :
-		IAsyncRequestHandler<TRequest, TResponse>
+		IAsyncForm<TRequest, TResponse, FormResponseMetadata>
 		where TRequest : IRequest<TResponse>
 		where TResponse : FormResponse
 	{

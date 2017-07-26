@@ -55,25 +55,32 @@
 
 			foreach (var form in forms)
 			{
-				var iformInterface = form.Type.GetTypeInfo()
+				var iformInterfaces = form.Type.GetTypeInfo()
 					.GetInterfaces()
 					.Select(t => t)
-					.SingleOrDefault(t =>
+					.Where(t =>
 					{
 						var type = t.GetGenericTypeDefinition();
 						return
 							type == typeof(IForm<,,>) ||
 							type == typeof(IAsyncForm<,,>);
-					});
+					})
+					.ToList();
 
-				if (iformInterface == null)
+				if (iformInterfaces.Count == 0)
 				{
 					throw new InvalidConfigurationException(
-						$"Type '{form.Type.FullName}' was decorated with FormAttribute, but does not implement IForm<,> interface.");
+						$"Type '{form.Type.FullName}' was decorated with FormAttribute, but does not implement IForm<,,> or IAsyncForm<,,> interface.");
 				}
 
+				if (iformInterfaces.Count > 1)
+				{
+					throw new InvalidConfigurationException($"Type '{form.Type.FullName}' implements multiple IForm<,,> and/or IAsyncForm<,,> interfaces. Only one of these interfaces can be implemented.");
+				}
+
+				var iformInterface = iformInterfaces.Single();
 				var requestType = iformInterface.GetTypeInfo().GenericTypeArguments[0];
-				var responseType = iformInterface.GetTypeInfo().GenericTypeArguments[1];
+				var responseType = iformInterface.GenericTypeArguments[1];
 
 				this.registeredForms.TryAdd(form.Type.FullName,
 					new FormInfo

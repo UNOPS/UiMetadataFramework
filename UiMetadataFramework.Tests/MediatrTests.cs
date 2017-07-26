@@ -2,6 +2,7 @@
 {
 	using System;
 	using System.Reflection;
+	using System.Threading.Tasks;
 	using global::MediatR;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
@@ -12,11 +13,11 @@
 	public class MediatrTests
 	{
 		[Form(Label = "Do some magic", PostOnLoad = false)]
-		public class DoMagic : IForm<DoMagic.Request, DoMagic.Response>
+		public class DoMagic : IAsyncForm<DoMagic.Request, DoMagic.Response>
 		{
-			public Response Handle(Request message)
+			public Task<Response> Handle(Request message)
 			{
-				return new Response();
+				return Task.FromResult(new Response());
 			}
 
 			public class Response : FormResponse
