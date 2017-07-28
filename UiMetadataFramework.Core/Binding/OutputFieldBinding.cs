@@ -2,6 +2,7 @@
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Reflection;
 
 	/// <summary>
@@ -31,7 +32,21 @@
 		/// <summary>
 		/// Gets the server-side types being bound.
 		/// </summary>
-		public IEnumerable<Type> ServerTypes { get; set; }
+		public IEnumerable<Type> ServerTypes { get; }
+
+		public override bool Equals(object obj)
+		{
+			var binding = obj as OutputFieldBinding;
+
+			if (binding == null)
+			{
+				return false;
+			}
+
+			return this.ClientType == binding.ClientType &&
+				this.ServerTypes.All(t => binding.ServerTypes.Contains(t)) &&
+				binding.ServerTypes.All(t => this.ServerTypes.Contains(t));
+		}
 
 		/// <summary>
 		/// Gets custom properties of the output field.
@@ -43,6 +58,14 @@
 		public virtual object GetCustomProperties(PropertyInfo property, OutputFieldAttribute attribute, MetadataBinder binder)
 		{
 			return attribute?.GetCustomProperties();
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				return ((this.ClientType != null ? this.ClientType.GetHashCode() : 0) * 397) ^ (this.ServerTypes != null ? this.ServerTypes.GetHashCode() : 0);
+			}
 		}
 	}
 }

@@ -77,6 +77,14 @@
 		}
 
 		[Fact]
+		public void DuplicateAttemptsToBindSameAssemblyAreIgnored()
+		{
+			var binder = new MetadataBinder();
+			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+		}
+
+		[Fact]
 		public void CanGetInputFieldsMetadata()
 		{
 			var binder = new MetadataBinder();

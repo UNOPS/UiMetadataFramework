@@ -14,6 +14,8 @@
 	{
 		private readonly MetadataBinder binder;
 		private readonly ConcurrentDictionary<string, FormInfo> registeredForms = new ConcurrentDictionary<string, FormInfo>();
+		private readonly List<string> registeredAssemblies = new List<string>();
+		private readonly object key = new object();
 
 		public FormRegister(MetadataBinder binder)
 		{
@@ -42,6 +44,17 @@
 		/// <param name="assembly">Assembly to scan.</param>
 		public void RegisterAssembly(Assembly assembly)
 		{
+			// Avoid registering the same assembly twice.
+			lock (this.key)
+			{
+				if (this.registeredAssemblies.Contains(assembly.FullName))
+				{
+					return;
+				}
+
+				this.registeredAssemblies.Add(assembly.FullName);
+			}
+
 			// Get all classes decorated with FormAttribute.
 			var forms = assembly.ExportedTypes
 				.Where(t => t.GetTypeInfo().IsClass && !t.GetTypeInfo().IsAbstract && !t.GetTypeInfo().IsGenericType)
@@ -60,6 +73,11 @@
 					.Select(t => t)
 					.Where(t =>
 					{
+						if (!t.IsConstructedGenericType)
+						{
+							return false;
+						}
+
 						var type = t.GetGenericTypeDefinition();
 						return
 							type == typeof(IForm<,,>) ||
@@ -85,6 +103,7 @@
 				this.registeredForms.TryAdd(form.Type.FullName,
 					new FormInfo
 					{
+						FormType = form.Type,
 						RequestType = requestType,
 						ResponseType = responseType,
 						Metadata = new FormMetadata

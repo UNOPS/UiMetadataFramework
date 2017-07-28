@@ -29,6 +29,7 @@
 			{
 				FirstName = PersonInfo.Link(message.FirstName),
 				Weight = weight,
+				IsRegistered = message.IsRegistered,
 				DateOfBirth = message.DateOfBirth,
 				Height = height,
 				Results = paginatedResponse,
@@ -68,6 +69,9 @@
 
 			[OutputField(Hidden = true)]
 			public decimal Weight { get; set; }
+
+			[OutputField(OrderIndex = 3)]
+			public bool? IsRegistered { get; set; }
 		}
 
 		public class FamilyPerson : Person

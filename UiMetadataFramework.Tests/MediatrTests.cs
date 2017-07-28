@@ -13,7 +13,7 @@
 	public class MediatrTests
 	{
 		[Form(Label = "Do some magic", PostOnLoad = false)]
-		public class DoMagic : IAsyncForm<DoMagic.Request, DoMagic.Response>
+		public class DoMagic : IAsyncForm<DoMagic.Request, DoMagic.Response>, IComparable
 		{
 			public Task<Response> Handle(Request message)
 			{
@@ -50,6 +50,12 @@
 
 				[InputField(Hidden = true)]
 				public decimal Weight { get; set; }
+			}
+
+			public int CompareTo(object obj)
+			{
+				// This method is just to make sure IForms can implement any arbitrary non-generic interface.
+				throw new NotImplementedException();
 			}
 		}
 

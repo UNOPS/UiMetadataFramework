@@ -17,12 +17,20 @@
 
 		private readonly ConcurrentDictionary<Type, InputFieldBinding> inputFieldMetadataMap = new ConcurrentDictionary<Type, InputFieldBinding>();
 		private readonly ConcurrentDictionary<Type, OutputFieldBinding> outputFieldMetadataMap = new ConcurrentDictionary<Type, OutputFieldBinding>();
+		private readonly List<string> registeredAssemblies = new List<string>();
+		private readonly object key = new object();
 
 		public void AddBinding(OutputFieldBinding binding)
 		{
 			var existingBinding = this.outputFieldMetadataMap.Values.FirstOrDefault(t => t.ClientType == binding.ClientType);
+
 			if (existingBinding != null)
 			{
+				if (existingBinding.Equals(binding))
+				{
+					return;
+				}
+
 				throw new BindingException(
 					$"Multiple output field bindings are trying to use client type '{binding.ClientType}'. " +
 					"Each binding must have a unique client type.");
@@ -59,8 +67,14 @@
 		public void AddBinding(InputFieldBinding binding)
 		{
 			var existingBinding = this.inputFieldMetadataMap.Values.FirstOrDefault(t => t.ClientType == binding.ClientType);
+
 			if (existingBinding != null)
 			{
+				if (existingBinding.Equals(binding))
+				{
+					return;
+				}
+
 				throw new BindingException(
 					$"Bindings '{binding.GetType().FullName}' and '{existingBinding.GetType().FullName}' " +
 					$"indicate same client type '{binding.ClientType}'. Each binding must have a unique client type.");
@@ -219,6 +233,17 @@
 		/// <param name="assembly">Assembly to scan.</param>
 		public void RegisterAssembly(Assembly assembly)
 		{
+			// Avoid registering the same assembly twice.
+			lock (this.key)
+			{
+				if (this.registeredAssemblies.Contains(assembly.FullName))
+				{
+					return;
+				}
+
+				this.registeredAssemblies.Add(assembly.FullName);
+			}
+
 			var outputFieldBindings = assembly.ExportedTypes
 				.Where(t =>
 				{

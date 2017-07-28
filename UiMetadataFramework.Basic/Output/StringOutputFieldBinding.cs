@@ -6,7 +6,7 @@
 	{
 		public const string ControlName = "text";
 
-		public StringOutputFieldBinding() : base(typeof(string), ControlName)
+		public StringOutputFieldBinding() : base(new []{ typeof(string), typeof(bool) }, ControlName)
 		{
 		}
 	}

@@ -4,8 +4,8 @@
     <TargetFramework>netstandard1.6</TargetFramework>
     <AssemblyName>UiMetadataFramework.Core</AssemblyName>
     <RootNamespace>UiMetadataFramework.Core</RootNamespace>
-    <Description>UiMetadataFramework is a very simple .NET Standard library to help you making forms quickly. This package includes core functionality without UI implementation.</Description>
-    <Version>0.0.4-beta</Version>
+    <Description>UiMetadataFramework is a very simple .NET Standard library to help you build UI using metadata. This package includes core functionality without UI implementation.</Description>
+    <Version>0.0.5-beta</Version>
     <Authors>UNOPS</Authors>
     <FileVersion>0.0.1.0</FileVersion>
     <PackageTags>ui metadata forms</PackageTags>
