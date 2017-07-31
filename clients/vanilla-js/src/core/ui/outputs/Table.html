@@ -13,7 +13,7 @@
 		<tr>
 			{{#each columnsOrdered as column}}
 			<td>
-				<FormOutput field="{{getField(row, column)}}" app="{{app}}" showLabel="false" />
+				<FormOutput field="{{getField(row, column)}}" app="{{app}}" form="{{form}}" parent="{{parent}}" showLabel="false" />
 			</td>
 			{{/each}}
 		</tr>

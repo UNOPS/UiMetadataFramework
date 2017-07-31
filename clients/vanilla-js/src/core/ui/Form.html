@@ -105,7 +105,7 @@
                                     // Hide all inputs, to re-render them. This is needed due to the way that
                                     // Svelte *seems* to work - it doesn't re-render nested components, unless they are recreated.
                                     self.set({ visibleInputFields: [] });
-
+                                    
                                     self.set({
                                         // Show inputs again.
                                         visibleInputFields: formInstance.inputs.filter(t => t.metadata.hidden == false),
@@ -116,6 +116,11 @@
                                 else {
                                     app.handleResponse(response, formInstance);
                                 }
+
+                                self.fire("form:posted", {
+                                    form: self,
+                                    invokedByUser: event != null
+                                })
                             });
                         })
                         .catch(response => {
