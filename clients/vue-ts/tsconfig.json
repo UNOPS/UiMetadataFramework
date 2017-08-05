@@ -1,0 +1,43 @@
+{
+  "exclude": [
+    "node_modules"
+  ],
+  "compilerOptions": {
+    "allowJs": true,
+    "noImplicitAny": false,
+    "emitDecoratorMetadata": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "module": "es2015",
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "es2015",
+      "es2016",
+      "es2017"
+    ],
+    "types": [
+      "vue-typescript-import-dts"
+    ],
+    "baseUrl": "./",
+    "paths": {
+      "core-ui/*": [
+        "./src/core/ui/*"
+      ],
+      "core-framework": [
+        "./src/core/framework/index"
+      ],
+      "core-handlers": [
+        "./src/core/handlers/index"
+      ],
+      "uimf-core":["./src/uimf-core/src/index"]
+    }
+  },
+  "files": [
+    "./src/main.ts"
+  ]
+}

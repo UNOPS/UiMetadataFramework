@@ -1,0 +1,53 @@
+<div class="tabstrip">
+	{{#each field.data.tabs as tab}}
+	<div>
+		<a href="{{app.makeUrl(tab.form, tab.inputFieldValues)}}"
+			class="{{getCssClass(tab, field.data)}}">{{tab.label}}</a>
+	</div>
+	{{/each}}
+</div>
+
+<script>
+	export default {
+		helpers: {
+			getCssClass(tab, tabstrip) {
+				return tab.form == tabstrip.currentTab
+					? "active"
+					: "";
+			}
+		}
+	}
+</script>
+
+<style>
+	.tabstrip {
+		border-bottom: 1px solid #ccc;
+		margin: 10px 0;
+		padding: 0 5px;
+	}
+
+	.tabstrip>div {
+		display: inline-block;
+	}
+
+	.tabstrip>div>a {
+		background: #e6e6e6;
+		border-width: 1px 1px 0 1px;
+		border-style: solid;
+		border-color: #ccc;
+		padding: 10px 15px;
+		margin: 0 5px 0 0;
+		display: inline-block;
+		text-decoration: none;
+	}
+
+	.tabstrip>div>a:hover {
+		text-decoration: underline;
+	}
+
+	.tabstrip>div>a.active {
+		margin-bottom: -1px;
+		padding-bottom: 11px;
+		background: #f8f8f8;
+	}
+</style>

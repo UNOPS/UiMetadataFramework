@@ -1,0 +1,14 @@
+<a href="{{app.makeUrl(field.data.form, field.data.inputFieldValues)}}" 
+	on:click="go()">{{field.data.label}}</a>
+
+<script>
+	export default {
+		methods: {
+			go() {
+				var app = this.get("app");
+				var field = this.get("field");
+				app.go(field.data.form, field.data.inputFieldValues);
+			}
+		}
+	}
+</script>

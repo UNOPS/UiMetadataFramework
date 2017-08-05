@@ -1,0 +1,136 @@
+<h2>{{responseMetadata.title || metadata.label}}</h2>
+
+{{#if initialized && visibleInputFieldCount > 0}}
+<form on:submit="submit(app, form, event, true)">
+    {{#each form.inputFieldValues as inputField}}
+        {{#if inputField.metadata.hidden == false}}
+        <FormInput field="{{inputField}}" tabindex="{{tabindex * 100 + inputField.metadata.orderIndex}}" />
+        {{/if}}
+    {{/each}}
+
+    <button type="submit" disabled="{{disabled}}" tabindex="-1">{{submitButtonLabel}}</button>
+</form>
+{{/if}}
+
+{{#if outputFieldValues != null}}
+<div class="response">
+    {{#each outputFieldValues as outputField}}
+    <FormOutput field="{{outputField}}" app="{{app}}" />
+    {{/each}}
+</div>
+{{/if}}
+
+<script>
+    import FormInput from "./Input";
+    import FormOutput from "./Output";
+
+    let tabindex = 1;
+
+    function enableForm(form) {
+        form.set({
+            // Remove previous output, this is needed for repainting.
+            outputFieldValues: null,
+
+            // Enable post.
+            disabled: false
+        });
+    }
+
+    export default {
+        methods: {
+            init: function() {
+                if (!this.get("initialized")) {
+                    var form = this.get("form");
+
+                    this.set({ 
+                        initialized: true,
+                        visibleInputFieldCount: form.inputFieldValues.filter(t => t.metadata.hidden == false).length,
+                        submitButtonLabel: form.metadata.customProperties != null && form.metadata.customProperties.submitButtonLabel 
+                            ? form.metadata.customProperties.submitButtonLabel 
+                            : "Submit"
+                    });
+
+                    tabindex += 1;
+                    
+                    // Auto-submit form if necessary.
+                    if (form.metadata.postOnLoad) {
+                        var app = this.get("app");
+                        this.submit(app, form);
+                    }
+                }
+            },
+            submit: function (app, formInstance, event, redirect) {
+                var self = this;
+
+                if (event != null) {
+                    event.preventDefault();
+                }
+
+                formInstance.prepareForm().then(data => {
+                    // If not all required inputs are filled.
+                    if (data == null) {
+                        return;
+                    }
+
+                    // Disable double-posts.
+                    self.set({ disabled: true });
+
+                    // If postOnLoad == true, then the input field values should appear in the url.
+                    // Reason is that postOnLoad == true is used by "report" pages, which need
+                    // their filters to be saved in the url. This does not apply to forms
+                    // with postOnLoad == false, because those forms are usually for creating new data
+                    // and hence should not be tracked in browser's history based on parameters.
+                    if (formInstance.metadata.postOnLoad && redirect) {
+                        formInstance.getSerializedInputValues().then(urlParams => {
+                            // Update url in the browser.
+                            app.go(formInstance.metadata.id, urlParams);
+                        });
+
+                        return;
+                    }
+
+                    app.server.postForm(formInstance.metadata.id, data)
+                        .then(response => {
+                            if (response == null) {
+                                return;
+                            }
+
+                            formInstance.setOutputFieldValues(response);
+                            
+                            enableForm(self);
+                            
+                            if (response.metadata.handler == "" || response.metadata.handler == null) {
+                                self.set({
+                                    outputFieldValues: formInstance.outputFieldValues,
+                                    responseMetadata: response.metadata
+                                });
+                            }
+                            else {
+                                app.handleResponse(response, formInstance);
+                            }
+                        })
+                        .catch(response => {
+                            enableForm(self);
+                        });
+                });
+            }
+        },
+        data: function () {
+            return {
+                disabled: false,
+                tabindex: tabindex,
+                urlData: null,
+                initialized: false,
+                responseMetadata: {}
+            };
+        },
+        components: {
+            FormInput,
+            FormOutput
+        }
+    };
+</script>
+
+<style>
+    .response {margin-top:50px}
+</style>
