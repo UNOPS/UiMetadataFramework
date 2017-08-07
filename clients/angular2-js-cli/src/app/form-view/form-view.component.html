@@ -2,4 +2,6 @@
 
 
 <!--<ng-template appText></ng-template>-->
-<div ctrl-factory *ngFor="let input of form.inputFields" [model]="input"></div>
+<div ctrl-factory *ngFor="let input of form.inputFields" [model]="input">
+   <span *ngIf="!input.hidden"></span>
+</div>

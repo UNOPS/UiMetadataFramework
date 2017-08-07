@@ -11,15 +11,13 @@ import { AppRoutingModule } from '../app-routing.module';
 import { FormViewComponent } from './form-view/form-view.component';
 import { FormResolver } from "../form.resolver";
 import { DynamicModule } from "./dynamic/dynnamic.module";
-import { CheckboxComponent } from './core/inputs/checkbox/checkbox.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     FormsListComponent,
-    FormViewComponent,
-    CheckboxComponent
+    FormViewComponent
   ],
   imports: [
     BrowserModule,

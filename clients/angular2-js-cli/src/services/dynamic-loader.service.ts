@@ -11,13 +11,20 @@ import { Subject } from 'rxjs/Subject';
 import { CommonModule } from '@angular/common'
 import { TextComponent } from "../app/core/inputs/text/text.component";
 import { NumberComponent } from "../app/core/inputs/number/number.component";
-import { CheckboxComponent, CheckboxListComponent, DatePickerComponent } from "../app/dynamic/dynamic.component";
+import { BooleanComponent } from "../app/core/inputs/boolean/boolean.component";
+import { DropdownComponent } from "../app/core/inputs/dropdown/dropdown.component";
+import { DatetimeComponent } from "../app/core/inputs/datetime/datetime.component";
+import { PaginatorComponent } from "../app/core/inputs/paginator/paginator.component";
 
 
 
 const typeMap = {
     'text': TextComponent,
-    'number': NumberComponent
+    'number': NumberComponent,
+    'boolean': BooleanComponent,
+    'datetime': DatetimeComponent,
+    'dropdown': DropdownComponent,
+    'paginator': PaginatorComponent
 }
 
 function createComponentModule(component: any) {

@@ -1,0 +1,5 @@
+{{model.label}} :
+<select >
+	<option value=""></option>
+	<option *ngFor="let option of model.customProperties.items" value="{{option.value}}">{{option.label}}</option>
+</select>
