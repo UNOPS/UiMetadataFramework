@@ -1,0 +1,10 @@
+<select 
+	id="{{id}}"
+	bind:value="field.selected"
+	required="{{field.metadata.required}}"
+    tabindex="{{tabindex}}">
+	<option value=""></option>
+	{{#each field.metadata.customProperties.items as option}}
+	<option value="{{option.value}}">{{option.label}}</option>
+	{{/each}}
+</select>
