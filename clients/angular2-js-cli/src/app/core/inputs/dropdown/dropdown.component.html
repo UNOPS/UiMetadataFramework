@@ -1,5 +1,7 @@
+<p>
 {{model.label}} :
-<select >
+<select class="col-md-2 form-control"  >
 	<option value=""></option>
 	<option *ngFor="let option of model.customProperties.items" value="{{option.value}}">{{option.label}}</option>
 </select>
+</p>
