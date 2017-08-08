@@ -15,7 +15,7 @@ export class MetadataService {
 
     getTestData() {
         return new Observable(observer => {
-            observer.next(this.metadata.value);
+            observer.next(this.metadata.value.slice());
             observer.complete();
         });
     }

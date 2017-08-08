@@ -10,8 +10,7 @@ import { Router } from '@angular/router';
 
 
 export class FormsListComponent {
-    debugger
-    forms: Array<FormData> = [];
+
     myMetadata: Array<FormMetadata> = [];
 
     constructor(private metadataService: MetadataService, private router: Router) {
