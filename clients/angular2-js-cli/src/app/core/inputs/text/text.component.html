@@ -1,4 +1,5 @@
-{{model.label}}:
 
-<input  class="form-control" type='text'>
-
+<div class="dynamic-field form-input" [formGroup]="group">
+    <label>{{ config.label }}</label>
+    <input type="text"  [formControlName]="config.label" />
+</div>

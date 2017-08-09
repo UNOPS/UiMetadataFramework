@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { InputComponent } from "../input";
-import { FormControl } from "@angular/forms";
+import { FormControl, FormGroup } from "@angular/forms";
 import { InputFieldMetadata } from "uimf-core/src";
 
 @Component({
@@ -9,8 +9,10 @@ import { InputFieldMetadata } from "uimf-core/src";
   styleUrls: ['./text.component.css']
 })
 export class TextComponent   {
-  @Input() model: InputFieldMetadata;
+ // @Input() model: InputFieldMetadata;
  
+  config;
+  group: FormGroup;
   constructor() { }
 
 }

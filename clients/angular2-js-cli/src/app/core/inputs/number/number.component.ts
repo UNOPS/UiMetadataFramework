@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormControl } from "@angular/forms";
+import { FormControl, FormGroup } from "@angular/forms";
 import { InputComponent } from "../input";
 import { InputFieldMetadata } from "uimf-core/src";
 
@@ -9,8 +9,10 @@ import { InputFieldMetadata } from "uimf-core/src";
   styleUrls: ['./number.component.css']
 })
 export class NumberComponent  {
-  @Input() model: InputFieldMetadata;
+  //@Input() model: InputFieldMetadata;
   //name = new FormControl();
+  config;
+  group: FormGroup;
   constructor() { }
 
   ngOnInit() {

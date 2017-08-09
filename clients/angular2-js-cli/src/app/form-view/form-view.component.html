@@ -1,11 +1,21 @@
-<h1>{{ form.id }}</h1>
+<!--<form (ngSubmit)="onSubmit(f)" #f="ngForm">
 
-
-<!--<ng-template appText></ng-template>-->
-
-<div class="col-md-6" style="margin-left:20px;background-color:lavender; border: 1px solid black;">
+<div class="col-md-6" style="margin:20px;padding:20px;background-color:lavender; border: 1px solid black;">
+    <br>
 <div ctrl-factory *ngFor="let input of form.inputFields" [model]="input">
-  <br><br>
 </div>
 <br>
+<button type="submit" disabled="{{disabled}}" class="btn btn-primary" >{{form.customProperties.submitButtonLabel}} </button>
 </div>
+</form>-->
+
+<div class="app">
+    <dynamic-form [config]="form.inputFields" (submitted)="formSubmitted($event)">
+    </dynamic-form>
+</div>
+<div  *ngIf="outputs != null ">
+<div *ngFor="let output of form.outputFields"  >
+    {{outputs[output.label]}}
+    </div>
+</div>
+

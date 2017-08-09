@@ -1,2 +1,6 @@
-{{model.label}} :
-<input type="datetime"  >
+
+
+<div class="dynamic-field form-input" [formGroup]="group">
+    <label>{{ config.label }}</label>
+    <input type="datetime" [formControlName]="config.label" />
+</div>

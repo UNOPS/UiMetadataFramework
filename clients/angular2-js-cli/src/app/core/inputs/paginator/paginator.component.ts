@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup } from "@angular/forms/src/model";
 
 @Component({
   selector: 'app-paginator',
@@ -6,7 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./paginator.component.css']
 })
 export class PaginatorComponent implements OnInit {
-
+  config;
+  group: FormGroup;
   constructor() { }
 
   ngOnInit() {

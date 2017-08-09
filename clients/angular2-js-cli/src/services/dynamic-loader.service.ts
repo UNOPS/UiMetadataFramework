@@ -70,6 +70,7 @@ export class DynamicLoaderService {
             this.compiler.compileModuleAndAllComponentsAsync(createComponentModule(comp))
                 .then((moduleWithFactories: ModuleWithComponentFactories<any>) => {
                     factory = moduleWithFactories.componentFactories.find(x => x.componentType === comp);
+                    console.log(factory);
                     this.cache.set(type, factory);
                     this.resolveCompHelper$.next({ type, factory });
 

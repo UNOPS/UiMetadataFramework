@@ -1,7 +1,10 @@
-<p>
-{{model.label}} :
-<select class="col-md-2 form-control"  >
-	<option value=""></option>
-	<option *ngFor="let option of model.customProperties.items" value="{{option.value}}">{{option.label}}</option>
-</select>
-</p>
+
+<div class="dynamic-field form-select" [formGroup]="group">
+	<label>{{ config.label }}</label>
+	<select [formControlName]="config.label">
+        <option value="">{{ config.label }}</option>
+        <option *ngFor="let option of config.customProperties.items" value="{{option.value}}">
+          {{ option.label }}
+        </option>
+      </select>
+</div>
