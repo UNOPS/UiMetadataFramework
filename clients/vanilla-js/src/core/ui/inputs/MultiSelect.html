@@ -1,0 +1,105 @@
+<select class="multi-select" type="text" id="{{id}}" required="{{field.metadata.required}}" tabindex="{{tabindex}}" ref:input multiple>
+</select>
+
+<script>
+	import Choices from "choices.js/assets/scripts/dist/choices.js";
+	import * as axiosLib from "axios";
+	
+	var axios = axiosLib.default;
+
+	function mapToTypeaheadItems(items) {
+		return items.map(t => {
+			return {
+				label: t.label,
+				value: t.value.toString()
+			};
+		});
+	}
+
+	export default {
+		oncreate() {
+			//var id = this.get("id");
+			var field = this.get("field");
+			var source = field.metadata.customProperties.source;
+			var app = this.get("app");
+			var a = new Choices(this.refs.input, {
+				duplicateItems: true,
+				searchResultLimit: 10
+			});
+			
+			if (typeof (source) === "string") {
+				var addedItems = {};
+				var query = "";
+				var timer = null;
+
+				a.passedElement.addEventListener("search", function(value) {
+					query = value.detail.value;
+					
+					if (timer != null) {
+						// Cancel previous timer, thus extending the delay until user has stopped typing.
+						clearTimeout(timer);
+					}
+
+					// Search when user types something, but introduce a short delay
+					// to avoid excessive http requests.
+					timer = setTimeout(function() {
+						a.ajax(callback => {
+							return app.server.postForm(source, { query: query }).then(data => {
+								var toAdd = data.items.filter(t => {
+									var key = JSON.stringify(t.value);
+									if (addedItems[key] == null){
+										addedItems[key] = true;
+
+										// Add item.
+										return true;
+									}
+
+									// Don't add item.
+									return false;
+								});
+
+								callback(toAdd, "value", "label");
+							});
+						});
+					}, 300);
+				});
+
+				a.ajax(callback => {
+					return app.server.postForm(source, { ids: field.value }).then(data => {
+						callback(mapToTypeaheadItems(data.items), "value", "label");
+						a.setValueByChoice((field.value || {}).items || []);
+					});
+				});
+			}
+			else {
+				a.setChoices(mapToTypeaheadItems(source), "value", "label", true);
+				
+				var initialized = false;
+				this.observe("field", (newValue, oldValue) => {
+					if (!initialized) {
+						initialized = true;
+						a.setValueByChoice((field.value || {}).items || []);
+					}
+				});
+			}
+
+			// field.value = field.value || { items: [] };
+
+			a.passedElement.addEventListener("change", function (e) {
+				field.value = {
+					items: a.getValue(true)
+				};
+			});
+		},
+		methods: {
+			search() {
+
+			}
+		}
+	}
+
+</script>
+
+<style>
+
+</style>

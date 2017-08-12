@@ -3,10 +3,12 @@
 	using System;
 	using System.Collections.Generic;
 	using UiMetadataFramework.Basic.Input;
+	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Basic.InputProcessors;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
+	using UiMetadataFramework.Web.Forms.Pickers;
 	using UiMetadataFramework.Web.Metadata;
 
 	[MyForm(PostOnLoad = true, SubmitButtonLabel = "Save changes")]
@@ -89,6 +91,9 @@
 
 			[BindToOutput(nameof(Response.Weight))]
 			public int? Weight { get; set; }
+
+			[TypeaheadInputField(typeof(PersonTypeaheadRemoteSource))]
+			public MultiSelect<string> Spouse { get; set; }
 		}
 	}
 }

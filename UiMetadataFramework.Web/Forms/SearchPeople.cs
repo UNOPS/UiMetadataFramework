@@ -21,7 +21,6 @@
 
 			var paginatedResponse = Enumerable.Range(0, 100)
 				.Select(t => FamilyPerson.RandomFamilyPerson(random.Next(150, 210), random.Next(40, 130)))
-				.ToList()
 				.AsQueryable()
 				.Paginate(message.Paginator);
 

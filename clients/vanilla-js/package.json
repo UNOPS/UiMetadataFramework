@@ -16,6 +16,8 @@
     "axios": "^0.16.2",
     "browser-sync": "^2.18.12",
     "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-sass": "^3.1.0",
     "gulp-svelte": "^0.4.0",
     "gulp-typescript": "^3.1.7",
     "moment": "^2.18.1",
@@ -37,6 +39,7 @@
     "uimf-core": "0.0.3"
   },
   "dependencies": {
-    "@types/axios": "^0.14.0"
+    "@types/axios": "^0.14.0",
+    "choices.js": "^3.0.2"
   }
 }
