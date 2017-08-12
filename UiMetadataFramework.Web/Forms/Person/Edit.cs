@@ -6,10 +6,10 @@
 	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Basic.InputProcessors;
 	using UiMetadataFramework.Basic.Output;
-	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.Web.Forms.Pickers;
 	using UiMetadataFramework.Web.Metadata;
+	using UiMetadataFramework.Web.Metadata.Record;
 
 	[MyForm(PostOnLoad = true, SubmitButtonLabel = "Save changes")]
 	public class Edit : IMyForm<Edit.Request, Edit.Response>
@@ -63,7 +63,7 @@
 			};
 		}
 
-		public class Response : FormResponse<MyFormResponseMetadata>
+		public class Response : RecordResponse
 		{
 			[OutputField(Hidden = true)]
 			public DateTime? DateOfBirth { get; set; }
@@ -89,11 +89,11 @@
 			[BindToOutput(nameof(Response.Name))]
 			public string Name { get; set; }
 
-			[BindToOutput(nameof(Response.Weight))]
-			public int? Weight { get; set; }
-
 			[TypeaheadInputField(typeof(PersonTypeaheadRemoteSource))]
 			public MultiSelect<string> Spouse { get; set; }
+
+			[BindToOutput(nameof(Response.Weight))]
+			public int? Weight { get; set; }
 		}
 	}
 }
