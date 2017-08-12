@@ -2,10 +2,10 @@ import { InputFieldProcessor, InputController, FormInstance } from "../../framew
 import * as umf from "uimf-core";
 
 export class BindToOutputProcessor extends InputFieldProcessor {
-	process(input: InputController<any>, form: FormInstance, response: umf.FormResponse): Promise<any> {
+	process(input: InputController<any>, processorMetadata: umf.InputFieldProcessorMetadata, response: umf.FormResponse): Promise<any> {
 		var promises = [];
 
-		let lowercaseInputId = input.metadata.id.toLowerCase();
+		let lowercaseInputId = processorMetadata.customProperties.outputFieldId.toLowerCase();
 
 		for (let prop in response) {
 			if (response.hasOwnProperty(prop) && prop.toLowerCase() === lowercaseInputId) {
@@ -13,6 +13,7 @@ export class BindToOutputProcessor extends InputFieldProcessor {
 				let promise = input.init(serializedValue);
 
 				promises.push(promise);
+				break;
 			}
 		}
 
