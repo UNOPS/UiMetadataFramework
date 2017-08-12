@@ -12,6 +12,8 @@
         oncreate() {
             var field = this.get("field");
             var app = this.get("app");
+            var parent = this.get("parent");
+            var form = this.get("form");
             
             var output = app.controlRegister.getOutput(field);
             
@@ -26,8 +28,8 @@
                 data: {
                     field: field,
                     app: app,
-                    form: this.get("form"),
-                    parent: this.get("parent")
+                    form: form,
+                    parent: parent
                 }
             });
 

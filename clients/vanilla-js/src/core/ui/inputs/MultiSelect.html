@@ -64,12 +64,15 @@
 					}, 300);
 				});
 
-				a.ajax(callback => {
-					return app.server.postForm(source, { ids: field.value }).then(data => {
-						callback(mapToTypeaheadItems(data.items), "value", "label");
-						a.setValueByChoice((field.value || {}).items || []);
+				var currentValue = (field.value || {}).items || [];
+				if (currentValue.length > 0)  {
+					a.ajax(callback => {
+						return app.server.postForm(source, { ids: field.value }).then(data => {
+							callback(mapToTypeaheadItems(data.items), "value", "label");
+							a.setValueByChoice(currentValue);
+						});
 					});
-				});
+				}
 			}
 			else {
 				a.setChoices(mapToTypeaheadItems(source), "value", "label", true);

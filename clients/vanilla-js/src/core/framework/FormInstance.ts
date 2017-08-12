@@ -41,7 +41,7 @@ export class FormInstance {
         }
     }
 
-    prepareForm(): any {
+    prepareForm(mustHaveAllRequiredInputs: boolean): any {
         var data = {};
         var promises = [];
         var hasRequiredMissingInput = false;
@@ -50,7 +50,7 @@ export class FormInstance {
             var promise = input.getValue().then(value => {
                 data[input.metadata.id] = value;
 
-                if (input.metadata.required && (value == null || value == "")) {
+                if (input.metadata.required && (value == null || (typeof (value) === "string" && value == ""))) {
                     hasRequiredMissingInput = true;
                 }
             });
@@ -60,7 +60,8 @@ export class FormInstance {
 
         return Promise.all(promises).then(() => {
             // If not all required inputs were entered, then do not post.
-            if (hasRequiredMissingInput) {
+            if (hasRequiredMissingInput &&
+                mustHaveAllRequiredInputs) {
                 return null;
             }
 
@@ -137,7 +138,7 @@ export class FormInstance {
                 for (let processorMetadata of input.metadata.processors) {
                     var processor = controlRegister.inputProcessors[processorMetadata.id];
                     if (processor != null) {
-                        var promise = processor.process(input, this, params);
+                        var promise = processor.process(input, processorMetadata, params);
                         promises.push(promise);
                     }
                 }
