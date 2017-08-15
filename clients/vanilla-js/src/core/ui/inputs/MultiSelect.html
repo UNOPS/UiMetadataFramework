@@ -15,6 +15,28 @@
 		});
 	}
 
+	function setFieldValue(field, value) {
+		if (field.maxItemCount == 1) {
+			field.value = {
+				value: value[0]
+			};
+		}
+		else {
+			field.value = {
+				items: value
+			};
+		}
+	}
+
+	function setInputValue(a, field) {
+		if (field.maxItemCount == 1) {
+			a.setValueByChoice((field.value || {}).value || null);
+		}
+		else {
+			a.setValueByChoice((field.value || {}).items || []);
+		}
+	}
+
 	export default {
 		oncreate() {
 			var field = this.get("field");
@@ -64,12 +86,15 @@
 					}, 300);
 				});
 
-				var currentValue = (field.value || {}).items || [];
+				var currentValue = field.maxItemCount == 1 
+					? (field.value || {}).value || ""
+					: (field.value || {}).items || [];
+
 				if (currentValue.length > 0)  {
 					a.ajax(callback => {
 						return app.server.postForm(source, { ids: field.value }).then(data => {
 							callback(mapToTypeaheadItems(data.items), "value", "label");
-							a.setValueByChoice(currentValue);
+							setInputValue(a, field);
 						});
 					});
 				}
@@ -81,24 +106,13 @@
 				this.observe("field", (newValue, oldValue) => {
 					if (!initialized) {
 						initialized = true;
-						a.setValueByChoice((field.value || {}).items || []);
+						setInputValue(a, field.value);
 					}
 				});
 			}
 
-			// field.value = field.value || { items: [] };
-
 			a.passedElement.addEventListener("change", function (e) {
-				if (field.maxItemCount == 1) {
-					field.value = {
-						value: a.getValue(true)[0]
-					};
-				}
-				else {
-					field.value = {
-						items: a.getValue(true)
-					};
-				}
+				setFieldValue(field, a.getValue());
 			});
 		},
 		methods: {
