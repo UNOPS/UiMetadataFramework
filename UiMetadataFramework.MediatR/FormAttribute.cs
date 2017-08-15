@@ -21,6 +21,12 @@
 		public bool PostOnLoad { get; set; }
 
 		/// <summary>
+		/// Gets or sets value indicating whether the initial post (<see cref="PostOnLoad"/>) 
+		/// should validate all input fields before posting.
+		/// </summary>
+		public bool PostOnLoadValidation { get; set; } = true;
+
+		/// <summary>
 		/// Gets custom properties of the form.
 		/// </summary>
 		/// <returns>Object representing custom properties for the form or null if there are none.</returns>

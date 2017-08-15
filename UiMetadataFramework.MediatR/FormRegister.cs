@@ -111,6 +111,7 @@
 							Label = form.Attribute.Label,
 							Id = form.Type.FullName,
 							PostOnLoad = form.Attribute.PostOnLoad,
+							PostOnLoadValidation = form.Attribute.PostOnLoadValidation,
 							OutputFields = this.binder.BindOutputFields(responseType).ToList(),
 							InputFields = this.binder.BindInputFields(requestType).ToList(),
 							CustomProperties = form.Attribute.GetCustomProperties()
