@@ -3,8 +3,7 @@
 
 <script>
 	import Choices from "choices.js/assets/scripts/dist/choices.js";
-	import * as axiosLib from "axios";
-	
+	import * as axiosLib from "axios";	
 	var axios = axiosLib.default;
 
 	function mapToTypeaheadItems(items) {
@@ -18,13 +17,14 @@
 
 	export default {
 		oncreate() {
-			//var id = this.get("id");
 			var field = this.get("field");
 			var source = field.metadata.customProperties.source;
 			var app = this.get("app");
 			var a = new Choices(this.refs.input, {
 				duplicateItems: true,
-				searchResultLimit: 10
+				searchResultLimit: 10,
+				removeItemButton: true,
+				maxItemCount: field.maxItemCount
 			});
 			
 			if (typeof (source) === "string") {

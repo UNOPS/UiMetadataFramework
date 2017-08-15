@@ -1,6 +1,12 @@
 import * as umf from "core-framework";
+import { ITypeaheadConfig } from "./TypeaheadInputController";
 
-export class MultiSelectInputController extends umf.InputController<MultiSelectValue> {
+export class MultiSelectInputController 
+	extends umf.InputController<MultiSelectValue> 
+	implements ITypeaheadConfig 
+{
+	public maxItemCount = -1;
+
 	serializeValue(value: MultiSelectValue | string): string {
 		if (typeof (value) === "string") {
 			return value;

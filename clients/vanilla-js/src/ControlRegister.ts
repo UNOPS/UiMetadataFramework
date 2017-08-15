@@ -6,6 +6,7 @@ import { DropdownInputController } from "core-ui/inputs/DropdownInputController"
 import { BooleanInputController } from "core-ui/inputs/BooleanInputController";
 import { PaginatorInputController } from "core-ui/inputs/PaginatorInputController";
 import { MultiSelectInputController } from "core-ui/inputs/MultiSelectInputController";
+import { TypeaheadInputController } from "core-ui/inputs/TypeaheadInputController";
 import { PasswordInputController } from "core-ui/inputs/PasswordInputController";
 
 import TextInput from "core-ui/inputs/Text";
@@ -36,6 +37,7 @@ controlRegister.registerInputFieldControl("number", NumberInput, NumberInputCont
 controlRegister.registerInputFieldControl("dropdown", DropdownInput, DropdownInputController);
 controlRegister.registerInputFieldControl("boolean", BooleanInput, BooleanInputController);
 controlRegister.registerInputFieldControl("paginator", null, PaginatorInputController);
+controlRegister.registerInputFieldControl("typeahead", MultiSelectInput, TypeaheadInputController);
 controlRegister.registerInputFieldControl("multiselect", MultiSelectInput, MultiSelectInputController);
 controlRegister.registerInputFieldControl("password", Password, PasswordInputController);
 

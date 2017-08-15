@@ -28,7 +28,7 @@
     background-color: #FFFFFF;
     margin: 0; }
   .choices[data-type*="select-one"] .choices__button {
-    background-image: url("../../icons/cross-inverse.svg");
+    background-image: url("../assets../assets/cross-inverse.svg");
     padding: 0;
     background-size: 8px;
     height: 100%;
@@ -81,7 +81,7 @@
   margin-left: 8px;
   padding-left: 16px;
   border-left: 1px solid #008fa1;
-  background-image: url("../../icons/cross.svg");
+  background-image: url("../assets/cross.svg");
   background-size: 8px;
   width: 8px;
   line-height: 1;
@@ -230,9 +230,9 @@
   -webkit-appearance: none;
   appearance: none;
   border: 0;
-  background-color: transparent;
-  background-repeat: no-repeat;
-  background-position: center;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
   cursor: pointer; }
   .choices__button:focus {
     outline: none; }

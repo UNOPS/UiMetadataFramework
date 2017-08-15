@@ -2,172 +2,172 @@
 
 {{#if initialized && visibleInputFields.length > 0}}
 <form on:submit="submit(app, form, event, true)">
-    {{#each visibleInputFields as inputField}}
-    <FormInput field="{{inputField}}" app="{{app}}" tabindex="{{tabindex * 100 + inputField.metadata.orderIndex}}" />
-    {{/each}}
+	{{#each visibleInputFields as inputField}}
+	<FormInput field="{{inputField}}" app="{{app}}" tabindex="{{tabindex * 100 + inputField.metadata.orderIndex}}" />
+	{{/each}}
 
-    <button type="submit" disabled="{{disabled}}" tabindex="-1">{{submitButtonLabel}}</button>
+	<button type="submit" disabled="{{disabled}}" tabindex="-1">{{submitButtonLabel}}</button>
 </form>
 {{/if}}
 
 {{#if outputFieldValues != null}}
 <div class="response">
-    {{#each outputFieldValues as outputField}}
-    {{#if outputField.metadata.hidden == false}}
-    <FormOutput field="{{outputField}}" app="{{app}}" form="{{form}}" parent="{{self}}" />
-    {{/if}}
-    {{/each}}
+	{{#each outputFieldValues as outputField}}
+	{{#if outputField.metadata.hidden == false}}
+	<FormOutput field="{{outputField}}" app="{{app}}" form="{{form}}" parent="{{self}}" />
+	{{/if}}
+	{{/each}}
 </div>
 {{/if}}
 
 <script>
-    import FormInput from "./Input";
-    import FormOutput from "./Output";
+	import FormInput from "./Input";
+	import FormOutput from "./Output";
 
-    let tabindex = 1;
+	let tabindex = 1;
 
-    function enableForm(form) {
-        form.set({
-            // Remove previous output, this is needed for repainting.
-            outputFieldValues: null,
+	function enableForm(form) {
+		form.set({
+			// Remove previous output, this is needed for repainting.
+			outputFieldValues: null,
 
-            // Enable post.
-            disabled: false
-        });
-    }
+			// Enable post.
+			disabled: false
+		});
+	}
 
-    export default {
-        methods: {
-            init: function() {
-                if (!this.get("initialized")) {
-                    var form = this.get("form");
-                    
-                    this.set({ 
-                        self: this,
-                        initialized: true,
-                        visibleInputFields: form.inputs.filter(t => t.metadata.hidden == false),
-                        submitButtonLabel: form.metadata.customProperties != null && form.metadata.customProperties.submitButtonLabel 
-                            ? form.metadata.customProperties.submitButtonLabel 
-                            : "Submit"
-                    });
+	export default {
+		methods: {
+			init: function() {
+				if (!this.get("initialized")) {
+					var form = this.get("form");
+					
+					this.set({ 
+						self: this,
+						initialized: true,
+						visibleInputFields: form.inputs.filter(t => t.metadata.hidden == false),
+						submitButtonLabel: form.metadata.customProperties != null && form.metadata.customProperties.submitButtonLabel 
+							? form.metadata.customProperties.submitButtonLabel 
+							: "Submit"
+					});
 
-                    tabindex += 1;
-                    
-                    // Auto-submit form if necessary.
-                    if (form.metadata.postOnLoad) {
-                        var app = this.get("app");
-                        this.submit(app, form);
-                    }
-                }
-            },
-            submit: function (app, formInstance, event, redirect) {
-                var self = this;
+					tabindex += 1;
+					
+					// Auto-submit form if necessary.
+					if (form.metadata.postOnLoad) {
+						var app = this.get("app");
+						this.submit(app, form);
+					}
+				}
+			},
+			submit: function (app, formInstance, event, redirect) {
+				var self = this;
 
-                if (event != null) {
-                    event.preventDefault();
-                }
+				if (event != null) {
+					event.preventDefault();
+				}
 
-                var skipValidation = 
-                    !formInstance.metadata.postOnLoadValidation &&
-                    formInstance.metadata.postOnLoad &&
-                    // if initialization of the form, i.e. - first post.
-                    redirect == null;
+				var skipValidation = 
+					!formInstance.metadata.postOnLoadValidation &&
+					formInstance.metadata.postOnLoad &&
+					// if initialization of the form, i.e. - first post.
+					redirect == null;
 
-                formInstance.prepareForm(!skipValidation).then(data => {
-                    // If not all required inputs are filled.
-                    if (data == null) {
-                        return;
-                    }
+				formInstance.prepareForm(!skipValidation).then(data => {
+					// If not all required inputs are filled.
+					if (data == null) {
+						return;
+					}
 
-                    // Disable double-posts.
-                    self.set({ disabled: true });
+					// Disable double-posts.
+					self.set({ disabled: true });
 
-                    // If postOnLoad == true, then the input field values should appear in the url.
-                    // Reason is that postOnLoad == true is used by "report" pages, which need
-                    // their filters to be saved in the url. This does not apply to forms
-                    // with postOnLoad == false, because those forms are usually for creating new data
-                    // and hence should not be tracked in browser's history based on parameters.
-                    if (formInstance.metadata.postOnLoad && redirect && this.get("useUrl")) {
-                        formInstance.getSerializedInputValues().then(urlParams => {
-                            // Update url in the browser.
-                            app.go(formInstance.metadata.id, urlParams);
-                        });
+					// If postOnLoad == true, then the input field values should appear in the url.
+					// Reason is that postOnLoad == true is used by "report" pages, which need
+					// their filters to be saved in the url. This does not apply to forms
+					// with postOnLoad == false, because those forms are usually for creating new data
+					// and hence should not be tracked in browser's history based on parameters.
+					if (formInstance.metadata.postOnLoad && redirect && this.get("useUrl")) {
+						formInstance.getSerializedInputValues().then(urlParams => {
+							// Update url in the browser.
+							app.go(formInstance.metadata.id, urlParams);
+						});
 
-                        return;
-                    }
+						return;
+					}
 
-                    app.server.postForm(formInstance.metadata.id, data)
-                        .then(response => {
-                            // If there was an error.
-                            if (response == null) {
-                                enableForm(self);
-                                return;
-                            }
+					app.server.postForm(formInstance.metadata.id, data)
+						.then(response => {
+							// If there was an error.
+							if (response == null) {
+								enableForm(self);
+								return;
+							}
 
-                            formInstance.setOutputFieldValues(response);
+							formInstance.setOutputFieldValues(response);
 
-                            formInstance.runInputFieldProcessors("response", response, app.controlRegister).then(t => {                            
-                                enableForm(self);
-                                                            
-                                if (response.metadata.handler == "" || response.metadata.handler == null) {
-                                    // Hide all inputs, to re-render them. This is needed due to the way that
-                                    // Svelte *seems* to work - it doesn't re-render nested components, unless they are recreated.
-                                    self.set({ visibleInputFields: [] });
-                                    
-                                    self.set({
-                                        // Show inputs again.
-                                        visibleInputFields: formInstance.inputs.filter(t => t.metadata.hidden == false),
-                                        outputFieldValues: formInstance.outputs,
-                                        responseMetadata: response.metadata
-                                    });
-                                }
-                                else {
-                                    app.handleResponse(response, formInstance);
-                                }
+							formInstance.runInputFieldProcessors("response", response, app.controlRegister).then(t => {                            
+								enableForm(self);
+															
+								if (response.metadata.handler == "" || response.metadata.handler == null) {
+									// Hide all inputs, to re-render them. This is needed due to the way that
+									// Svelte *seems* to work - it doesn't re-render nested components, unless they are recreated.
+									self.set({ visibleInputFields: [] });
+									
+									self.set({
+										// Show inputs again.
+										visibleInputFields: formInstance.inputs.filter(t => t.metadata.hidden == false),
+										outputFieldValues: formInstance.outputs,
+										responseMetadata: response.metadata
+									});
+								}
+								else {
+									app.handleResponse(response, formInstance);
+								}
 
-                                self.fire("form:posted", {
-                                    form: self,
-                                    invokedByUser: event != null
-                                })
-                            });
-                        })
-                        .catch(response => {
-                            enableForm(self);
-                        });
-                });
-            }
-        },
-        data: function () {
-            return {
-                disabled: false,
-                tabindex: tabindex,
-                urlData: null,
-                initialized: false,
-                responseMetadata: {},
-                useUrl: true
-            };
-        },
-        components: {
-            FormInput,
-            FormOutput
-        }
-    };
+								self.fire("form:posted", {
+									form: self,
+									invokedByUser: event != null
+								})
+							});
+						})
+						.catch(response => {
+							enableForm(self);
+						});
+				});
+			}
+		},
+		data: function () {
+			return {
+				disabled: false,
+				tabindex: tabindex,
+				urlData: null,
+				initialized: false,
+				responseMetadata: {},
+				useUrl: true
+			};
+		},
+		components: {
+			FormInput,
+			FormOutput
+		}
+	};
 </script>
 
 <style>
-    .response {
-        margin-top:50px;
-    }
-
-    .inline-form .response {
-		margin-top:0;
-        padding: 10px 15px;
+	.response {
+		margin-top:50px;
 	}
 
-    .inline-form h2 {
-        margin: 0;
-        background: #eee;
-        padding: 10px 15px 15px;
-        font-size: 15px;
-    }
+	.inline-form .response {
+		margin-top:0;
+		padding: 10px 15px;
+	}
+
+	.inline-form h2 {
+		margin: 0;
+		background: #eee;
+		padding: 10px 15px 15px;
+		font-size: 15px;
+	}
 </style>
