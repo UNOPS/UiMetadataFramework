@@ -28,8 +28,7 @@
 
 			if (message.Name?.Value != null)
 			{
-				var firstNameQuery = PersonTypeaheadRemoteSource.GetFirstName(message.Name?.Value);
-				queryable = queryable.Where(t => t.FirstName.Label.Contains(firstNameQuery, StringComparison.OrdinalIgnoreCase));
+				queryable = queryable.Where(t => t.FirstName.Label.Contains(message.Name.Value, StringComparison.OrdinalIgnoreCase));
 			}
 
 			return new Response
