@@ -5,9 +5,11 @@
 	using System.Linq;
 	using global::MediatR;
 	using UiMetadataFramework.Basic.Input;
+	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.Web.Forms.Person;
+	using UiMetadataFramework.Web.Forms.Pickers;
 	using UiMetadataFramework.Web.Metadata;
 
 	[MyForm(Label = "Search people", PostOnLoad = true, SubmitButtonLabel = "Search")]
@@ -21,6 +23,8 @@
 
 			var paginatedResponse = Enumerable.Range(0, 100)
 				.Select(t => FamilyPerson.RandomFamilyPerson(random.Next(150, 210), random.Next(40, 130)))
+				.Where(t => message.Name?.Value != null)
+				.Where(t => t.FirstName.Label.Contains(message.Name.Value, StringComparison.OrdinalIgnoreCase))
 				.AsQueryable()
 				.Paginate(message.Paginator);
 
@@ -63,23 +67,23 @@
 			[OutputField(Hidden = true)]
 			public int Height { get; set; }
 
+			[OutputField(OrderIndex = 3)]
+			public bool? IsRegistered { get; set; }
+
 			[PaginatedData(nameof(Request.Paginator), OrderIndex = 100)]
 			public PaginatedData<FamilyPerson> Results { get; set; }
 
 			[OutputField(Hidden = true)]
 			public decimal Weight { get; set; }
-
-			[OutputField(OrderIndex = 3)]
-			public bool? IsRegistered { get; set; }
 		}
 
 		public class FamilyPerson : Person
 		{
-			[OutputField(OrderIndex = 20)]
-			public List<Person> Relatives { get; set; }
-
 			[OutputField(OrderIndex = 30)]
 			public ActionList Actions { get; set; }
+
+			[OutputField(OrderIndex = 20)]
+			public List<Person> Relatives { get; set; }
 
 			public static FamilyPerson RandomFamilyPerson(string name)
 			{
@@ -184,6 +188,9 @@
 			public int? Height { get; set; }
 
 			public bool? IsRegistered { get; set; }
+
+			[TypeaheadInputField(typeof(PersonTypeaheadRemoteSource))]
+			public TypeaheadValue<string> Name { get; set; }
 
 			public Paginator Paginator { get; set; }
 
