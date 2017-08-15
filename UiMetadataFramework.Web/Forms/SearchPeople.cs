@@ -21,12 +21,16 @@
 			var weight = message.Weight;
 			var random = new Random(height);
 
-			var paginatedResponse = Enumerable.Range(0, 100)
+			var queryable = Enumerable.Range(0, 100)
 				.Select(t => FamilyPerson.RandomFamilyPerson(random.Next(150, 210), random.Next(40, 130)))
-				.Where(t => message.Name?.Value != null)
-				.Where(t => t.FirstName.Label.Contains(message.Name.Value, StringComparison.OrdinalIgnoreCase))
-				.AsQueryable()
-				.Paginate(message.Paginator);
+				.ToList()
+				.AsQueryable();
+
+			if (message.Name?.Value != null)
+			{
+				var firstNameQuery = PersonTypeaheadRemoteSource.GetFirstName(message.Name?.Value);
+				queryable = queryable.Where(t => t.FirstName.Label.Contains(firstNameQuery, StringComparison.OrdinalIgnoreCase));
+			}
 
 			return new Response
 			{
@@ -35,7 +39,7 @@
 				IsRegistered = message.IsRegistered,
 				DateOfBirth = message.DateOfBirth,
 				Height = height,
-				Results = paginatedResponse,
+				Results = queryable.Paginate(message.Paginator),
 				Metadata = new MyFormResponseMetadata
 				{
 					Title = "Searching for " + message.FirstName

@@ -21,10 +21,15 @@
 				t => new TypeaheadItem<string>
 				{
 					Label = t.FirstName.Label + " (" + t.DateOfBirth.Value.ToString("dd-MMM-yyyy") + ")",
-					Value = t.FirstName.Label + t.DateOfBirth.Value.Ticks
+					Value = t.FirstName.Label + "_" + t.DateOfBirth.Value.Ticks
 				},
 				t => message.Ids.Items.Contains(t.FirstName.Label),
 				t => t.FirstName.Label.Contains(message.Query, StringComparison.OrdinalIgnoreCase));
+		}
+
+		public static string GetFirstName(string typeaheadItemValue)
+		{
+			return typeaheadItemValue?.Split('_')[0];
 		}
 
 		public class Request : TypeaheadRequest<string>
