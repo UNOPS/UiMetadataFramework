@@ -89,9 +89,16 @@
 			// field.value = field.value || { items: [] };
 
 			a.passedElement.addEventListener("change", function (e) {
-				field.value = {
-					items: a.getValue(true)
-				};
+				if (field.maxItemCount == 1) {
+					field.value = {
+						value: a.getValue(true)[0]
+					};
+				}
+				else {
+					field.value = {
+						items: a.getValue(true)
+					};
+				}
 			});
 		},
 		methods: {
