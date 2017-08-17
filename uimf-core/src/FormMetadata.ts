@@ -29,4 +29,14 @@ export class FormMetadata {
 	 * Gets or sets a value indicating whether the form should be auto-posted as soon as it has been loaded by the client. This can be useful for displaying reports and to generally show data without user having to post the form manually. 
 	 */
 	public postOnLoad: boolean;
+
+	/**
+	 * Gets or sets value indicating whether the initial post (<see cref="PostOnLoad"/>) should validate all input fields before posting.
+	 */
+	public postOnLoadValidation: boolean;
+
+	/**
+	 * Gets or sets additional parameters for the client.
+	 */
+	public customProperties: any;
 }
