@@ -61,6 +61,10 @@
 
 	public class TypeaheadValue<T>
 	{
+		public TypeaheadValue()
+		{
+		}
+
 		public TypeaheadValue(T value)
 		{
 			this.Value = value;
