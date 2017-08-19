@@ -7,13 +7,18 @@
 
 	public class TypeaheadInputFieldBinding : InputFieldBinding
 	{
-		internal TypeaheadInputFieldBinding(Type serverTypes, string clientType) : base(serverTypes, clientType)
+		internal TypeaheadInputFieldBinding(Type serverType, string clientType, DependencyInjectionContainer container)
+			: base(serverType, clientType)
+		{
+			this.Container = container;
+		}
+
+		public TypeaheadInputFieldBinding(DependencyInjectionContainer container)
+			: this(typeof(TypeaheadValue<>), "typeahead", container)
 		{
 		}
 
-		public TypeaheadInputFieldBinding() : base(typeof(TypeaheadValue<>), "typeahead")
-		{
-		}
+		public DependencyInjectionContainer Container { get; private set; }
 
 		public override object GetCustomProperties(InputFieldAttribute attribute, PropertyInfo property)
 		{
@@ -27,19 +32,19 @@
 
 			if (typeaheadInputFieldAttribute.Source.GetInterfaces(typeof(ITypeaheadRemoteSource)).Any())
 			{
-				return new
+				return new TypeaheadCustomProperties
 				{
-					Source = (object)typeaheadInputFieldAttribute.Source.FullName
+					Source = typeaheadInputFieldAttribute.Source.FullName
 				};
 			}
 
 			var inlineSource = typeaheadInputFieldAttribute.Source.GetInterfaces(typeof(ITypeaheadInlineSource<>)).SingleOrDefault();
 			if (inlineSource != null)
 			{
-				var source = Activator.CreateInstance(typeaheadInputFieldAttribute.Source);
+				var source = this.Container.GetInstance(typeaheadInputFieldAttribute.Source);
 				var items = typeaheadInputFieldAttribute.Source.GetTypeInfo().GetMethod(nameof(ITypeaheadInlineSource<int>.GetItems)).Invoke(source, null);
 
-				return new
+				return new TypeaheadCustomProperties
 				{
 					Source = items
 				};
@@ -49,8 +54,18 @@
 		}
 	}
 
+	public class TypeaheadCustomProperties
+	{
+		public object Source { get; set; }
+	}
+
 	public class TypeaheadValue<T>
 	{
+		public TypeaheadValue(T value)
+		{
+			this.Value = value;
+		}
+
 		public T Value { get; set; }
 	}
 

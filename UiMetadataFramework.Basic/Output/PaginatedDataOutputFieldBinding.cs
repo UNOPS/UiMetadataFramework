@@ -26,7 +26,7 @@ namespace UiMetadataFramework.Basic.Output
 			return new
 			{
 				Columns = binder.BindOutputFields(paginatedItemType).ToList(),
-				Customizations = attribute.GetCustomProperties()
+				Customizations = attribute.GetCustomProperties(property, binder)
 			};
 		}
 	}
@@ -64,7 +64,7 @@ namespace UiMetadataFramework.Basic.Output
 		/// </summary>
 		public string Paginator { get; set; }
 
-		public override object GetCustomProperties()
+		public override object GetCustomProperties(PropertyInfo property, MetadataBinder binder)
 		{
 			return new
 			{

@@ -1,5 +1,6 @@
 namespace UiMetadataFramework.Basic.InputProcessors
 {
+	using System.Reflection;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
@@ -24,7 +25,7 @@ namespace UiMetadataFramework.Basic.InputProcessors
 		/// </summary>
 		public string OutputFieldId { get; set; }
 
-		public override object GetCustomProperties()
+		public override object GetCustomProperties(PropertyInfo property, MetadataBinder binder)
 		{
 			return new
 			{

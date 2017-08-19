@@ -13,9 +13,8 @@ namespace UiMetadataFramework.Core.Binding
 	public class InputFieldBinding
 	{
 		public InputFieldBinding(Type serverType, string clientType)
+			: this(new[] { serverType }, clientType)
 		{
-			this.ServerTypes = new[] { serverType };
-			this.ClientType = clientType;
 		}
 
 		public InputFieldBinding(IEnumerable<Type> serverTypes, string clientType)
@@ -40,7 +39,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// Gets the server-side types being bound.
 		/// </summary>
 		public IEnumerable<Type> ServerTypes { get; }
-
+		
 		public override bool Equals(object obj)
 		{
 			var binding = obj as InputFieldBinding;

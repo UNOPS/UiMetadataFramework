@@ -4,6 +4,7 @@
 	using System.Reflection;
 	using System.Threading.Tasks;
 	using global::MediatR;
+	using UiMetadataFramework.Basic;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
@@ -12,12 +13,47 @@
 
 	public class MediatrTests
 	{
-		[Form(Label = "Do some magic", PostOnLoad = false)]
+		public class MyForm : FormAttribute
+		{
+			public override object GetCustomProperties(Type type)
+			{
+				var menuAttribute = type.GetTypeInfo().GetCustomAttribute<MenuAttribute>();
+
+				return new MyFormCustomProperties
+				{
+					ParentMenu = menuAttribute?.ParentMenu
+				};
+			}
+		}
+
+		public class MyFormCustomProperties
+		{
+			public string ParentMenu { get; set; }
+		}
+
+		public class MenuAttribute : Attribute
+		{
+			public MenuAttribute(string parentMenu)
+			{
+				this.ParentMenu = parentMenu;
+			}
+
+			public string ParentMenu { get; set; }
+		}
+
+		[MyForm(Label = "Do some magic", PostOnLoad = false)]
+		[Menu("Magical tools")]
 		public class DoMagic : IAsyncForm<DoMagic.Request, DoMagic.Response>, IComparable
 		{
 			public Task<Response> Handle(Request message)
 			{
 				return Task.FromResult(new Response());
+			}
+
+			public int CompareTo(object obj)
+			{
+				// This method is just to make sure IForms can implement any arbitrary non-generic interface.
+				throw new NotImplementedException();
 			}
 
 			public class Response : FormResponse
@@ -51,18 +87,12 @@
 				[InputField(Hidden = true)]
 				public decimal Weight { get; set; }
 			}
-
-			public int CompareTo(object obj)
-			{
-				// This method is just to make sure IForms can implement any arbitrary non-generic interface.
-				throw new NotImplementedException();
-			}
 		}
 
 		[Fact]
 		public void CanGetFormsFromRegistry()
 		{
-			var binder = new MetadataBinder();
+			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
 			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
 
 			var formRegister = new FormRegister(binder);
@@ -71,6 +101,8 @@
 			var formMetadata = formRegister.GetFormInfo(typeof(DoMagic).FullName)?.Metadata;
 
 			Assert.NotNull(formMetadata);
+			Assert.Equal("Magical tools", ((MyFormCustomProperties)formMetadata.CustomProperties).ParentMenu);
+
 			Assert.True(formMetadata.Id == typeof(DoMagic).FullName);
 			Assert.True(formMetadata.Label == "Do some magic");
 			Assert.True(formMetadata.PostOnLoad == false);

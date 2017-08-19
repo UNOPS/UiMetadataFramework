@@ -1,5 +1,6 @@
 ﻿namespace UiMetadataFramework.Web.Metadata
 {
+	using System;
 	using UiMetadataFramework.MediatR;
 
 	public class MyFormAttribute : FormAttribute
@@ -9,7 +10,7 @@
 		/// </summary>
 		public string SubmitButtonLabel { get; set; } = "Submit";
 
-		public override object GetCustomProperties()
+		public override object GetCustomProperties(Type type)
 		{
 			return new
 			{

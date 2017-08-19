@@ -1,6 +1,7 @@
 namespace UiMetadataFramework.Core.Binding
 {
 	using System;
+	using System.Reflection;
 
 	/// <summary>
 	/// Attribute used for decorating output fields.
@@ -26,8 +27,10 @@ namespace UiMetadataFramework.Core.Binding
 		/// <summary>
 		/// Gets custom properties of the output field.
 		/// </summary>
+		/// <param name="property">Property representing the output field for which to get metadata.</param>
+		/// <param name="binder">Metadata binder being used.</param>
 		/// <returns>Object representing custom properties for the output field or null if there are none.</returns>
-		public virtual object GetCustomProperties()
+		public virtual object GetCustomProperties(PropertyInfo property, MetadataBinder binder)
 		{
 			return null;
 		}

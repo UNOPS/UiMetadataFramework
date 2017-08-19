@@ -4,6 +4,7 @@
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
+	using UiMetadataFramework.Basic;
 	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
@@ -14,6 +15,8 @@
 	{
 		public class Response : FormResponse
 		{
+			public IList<string> Categories { get; set; }
+
 			[OutputField(Label = "DoB", OrderIndex = 2)]
 			public DateTime DateOfBirth { get; set; }
 
@@ -27,8 +30,6 @@
 
 			[OutputField(Hidden = true)]
 			public decimal Weight { get; set; }
-
-			public IList<string> Categories { get; set; }
 		}
 
 		public class Request
@@ -40,8 +41,6 @@
 
 			[InputField(Label = "DoB", OrderIndex = 2)]
 			public DateTime DateOfBirth { get; set; }
-
-			public DateTime? SubmissionDate { get; set; }
 
 			public DropdownValue<DayOfWeek?> Day { get; set; }
 
@@ -56,6 +55,8 @@
 			public int? Height { get; set; }
 
 			public bool IsRegistered { get; set; }
+
+			public DateTime? SubmissionDate { get; set; }
 
 			[InputField(Hidden = true)]
 			public decimal Weight { get; set; }
@@ -77,17 +78,9 @@
 		}
 
 		[Fact]
-		public void DuplicateAttemptsToBindSameAssemblyAreIgnored()
-		{
-			var binder = new MetadataBinder();
-			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
-			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
-		}
-
-		[Fact]
 		public void CanGetInputFieldsMetadata()
 		{
-			var binder = new MetadataBinder();
+			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
 			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
 
 			var inputFields = binder.BindInputFields<Request>().OrderBy(t => t.OrderIndex).ToList();
@@ -95,10 +88,12 @@
 			Assert.Equal(9, inputFields.Count);
 			inputFields.AssertHasInputField(nameof(Request.FirstName), StringInputFieldBinding.ControlName, "First name", orderIndex: 1, required: true);
 			inputFields.AssertHasInputField(nameof(Request.DateOfBirth), DateTimeInputFieldBinding.ControlName, "DoB", orderIndex: 2, required: true);
-			inputFields.AssertHasInputField(nameof(Request.SubmissionDate), DateTimeInputFieldBinding.ControlName, nameof(Request.SubmissionDate), required: false);
-			inputFields.AssertHasInputField(nameof(Request.Height), NumberInputFieldBinding.ControlName, nameof(Request.Height), hidden: true, required:false);
-			inputFields.AssertHasInputField(nameof(Request.Weight), NumberInputFieldBinding.ControlName, nameof(Request.Weight), hidden: true, required:true);
-			inputFields.AssertHasInputField(nameof(Request.IsRegistered), BooleanInputFieldBinding.ControlName, nameof(Request.IsRegistered), required:true);
+			inputFields.AssertHasInputField(nameof(Request.SubmissionDate), DateTimeInputFieldBinding.ControlName, nameof(Request.SubmissionDate),
+				required: false);
+			inputFields.AssertHasInputField(nameof(Request.Height), NumberInputFieldBinding.ControlName, nameof(Request.Height), hidden: true,
+				required: false);
+			inputFields.AssertHasInputField(nameof(Request.Weight), NumberInputFieldBinding.ControlName, nameof(Request.Weight), hidden: true, required: true);
+			inputFields.AssertHasInputField(nameof(Request.IsRegistered), BooleanInputFieldBinding.ControlName, nameof(Request.IsRegistered), required: true);
 
 			inputFields.AssertHasInputField(nameof(Request.Day), DropdownInputFieldBinding.ControlName, nameof(Request.Day))
 				.HasCustomProperties<DropdownProperties>(t => t.Items.Count == 7, "Dropdown has incorrect number of items.");
@@ -113,7 +108,7 @@
 		[Fact]
 		public void CanGetOutputFieldsMetadata()
 		{
-			var binder = new MetadataBinder();
+			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
 			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
 
 			var outputFields = binder.BindOutputFields<Response>().OrderBy(t => t.OrderIndex).ToList();
@@ -133,6 +128,14 @@
 			columns.AssertHasOutputField(nameof(Person.DateOfBirth), DateTimeOutputFieldBinding.ControlName, "DoB", false, 2);
 			columns.AssertHasOutputField(nameof(Person.Height), NumberOutputFieldBinding.ControlName, nameof(Response.Height), true);
 			columns.AssertHasOutputField(nameof(Person.Weight), NumberOutputFieldBinding.ControlName, nameof(Response.Weight), true);
+		}
+
+		[Fact]
+		public void DuplicateAttemptsToBindSameAssemblyAreIgnored()
+		{
+			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
+			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
 		}
 	}
 }

@@ -114,7 +114,7 @@
 							PostOnLoadValidation = form.Attribute.PostOnLoadValidation,
 							OutputFields = this.binder.BindOutputFields(responseType).ToList(),
 							InputFields = this.binder.BindInputFields(requestType).ToList(),
-							CustomProperties = form.Attribute.GetCustomProperties()
+							CustomProperties = form.Attribute.GetCustomProperties(form.Type)
 						}
 					});
 			}

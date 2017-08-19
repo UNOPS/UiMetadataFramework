@@ -14,11 +14,22 @@
 	{
 		public const string ObjectListOutputControlName = "table";
 		public const string ValueListOutputControlName = "list";
+		private readonly DependencyInjectionContainer dependencyInjectionContainer;
 
 		private readonly ConcurrentDictionary<Type, InputFieldBinding> inputFieldMetadataMap = new ConcurrentDictionary<Type, InputFieldBinding>();
+		private readonly object key = new object();
 		private readonly ConcurrentDictionary<Type, OutputFieldBinding> outputFieldMetadataMap = new ConcurrentDictionary<Type, OutputFieldBinding>();
 		private readonly List<string> registeredAssemblies = new List<string>();
-		private readonly object key = new object();
+
+		public MetadataBinder()
+			: this(DependencyInjectionContainer.Default)
+		{
+		}
+
+		public MetadataBinder(DependencyInjectionContainer dependencyInjectionContainer)
+		{
+			this.dependencyInjectionContainer = dependencyInjectionContainer;
+		}
 
 		public void AddBinding(OutputFieldBinding binding)
 		{
@@ -154,7 +165,7 @@
 					Label = attribute?.Label ?? property.Name,
 					OrderIndex = attribute?.OrderIndex ?? 0,
 					Required = required,
-					Processors = inputFieldProcessorAttributes.Select(t => t.ToMetadata()).ToList(),
+					Processors = inputFieldProcessorAttributes.Select(t => t.ToMetadata(property, this)).ToList(),
 					CustomProperties = binding.GetCustomProperties(attribute, property)
 				};
 
@@ -195,7 +206,7 @@
 					customProperties = new EnumerableOutputFieldProperties
 					{
 						Columns = this.BindOutputFields(property.PropertyType.GenericTypeArguments[0]).ToList(),
-						Customizations = attribute?.GetCustomProperties()
+						Customizations = attribute?.GetCustomProperties(property, this)
 					};
 				}
 				else
@@ -206,7 +217,7 @@
 						? binding.GetCustomProperties(property, attribute, this)
 						// Only for "ValueListOutputControlName" (i.e. - string[], int[], etc) 
 						// will the code come here. 
-						: attribute?.GetCustomProperties();
+						: attribute?.GetCustomProperties(property, this);
 				}
 
 				var metadata = new OutputFieldMetadata(clientControlName)
@@ -252,7 +263,7 @@
 						!typeInfo.IsAbstract &&
 						typeInfo.IsSubclassOf(typeof(OutputFieldBinding));
 				})
-				.Select(Activator.CreateInstance)
+				.Select(t => this.dependencyInjectionContainer.GetInstance(t))
 				.Cast<OutputFieldBinding>();
 
 			foreach (var binding in outputFieldBindings)
@@ -278,7 +289,7 @@
 						!typeInfo.IsAbstract &&
 						typeInfo.IsSubclassOf(typeof(InputFieldBinding));
 				})
-				.Select(Activator.CreateInstance)
+				.Select(t => this.dependencyInjectionContainer.GetInstance(t))
 				.Cast<InputFieldBinding>();
 
 			foreach (var binding in inputFieldBindings)

@@ -29,8 +29,9 @@
 		/// <summary>
 		/// Gets custom properties of the form.
 		/// </summary>
+		/// <param name="type">Type to which this attribute is applied.</param>
 		/// <returns>Object representing custom properties for the form or null if there are none.</returns>
-		public virtual object GetCustomProperties()
+		public virtual object GetCustomProperties(Type type)
 		{
 			return null;
 		}

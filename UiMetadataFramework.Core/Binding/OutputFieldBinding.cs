@@ -13,9 +13,8 @@
 	public class OutputFieldBinding
 	{
 		public OutputFieldBinding(Type serverType, string clientType)
+			: this(new[] { serverType }, clientType)
 		{
-			this.ServerTypes = new[] { serverType };
-			this.ClientType = clientType;
 		}
 
 		public OutputFieldBinding(IEnumerable<Type> serverTypes, string clientType)
@@ -57,7 +56,7 @@
 		/// <returns>Object representing custom properties for the output field or null if there are none.</returns>
 		public virtual object GetCustomProperties(PropertyInfo property, OutputFieldAttribute attribute, MetadataBinder binder)
 		{
-			return attribute?.GetCustomProperties();
+			return attribute?.GetCustomProperties(property, binder);
 		}
 
 		public override int GetHashCode()
