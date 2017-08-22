@@ -1,5 +1,6 @@
 ﻿namespace UiMetadataFramework.MediatR
 {
+	using System;
 	using System.Collections.Concurrent;
 	using System.Collections.Generic;
 	using System.Linq;
@@ -13,20 +14,13 @@
 	public class FormRegister
 	{
 		private readonly MetadataBinder binder;
-		private readonly ConcurrentDictionary<string, FormInfo> registeredForms = new ConcurrentDictionary<string, FormInfo>();
-		private readonly List<string> registeredAssemblies = new List<string>();
-		private readonly GetFormIdDelegate getFormId;
 		private readonly object key = new object();
+		private readonly List<string> registeredAssemblies = new List<string>();
+		private readonly ConcurrentDictionary<string, FormInfo> registeredForms = new ConcurrentDictionary<string, FormInfo>();
 
 		public FormRegister(MetadataBinder binder)
-			: this(binder, t => t.FullName)
-		{
-		}
-
-		public FormRegister(MetadataBinder binder, GetFormIdDelegate getFormId)
 		{
 			this.binder = binder;
-			this.getFormId = getFormId;
 		}
 
 		/// <summary>
@@ -38,11 +32,32 @@
 		/// Gets <see cref="FormInfo"/> by form's id.
 		/// </summary>
 		/// <param name="id">Id of the form.</param>
-		/// <returns>FormMetadata instance.</returns>
+		/// <returns><see cref="FormInfo"/> instance or null if no metadata for the form was found.</returns>
 		public FormInfo GetFormInfo(string id)
 		{
 			this.registeredForms.TryGetValue(id, out FormInfo formInfo);
 			return formInfo;
+		}
+
+		/// <summary>
+		/// Gets <see cref="FormInfo"/> by form's type.
+		/// </summary>
+		/// <param name="formType">Type that is decorated with <see cref="FormAttribute"/>.</param>
+		/// <returns><see cref="FormInfo"/> instance or null if no metadata for the form was found.</returns>
+		public FormInfo GetFormInfo(Type formType)
+		{
+			var attribute = formType.GetTypeInfo().GetCustomAttribute<FormAttribute>();
+
+			if (attribute == null)
+			{
+				throw new InvalidConfigurationException(
+					$"Type '{formType.FullName}' does not have mandatory attribute '{typeof(FormAttribute).FullName}'.");
+			}
+
+			var formId = GetFormId(formType, attribute);
+			this.registeredForms.TryGetValue(formId, out FormInfo metadata);
+
+			return metadata;
 		}
 
 		/// <summary>
@@ -75,57 +90,104 @@
 
 			foreach (var form in forms)
 			{
-				var iformInterfaces = form.Type.GetTypeInfo()
-					.GetInterfaces()
-					.Select(t => t)
-					.Where(t =>
+				this.RegisterForm(form.Type, form.Attribute);
+			}
+		}
+
+		/// <summary>
+		/// Adds specific form to the register.
+		/// </summary>
+		/// <param name="formType">Type which implements <see cref="IForm{TRequest,TResponse,TResponseMetadata}"/> 
+		/// or <see cref="IAsyncForm{TRequest,TResponse,TResponseMetadata}"/>.</param>
+		public void RegisterForm(Type formType)
+		{
+			var attribute = formType.GetTypeInfo().GetCustomAttribute<FormAttribute>();
+			if (attribute == null)
+			{
+				throw new InvalidConfigurationException(
+					$"Type '{formType.FullName}' is not decorated with the mandatory '{typeof(FormAttribute).FullName}' attribute.");
+			}
+
+			this.RegisterForm(formType, attribute);
+		}
+
+		private static string GetFormId(Type formType, FormAttribute formAttribute)
+		{
+			return !string.IsNullOrWhiteSpace(formAttribute.Id)
+				? formAttribute.Id
+				: formType.FullName;
+		}
+
+		/// <summary>
+		/// Adds specific form to the register.
+		/// </summary>
+		/// <param name="formType">Type which implements <see cref="IForm{TRequest,TResponse,TResponseMetadata}"/> 
+		/// or <see cref="IAsyncForm{TRequest,TResponse,TResponseMetadata}"/>.</param>
+		/// <param name="formAttribute">Attribute decorating the form.</param>
+		private void RegisterForm(Type formType, FormAttribute formAttribute)
+		{
+			var iformInterfaces = formType.GetTypeInfo()
+				.GetInterfaces()
+				.Select(t => t)
+				.Where(t =>
+				{
+					if (!t.IsConstructedGenericType)
 					{
-						if (!t.IsConstructedGenericType)
-						{
-							return false;
-						}
+						return false;
+					}
 
-						var type = t.GetGenericTypeDefinition();
-						return
-							type == typeof(IForm<,,>) ||
-							type == typeof(IAsyncForm<,,>);
-					})
-					.ToList();
+					var type = t.GetGenericTypeDefinition();
+					return
+						type == typeof(IForm<,,>) ||
+						type == typeof(IAsyncForm<,,>);
+				})
+				.ToList();
 
-				if (iformInterfaces.Count == 0)
+			if (iformInterfaces.Count == 0)
+			{
+				throw new InvalidConfigurationException(
+					$"Type '{formType.FullName}' was decorated with FormAttribute, but does not implement IForm<,,> or IAsyncForm<,,> interface.");
+			}
+
+			if (iformInterfaces.Count > 1)
+			{
+				throw new InvalidConfigurationException(
+					$"Type '{formType.FullName}' implements multiple IForm<,,> and/or IAsyncForm<,,> interfaces. Only one of these interfaces can be implemented.");
+			}
+
+			var formId = GetFormId(formType, formAttribute);
+
+			if (this.registeredForms.TryGetValue(formId, out FormInfo existingFormInfo))
+			{
+				if (formType != existingFormInfo.FormType)
 				{
 					throw new InvalidConfigurationException(
-						$"Type '{form.Type.FullName}' was decorated with FormAttribute, but does not implement IForm<,,> or IAsyncForm<,,> interface.");
+						$"Types '{formType.FullName}' and '{existingFormInfo.FormType}' have same form ID. Each form must have a unique form ID.");
 				}
-
-				if (iformInterfaces.Count > 1)
-				{
-					throw new InvalidConfigurationException($"Type '{form.Type.FullName}' implements multiple IForm<,,> and/or IAsyncForm<,,> interfaces. Only one of these interfaces can be implemented.");
-				}
-
-				var iformInterface = iformInterfaces.Single();
-				var requestType = iformInterface.GetTypeInfo().GenericTypeArguments[0];
-				var responseType = iformInterface.GenericTypeArguments[1];
-
-				this.registeredForms.TryAdd(
-					this.getFormId(form.Type),
-					new FormInfo
-					{
-						FormType = form.Type,
-						RequestType = requestType,
-						ResponseType = responseType,
-						Metadata = new FormMetadata
-						{
-							Label = form.Attribute.Label,
-							Id = this.getFormId(form.Type),
-							PostOnLoad = form.Attribute.PostOnLoad,
-							PostOnLoadValidation = form.Attribute.PostOnLoadValidation,
-							OutputFields = this.binder.BindOutputFields(responseType).ToList(),
-							InputFields = this.binder.BindInputFields(requestType).ToList(),
-							CustomProperties = form.Attribute.GetCustomProperties(form.Type)
-						}
-					});
 			}
+
+			var iformInterface = iformInterfaces.Single();
+			var requestType = iformInterface.GetTypeInfo().GenericTypeArguments[0];
+			var responseType = iformInterface.GenericTypeArguments[1];
+
+			this.registeredForms.TryAdd(
+				formId,
+				new FormInfo
+				{
+					FormType = formType,
+					RequestType = requestType,
+					ResponseType = responseType,
+					Metadata = new FormMetadata
+					{
+						Label = formAttribute.Label,
+						Id = formId,
+						PostOnLoad = formAttribute.PostOnLoad,
+						PostOnLoadValidation = formAttribute.PostOnLoadValidation,
+						OutputFields = this.binder.BindOutputFields(responseType).ToList(),
+						InputFields = this.binder.BindInputFields(requestType).ToList(),
+						CustomProperties = formAttribute.GetCustomProperties(formType)
+					}
+				});
 		}
 	}
 }

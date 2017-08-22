@@ -9,6 +9,11 @@
 	public class FormAttribute : Attribute
 	{
 		/// <summary>
+		/// Gets or sets unique identifier for the form.
+		/// </summary>
+		public string Id { get; set; }
+
+		/// <summary>
 		/// Gets or sets label for this form.
 		/// </summary>
 		public string Label { get; set; }

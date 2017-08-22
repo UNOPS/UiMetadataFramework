@@ -41,9 +41,7 @@
 			public string ParentMenu { get; set; }
 		}
 
-		[MyForm(Label = "Do some magic", PostOnLoad = false)]
-		[Menu("Magical tools")]
-		public class DoMagic : IAsyncForm<DoMagic.Request, DoMagic.Response>, IComparable
+		public class BaseForm : IAsyncForm<BaseForm.Request, BaseForm.Response>, IComparable
 		{
 			public Task<Response> Handle(Request message)
 			{
@@ -89,6 +87,22 @@
 			}
 		}
 
+		[MyForm(Id = "Magic", Label = "Do some magic", PostOnLoad = false)]
+		[Menu("Magical tools")]
+		public class Magic : BaseForm
+		{
+		}
+
+		[Form(Id = "Magic")]
+		public class FormWithDuplicateId : BaseForm
+		{
+		}
+
+		[Form]
+		public class FormWithoutId : BaseForm
+		{
+		}
+
 		[Fact]
 		public void CanGetFormsFromRegistry()
 		{
@@ -96,14 +110,14 @@
 			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
 
 			var formRegister = new FormRegister(binder);
-			formRegister.RegisterAssembly(typeof(DoMagic).GetTypeInfo().Assembly);
+			formRegister.RegisterForm(typeof(Magic));
 
-			var formMetadata = formRegister.GetFormInfo(typeof(DoMagic).FullName)?.Metadata;
+			var formMetadata = formRegister.GetFormInfo(typeof(Magic))?.Metadata;
 
 			Assert.NotNull(formMetadata);
 			Assert.Equal("Magical tools", ((MyFormCustomProperties)formMetadata.CustomProperties).ParentMenu);
 
-			Assert.True(formMetadata.Id == typeof(DoMagic).FullName);
+			Assert.True(formMetadata.Id == "Magic");
 			Assert.True(formMetadata.Label == "Do some magic");
 			Assert.True(formMetadata.PostOnLoad == false);
 			Assert.True(formMetadata.InputFields.Count == 5);
@@ -111,29 +125,39 @@
 		}
 
 		[Fact]
-		public void CanCustomizeFormIds()
-		{
-			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
-			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
-
-			var formRegister = new FormRegister(binder, t => t.Name);
-			formRegister.RegisterAssembly(typeof(DoMagic).GetTypeInfo().Assembly);
-
-			var formMetadata = formRegister.GetFormInfo(nameof(DoMagic))?.Metadata;
-			Assert.Equal("DoMagic", formMetadata?.Id);
-		}
-
-		[Fact]
-		public void CanUseDefaultFormIds()
+		public void DuplicateCallsToRegisterSameFormAreIgnored()
 		{
 			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
 			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
 
 			var formRegister = new FormRegister(binder);
-			formRegister.RegisterAssembly(typeof(DoMagic).GetTypeInfo().Assembly);
+			formRegister.RegisterForm(typeof(Magic));
+			formRegister.RegisterForm(typeof(Magic));
+		}
 
-			var formMetadata = formRegister.GetFormInfo(typeof(DoMagic).FullName)?.Metadata;
-			Assert.Equal(typeof(DoMagic).FullName, formMetadata?.Id);
+		[Fact]
+		public void DuplicateFormIdsAreNotAllowed()
+		{
+			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
+			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+
+			var formRegister = new FormRegister(binder);
+			formRegister.RegisterForm(typeof(Magic));
+			Assert.Throws<InvalidConfigurationException>(() => formRegister.RegisterForm(typeof(FormWithDuplicateId)));
+		}
+
+		[Fact]
+		public void TypeNameIsUsedAsDefaultFormId()
+		{
+			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
+			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+
+			var formRegister = new FormRegister(binder);
+			formRegister.RegisterForm(typeof(FormWithoutId));
+
+			var metadata = formRegister.GetFormInfo(typeof(FormWithoutId)).Metadata;
+
+			Assert.Equal(typeof(FormWithoutId).FullName, metadata.Id);
 		}
 	}
 }

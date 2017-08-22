@@ -68,8 +68,11 @@ gulp.task("build-svelte", function () {
         .pipe(gulp.dest(svelteComponentsDir));
 });
 
-gulp.task("copy-html", function () {
-    return gulp.src("wwwroot/index.html")
+gulp.task("copy-assets", function () {
+    gulp.src(["wwwroot/assets/*"])
+        .pipe(gulp.dest(distDir + "/assets"));
+
+    return gulp.src(["wwwroot/index.html"])
         .pipe(gulp.dest(distDir));
 });
 
@@ -80,12 +83,12 @@ gulp.task("sass", function () {
         .pipe(gulp.dest(distDir + "/css/"));
 });
 
-gulp.task("watch", ["build-svelte", "build-app", "sass", "copy-html", "browser-sync"], function () {
+gulp.task("watch", ["build-svelte", "build-app", "sass", "copy-assets", "browser-sync"], function () {
     gulp.watch("src/**/*.ts", ["build-app"]);
     gulp.watch("src/**/*.html", ["build-svelte", "build-app"]);
     gulp.watch("src/**/*.scss", ["sass"]);
 
     if (distDir != "./wwwroot") { 
-        gulp.watch("wwwroot/*.html", ["copy-html"]);
+        gulp.watch(["wwwroot/index.html", "wwwroot/assets/*"], ["copy-assets"]);
     }
 });

@@ -73,7 +73,7 @@
 			var container = new Container();
 			container.Configure(config =>
 			{
-				config.For<MetadataBinder>().Use(t => GetMetadataBinder()).Singleton();
+				config.For<MetadataBinder>().Use(t => GetMetadataBinder(t)).Singleton();
 				config.For<FormRegister>().Use(t => GetFormRegister(t)).Singleton();
 
 				config.Scan(_ =>
@@ -100,9 +100,9 @@
 			return register;
 		}
 
-		private static MetadataBinder GetMetadataBinder()
+		private static MetadataBinder GetMetadataBinder(IContext context)
 		{
-			var binder = new MetadataBinder();
+			var binder = new MetadataBinder(new DependencyInjectionContainer(context.GetInstance));
 			binder.RegisterAssembly(typeof(StringInputFieldBinding).GetAssembly());
 			binder.RegisterAssembly(typeof(SearchPeople).GetAssembly());
 			return binder;
