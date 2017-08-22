@@ -1,9 +1,8 @@
-<select class="multi-select" type="text" id="{{id}}" required="{{field.metadata.required}}" tabindex="{{tabindex}}" ref:input multiple>
-</select>
+<select class="multi-select" type="text" id="{{id}}" required="{{field.metadata.required}}" tabindex="{{tabindex}}" ref:input multiple></select>
 
 <script>
 	import Choices from "choices.js/assets/scripts/dist/choices.js";
-	import * as axiosLib from "axios";	
+	import * as axiosLib from "axios";
 	var axios = axiosLib.default;
 
 	function mapToTypeaheadItems(items) {
@@ -18,22 +17,26 @@
 	function setFieldValue(field, value) {
 		if (field.maxItemCount == 1) {
 			field.value = {
-				value: value[0]
+				value: value[0] != null ? value[0].value : null
 			};
 		}
 		else {
 			field.value = {
-				items: value
+				items: value.map(t => t.value)
 			};
 		}
 	}
 
 	function setInputValue(a, field) {
 		if (field.maxItemCount == 1) {
-			a.setValueByChoice((field.value || {}).value || null);
+			let v = (field.value || {}).value || null;
+			if (v != null) {
+				a.setValueByChoice(v.toString());
+			}
 		}
 		else {
-			a.setValueByChoice((field.value || {}).items || []);
+			let v = ((field.value || {}).items || []).map(t => t.toString());
+			a.setValueByChoice(v);
 		}
 	}
 
@@ -48,15 +51,15 @@
 				removeItemButton: true,
 				maxItemCount: field.maxItemCount
 			});
-			
+
 			if (typeof (source) === "string") {
 				var addedItems = {};
 				var query = "";
 				var timer = null;
 
-				a.passedElement.addEventListener("search", function(value) {
+				a.passedElement.addEventListener("search", function (value) {
 					query = value.detail.value;
-					
+
 					if (timer != null) {
 						// Cancel previous timer, thus extending the delay until user has stopped typing.
 						clearTimeout(timer);
@@ -64,12 +67,12 @@
 
 					// Search when user types something, but introduce a short delay
 					// to avoid excessive http requests.
-					timer = setTimeout(function() {
+					timer = setTimeout(function () {
 						a.ajax(callback => {
 							return app.server.postForm(source, { query: query }).then(data => {
 								var toAdd = data.items.filter(t => {
 									var key = JSON.stringify(t.value);
-									if (addedItems[key] == null){
+									if (addedItems[key] == null) {
 										addedItems[key] = true;
 
 										// Add item.
@@ -86,11 +89,11 @@
 					}, 300);
 				});
 
-				var currentValue = field.maxItemCount == 1 
+				var currentValue = field.maxItemCount == 1
 					? (field.value || {}).value || ""
 					: (field.value || {}).items || [];
 
-				if (currentValue.length > 0)  {
+				if (currentValue.length > 0) {
 					a.ajax(callback => {
 						return app.server.postForm(source, { ids: field.value }).then(data => {
 							callback(mapToTypeaheadItems(data.items), "value", "label");
@@ -101,7 +104,7 @@
 			}
 			else {
 				a.setChoices(mapToTypeaheadItems(source), "value", "label", true);
-				
+
 				var initialized = false;
 				this.observe("field", (newValue, oldValue) => {
 					if (!initialized) {
@@ -114,14 +117,8 @@
 			a.passedElement.addEventListener("change", function (e) {
 				setFieldValue(field, a.getValue());
 			});
-		},
-		methods: {
-			search() {
-
-			}
 		}
 	}
-
 </script>
 
 <style>
