@@ -9,7 +9,7 @@ import { InputFieldMetadata } from "uimf-core/src";
      <form
       class="dynamic-form"
       [formGroup]="form"
-      (ngSubmit)="submitted.emit(form.value)">
+      (ngSubmit)="submitted.emit(form)">
       <ng-container
         *ngFor="let field of config;"
         dynamicField

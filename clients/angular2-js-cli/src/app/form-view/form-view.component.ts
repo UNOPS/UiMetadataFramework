@@ -37,7 +37,7 @@ export class FormViewComponent implements OnInit   {
   this.outputs = value;
     console.log(value);
   }
-
+ 
 
 }
 
