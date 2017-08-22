@@ -15,11 +15,18 @@
 		private readonly MetadataBinder binder;
 		private readonly ConcurrentDictionary<string, FormInfo> registeredForms = new ConcurrentDictionary<string, FormInfo>();
 		private readonly List<string> registeredAssemblies = new List<string>();
+		private readonly GetFormIdDelegate getFormId;
 		private readonly object key = new object();
 
 		public FormRegister(MetadataBinder binder)
+			: this(binder, t => t.FullName)
+		{
+		}
+
+		public FormRegister(MetadataBinder binder, GetFormIdDelegate getFormId)
 		{
 			this.binder = binder;
+			this.getFormId = getFormId;
 		}
 
 		/// <summary>
@@ -100,7 +107,8 @@
 				var requestType = iformInterface.GetTypeInfo().GenericTypeArguments[0];
 				var responseType = iformInterface.GenericTypeArguments[1];
 
-				this.registeredForms.TryAdd(form.Type.FullName,
+				this.registeredForms.TryAdd(
+					this.getFormId(form.Type),
 					new FormInfo
 					{
 						FormType = form.Type,
@@ -109,7 +117,7 @@
 						Metadata = new FormMetadata
 						{
 							Label = form.Attribute.Label,
-							Id = form.Type.FullName,
+							Id = this.getFormId(form.Type),
 							PostOnLoad = form.Attribute.PostOnLoad,
 							PostOnLoadValidation = form.Attribute.PostOnLoadValidation,
 							OutputFields = this.binder.BindOutputFields(responseType).ToList(),

@@ -109,5 +109,31 @@
 			Assert.True(formMetadata.InputFields.Count == 5);
 			Assert.True(formMetadata.OutputFields.Count == 4);
 		}
+
+		[Fact]
+		public void CanCustomizeFormIds()
+		{
+			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
+			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+
+			var formRegister = new FormRegister(binder, t => t.Name);
+			formRegister.RegisterAssembly(typeof(DoMagic).GetTypeInfo().Assembly);
+
+			var formMetadata = formRegister.GetFormInfo(nameof(DoMagic))?.Metadata;
+			Assert.Equal("DoMagic", formMetadata?.Id);
+		}
+
+		[Fact]
+		public void CanUseDefaultFormIds()
+		{
+			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
+			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+
+			var formRegister = new FormRegister(binder);
+			formRegister.RegisterAssembly(typeof(DoMagic).GetTypeInfo().Assembly);
+
+			var formMetadata = formRegister.GetFormInfo(typeof(DoMagic).FullName)?.Metadata;
+			Assert.Equal(typeof(DoMagic).FullName, formMetadata?.Id);
+		}
 	}
 }
