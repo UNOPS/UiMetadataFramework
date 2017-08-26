@@ -33,23 +33,136 @@ This library builds on top of `UiMetadataFramework.Core` to provide metadata for
 
 The library includes metadata implementation for these components:
 
-* Input fields
-* * String
-* * Date
-* * Dropdown
-* * Number
-* * Password
-* * Boolean
-* * Paginator - a special input field to pass pagination parameters.
-* * Typeahead - allows specifying the data source for the typeahead control.
-* * MultiSelect - like `typeahead`, it allows developer to specify data source for the field.
-* Output fields
-* * String
-* * DateTime
-* * Number
-* * FormLink - a link to any other form, which user can navigate.
-* * ActionList - collection of `FormLink`
-* * InlineForm - allows embedding one form inside another.
-* * Tabstrip - metadata for rendering tabs, each pointing to a separate form.
-* * PaginatedData - allows rendering data with pagination controls (must be used together with `Paginator` input field)
-* * TextValue - allows rendering any non-string value as string.
+### Input fields
+
+* String
+* Date
+* Dropdown
+* Number
+* Password
+* Boolean
+* Paginator - a special input field to pass pagination parameters.
+* Typeahead - allows specifying the data source for the typeahead control.
+* MultiSelect - like `typeahead`, it allows developer to specify data source for the field.
+
+### Output fields
+
+* String
+* DateTime
+* Number
+* FormLink - a link to any other form, which user can navigate.
+* ActionList - collection of `FormLink`
+* InlineForm - allows embedding one form inside another.
+* Tabstrip - metadata for rendering tabs, each pointing to a separate form.
+* PaginatedData - allows rendering data with pagination controls (must be used together with `Paginator` input field)
+* TextValue - allows rendering any non-string value as string.
+
+### Response handlers
+
+* Message - should show a message to the user
+* Redirect - should redirect user to another form
+* Reload - should get new metadata from the server and reload the client
+
+### Input processors
+
+* BindToOutput - used for decorating input fields whose values should come from an output field.
+
+## UiMetadataFramework.MediatR
+
+This library marries the idea of UI Metadata Framework with [MediatR][mediatr]. MediatR provides an excellent way to structure your application as a collection of *request handlers*. Each *request handler* accepts a *request* and returns a *response*. This perfectly aligns with the concept of UI Metadata Framework where **form is a request handler, a collection of input fields is a request and a collection of output fields is a response**.
+
+This library provides 2 main interfaces `IForm` and `IAsyncForm` which are basically MediatR's `IRequestHandler` and `IAsyncRequestHandler`. 
+
+Using this library we can define a form like this:
+
+```
+[Form(Label = "Add 2 numbers")]
+public class AddNumbers : IForm<AddNumbers.Request, AddNumbers.Response>
+{
+	public class Response : FormResponse
+	{
+		[OutputField(Label = "Result of your calculation")]
+		public long Result { get; set; }
+	}
+
+	public class Request : IRequest<Response>
+	{
+		[InputField(Label = "First number")]
+		public int Number1 { get; set; }
+
+		[InputField(Label = "Second number")]
+		public int Number2 { get; set; }
+	}
+
+	public Response Handle(Request message)
+	{
+		return new Response
+		{
+			Result = message.Number1 + message.Number2
+		};
+	}
+}
+```
+
+`FormRegister` class with the help of `MetadataBinder` class, will then be able to retrieve metadata for the class above. The metadata will be sent to the client as a JSON object:
+
+```
+{
+    "customProperties":null,
+    "id":"UiMetadataFramework.Web.Forms.AddNumbers",
+    "inputFields":[
+        {
+        "processors":[],
+        "required":true,
+        "id":"Number1",
+        "label":"First number",
+        "type":"number",
+        "hidden":false,
+        "orderIndex":0
+        },
+        {
+        "processors":[],
+        "required":true,
+        "id":"Number2",
+        "label":"Second number",
+        "type":"number",
+        "hidden":false,
+        "orderIndex":0
+        }
+    ],
+    "label":"Add 2 numbers",
+    "outputFields":[
+        {
+        "id":"Result",
+        "label":"Result of your calculation",
+        "type":"number",
+        "hidden":false,
+        "orderIndex":0
+        }
+    ],
+    "postOnLoad":false,
+    "postOnLoadValidation":true
+}
+```
+
+The result of which will be rendered as something like this:
+
+![image](./documentation/add2numbers.png)
+
+
+## Server implementations
+
+It's important to understand that **UI Metadata Framework is not a library, but a protocol**. As such it can have any number of implementations in any programming language. Currently there is only one implementation which is done in .NET Standard 1.6.
+
+## Client implementations
+
+The team is currently developing multiple clients:
+
+* web client using [Svelte](https://svelte.technology/) - [somewhat ready](https://github.com/UNOPS/UiMetadataFramework/tree/develop/clients/vanilla-js)
+* web client using [ReactJS](https://facebook.github.io/react/) - WIP
+* web client using [Angular](https://angular.io/) - WIP
+* Android client using [Xamarin][xamarin] - WIP
+* IOS client using [Xamarin][xamarin] - WIP
+
+[mediatr]:https://github.com/jbogard/MediatR
+[xamarin]:https://www.xamarin.com/

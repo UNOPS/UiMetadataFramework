@@ -14,6 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{63C5E740-4557-4B6A-81C6-B78FFBAFAA1F}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UiMetadataFramework.Basic", "UiMetadataFramework.Basic\UiMetadataFramework.Basic.csproj", "{67AA6D88-3B45-4C07-A021-F26ACFFDADA6}"
