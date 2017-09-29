@@ -8,11 +8,12 @@
 	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
+	using UiMetadataFramework.MediatR;
 	using UiMetadataFramework.Web.Forms.Person;
 	using UiMetadataFramework.Web.Forms.Pickers;
 	using UiMetadataFramework.Web.Metadata;
 
-	[MyForm(Label = "Search people", PostOnLoad = true, SubmitButtonLabel = "Search")]
+	[MyForm(Id = "People", Label = "Search people", PostOnLoad = true, SubmitButtonLabel = "Search")]
 	public class SearchPeople : IMyForm<SearchPeople.Request, SearchPeople.Response>
 	{
 		public Response Handle(Request message)
@@ -51,7 +52,7 @@
 			return new FormLink
 			{
 				Label = label,
-				Form = typeof(SearchPeople).FullName,
+				Form = typeof(SearchPeople).GetFormId(),
 				InputFieldValues = new Dictionary<string, object>
 				{
 					{ nameof(Request.FirstName), firstName }
@@ -154,7 +155,7 @@
 					FirstName = new FormLink
 					{
 						Label = calculatedName,
-						Form = typeof(SearchPeople).FullName,
+						Form = typeof(SearchPeople).GetFormId(),
 						InputFieldValues = new Dictionary<string, object>
 						{
 							{ nameof(Request.FirstName), calculatedName },

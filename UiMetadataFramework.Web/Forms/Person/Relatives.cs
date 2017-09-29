@@ -7,7 +7,7 @@
 	using UiMetadataFramework.MediatR;
 	using UiMetadataFramework.Web.Metadata;
 
-	[Form(PostOnLoad = true)]
+	[Form(Id = "Relatives", PostOnLoad = true)]
 	public class Relatives : IMyForm<Relatives.Request, Relatives.Response>
 	{
 		public Response Handle(Request message)
@@ -15,7 +15,7 @@
 			var person = SearchPeople.FamilyPerson.RandomFamilyPerson(message.Name);
 			return new Response
 			{
-				Tabs = PersonInfo.GetTabs(typeof(Relatives).FullName, message.Name),
+				Tabs = PersonInfo.GetTabs(typeof(Relatives).GetFormId(), message.Name),
 				Relatives = person.Relatives,
 				Actions = new ActionList(
 					ShowMessage.FormLink("Edit"),

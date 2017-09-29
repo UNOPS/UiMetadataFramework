@@ -5,7 +5,7 @@ namespace UiMetadataFramework.Web.Forms
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
 
-	[Form(Label = "Redirect handler", PostOnLoad = false)]
+	[Form(Id = "Redirect", Label = "Redirect handler", PostOnLoad = false)]
 	public class Redirect : IForm<Redirect.Request, Redirect.Response>
 	{
 		public Response Handle(Request message)

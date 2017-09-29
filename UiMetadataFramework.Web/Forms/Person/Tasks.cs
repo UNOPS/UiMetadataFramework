@@ -10,17 +10,9 @@
 	using UiMetadataFramework.MediatR;
 	using UiMetadataFramework.Web.Metadata;
 
-	[Form(Label = "Tasks", PostOnLoad = true)]
+	[Form(Id = "Tasks", Label = "Tasks", PostOnLoad = true)]
 	public class Tasks : IMyForm<Tasks.Request, Tasks.Response>
 	{
-		[OutputFieldType("task-status")]
-		public enum TaskStatus
-		{
-			Pending,
-			InProgress,
-			Done
-		}
-
 		public enum TaskCategory
 		{
 			Work,
@@ -28,6 +20,14 @@
 			Hobby,
 			Health,
 			Family
+		}
+
+		[OutputFieldType("task-status")]
+		public enum TaskStatus
+		{
+			Pending,
+			InProgress,
+			Done
 		}
 
 		public Response Handle(Request message)
@@ -48,7 +48,7 @@
 		{
 			return new InlineForm
 			{
-				Form = typeof(Tasks).FullName,
+				Form = typeof(Tasks).GetFormId(),
 				InputFieldValues = new Dictionary<string, object>
 				{
 					{ nameof(Request.TaskOwnerName), taskOwnerName }
@@ -87,12 +87,13 @@
 				"prepare food"
 			};
 
+			public TextValue<TaskCategory> Category { get; set; }
+
 			[OutputField(Label = "Due date")]
 			public DateTime DueDate { get; set; }
 
 			public string Name { get; set; }
 			public TaskStatus Status { get; set; }
-			public TextValue<TaskCategory> Category { get; set; }
 
 			public static Item Random(int? seed = null)
 			{

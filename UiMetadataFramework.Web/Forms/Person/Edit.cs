@@ -7,11 +7,12 @@
 	using UiMetadataFramework.Basic.InputProcessors;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
+	using UiMetadataFramework.MediatR;
 	using UiMetadataFramework.Web.Forms.Pickers;
 	using UiMetadataFramework.Web.Metadata;
 	using UiMetadataFramework.Web.Metadata.Record;
 
-	[MyForm(PostOnLoad = true, SubmitButtonLabel = "Save changes")]
+	[MyForm(Id = "EditPerson", PostOnLoad = true, SubmitButtonLabel = "Save changes")]
 	public class Edit : IMyForm<Edit.Request, Edit.Response>
 	{
 		public Response Handle(Request message)
@@ -54,7 +55,7 @@
 			return new FormLink
 			{
 				Label = label,
-				Form = typeof(Edit).FullName,
+				Form = typeof(Edit).GetFormId(),
 				InputFieldValues = new Dictionary<string, object>
 				{
 					{ nameof(Request.Name), personName },

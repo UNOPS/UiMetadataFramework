@@ -6,7 +6,7 @@
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;
 
-	[Form(Label = "Show message handler", PostOnLoad = false)]
+	[Form(Id = "Message", Label = "Show message handler", PostOnLoad = false)]
 	public class ShowMessage : IForm<ShowMessage.Request, ShowMessage.Response>
 	{
 		public Response Handle(Request message)
@@ -22,7 +22,7 @@
 			return new FormLink
 			{
 				Label = label,
-				Form = typeof(ShowMessage).FullName
+				Form = typeof(ShowMessage).GetFormId()
 			};
 		}
 

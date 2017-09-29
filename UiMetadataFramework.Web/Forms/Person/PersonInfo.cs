@@ -8,7 +8,7 @@
 	using UiMetadataFramework.MediatR;
 	using UiMetadataFramework.Web.Metadata;
 
-	[Form(PostOnLoad = true)]
+	[Form(Id = "Person", PostOnLoad = true)]
 	public class PersonInfo : IMyForm<PersonInfo.Request, PersonInfo.Response>
 	{
 		public Response Handle(Request message)
@@ -16,7 +16,7 @@
 			var person = SearchPeople.FamilyPerson.RandomFamilyPerson(message.Name);
 			return new Response
 			{
-				Tabs = GetTabs(typeof(PersonInfo).FullName, message.Name),
+				Tabs = GetTabs(typeof(PersonInfo).GetFormId(), message.Name),
 				DateOfBirth = person.DateOfBirth,
 				Weight = person.Weight,
 				Height = person.Height,
@@ -38,7 +38,7 @@
 			return new FormLink
 			{
 				Label = name,
-				Form = typeof(PersonInfo).FullName,
+				Form = typeof(PersonInfo).GetFormId(),
 				InputFieldValues = new Dictionary<string, object>
 				{
 					{ nameof(Request.Name), name }
@@ -56,7 +56,7 @@
 					new Tab
 					{
 						Label = "Basic info",
-						Form = typeof(PersonInfo).FullName,
+						Form = typeof(PersonInfo).GetFormId(),
 						InputFieldValues = new Dictionary<string, object>
 						{
 							{ nameof(Request.Name), name }
@@ -65,7 +65,7 @@
 					new Tab
 					{
 						Label = "Relatives",
-						Form = typeof(Relatives).FullName,
+						Form = typeof(Relatives).GetFormId(),
 						InputFieldValues = new Dictionary<string, object>
 						{
 							{ nameof(Relatives.Request.Name), name }
