@@ -8,6 +8,13 @@
 	public class FormMetadata
 	{
 		/// <summary>
+		/// Gets or sets value indicating how the form behaves when it was open as a modal and user submits it. If
+		/// set to <code>true</code>, then whenever user submits the form the modal will be automatically closed
+		/// (after receving the response). If set to <code>false</code>, then the modal will remain open.
+		/// </summary>
+		public bool CloseOnPostIfModal { get; set; } = true;
+
+		/// <summary>
 		/// Gets or sets additional parameters for the client.
 		/// </summary>
 		public object CustomProperties { get; set; }

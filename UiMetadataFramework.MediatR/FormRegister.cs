@@ -183,6 +183,7 @@
 						Id = formId,
 						PostOnLoad = formAttribute.PostOnLoad,
 						PostOnLoadValidation = formAttribute.PostOnLoadValidation,
+						CloseOnPostIfModal = formAttribute.CloseOnPostIfModal,
 						OutputFields = this.binder.BindOutputFields(responseType).ToList(),
 						InputFields = this.binder.BindInputFields(requestType).ToList(),
 						CustomProperties = formAttribute.GetCustomProperties(formType)

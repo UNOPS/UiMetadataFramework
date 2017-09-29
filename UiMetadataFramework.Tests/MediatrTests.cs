@@ -87,7 +87,7 @@
 			}
 		}
 
-		[MyForm(Id = "Magic", Label = "Do some magic", PostOnLoad = false)]
+		[MyForm(Id = "Magic", Label = "Do some magic", PostOnLoad = false, CloseOnPostIfModal = true)]
 		[Menu("Magical tools")]
 		public class Magic : BaseForm
 		{
@@ -120,6 +120,7 @@
 			Assert.True(formMetadata.Id == "Magic");
 			Assert.True(formMetadata.Label == "Do some magic");
 			Assert.True(formMetadata.PostOnLoad == false);
+			Assert.True(formMetadata.CloseOnPostIfModal);
 			Assert.True(formMetadata.InputFields.Count == 5);
 			Assert.True(formMetadata.OutputFields.Count == 4);
 		}

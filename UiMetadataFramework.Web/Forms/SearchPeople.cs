@@ -13,7 +13,7 @@
 	using UiMetadataFramework.Web.Forms.Pickers;
 	using UiMetadataFramework.Web.Metadata;
 
-	[MyForm(Id = "People", Label = "Search people", PostOnLoad = true, SubmitButtonLabel = "Search")]
+	[MyForm(Id = "People", Label = "Search people", PostOnLoad = true, SubmitButtonLabel = "Search", CloseOnPostIfModal = false)]
 	public class SearchPeople : IMyForm<SearchPeople.Request, SearchPeople.Response>
 	{
 		public Response Handle(Request message)
