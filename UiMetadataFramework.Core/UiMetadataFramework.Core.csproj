@@ -1,21 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
-    <AssemblyName>UiMetadataFramework.Core</AssemblyName>
-    <RootNamespace>UiMetadataFramework.Core</RootNamespace>
-    <Description>UiMetadataFramework is a very simple .NET Standard library to help you build UI using metadata. This package includes core functionality without UI implementation.</Description>
-    <Version>0.0.8-beta</Version>
-    <Authors>UNOPS</Authors>
-    <FileVersion>0.0.1.0</FileVersion>
-    <PackageTags>ui metadata forms</PackageTags>
-    <RepositoryUrl>https://github.com/UNOPS/UiMetadataFramework</RepositoryUrl>
-    <Copyright>Copyright 2017 (c) UNOPS. All rights reserved.</Copyright>
-    <PackageProjectUrl>https://github.com/UNOPS/UiMetadataFramework</PackageProjectUrl>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard1.6;netstandard2.0</TargetFrameworks>
+		<AssemblyName>UiMetadataFramework.Core</AssemblyName>
+		<RootNamespace>UiMetadataFramework.Core</RootNamespace>
+		<Description>UiMetadataFramework is a very simple .NET Standard library to help you build UI using metadata. This package includes core functionality without UI implementation.</Description>
+		<Version>0.0.10-beta</Version>
+		<Authors>UNOPS</Authors>
+		<FileVersion>0.0.1.0</FileVersion>
+		<PackageTags>ui metadata forms</PackageTags>
+		<RepositoryUrl>https://github.com/UNOPS/UiMetadataFramework</RepositoryUrl>
+		<Copyright>Copyright 2017 (c) UNOPS. All rights reserved.</Copyright>
+		<PackageProjectUrl>https://github.com/UNOPS/UiMetadataFramework</PackageProjectUrl>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
-  </ItemGroup>
+	<PropertyGroup>
+		<DocumentationFile>bin\$(Configuration)\$(Platform)\UiMetadataFramework.Core.xml</DocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
+	</ItemGroup>
 
 </Project>

@@ -7,6 +7,14 @@
 
 	internal static class Extensions
 	{
+		public static void ForEach<T>(this IEnumerable<T> items, Action<T> action)
+		{
+			foreach (var item in items)
+			{
+				action(item);
+			}
+		}
+
 		public static IEnumerable<PropertyInfo> GetFields(this Type type)
 		{
 			return type.GetRuntimeProperties()
@@ -14,12 +22,15 @@
 				.ToList();
 		}
 
-		public static void ForEach<T>(this IEnumerable<T> items, Action<T> action)
+		public static IEnumerable<PropertyInfo> GetPublicProperties(this Type type)
 		{
-			foreach (var item in items)
-			{
-				action(item);
-			}
+#if NETSTANDARD1_6
+			return type.GetFields();
+#endif
+
+#if NETSTANDARD2_0
+			return type.GetProperties();
+#endif
 		}
 	}
 }

@@ -128,7 +128,7 @@
 
 		public IEnumerable<InputFieldMetadata> BindInputFields(Type type)
 		{
-			var properties = type.GetFields();
+			var properties = type.GetPublicProperties();
 
 			foreach (var property in properties)
 			{
@@ -175,7 +175,7 @@
 
 		public IEnumerable<OutputFieldMetadata> BindOutputFields(Type type)
 		{
-			var properties = type.GetFields();
+			var properties = type.GetPublicProperties();
 
 			foreach (var property in properties)
 			{
