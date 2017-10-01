@@ -18,6 +18,10 @@
 		private readonly List<string> registeredAssemblies = new List<string>();
 		private readonly ConcurrentDictionary<string, FormInfo> registeredForms = new ConcurrentDictionary<string, FormInfo>();
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="FormRegister"/> class.
+		/// </summary>
+		/// <param name="binder"></param>
 		public FormRegister(MetadataBinder binder)
 		{
 			this.binder = binder;

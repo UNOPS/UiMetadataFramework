@@ -8,9 +8,24 @@ namespace UiMetadataFramework.MediatR
 	/// </summary>
 	public class FormInfo
 	{
+		/// <summary>
+		/// Gets or sets type of the form.
+		/// </summary>
 		public Type FormType { get; set; }
+
+		/// <summary>
+		/// Gets or sets metadata for the form.
+		/// </summary>
 		public FormMetadata Metadata { get; set; }
+
+		/// <summary>
+		/// Gets or sets type of the "request" class for the form.
+		/// </summary>
 		public Type RequestType { get; set; }
+
+		/// <summary>
+		/// Gets or sets type of the "response" class for the form.
+		/// </summary>
 		public Type ResponseType { get; set; }
 	}
 }

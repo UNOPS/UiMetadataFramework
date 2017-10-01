@@ -33,11 +33,10 @@
 		/// </summary>
 		public IEnumerable<Type> ServerTypes { get; }
 
+		/// <inheritdoc />
 		public override bool Equals(object obj)
 		{
-			var binding = obj as OutputFieldBinding;
-
-			if (binding == null)
+			if (!(obj is OutputFieldBinding binding))
 			{
 				return false;
 			}
@@ -59,6 +58,7 @@
 			return attribute?.GetCustomProperties(property, binder);
 		}
 
+		/// <inheritdoc />
 		public override int GetHashCode()
 		{
 			unchecked

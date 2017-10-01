@@ -4,6 +4,9 @@
 	using System.Reflection;
 	using System.Threading.Tasks;
 
+	/// <summary>
+	/// Collection of extension methods from UiMetadataFramework.MediatR.
+	/// </summary>
 	public static class Extensions
 	{
 		/// <summary>

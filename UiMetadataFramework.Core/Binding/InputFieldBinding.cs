@@ -39,12 +39,11 @@ namespace UiMetadataFramework.Core.Binding
 		/// Gets the server-side types being bound.
 		/// </summary>
 		public IEnumerable<Type> ServerTypes { get; }
-		
+
+		/// <inheritdoc />
 		public override bool Equals(object obj)
 		{
-			var binding = obj as InputFieldBinding;
-
-			if (binding == null)
+			if (!(obj is InputFieldBinding binding))
 			{
 				return false;
 			}
@@ -65,6 +64,7 @@ namespace UiMetadataFramework.Core.Binding
 			return null;
 		}
 
+		/// <inheritdoc />
 		public override int GetHashCode()
 		{
 			unchecked
