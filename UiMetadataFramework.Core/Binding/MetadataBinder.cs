@@ -186,7 +186,9 @@
 
 				if (!this.inputFieldMetadataMap.TryGetValue(propertyType, out InputFieldBinding binding))
 				{
-					throw new KeyNotFoundException($"Type '{propertyType.FullName}' is not bound to any input field control.");
+					throw new KeyNotFoundException(
+						$"Cannot retrieve metadata for '{type.FullName}.{property.Name}', " +
+						$"because type '{propertyType.FullName}' is not bound to any input field control.");
 				}
 
 				var attribute = property.GetCustomAttribute<InputFieldAttribute>();
@@ -242,7 +244,9 @@
 
 				if (!isEnumerable && binding == null)
 				{
-					throw new KeyNotFoundException($"Type '{property.PropertyType.FullName}' is not bound to any output field control.");
+					throw new KeyNotFoundException(
+						$"Cannot retrieve metadata for '{type.FullName}.{property.Name}', " +
+						$"because type '{property.PropertyType.FullName}' is not bound to any output field control.");
 				}
 
 				object customProperties;
