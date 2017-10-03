@@ -12,11 +12,21 @@ namespace UiMetadataFramework.Core.Binding
 	/// </summary>
 	public class InputFieldBinding
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="InputFieldBinding"/> class.
+		/// </summary>
+		/// <param name="serverType">Type which should be rendered on the client.</param>
+		/// <param name="clientType">Name of the client control which will render the specified type.</param>
 		public InputFieldBinding(Type serverType, string clientType)
 			: this(new[] { serverType }, clientType)
 		{
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="InputFieldBinding"/> class.
+		/// </summary>
+		/// <param name="serverTypes">Types which should be rendered on the client.</param>
+		/// <param name="clientType">Name of the client control which will render the specified types.</param>
 		public InputFieldBinding(IEnumerable<Type> serverTypes, string clientType)
 		{
 			this.ServerTypes = serverTypes;
@@ -24,7 +34,7 @@ namespace UiMetadataFramework.Core.Binding
 		}
 
 		/// <summary>
-		/// Gets name of the client control which will render the output field.
+		/// Gets name of the client control which will render the input field.
 		/// </summary>
 		public string ClientType { get; }
 

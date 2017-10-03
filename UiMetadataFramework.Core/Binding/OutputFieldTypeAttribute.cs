@@ -10,6 +10,10 @@ namespace UiMetadataFramework.Core.Binding
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Enum, Inherited = false)]
 	public class OutputFieldTypeAttribute : Attribute
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="OutputFieldTypeAttribute"/> class.
+		/// </summary>
+		/// <param name="clientType">Name of the client control which will render the output field.</param>
 		public OutputFieldTypeAttribute(string clientType)
 		{
 			this.ClientType = clientType;

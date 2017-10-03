@@ -12,11 +12,21 @@
 	/// </summary>
 	public class OutputFieldBinding
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="OutputFieldBinding"/> class.
+		/// </summary>
+		/// <param name="serverType">Type which should be rendered on the client.</param>
+		/// <param name="clientType">Name of the client control which will render the specified type.</param>
 		public OutputFieldBinding(Type serverType, string clientType)
 			: this(new[] { serverType }, clientType)
 		{
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="OutputFieldBinding"/> class.
+		/// </summary>
+		/// <param name="serverTypes">Types which should be rendered on the client.</param>
+		/// <param name="clientType">Name of the client control which will render the specified types.</param>
 		public OutputFieldBinding(IEnumerable<Type> serverTypes, string clientType)
 		{
 			this.ServerTypes = serverTypes;

@@ -12,8 +12,16 @@
 	/// </summary>
 	public class MetadataBinder
 	{
+		/// <summary>
+		/// Name of the client-side control which should be able to render tablular data.
+		/// </summary>
 		public const string ObjectListOutputControlName = "table";
+
+		/// <summary>
+		/// Name of the client-side control which should be able to render collection of items as a bullet-point list or similar.
+		/// </summary>
 		public const string ValueListOutputControlName = "list";
+
 		private readonly DependencyInjectionContainer dependencyInjectionContainer;
 
 		private readonly ConcurrentDictionary<Type, InputFieldBinding> inputFieldMetadataMap = new ConcurrentDictionary<Type, InputFieldBinding>();
@@ -21,16 +29,32 @@
 		private readonly ConcurrentDictionary<Type, OutputFieldBinding> outputFieldMetadataMap = new ConcurrentDictionary<Type, OutputFieldBinding>();
 		private readonly List<string> registeredAssemblies = new List<string>();
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MetadataBinder"/> class and configures
+		/// <see cref="DependencyInjectionContainer.Default"/> to be responsible for instantiating
+		/// <see cref="InputFieldBinding"/> and <see cref="OutputFieldBinding"/> when registering
+		/// a new assembly.
+		/// </summary>
 		public MetadataBinder()
 			: this(DependencyInjectionContainer.Default)
 		{
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MetadataBinder"/> class and configures the given
+		/// <see cref="DependencyInjectionContainer"/> to be responsible for instantiating
+		/// <see cref="InputFieldBinding"/> and <see cref="OutputFieldBinding"/> when registering
+		/// a new assembly.
+		/// </summary>
 		public MetadataBinder(DependencyInjectionContainer dependencyInjectionContainer)
 		{
 			this.dependencyInjectionContainer = dependencyInjectionContainer;
 		}
 
+		/// <summary>
+		/// Registers given <see cref="OutputFieldBinding"/> instance.
+		/// </summary>
+		/// <param name="binding"><see cref="OutputFieldBinding"/> instance.</param>
 		public void AddBinding(OutputFieldBinding binding)
 		{
 			var existingBinding = this.outputFieldMetadataMap.Values.FirstOrDefault(t => t.ClientType == binding.ClientType);
@@ -75,6 +99,10 @@
 			}
 		}
 
+		/// <summary>
+		/// Registers given <see cref="InputFieldBinding"/> instance.
+		/// </summary>
+		/// <param name="binding"><see cref="InputFieldBinding"/> instance.</param>
 		public void AddBinding(InputFieldBinding binding)
 		{
 			var existingBinding = this.inputFieldMetadataMap.Values.FirstOrDefault(t => t.ClientType == binding.ClientType);
@@ -111,21 +139,41 @@
 			}
 		}
 
+		/// <summary>
+		/// Binds specified "server-side" type to the specified "client-side" input control type.
+		/// </summary>
+		/// <param name="clientType">Name of the client control which will render the output field.</param>
+		/// <typeparam name="TServerType">Type to bind to a specific client control.</typeparam>
 		public void AddInputFieldBinding<TServerType>(string clientType)
 		{
 			this.AddBinding(new InputFieldBinding(typeof(TServerType), clientType));
 		}
 
+		/// <summary>
+		/// Binds specified "server-side" type to the specified "client-side" output control type.
+		/// </summary>
+		/// <param name="clientType">Name of the client control which will render the output field.</param>
+		/// <typeparam name="TServerType">Type to bind to a specific client control.</typeparam>
 		public void AddOutputFieldBinding<TServerType>(string clientType)
 		{
 			this.AddBinding(new OutputFieldBinding(typeof(TServerType), clientType));
 		}
 
+		/// <summary>
+		/// Retrieves input field metadata for the given type.
+		/// </summary>
+		/// <typeparam name="T">Type which should be rendered on the client as input field(s).</typeparam>
+		/// <returns>List of input field metadata.</returns>
 		public IEnumerable<InputFieldMetadata> BindInputFields<T>()
 		{
 			return this.BindInputFields(typeof(T));
 		}
 
+		/// <summary>
+		/// Retrieves input field metadata for the given type.
+		/// </summary>
+		/// <param name="type">Type which should be rendered on the client as input field(s).</param>
+		/// <returns>List of input field metadata.</returns>
 		public IEnumerable<InputFieldMetadata> BindInputFields(Type type)
 		{
 			var properties = type.GetPublicProperties();
@@ -173,6 +221,11 @@
 			}
 		}
 
+		/// <summary>
+		/// Retrieves output field metadata for the given type.
+		/// </summary>
+		/// <param name="type">Type which should be rendered on the client as output field(s).</param>
+		/// <returns>List of output field metadata.</returns>
 		public IEnumerable<OutputFieldMetadata> BindOutputFields(Type type)
 		{
 			var properties = type.GetPublicProperties();
@@ -233,6 +286,11 @@
 			}
 		}
 
+		/// <summary>
+		/// Retrieves output field metadata for the given type.
+		/// </summary>
+		/// <typeparam name="T">Type which should be rendered on the client as output field(s).</typeparam>
+		/// <returns>List of output field metadata.</returns>
 		public IEnumerable<OutputFieldMetadata> BindOutputFields<T>()
 		{
 			return this.BindOutputFields(typeof(T));
