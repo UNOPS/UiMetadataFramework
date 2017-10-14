@@ -3,7 +3,7 @@
 	using System;
 
 	/// <summary>
-	/// Thrown when form's input or output fields are configured incorrectly.
+	/// Thrown when form's metadata is configured incorrectly.
 	/// </summary>
 	public class BindingException : Exception
 	{

@@ -3,7 +3,7 @@
 	using System;
 	using System.Linq;
 	using UiMetadataFramework.Basic.Input.Typeahead;
-	using UiMetadataFramework.MediatR;
+	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.Web.Metadata.Typeahead;
 
 	[Form]

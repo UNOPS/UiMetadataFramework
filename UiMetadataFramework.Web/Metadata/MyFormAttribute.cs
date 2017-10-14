@@ -1,7 +1,7 @@
 ﻿namespace UiMetadataFramework.Web.Metadata
 {
 	using System;
-	using UiMetadataFramework.MediatR;
+	using UiMetadataFramework.Core.Binding;
 
 	public class MyFormAttribute : FormAttribute
 	{

@@ -1,5 +1,6 @@
 namespace UiMetadataFramework.Basic.EventHandlers
 {
+	using System;
 	using System.Reflection;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
@@ -7,14 +8,13 @@ namespace UiMetadataFramework.Basic.EventHandlers
 	/// <summary>
 	/// Used for decorating input fields whose values should come from an output field.
 	/// </summary>
-	public class BindToOutputAttribute : FieldEventHandlerAttribute
+	public class BindToOutputAttribute : Attribute, IFieldEventHandlerAttribute
 	{
 		/// <summary>
 		/// Configures default value for the input field to be a constant.
 		/// </summary>
 		/// <param name="outputFieldId">Id of the output field to bind to.</param>
 		public BindToOutputAttribute(string outputFieldId)
-			: base("bind-to-output", FormEvents.ResponseHandled, true, false)
 		{
 			this.OutputFieldId = outputFieldId;
 		}
@@ -25,11 +25,26 @@ namespace UiMetadataFramework.Basic.EventHandlers
 		public string OutputFieldId { get; set; }
 
 		/// <inheritdoc />
-		public override object GetCustomProperties(PropertyInfo property, MetadataBinder binder)
+		public string Id { get; } = "bind-to-output";
+
+		/// <inheritdoc />
+		public string RunAt { get; } = FormEvents.ResponseHandled;
+
+		/// <inheritdoc />
+		public bool ApplicableToInputField { get; } = true;
+
+		/// <inheritdoc />
+		public bool ApplicableToOutputField { get; } = false;
+
+		/// <inheritdoc />
+		public EventHandlerMetadata ToMetadata(PropertyInfo property, MetadataBinder binder)
 		{
-			return new
+			return new EventHandlerMetadata(this.Id, this.RunAt)
 			{
-				OutputFieldId = this.OutputFieldId
+				CustomProperties = new
+				{
+					OutputFieldId = this.OutputFieldId
+				}
 			};
 		}
 	}

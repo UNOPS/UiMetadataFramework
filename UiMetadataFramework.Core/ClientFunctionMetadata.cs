@@ -3,34 +3,33 @@
 	/// <summary>
 	/// Represents a client-side function.
 	/// </summary>
-	public class ClientFunctionMetadata : IClientFunctionMetadata
+	public class ClientFunctionMetadata
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ClientFunctionMetadata"/> class.
 		/// </summary>
 		/// <param name="id"></param>
-		public ClientFunctionMetadata(string id)
+		public ClientFunctionMetadata(string id) : this(id, null)
 		{
-			this.Id = id;
 		}
-
-		/// <inheritdoc />
-		public object CustomProperties { get; protected set; }
-
-		/// <inheritdoc />
-		public string Id { get; }
 
 		/// <summary>
-		/// Create <see cref="EventHandlerMetadata"/> which binds this function to a specific client-side event.
+		/// Initializes a new instance of the <see cref="ClientFunctionMetadata"/> class.
 		/// </summary>
-		/// <param name="runat">Event at which the function will run.</param>
-		/// <returns>Instance of <see cref="EventHandlerMetadata"/>.</returns>
-		public EventHandlerMetadata AsEventHandlerMetadata(string runat)
+		/// <param name="id"></param>
+		/// <param name="customProperties"></param>
+		public ClientFunctionMetadata(string id, object customProperties)
 		{
-			return new EventHandlerMetadata(this.Id, runat)
-			{
-				CustomProperties = this.CustomProperties
-			};
+			this.Id = id;
+			this.CustomProperties = customProperties;
 		}
+
+		/// <summary>
+		/// Gets or sets custom properties describing how to run the function.
+		/// </summary>
+		public object CustomProperties { get; set; }
+
+		/// <summary>Gets or sets id of the function.</summary>
+		public string Id { get; }
 	}
 }

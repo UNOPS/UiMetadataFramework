@@ -1,8 +1,9 @@
 ﻿namespace UiMetadataFramework.Web.Metadata.ClientFunctions
 {
 	using UiMetadataFramework.Core;
+	using UiMetadataFramework.Core.Binding;
 
-	public class GrowlNotification : ClientFunctionMetadata
+	public class GrowlNotification : IClientFunctionMetadataProvider
 	{
 		public GrowlNotification(string message, string style) : this(null, message, style)
 		{
@@ -10,7 +11,7 @@
 			this.Style = style;
 		}
 
-		public GrowlNotification(string heading, string message, string style) : base("growl")
+		public GrowlNotification(string heading, string message, string style)
 		{
 			this.Heading = heading;
 			this.Message = message;
@@ -20,6 +21,11 @@
 		public string Heading { get; set; }
 		public string Message { get; set; }
 		public string Style { get; set; }
+
+		public ClientFunctionMetadata GetClientFunctionMetadata()
+		{
+			return new ClientFunctionMetadata("growl", this);
+		}
 
 		public static class Styles
 		{

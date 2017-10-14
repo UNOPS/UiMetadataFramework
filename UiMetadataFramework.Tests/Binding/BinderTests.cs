@@ -1,112 +1,22 @@
-﻿namespace UiMetadataFramework.Tests
+﻿namespace UiMetadataFramework.Tests.Binding
 {
-	using System;
-	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
 	using UiMetadataFramework.Basic;
 	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Basic.Output;
-	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 	using Xunit;
 
-	public class BinderTests
+	public partial class BinderTests
 	{
-		public class Response : FormResponse
+		[Fact]
+		public void CanGetFormMetadata()
 		{
-			public IList<string> Categories { get; set; }
+			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
+			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
 
-			[OutputField(Label = "DoB", OrderIndex = 2)]
-			public DateTime DateOfBirth { get; set; }
-
-			[OutputField(Label = "First name", OrderIndex = 1)]
-			public string FirstName { get; set; }
-
-			[OutputField(Hidden = true)]
-			public int Height { get; set; }
-
-			public IList<Person> OtherPeople { get; set; }
-
-			[OutputField(Hidden = true)]
-			[OutputFieldEventHandler]
-			public decimal Weight { get; set; }
-		}
-
-		public class Request
-		{
-			[Option("Low", "L")]
-			[Option("Mid", "M")]
-			[Option("High", "H")]
-			public DropdownValue<string> Category { get; set; }
-
-			[InputField(Label = "DoB", OrderIndex = 2)]
-			public DateTime DateOfBirth { get; set; }
-
-			public DropdownValue<DayOfWeek?> Day { get; set; }
-
-			[Option(DayOfWeek.Sunday)]
-			[Option(DayOfWeek.Monday)]
-			public DropdownValue<DayOfWeek> FirstDayOfWeek { get; set; }
-
-			[InputField(Label = "First name", OrderIndex = 1, Required = true)]
-			public string FirstName { get; set; }
-
-			[InputField(Hidden = true)]
-			public int? Height { get; set; }
-
-			public bool IsRegistered { get; set; }
-
-			public DateTime? SubmissionDate { get; set; }
-
-			[InputField(Hidden = true)]
-			[InputFieldEventHandler]
-			public decimal Weight { get; set; }
-		}
-
-		public class InvalidRequest
-		{
-			[OutputFieldEventHandler]
-			public string Name { get; set; }
-		}
-
-		public class InvalidResponse
-		{
-			[InputFieldEventHandler]
-			public string Name { get; set; }
-		}
-
-		public class Person
-		{
-			[OutputField(Label = "DoB", OrderIndex = 2)]
-			public DateTime? DateOfBirth { get; set; }
-
-			[OutputField(Label = "First name", OrderIndex = 1)]
-			public string FirstName { get; set; }
-
-			[OutputField(Hidden = true)]
-			public int Height { get; set; }
-
-			[OutputField(Hidden = true)]
-			public decimal Weight { get; set; }
-		}
-
-		public class InputFieldEventHandlerAttribute : FieldEventHandlerAttribute
-		{
-			public const string Identifier = "input-field-function";
-
-			public InputFieldEventHandlerAttribute() : base(Identifier, FormEvents.FormLoaded, true, false)
-			{
-			}
-		}
-
-		public class OutputFieldEventHandlerAttribute : FieldEventHandlerAttribute
-		{
-			public const string Identifier = "output-field-function";
-
-			public OutputFieldEventHandlerAttribute() : base(Identifier, FormEvents.FormLoaded, false, true)
-			{
-			}
+			binder.BindForm<DoMagic, Request, Response>();
 		}
 
 		[Fact]
@@ -178,7 +88,7 @@
 		{
 			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
 			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
-			binder.RegisterAssembly(typeof(BinderTests).GetTypeInfo().Assembly);
+			binder.RegisterAssembly(typeof(Binding.BinderTests).GetTypeInfo().Assembly);
 
 			Assert.Throws<BindingException>(() => binder.BindInputFields<InvalidRequest>().ToList());
 			Assert.Throws<BindingException>(() => binder.BindOutputFields<InvalidResponse>().ToList());

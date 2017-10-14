@@ -8,14 +8,14 @@
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
-	using UiMetadataFramework.MediatR;
 	using UiMetadataFramework.Web.Forms.Pickers;
 	using UiMetadataFramework.Web.Metadata;
 	using UiMetadataFramework.Web.Metadata.ClientFunctions;
+	using UiMetadataFramework.Web.Metadata.EventHandlers;
 	using UiMetadataFramework.Web.Metadata.Record;
 
 	[MyForm(Id = "EditPerson", PostOnLoad = true, SubmitButtonLabel = "Save changes")]
-	[LogEventAsForm(FormEvents.FormLoaded)]
+	[LogToConsole(FormEvents.FormLoaded)]
 	public class Edit : IMyForm<Edit.Request, Edit.Response>
 	{
 		public Response Handle(Request message)
@@ -50,7 +50,10 @@
 				{
 					Title = person.FirstName.Label,
 					FunctionsToRun = message.Operation.Value == RecordRequestOperation.Post
-						? new List<ClientFunctionMetadata> { new GrowlNotification("Changes to the user record were saved.", "success") }
+						? new List<ClientFunctionMetadata>
+						{
+							new GrowlNotification("Changes to the user record were saved.", "success").GetClientFunctionMetadata()
+						}
 						: null
 				}
 			};
@@ -79,7 +82,7 @@
 			public int Height { get; set; }
 
 			[OutputField(Hidden = true)]
-			[LogEventAsField(FormEvents.ResponseHandled)]
+			[LogToConsole(FormEvents.ResponseHandled)]
 			public string Name { get; set; }
 
 			[OutputField(Hidden = true)]
@@ -95,7 +98,7 @@
 			public int? Height { get; set; }
 
 			[BindToOutput(nameof(Response.Name))]
-			[LogEventAsField(FormEvents.FormLoaded)]
+			[LogToConsole(FormEvents.FormLoaded)]
 			public string Name { get; set; }
 
 			[TypeaheadInputField(typeof(PersonTypeaheadRemoteSource))]

@@ -13,14 +13,29 @@
 	[EnableCors(Startup.CorsAllowAllPolicy)]
 	public class FormController : Controller
 	{
+		private const string ContentType = "application/json";
 		private readonly FormRegister formRegister;
 		private readonly IMediator mediator;
-		private const string ContentType = "application/json";
 
 		public FormController(IMediator mediator, FormRegister formRegister)
 		{
 			this.mediator = mediator;
 			this.formRegister = formRegister;
+		}
+
+		[HttpGet("metadata/{id}")]
+		public FormMetadata Metadata(string id)
+		{
+			this.Response.ContentType = ContentType;
+			return this.formRegister.GetFormInfo(id)?.Metadata;
+		}
+
+		[HttpGet("metadata")]
+		public IEnumerable<FormMetadata> Metadata()
+		{
+			this.Response.ContentType = ContentType;
+			this.Response.Headers["Access-Control-Allow-Origin"] = "*";
+			return this.formRegister.RegisteredForms.Select(t => t.Metadata);
 		}
 
 		[HttpPost("run")]
@@ -41,21 +56,6 @@
 			this.Response.Headers["Access-Control-Allow-Origin"] = "*";
 
 			return results;
-		}
-
-		[HttpGet("metadata/{id}")]
-		public FormMetadata Metadata(string id)
-		{
-			this.Response.ContentType = ContentType;
-			return this.formRegister.GetFormInfo(id)?.Metadata;
-		}
-
-		[HttpGet("metadata")]
-		public IEnumerable<FormMetadata> Metadata()
-		{
-			this.Response.ContentType = ContentType;
-		    this.Response.Headers["Access-Control-Allow-Origin"] = "*";
-            return this.formRegister.RegisteredForms.Select(t => t.Metadata);
 		}
 	}
 }

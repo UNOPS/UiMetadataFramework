@@ -8,7 +8,6 @@
 	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
-	using UiMetadataFramework.MediatR;
 	using UiMetadataFramework.Web.Forms.Person;
 	using UiMetadataFramework.Web.Forms.Pickers;
 	using UiMetadataFramework.Web.Metadata;

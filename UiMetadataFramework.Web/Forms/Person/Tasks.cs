@@ -7,7 +7,6 @@
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
-	using UiMetadataFramework.MediatR;
 	using UiMetadataFramework.Web.Metadata;
 
 	[Form(Id = "Tasks", Label = "Tasks", PostOnLoad = true)]

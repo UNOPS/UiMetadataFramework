@@ -52,6 +52,24 @@
 		}
 
 		/// <summary>
+		/// Gets id of the form.
+		/// </summary>
+		/// <param name="formType">Type representing the form.</param>
+		/// <returns>Id of the form.</returns>
+		public static string GetFormId(Type formType)
+		{
+			var attribute = formType.GetTypeInfo().GetCustomAttribute<FormAttribute>();
+
+			if (attribute == null)
+			{
+				throw new BindingException(
+					$"Type '{formType.FullName}' does not have mandatory attribute '{typeof(FormAttribute).FullName}'.");
+			}
+
+			return GetFormId(formType, attribute);
+		}
+
+		/// <summary>
 		/// Registers given <see cref="OutputFieldBinding"/> instance.
 		/// </summary>
 		/// <param name="binding"><see cref="OutputFieldBinding"/> instance.</param>
@@ -160,6 +178,58 @@
 		}
 
 		/// <summary>
+		/// Gets form metadata for the specified form.
+		/// </summary>
+		/// <typeparam name="TForm">Type representing the form.</typeparam>
+		/// <typeparam name="TRequest">Type representing request for the form. 
+		/// <see cref="FormMetadata.InputFields"/> will be deduced from this class.</typeparam>
+		/// <typeparam name="TResponse">Type representing response of the form. 
+		/// <see cref="FormMetadata.OutputFields"/> will be deduced from this class.</typeparam>
+		/// <returns><see cref="FormMetadata"/> instance.</returns>
+		public FormMetadata BindForm<TForm, TRequest, TResponse>()
+		{
+			return this.BindForm(typeof(TForm), typeof(TRequest), typeof(TResponse));
+		}
+
+		/// <summary>
+		/// Gets form metadata for the specified form.
+		/// </summary>
+		/// <param name="formType"> name="TForm">Type representing the form.</param>
+		/// <param name="requestType">Type representing request for the form. 
+		/// <see cref="FormMetadata.InputFields"/> will be deduced from this class.</param>
+		/// <param name="responseType">Type representing response of the form. 
+		/// <see cref="FormMetadata.OutputFields"/> will be deduced from this class.</param>
+		/// <returns><see cref="FormMetadata"/> instance.</returns>
+		public FormMetadata BindForm(Type formType, Type requestType, Type responseType)
+		{
+			var formAttribute = formType.GetTypeInfo().GetCustomAttribute<FormAttribute>();
+			if (formAttribute == null)
+			{
+				throw new BindingException(
+					$"Type '{formType.FullName}' is not decorated with " +
+					$"the mandatory '{typeof(FormAttribute).FullName}' attribute.");
+			}
+
+			var formEventHandlers = formType
+				.GetCustomAttributesImplementingInterface<IFormEventHandlerAttribute>()
+				.Select(t => t.ToMetadata(formType, this))
+				.ToList();
+
+			return new FormMetadata
+			{
+				Label = formAttribute.Label,
+				Id = GetFormId(formType, formAttribute),
+				PostOnLoad = formAttribute.PostOnLoad,
+				PostOnLoadValidation = formAttribute.PostOnLoadValidation,
+				CloseOnPostIfModal = formAttribute.CloseOnPostIfModal,
+				OutputFields = this.BindOutputFields(responseType).ToList(),
+				InputFields = this.BindInputFields(requestType).ToList(),
+				CustomProperties = formAttribute.GetCustomProperties(formType),
+				EventHandlers = formEventHandlers
+			};
+		}
+
+		/// <summary>
 		/// Retrieves input field metadata for the given type.
 		/// </summary>
 		/// <typeparam name="T">Type which should be rendered on the client as input field(s).</typeparam>
@@ -207,7 +277,7 @@
 						$"because '{propertyType.FullName}' inputs are preconfigured by '{binding.GetType().FullName}' to always be hidden.");
 				}
 
-				var eventHandlerAttributes = property.GetCustomAttributes<FieldEventHandlerAttribute>().ToList();
+				var eventHandlerAttributes = property.GetCustomAttributesImplementingInterface<IFieldEventHandlerAttribute>().ToList();
 				var illegalAttributes = eventHandlerAttributes.Where(t => !t.ApplicableToInputField).ToList();
 				if (illegalAttributes.Any())
 				{
@@ -285,7 +355,7 @@
 						: attribute?.GetCustomProperties(property, this);
 				}
 
-				var eventHandlerAttributes = property.GetCustomAttributes<FieldEventHandlerAttribute>().ToList();
+				var eventHandlerAttributes = property.GetCustomAttributesImplementingInterface<IFieldEventHandlerAttribute>().ToList();
 				var illegalAttributes = eventHandlerAttributes.Where(t => !t.ApplicableToOutputField).ToList();
 				if (illegalAttributes.Any())
 				{
@@ -319,7 +389,8 @@
 		}
 
 		/// <summary>
-		/// Scans assembly for implementations of <see cref="OutputFieldBinding"/> and registers them in this instance of <see cref="MetadataBinder"/>.
+		/// Scans assembly for implementations of <see cref="OutputFieldBinding"/>, <see cref="InputFieldBinding"/>
+		/// and registers them in this instance of <see cref="MetadataBinder"/>.
 		/// </summary>
 		/// <param name="assembly">Assembly to scan.</param>
 		public void RegisterAssembly(Assembly assembly)
@@ -376,6 +447,13 @@
 			{
 				this.AddBinding(binding);
 			}
+		}
+
+		private static string GetFormId(Type formType, FormAttribute formAttribute)
+		{
+			return !string.IsNullOrWhiteSpace(formAttribute.Id)
+				? formAttribute.Id
+				: formType.FullName;
 		}
 
 		private static bool IsEnumerable(PropertyInfo propertyInfo)

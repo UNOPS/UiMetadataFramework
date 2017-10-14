@@ -105,10 +105,19 @@
 		{
 		}
 
-		public class LogFormEvent : FormEventHandlerAttribute
+		public class LogFormEvent : Attribute, IFormEventHandlerAttribute
 		{
-			public LogFormEvent(string eventName) : base("log-form-event", eventName)
+			public LogFormEvent(string eventName)
 			{
+				this.RunAt = eventName;
+			}
+
+			public string Id { get; } = "log-form-event";
+			public string RunAt { get; }
+
+			public EventHandlerMetadata ToMetadata(Type formType, MetadataBinder binder)
+			{
+				return new EventHandlerMetadata(this.Id, this.RunAt);
 			}
 		}
 

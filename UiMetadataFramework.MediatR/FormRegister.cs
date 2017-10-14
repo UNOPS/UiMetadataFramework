@@ -5,7 +5,6 @@
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
-	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
 	/// <summary>
@@ -50,18 +49,8 @@
 		/// <returns><see cref="FormInfo"/> instance or null if no metadata for the form was found.</returns>
 		public FormInfo GetFormInfo(Type formType)
 		{
-			var attribute = formType.GetTypeInfo().GetCustomAttribute<FormAttribute>();
-
-			if (attribute == null)
-			{
-				throw new InvalidConfigurationException(
-					$"Type '{formType.FullName}' does not have mandatory attribute '{typeof(FormAttribute).FullName}'.");
-			}
-
-			var formId = GetFormId(formType, attribute);
-			this.registeredForms.TryGetValue(formId, out FormInfo metadata);
-
-			return metadata;
+			var formId = MetadataBinder.GetFormId(formType);
+			return this.GetFormInfo(formId);
 		}
 
 		/// <summary>
@@ -94,7 +83,7 @@
 
 			foreach (var form in forms)
 			{
-				this.RegisterForm(form.Type, form.Attribute);
+				this.RegisterForm(form.Type);
 			}
 		}
 
@@ -104,31 +93,6 @@
 		/// <param name="formType">Type which implements <see cref="IForm{TRequest,TResponse,TResponseMetadata}"/> 
 		/// or <see cref="IAsyncForm{TRequest,TResponse,TResponseMetadata}"/>.</param>
 		public void RegisterForm(Type formType)
-		{
-			var attribute = formType.GetTypeInfo().GetCustomAttribute<FormAttribute>();
-			if (attribute == null)
-			{
-				throw new InvalidConfigurationException(
-					$"Type '{formType.FullName}' is not decorated with the mandatory '{typeof(FormAttribute).FullName}' attribute.");
-			}
-
-			this.RegisterForm(formType, attribute);
-		}
-
-		private static string GetFormId(Type formType, FormAttribute formAttribute)
-		{
-			return !string.IsNullOrWhiteSpace(formAttribute.Id)
-				? formAttribute.Id
-				: formType.FullName;
-		}
-
-		/// <summary>
-		/// Adds specific form to the register.
-		/// </summary>
-		/// <param name="formType">Type which implements <see cref="IForm{TRequest,TResponse,TResponseMetadata}"/> 
-		/// or <see cref="IAsyncForm{TRequest,TResponse,TResponseMetadata}"/>.</param>
-		/// <param name="formAttribute">Attribute decorating the form.</param>
-		private void RegisterForm(Type formType, FormAttribute formAttribute)
 		{
 			var iformInterfaces = formType.GetTypeInfo()
 				.GetInterfaces()
@@ -159,9 +123,13 @@
 					$"Type '{formType.FullName}' implements multiple IForm<,,> and/or IAsyncForm<,,> interfaces. Only one of these interfaces can be implemented.");
 			}
 
-			var formId = GetFormId(formType, formAttribute);
+			var iformInterface = iformInterfaces.Single();
+			var requestType = iformInterface.GetTypeInfo().GenericTypeArguments[0];
+			var responseType = iformInterface.GenericTypeArguments[1];
 
-			if (this.registeredForms.TryGetValue(formId, out FormInfo existingFormInfo))
+			var formMetadata = this.binder.BindForm(formType, requestType, responseType);
+
+			if (this.registeredForms.TryGetValue(formMetadata.Id, out FormInfo existingFormInfo))
 			{
 				if (formType != existingFormInfo.FormType)
 				{
@@ -170,34 +138,14 @@
 				}
 			}
 
-			var iformInterface = iformInterfaces.Single();
-			var requestType = iformInterface.GetTypeInfo().GenericTypeArguments[0];
-			var responseType = iformInterface.GenericTypeArguments[1];
-
-			var formEventHandlers = formType.GetTypeInfo()
-				.GetCustomAttributes<FormEventHandlerAttribute>()
-				.Select(t => t.ToMetadata(formType, this.binder))
-				.ToList();
-
 			this.registeredForms.TryAdd(
-				formId,
+				formMetadata.Id,
 				new FormInfo
 				{
 					FormType = formType,
 					RequestType = requestType,
 					ResponseType = responseType,
-					Metadata = new FormMetadata
-					{
-						Label = formAttribute.Label,
-						Id = formId,
-						PostOnLoad = formAttribute.PostOnLoad,
-						PostOnLoadValidation = formAttribute.PostOnLoadValidation,
-						CloseOnPostIfModal = formAttribute.CloseOnPostIfModal,
-						OutputFields = this.binder.BindOutputFields(responseType).ToList(),
-						InputFields = this.binder.BindInputFields(requestType).ToList(),
-						CustomProperties = formAttribute.GetCustomProperties(formType),
-						EventHandlers = formEventHandlers
-					}
+					Metadata = formMetadata
 				});
 		}
 	}

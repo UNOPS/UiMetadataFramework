@@ -5,7 +5,6 @@
 	using global::MediatR;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
-	using UiMetadataFramework.MediatR;
 	using UiMetadataFramework.Web.Metadata;
 
 	[Form(Id = "Person", PostOnLoad = true)]

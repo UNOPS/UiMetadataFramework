@@ -1,10 +1,9 @@
-﻿namespace UiMetadataFramework.MediatR
+﻿namespace UiMetadataFramework.Core.Binding
 {
 	using System;
 
 	/// <summary>
-	/// Used to decorate an <see cref="IForm{TRequest,TResponse}"/>, describing how to 
-	/// generate metadata for it.
+	/// Used to decorate form, describing how to generate metadata for it.
 	/// </summary>
 	public class FormAttribute : Attribute
 	{
