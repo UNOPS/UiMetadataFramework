@@ -1,3 +1,5 @@
+import { EventHandlerMetadata } from "./EventHandlerMetadata";
+
 /**
  * Represents metadata for a single output field.
  */
@@ -7,6 +9,11 @@ export class OutputFieldMetadata {
 	 */
 	public customProperties: any;
 
+	/**
+	 * Gets or sets event handlers for this output field.
+	 */
+	public eventHandlers: EventHandlerMetadata[];
+	
 	/**
 	 * Gets or sets id of the field to which this metadata belongs.
 	 */

@@ -174,6 +174,11 @@
 			var requestType = iformInterface.GetTypeInfo().GenericTypeArguments[0];
 			var responseType = iformInterface.GenericTypeArguments[1];
 
+			var formEventHandlers = formType.GetTypeInfo()
+				.GetCustomAttributes<FormEventHandlerAttribute>()
+				.Select(t => t.ToMetadata(formType, this.binder))
+				.ToList();
+
 			this.registeredForms.TryAdd(
 				formId,
 				new FormInfo
@@ -190,7 +195,8 @@
 						CloseOnPostIfModal = formAttribute.CloseOnPostIfModal,
 						OutputFields = this.binder.BindOutputFields(responseType).ToList(),
 						InputFields = this.binder.BindInputFields(requestType).ToList(),
-						CustomProperties = formAttribute.GetCustomProperties(formType)
+						CustomProperties = formAttribute.GetCustomProperties(formType),
+						EventHandlers = formEventHandlers
 					}
 				});
 		}

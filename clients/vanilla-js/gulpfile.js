@@ -4,6 +4,7 @@ var gulp = require("gulp"),
     commonjs = require("rollup-plugin-commonjs"),
     browserSync = require("browser-sync").create(),
     gulpSvelte = require("gulp-svelte"),
+    async = require('rollup-plugin-async'),
     resolve = require("rollup-plugin-node-resolve"),
     builtins = require("rollup-plugin-node-builtins"),
     globals = require("rollup-plugin-node-globals"),
@@ -19,6 +20,7 @@ function build(entry, tsconfig, outfile, moduleName) {
             entry: entry,
             plugins: [
                 json(),
+                async(),
                 resolve({
                     jsnext: true,
                     main: true,

@@ -1,5 +1,6 @@
 ﻿namespace UiMetadataFramework.Core
 {
+	using System.Collections.Generic;
 	using Newtonsoft.Json;
 
 	/// <summary>
@@ -49,5 +50,11 @@
 		/// in relationship to output fields within the same <see cref="FormResponse"/>.
 		/// </summary>
 		public int OrderIndex { get; set; }
+
+		/// <summary>
+		/// Gets or sets event handlers for this field.
+		/// </summary>
+		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+		public IList<EventHandlerMetadata> EventHandlers { get; set; }
 	}
 }

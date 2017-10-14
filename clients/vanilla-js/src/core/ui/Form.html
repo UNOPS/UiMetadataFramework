@@ -26,115 +26,132 @@
 
 	let tabindex = 1;
 
-	function enableForm(form) {
-		form.set({
-			// Remove previous output, this is needed for repainting.
-			outputFieldValues: null,
-
-			// Enable post.
-			disabled: false
-		});
-	}
-
 	export default {
 		methods: {
-			init: function() {
+			init: function () {
 				if (!this.get("initialized")) {
 					var form = this.get("form");
-					
-					this.set({ 
+
+					this.set({
 						self: this,
 						initialized: true,
 						visibleInputFields: form.inputs.filter(t => t.metadata.hidden == false),
-						submitButtonLabel: form.metadata.customProperties != null && form.metadata.customProperties.submitButtonLabel 
-							? form.metadata.customProperties.submitButtonLabel 
+						submitButtonLabel: form.metadata.customProperties != null && form.metadata.customProperties.submitButtonLabel
+							? form.metadata.customProperties.submitButtonLabel
 							: "Submit"
 					});
 
 					tabindex += 1;
-					
+
+					var app = this.get("app");
+
+					form.fire("form:loaded", { app: app });
+
 					// Auto-submit form if necessary.
 					if (form.metadata.postOnLoad) {
-						var app = this.get("app");
 						this.submit(app, form);
 					}
 				}
 			},
-			submit: function (app, formInstance, event, redirect) {
-				var self = this;
+			enableForm: function() {
+				var formInstance = this.get("form");
 
+				// Hide all inputs, to re-render them. This is needed due to the way that
+				// Svelte *seems* to work - it doesn't re-render nested components, unless they are recreated.
+				this.set({ visibleInputFields: [] });
+
+				this.set({
+					// Show inputs again.
+					visibleInputFields: formInstance.inputs.filter(t => t.metadata.hidden == false),
+
+					disabled: false
+				});
+			},
+			renderResponse: function(response) {
+				var formInstance = this.get("form");
+
+				// Force Svelte to re-render outputs.
+				this.set({
+					outputFieldValues: null
+				});
+
+				this.set({
+					outputFieldValues: formInstance.outputs,
+					responseMetadata: response.metadata
+				});
+			},
+			submit: async function (app, formInstance, event, redirect) {
+				var self = this;
+				
 				if (event != null) {
 					event.preventDefault();
 				}
-
-				var skipValidation = 
+				
+				var skipValidation =
 					!formInstance.metadata.postOnLoadValidation &&
 					formInstance.metadata.postOnLoad &&
 					// if initialization of the form, i.e. - first post.
 					redirect == null;
 
-				formInstance.prepareForm(!skipValidation).then(data => {
-					// If not all required inputs are filled.
-					if (data == null) {
-						return;
+				let data = await formInstance.prepareForm(!skipValidation);
+				
+				// If not all required inputs are filled.
+				if (data == null) {
+					return;
+				}
+
+				// Disable double-posts.
+				self.set({ disabled: true });
+
+				// If postOnLoad == true, then the input field values should appear in the url.
+				// Reason is that postOnLoad == true is used by "report" pages, which need
+				// their filters to be saved in the url. This does not apply to forms
+				// with postOnLoad == false, because those forms are usually for creating new data
+				// and hence should not be tracked in browser's history based on parameters.
+				if (formInstance.metadata.postOnLoad && redirect && this.get("useUrl")) {
+					let urlParams = await formInstance.getSerializedInputValues();
+					
+					// Update url in the browser.
+					app.go(formInstance.metadata.id, urlParams);
+					
+					return;
+				}
+
+				await formInstance.fire("form:posting", { response: null, app: app });
+				
+				try {
+					let response = await app.server.postForm(formInstance.metadata.id, data);
+					await formInstance.fire("form:responseReceived", { response: response, app: app });
+					
+					formInstance.setOutputFieldValues(response);
+
+					// Null response is treated as a server-side error.
+					if (response == null) {
+						throw new Error(`Received null response.`);
 					}
-
-					// Disable double-posts.
-					self.set({ disabled: true });
-
-					// If postOnLoad == true, then the input field values should appear in the url.
-					// Reason is that postOnLoad == true is used by "report" pages, which need
-					// their filters to be saved in the url. This does not apply to forms
-					// with postOnLoad == false, because those forms are usually for creating new data
-					// and hence should not be tracked in browser's history based on parameters.
-					if (formInstance.metadata.postOnLoad && redirect && this.get("useUrl")) {
-						formInstance.getSerializedInputValues().then(urlParams => {
-							// Update url in the browser.
-							app.go(formInstance.metadata.id, urlParams);
-						});
-
-						return;
+					
+					await app.runFunctions(response.metadata.functionsToRun);
+				
+					if (response.metadata.handler == "" || response.metadata.handler == null) {
+						self.renderResponse(response);
 					}
+					else {
+						app.handleResponse(response, formInstance);
+					}
+					
+					await formInstance.fire("form:responseHandled", { response: response, app: app });
+				
+					self.enableForm();
 
-					app.server.postForm(formInstance.metadata.id, data)
-						.then(response => {
-							// If there was an error.
-							if (response == null) {
-								enableForm(self);
-								return;
-							}
-
-							formInstance.setOutputFieldValues(response);
-
-							formInstance.runInputFieldProcessors("response", response, app.controlRegister).then(t => {                            
-								enableForm(self);
-															
-								if (response.metadata.handler == "" || response.metadata.handler == null) {
-									// Hide all inputs, to re-render them. This is needed due to the way that
-									// Svelte *seems* to work - it doesn't re-render nested components, unless they are recreated.
-									self.set({ visibleInputFields: [] });
-									
-									self.set({
-										// Show inputs again.
-										visibleInputFields: formInstance.inputs.filter(t => t.metadata.hidden == false),
-										outputFieldValues: formInstance.outputs,
-										responseMetadata: response.metadata
-									});
-								}
-								else {
-									app.handleResponse(response, formInstance);
-								}
-
-								self.fire("form:posted", {
-									form: self,
-									invokedByUser: event != null
-								})
-							});
-						})
-						.catch(response => {
-							enableForm(self);
-						});
-				});
+					// Signal event to child controls.
+					self.fire("form:responseHandled", {
+						form: self,
+						invokedByUser: event != null
+					});
+				}
+				catch(e) {
+					self.enableForm();
+				}				
 			}
 		},
 		data: function () {

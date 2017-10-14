@@ -19,7 +19,9 @@
 			"components/*": ["../build/svelte/components/*"],
 			"core-ui/*": ["../build/svelte/core/ui/*", "./core/ui/*"],
 			"core-framework": ["./core/framework/index"],
-			"core-handlers": ["./core/handlers/index"]
+			"core-handlers": ["./core/handlers/index"],
+			"core-eventHandlers": ["./core/eventHandlers/index"],
+			"core-functions": ["./core/functions/index"]
 		}
 	},
 	"files": [

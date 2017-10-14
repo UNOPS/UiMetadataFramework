@@ -1,3 +1,5 @@
+import { ClientFunctionMetadata } from "./ClientFunctionMetadata";
+
 /**
  * Metadata describing how to handle the response.
  */
@@ -9,4 +11,10 @@ export class FormResponseMetadata {
 		* handlers might include "redirect" handler, which will redirect to another form or URL.
 	 */
 	public handler: string;
+
+	/**
+	 * Gets or sets functions that the client should run immediately after it receives this response.
+	 * These functions will be run before the response is handled by the `handler`.
+	 */
+	public functionsToRun: ClientFunctionMetadata[];
 }

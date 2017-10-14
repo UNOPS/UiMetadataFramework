@@ -1,8 +1,8 @@
 ﻿namespace UiMetadataFramework.Web.Metadata.Record
 {
 	using global::MediatR;
+	using UiMetadataFramework.Basic.EventHandlers;
 	using UiMetadataFramework.Basic.Input;
-	using UiMetadataFramework.Basic.InputProcessors;
 	using UiMetadataFramework.Core.Binding;
 
 	public class RecordRequest<T> : IRequest<T>

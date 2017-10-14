@@ -1,6 +1,7 @@
 ﻿namespace UiMetadataFramework.Tests
 {
 	using System;
+	using System.Linq;
 	using System.Reflection;
 	using System.Threading.Tasks;
 	using global::MediatR;
@@ -89,6 +90,7 @@
 
 		[MyForm(Id = "Magic", Label = "Do some magic", PostOnLoad = false, CloseOnPostIfModal = true)]
 		[Menu("Magical tools")]
+		[LogFormEvent(FormEvents.FormLoaded)]
 		public class Magic : BaseForm
 		{
 		}
@@ -101,6 +103,13 @@
 		[Form]
 		public class FormWithoutId : BaseForm
 		{
+		}
+
+		public class LogFormEvent : FormEventHandlerAttribute
+		{
+			public LogFormEvent(string eventName) : base("log-form-event", eventName)
+			{
+			}
 		}
 
 		[Fact]
@@ -123,6 +132,10 @@
 			Assert.True(formMetadata.CloseOnPostIfModal);
 			Assert.True(formMetadata.InputFields.Count == 5);
 			Assert.True(formMetadata.OutputFields.Count == 4);
+
+			var formEventHandler = formMetadata.EventHandlers.First();
+			Assert.True(formEventHandler.Id == "log-form-event");
+			Assert.True(formEventHandler.RunAt == FormEvents.FormLoaded);
 		}
 
 		[Fact]

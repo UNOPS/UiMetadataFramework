@@ -192,7 +192,6 @@
 				}
 
 				var attribute = property.GetCustomAttribute<InputFieldAttribute>();
-				var inputFieldProcessorAttributes = property.GetCustomAttributes<InputFieldProcessorAttribute>();
 
 				var required = propertyType.GetTypeInfo().IsValueType
 					// non-nullable value types are automatically required,
@@ -208,6 +207,15 @@
 						$"because '{propertyType.FullName}' inputs are preconfigured by '{binding.GetType().FullName}' to always be hidden.");
 				}
 
+				var eventHandlerAttributes = property.GetCustomAttributes<FieldEventHandlerAttribute>().ToList();
+				var illegalAttributes = eventHandlerAttributes.Where(t => !t.ApplicableToInputField).ToList();
+				if (illegalAttributes.Any())
+				{
+					throw new BindingException(
+						$"Input '{property.DeclaringType.FullName}.{property.Name}' cannot use " +
+						$"'{illegalAttributes[0].GetType().FullName}', because the attribute is not applicable for input fields.");
+				}
+
 				var metadata = new InputFieldMetadata(binding.ClientType)
 				{
 					Id = property.Name,
@@ -215,7 +223,7 @@
 					Label = attribute?.Label ?? property.Name,
 					OrderIndex = attribute?.OrderIndex ?? 0,
 					Required = required,
-					Processors = inputFieldProcessorAttributes.Select(t => t.ToMetadata(property, this)).ToList(),
+					EventHandlers = eventHandlerAttributes.Select(t => t.ToMetadata(property, this)).ToList(),
 					CustomProperties = binding.GetCustomProperties(attribute, property)
 				};
 
@@ -277,13 +285,23 @@
 						: attribute?.GetCustomProperties(property, this);
 				}
 
+				var eventHandlerAttributes = property.GetCustomAttributes<FieldEventHandlerAttribute>().ToList();
+				var illegalAttributes = eventHandlerAttributes.Where(t => !t.ApplicableToOutputField).ToList();
+				if (illegalAttributes.Any())
+				{
+					throw new BindingException(
+						$"Input '{property.DeclaringType.FullName}.{property.Name}' cannot use " +
+						$"'{illegalAttributes[0].GetType().FullName}', because the attribute is not applicable for input fields.");
+				}
+
 				var metadata = new OutputFieldMetadata(clientControlName)
 				{
 					Id = property.Name,
 					Hidden = attribute?.Hidden ?? false,
 					Label = attribute?.Label ?? property.Name,
 					OrderIndex = attribute?.OrderIndex ?? 0,
-					CustomProperties = customProperties
+					CustomProperties = customProperties,
+					EventHandlers = eventHandlerAttributes.Select(t => t.ToMetadata(property, this)).ToList()
 				};
 
 				yield return metadata;

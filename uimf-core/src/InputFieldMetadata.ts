@@ -1,4 +1,4 @@
-import { InputFieldProcessorMetadata } from "./InputFieldProcessorMetadata";
+import { EventHandlerMetadata } from "./EventHandlerMetadata";
 
 /**
  * Represents metadata for a single input field. * 
@@ -10,9 +10,9 @@ export class InputFieldMetadata {
 	public customProperties: any;
 
 	/**
-	 * Gets or sets input field processors.
+	 * Gets or sets event handlers for this input field.
 	 */
-	public processors: InputFieldProcessorMetadata[];
+	public eventHandlers: EventHandlerMetadata[];
 
 	/**
 	 * Gets or sets value indicating wheather value for this input field is required before submitting the form.

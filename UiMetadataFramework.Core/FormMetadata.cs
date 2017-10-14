@@ -20,6 +20,11 @@
 		public object CustomProperties { get; set; }
 
 		/// <summary>
+		/// Gets or sets event handlers for this form.
+		/// </summary>
+		public IList<EventHandlerMetadata> EventHandlers { get; set; }
+
+		/// <summary>
 		/// Gets or sets id of the form, to which this metadata belongs.
 		/// </summary>
 		public string Id { get; set; }

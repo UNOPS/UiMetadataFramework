@@ -16,7 +16,7 @@
 			bool hidden = false,
 			int orderIndex = 0,
 			bool required = false,
-			string[] inputProcessorIds = null)
+			string[] eventHandlers = null)
 		{
 			var field = fields.FirstOrDefault(t =>
 				t.Id == id &&
@@ -25,7 +25,7 @@
 				t.OrderIndex == orderIndex &&
 				t.Label == label &&
 				t.Required == required &&
-				inputProcessorIds == null || inputProcessorIds?.All(p => t.Processors.Any(x => x.Id == p)) == true);
+				eventHandlers == null || eventHandlers?.All(p => t.EventHandlers.Any(x => x.Id == p)) == true);
 
 			Assert.NotNull(field);
 
@@ -38,14 +38,16 @@
 			string type,
 			string label,
 			bool hidden = false,
-			int orderIndex = 0)
+			int orderIndex = 0,
+			string[] eventHandlers = null)
 		{
 			var field = fields.FirstOrDefault(t =>
 				t.Id == id &&
 				t.Hidden == hidden &&
 				t.Type == type &&
 				t.OrderIndex == orderIndex &&
-				t.Label == label);
+				t.Label == label &&
+				eventHandlers == null || eventHandlers?.All(p => t.EventHandlers.Any(x => x.Id == p)) == true);
 
 			Assert.NotNull(field);
 

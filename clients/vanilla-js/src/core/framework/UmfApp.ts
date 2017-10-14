@@ -1,4 +1,4 @@
-﻿import { FormMetadata, FormResponse, FormResponseMetadata } from "uimf-core";
+﻿import { FormMetadata, FormResponse, FormResponseMetadata, ClientFunctionMetadata } from "uimf-core";
 import { UmfServer } from "./UmfServer";
 import { FormInstance } from "./FormInstance";
 import { IFormResponseHandler } from "./IFormResponseHandler";
@@ -20,7 +20,7 @@ export class UmfApp implements IAppRouter {
 		this.controlRegister = inputRegister;
 	}
 
-	useRouter(router:IAppRouter) {
+	useRouter(router: IAppRouter) {
 		this.go = (form: string, values: any) => {
 			return router.go(form, values);
 		}
@@ -38,7 +38,7 @@ export class UmfApp implements IAppRouter {
 		return this.server.getAllMetadata()
 			.then(response => {
 				this.forms = response;
-				
+
 				for (let form of this.forms) {
 					this.formsById[form.id] = form;
 				}
@@ -76,5 +76,25 @@ export class UmfApp implements IAppRouter {
 		}
 
 		return handler.handle(response, form);
+	}
+
+	runFunctions(functionMetadata: ClientFunctionMetadata[]) {
+		if (functionMetadata == null) {
+			return Promise.resolve();
+		}
+
+		let promises = [];
+		for (let f of functionMetadata) {
+			let handler = this.controlRegister.functions[f.id];
+
+			if (handler == null) {
+				throw new Error(`Could not find function '${f.id}'.`);
+			}
+
+			let promise = handler.run(f);
+			promises.push(promise);
+		}
+
+		return Promise.all(promises);
 	}
 }

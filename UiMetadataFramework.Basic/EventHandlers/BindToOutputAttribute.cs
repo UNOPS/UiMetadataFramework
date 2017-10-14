@@ -1,4 +1,4 @@
-namespace UiMetadataFramework.Basic.InputProcessors
+namespace UiMetadataFramework.Basic.EventHandlers
 {
 	using System.Reflection;
 	using UiMetadataFramework.Core;
@@ -7,16 +7,15 @@ namespace UiMetadataFramework.Basic.InputProcessors
 	/// <summary>
 	/// Used for decorating input fields whose values should come from an output field.
 	/// </summary>
-	public class BindToOutputAttribute : InputFieldProcessorAttribute
+	public class BindToOutputAttribute : FieldEventHandlerAttribute
 	{
 		/// <summary>
 		/// Configures default value for the input field to be a constant.
 		/// </summary>
 		/// <param name="outputFieldId">Id of the output field to bind to.</param>
 		public BindToOutputAttribute(string outputFieldId)
+			: base("bind-to-output", FormEvents.ResponseHandled, true, false)
 		{
-			this.RunAt = InputFieldProcessorRunTime.Response;
-			this.Id = "bind-to-output";
 			this.OutputFieldId = outputFieldId;
 		}
 
@@ -25,6 +24,7 @@ namespace UiMetadataFramework.Basic.InputProcessors
 		/// </summary>
 		public string OutputFieldId { get; set; }
 
+		/// <inheritdoc />
 		public override object GetCustomProperties(PropertyInfo property, MetadataBinder binder)
 		{
 			return new

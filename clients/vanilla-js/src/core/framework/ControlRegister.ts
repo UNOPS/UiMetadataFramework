@@ -1,7 +1,13 @@
 import * as umf from "uimf-core";
-import { OutputFieldValue } from "./index";
-import { InputController, StringInputController } from "./InputController";
-import { InputFieldProcessor } from "core-framework";
+import {
+    InputController,
+    StringInputController,
+    OutputFieldValue,
+    InputFieldEventHandler,
+    OutputFieldEventHandler,
+    FormEventHandler,
+    IFunctionRunner
+} from "core-framework";
 
 interface InputFieldControllerConstructor {
     new(metadata: umf.InputFieldMetadata): InputController<any>;
@@ -15,7 +21,10 @@ class InputControlEntry {
 export class ControlRegister {
     inputs: { [id: string]: InputControlEntry } = {};
     outputs: { [id: string]: any } = {};
-    inputProcessors: { [id: string]: InputFieldProcessor } = {};
+    inputFieldEventHandlers: { [id: string]: InputFieldEventHandler } = {};
+    outputFieldEventHandlers: { [id: string]: OutputFieldEventHandler } = {};
+    formEventHandlers: { [id: string]: FormEventHandler } = {};
+    functions: { [id: string]: IFunctionRunner } = {};
 
     createInputControllers(fields: umf.InputFieldMetadata[]) {
         var result = [];
@@ -60,7 +69,19 @@ export class ControlRegister {
         };
     }
 
-    registerInputFieldProcessor(name: string, processor: InputFieldProcessor) {
-        this.inputProcessors[name] = processor;
+    registerFormEventHandler(name: string, handler: FormEventHandler) {
+        this.formEventHandlers[name] = handler;
+    }
+
+    registerInputFieldEventHandler(name: string, handler: InputFieldEventHandler) {
+        this.inputFieldEventHandlers[name] = handler;
+    }
+
+    registerOutputFieldEventHandler(name: string, handler: OutputFieldEventHandler) {
+        this.outputFieldEventHandlers[name] = handler;
+    }
+
+    registerFunction(name: string, fn: IFunctionRunner) {
+        this.functions[name] = fn;
     }
 }

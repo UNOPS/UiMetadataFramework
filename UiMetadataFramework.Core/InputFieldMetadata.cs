@@ -25,16 +25,16 @@
 		public object CustomProperties { get; set; }
 
 		/// <summary>
-		/// Gets or sets input field processors.
-		/// </summary>
-		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-		public IList<InputFieldProcessorMetadata> Processors { get; set; }
-
-		/// <summary>
 		/// Gets or sets value indicating wheather value for this input field is required
 		/// before submitting the form.
 		/// </summary>
 		public bool Required { get; set; }
+
+		/// <summary>
+		/// Gets or sets event handlers for this input.
+		/// </summary>
+		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+		public IList<EventHandlerMetadata> EventHandlers { get; set; }
 
 		/// <summary>
 		/// Gets or sets id of the field to which this metadata belongs.

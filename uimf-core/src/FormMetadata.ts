@@ -1,5 +1,6 @@
 ﻿import { InputFieldMetadata } from "./InputFieldMetadata";
 import { OutputFieldMetadata } from "./OutputFieldMetadata";
+import { EventHandlerMetadata } from "./EventHandlerMetadata";
 
 /**
  * Encapsulates all information needed to render a form.
@@ -39,4 +40,9 @@ export class FormMetadata {
 	 * Gets or sets additional parameters for the client.
 	 */
 	public customProperties: any;
+
+	/**
+	 * Gets or sets event handlers for this form.
+	 */
+	public eventHandlers: EventHandlerMetadata[];
 }

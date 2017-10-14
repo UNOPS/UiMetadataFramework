@@ -1,10 +1,17 @@
 ﻿namespace UiMetadataFramework.Core
 {
+	using System.Collections.Generic;
+
 	/// <summary>
 	/// Represents metadata for single field within a form.
 	/// </summary>
 	public interface IFieldMetadata
 	{
+		/// <summary>
+		/// Gets or sets event handlers for this field.
+		/// </summary>
+		IList<EventHandlerMetadata> EventHandlers { get; set; }
+
 		/// <summary>
 		/// Gets or sets value indicating whether this field should be visible or not.
 		/// </summary>
