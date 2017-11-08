@@ -1,0 +1,20 @@
+<div>
+	<ul class="actionlist">
+		<li v-for="action in field.data.actions">
+			<button v-on:click="run(action, app)">{{action.label}}</button>
+		</li>
+	</ul>
+
+	<modal v-if="open"
+	 @close="open = false">
+		<h3 slot="header">{{modalComponent.responseMetadata.title || modalComponent.metadata.label}}</h3>
+		<div slot="body">
+			<component is="FormComponent"
+			 v-bind:metadata="modalComponent.metadata"
+			 v-bind:app="modalComponent.app"
+			 v-bind:form="modalComponent.form"
+			 v-bind:useUrl="modalComponent.useUrl">
+			</component>
+		</div>
+	</modal>
+</div>

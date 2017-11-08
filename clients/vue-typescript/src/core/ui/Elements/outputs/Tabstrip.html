@@ -1,0 +1,8 @@
+<div class="tabstrip">
+	<div v-for="tab in field.data.tabs">
+		<a href="app.makeUrl(tab.form, tab.inputFieldValues)"
+		 class="getCssClass(tab, field.data)">
+			{{tab.label}}
+		</a>
+	</div>
+</div>

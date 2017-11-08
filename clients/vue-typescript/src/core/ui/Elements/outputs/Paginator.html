@@ -1,0 +1,23 @@
+<span>
+	<ul v-if="pages.length > 1"
+	 class="paginator">
+		<li v-for="page in pages"
+		 v-if="parent.useUrl">
+			<a href="app.makeUrl(form.metadata.id, page.params)"
+			 class="page.cssClass">{{page.number}}</a>
+		</li>
+		<li v-else>
+			<button on:click="goToPage(page)"
+			 class="page.cssClass">
+				{{page.number}}
+			</button>
+		</li>
+	</ul>
+
+	<component is="TableOutput"
+	 class="class"
+	 v-bind:field="tableField"
+	 v-bind:app="app"
+	 v-bind:parent="parent"
+	 v-bind:form="form"></component>
+</span>
