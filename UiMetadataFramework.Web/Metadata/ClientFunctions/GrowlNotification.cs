@@ -1,9 +1,8 @@
 ﻿namespace UiMetadataFramework.Web.Metadata.ClientFunctions
 {
 	using UiMetadataFramework.Core;
-	using UiMetadataFramework.Core.Binding;
 
-	public class GrowlNotification : IClientFunctionMetadataProvider
+	public class GrowlNotification
 	{
 		public GrowlNotification(string message, string style) : this(null, message, style)
 		{
