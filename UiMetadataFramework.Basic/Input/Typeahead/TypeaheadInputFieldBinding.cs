@@ -1,10 +1,16 @@
-﻿namespace UiMetadataFramework.Basic.Input.Typeahead
+﻿// ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
+
+namespace UiMetadataFramework.Basic.Input.Typeahead
 {
 	using System;
 	using System.Linq;
 	using System.Reflection;
+	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
+	/// <summary>
+	/// <see cref="InputFieldBinding"/> for <see cref="TypeaheadValue{T}"/>.
+	/// </summary>
 	public class TypeaheadInputFieldBinding : InputFieldBinding
 	{
 		internal TypeaheadInputFieldBinding(Type serverType, string clientType, DependencyInjectionContainer container)
@@ -13,13 +19,23 @@
 			this.Container = container;
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TypeaheadInputFieldBinding"/> class.
+		/// </summary>
+		/// <param name="container">Instance of <see cref="DependencyInjectionContainer"/>.</param>
 		public TypeaheadInputFieldBinding(DependencyInjectionContainer container)
 			: this(typeof(TypeaheadValue<>), "typeahead", container)
 		{
 		}
 
-		public DependencyInjectionContainer Container { get; private set; }
+		private DependencyInjectionContainer Container { get; }
 
+		/// <summary>
+		/// Gets custom properties for the input field.
+		/// </summary>
+		/// <param name="attribute"><see cref="InputFieldAttribute"/> decorating the <paramref name="property"/>.</param>
+		/// <param name="property">Represents an input field.</param>
+		/// <returns>Custom properties.</returns>
 		public override object GetCustomProperties(InputFieldAttribute attribute, PropertyInfo property)
 		{
 			var typeaheadInputFieldAttribute = attribute as TypeaheadInputFieldAttribute;
@@ -34,7 +50,8 @@
 			{
 				return new TypeaheadCustomProperties
 				{
-					Source = typeaheadInputFieldAttribute.Source.FullName
+					Source = typeaheadInputFieldAttribute.Source.FullName,
+					Parameters = typeaheadInputFieldAttribute.Parameters
 				};
 			}
 
@@ -54,32 +71,81 @@
 		}
 	}
 
+	/// <summary>
+	/// Represents data stored in <see cref="InputFieldMetadata.CustomProperties"/> for
+	/// typeahead inputs.
+	/// </summary>
 	public class TypeaheadCustomProperties
 	{
+		/// <summary>
+		/// Gets or sets list of property names inside "request" object. These "request" object
+		/// properties will be serialized and sent to the typeahead source on each request.
+		/// </summary>
+		public string[] Parameters { get; set; }
+
+		/// <summary>
+		/// Gets or sets source for the typeahead items. The type must implement
+		/// <see cref="ITypeaheadRemoteSource"/> or <see cref="ITypeaheadInlineSource{T}"/>.
+		/// </summary>
 		public object Source { get; set; }
 	}
 
+	/// <summary>
+	/// Input field type for typeahead client control.
+	/// </summary>
+	/// <typeparam name="T">Type of values retrieved by the typeahead.</typeparam>
 	public class TypeaheadValue<T>
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TypeaheadValue{T}"/> class.
+		/// </summary>
 		public TypeaheadValue()
 		{
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TypeaheadValue{T}"/> class.
+		/// </summary>
 		public TypeaheadValue(T value)
 		{
 			this.Value = value;
 		}
 
+		/// <summary>
+		/// Gets or sets value for the typeahead. The value represents a single item
+		/// selected in the typeahead client control.
+		/// </summary>
 		public T Value { get; set; }
 	}
 
+	/// <summary>
+	/// Used to decorate input fields of type <see cref="TypeaheadValue{T}"/>.
+	/// </summary>
 	public class TypeaheadInputFieldAttribute : InputFieldAttribute
 	{
-		public TypeaheadInputFieldAttribute(Type source)
+		/// <summary>
+		/// Initialises a new instance of the <see cref="TypeaheadInputFieldAttribute"/> class.
+		/// </summary>
+		/// <param name="source">Type which acts as datasource for the items. It must implement
+		/// <see cref="ITypeaheadRemoteSource"/> or <see cref="ITypeaheadInlineSource{T}"/>.</param>
+		/// <param name="parameters">List of property names in "request" object. These "request" object
+		/// properties will be serialized and sent to the typeahead source on each request.</param>
+		public TypeaheadInputFieldAttribute(Type source, params string[] parameters)
 		{
 			this.Source = source;
+			this.Parameters = parameters;
 		}
 
+		/// <summary>
+		/// Gets or sets list of property names inside "request" object. These "request" object
+		/// properties will be serialized and sent to the typeahead source on each request.
+		/// </summary>
+		public string[] Parameters { get; set; }
+
+		/// <summary>
+		/// Gets or sets source for the typeahead items. The type must implement
+		/// <see cref="ITypeaheadRemoteSource"/> or <see cref="ITypeaheadInlineSource{T}"/>.
+		/// </summary>
 		public Type Source { get; }
 	}
 }
