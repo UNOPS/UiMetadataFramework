@@ -58,7 +58,7 @@
 		/// <returns>Id of the form.</returns>
 		public static string GetFormId(Type formType)
 		{
-			var attribute = formType.GetTypeInfo().GetCustomAttribute<FormAttribute>();
+			var attribute = formType.GetTypeInfo().GetCustomAttributeSingleOrDefault<FormAttribute>();
 
 			if (attribute == null)
 			{
@@ -202,7 +202,7 @@
 		/// <returns><see cref="FormMetadata"/> instance.</returns>
 		public FormMetadata BindForm(Type formType, Type requestType, Type responseType)
 		{
-			var formAttribute = formType.GetTypeInfo().GetCustomAttribute<FormAttribute>();
+			var formAttribute = formType.GetTypeInfo().GetCustomAttributeSingleOrDefault<FormAttribute>();
 			if (formAttribute == null)
 			{
 				throw new BindingException(
@@ -261,7 +261,7 @@
 						$"because type '{propertyType.FullName}' is not bound to any input field control.");
 				}
 
-				var attribute = property.GetCustomAttribute<InputFieldAttribute>();
+				var attribute = property.GetCustomAttributeSingleOrDefault<InputFieldAttribute>();
 
 				var required = propertyType.GetTypeInfo().IsValueType
 					// non-nullable value types are automatically required,
@@ -328,7 +328,7 @@
 				}
 
 				object customProperties;
-				var attribute = property.GetCustomAttribute<OutputFieldAttribute>();
+				var attribute = property.GetCustomAttributeSingleOrDefault<OutputFieldAttribute>();
 
 				var clientControlName = isEnumerable
 					? (IsSimpleType(property.PropertyType.GenericTypeArguments[0])
@@ -424,7 +424,7 @@
 
 			assembly.ExportedTypes.ForEach(t =>
 			{
-				var attribute = t.GetTypeInfo().GetCustomAttribute<OutputFieldTypeAttribute>();
+				var attribute = t.GetTypeInfo().GetCustomAttributeSingleOrDefault<OutputFieldTypeAttribute>();
 
 				if (attribute != null)
 				{

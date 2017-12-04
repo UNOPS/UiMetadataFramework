@@ -58,6 +58,34 @@
 				.Cast<T>();
 		}
 
+		internal static T GetCustomAttributeSingleOrDefault<T>(this TypeInfo typeInfo) where T : Attribute
+		{
+			try
+			{
+				return typeInfo.GetCustomAttribute<T>();
+			}
+			catch (AmbiguousMatchException)
+			{
+				throw new BindingException(
+					$"Type '{typeInfo.FullName}' is decorated with multiple attributes of type " +
+					$"'{typeof(T).FullName}'. Only one instance of the attribute is allowed.");
+			}
+		}
+
+		internal static T GetCustomAttributeSingleOrDefault<T>(this PropertyInfo propertyInfo) where T : Attribute
+		{
+			try
+			{
+				return propertyInfo.GetCustomAttribute<T>();
+			}
+			catch (AmbiguousMatchException)
+			{
+				throw new BindingException(
+					$"Property '{propertyInfo.DeclaringType.FullName}.{propertyInfo.Name}' is decorated with multiple attributes of type " +
+					$"'{typeof(T).FullName}'. Only one instance of the attribute is allowed.");
+			}
+		}
+
 		internal static IEnumerable<PropertyInfo> GetPublicProperties(this Type type)
 		{
 			return type.GetRuntimeProperties()
