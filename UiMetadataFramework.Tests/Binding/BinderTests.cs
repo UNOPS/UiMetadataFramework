@@ -54,6 +54,7 @@
 		{
 			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
 			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+			binder.RegisterAssembly(typeof(BinderTests).GetTypeInfo().Assembly);
 
 			var outputFields = binder.BindOutputFields<Response>().OrderBy(t => t.OrderIndex).ToList();
 
