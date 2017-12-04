@@ -3,7 +3,6 @@ namespace UiMetadataFramework.Tests.Binding
 	using System;
 	using System.Reflection;
 	using UiMetadataFramework.Core.Binding;
-	using UiMetadataFramework.MediatR;
 
 	public partial class BinderTests
 	{

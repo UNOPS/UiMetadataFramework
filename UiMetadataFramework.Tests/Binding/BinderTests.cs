@@ -90,7 +90,7 @@
 		{
 			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
 			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
-			binder.RegisterAssembly(typeof(Binding.BinderTests).GetTypeInfo().Assembly);
+			binder.RegisterAssembly(typeof(BinderTests).GetTypeInfo().Assembly);
 
 			Assert.Throws<BindingException>(() => binder.BindInputFields<InvalidRequest>().ToList());
 			Assert.Throws<BindingException>(() => binder.BindOutputFields<InvalidResponse>().ToList());
