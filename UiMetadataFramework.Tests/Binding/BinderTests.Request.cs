@@ -30,6 +30,8 @@ namespace UiMetadataFramework.Tests.Binding
 
 			public bool IsRegistered { get; set; }
 
+			public TextareaValue Notes { get; set; }
+
 			public DateTime? SubmissionDate { get; set; }
 
 			[InputField(Hidden = true)]
