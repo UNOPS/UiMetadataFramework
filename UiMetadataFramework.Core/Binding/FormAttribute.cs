@@ -2,7 +2,6 @@
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Reflection;
 
 	/// <summary>
 	/// Used to decorate form, describing how to generate metadata for it.
