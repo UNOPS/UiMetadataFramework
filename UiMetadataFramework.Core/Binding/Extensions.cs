@@ -11,6 +11,48 @@
 	public static class Extensions
 	{
 		/// <summary>
+		/// Scans for attributes implementing <see cref="ICustomPropertyAttribute"/> and builds a
+		/// dictionary from the collected data.
+		/// </summary>
+		/// <param name="type">Type to scan for <see cref="ICustomPropertyAttribute"/>.</param>
+		/// <returns>Dictionary with custom properties or null, if no <see cref="ICustomPropertyAttribute"/>
+		/// were found.</returns>
+		public static IDictionary<string, object> GetCustomProperties(this Type type)
+		{
+			var customPropertyAttributes = type.GetCustomAttributesImplementingInterface<ICustomPropertyAttribute>();
+
+			IDictionary<string, object> result = null;
+
+			foreach (var customProperty in customPropertyAttributes)
+			{
+				result = result.Set(customProperty.Name, customProperty.GetValue());
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Scans for attributes implementing <see cref="ICustomPropertyAttribute"/> and builds a
+		/// dictionary from the collected data.
+		/// </summary>
+		/// <param name="propertyInfo">Property to scan for <see cref="ICustomPropertyAttribute"/>.</param>
+		/// <returns>Dictionary with custom properties or null, if no <see cref="ICustomPropertyAttribute"/>
+		/// were found.</returns>
+		public static IDictionary<string, object> GetCustomProperties(this PropertyInfo propertyInfo)
+		{
+			var customPropertyAttributes = propertyInfo.GetCustomAttributesImplementingInterface<ICustomPropertyAttribute>();
+
+			IDictionary<string, object> result = null;
+
+			foreach (var customProperty in customPropertyAttributes)
+			{
+				result = result.Set(customProperty.Name, customProperty.GetValue());
+			}
+
+			return result;
+		}
+
+		/// <summary>
 		/// Gets unique identifier for the specified form. If form has <see cref="FormAttribute"/> and
 		/// <see cref="FormAttribute.Id"/> is specified, then the <see cref="FormAttribute.Id"/> will be returned.
 		/// Otherwise class' full name is returned.
@@ -31,6 +73,57 @@
 			return !string.IsNullOrWhiteSpace(formAttribute.Id)
 				? formAttribute.Id
 				: formType.FullName;
+		}
+
+		/// <summary>
+		/// Merges two dictionaries together. If both dictionaries have the same key, then
+		/// items in <paramref name="another"/> dictionary will take precedence.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="dictionary">Instance of <see cref="IDictionary{TKey,TValue}"/> or null.</param>
+		/// <param name="another">Instance of <see cref="IDictionary{TKey,TValue}"/> or null. 
+		/// Values from this dictionary will be added to <paramref name="dictionary"/>.</param>
+		/// <returns>New dictionary containing both items from <paramref name="dictionary"/> 
+		/// and <paramref name="another"/>.</returns>
+		public static IDictionary<string, T> Merge<T>(this IDictionary<string, T> dictionary, IDictionary<string, T> another)
+		{
+			var result = dictionary.Copy();
+
+			if (another != null)
+			{
+				foreach (var anotherItem in another)
+				{
+					result = result.Set(anotherItem.Key, anotherItem.Value);
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Sets value for a specific key inside the dictionary. If key previously
+		/// didn't exist, then it's added, otherwise the old value is overwritten.
+		/// </summary>
+		/// <typeparam name="T">Type of the items stored in the dictionary.</typeparam>
+		/// <param name="dictionary">Instance of <see cref="IDictionary{TKey,TValue}"/> or null.</param>
+		/// <param name="key">Key whose value to set.</param>
+		/// <param name="value">Value to set to.</param>
+		/// <returns>New dictionary containing items from <paramref name="dictionary"/> and the new item
+		/// added by this method.</returns>
+		public static IDictionary<string, T> Set<T>(this IDictionary<string, T> dictionary, string key, T value)
+		{
+			var result = dictionary.Copy() ?? new Dictionary<string, T>();
+
+			if (result.ContainsKey(key))
+			{
+				result[key] = value;
+			}
+			else
+			{
+				result.Add(key, value);
+			}
+
+			return result;
 		}
 
 		internal static void ForEach<T>(this IEnumerable<T> items, Action<T> action)
@@ -92,6 +185,19 @@
 				.Where(t => t.CanRead && t.GetMethod.IsPublic)
 				.Where(t => t.GetCustomAttribute<NotFieldAttribute>() == null)
 				.ToList();
+		}
+
+		/// <summary>
+		/// Creates a copy of the dictionary.
+		/// </summary>
+		private static IDictionary<string, T> Copy<T>(this IDictionary<string, T> dictionary)
+		{
+			if (dictionary != null)
+			{
+				return new Dictionary<string, T>(dictionary);
+			}
+
+			return null;
 		}
 	}
 }

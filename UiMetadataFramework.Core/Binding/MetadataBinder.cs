@@ -231,7 +231,7 @@
 				CloseOnPostIfModal = formAttribute.CloseOnPostIfModal,
 				OutputFields = this.BindOutputFields(responseType).ToList(),
 				InputFields = this.BindInputFields(requestType).ToList(),
-				CustomProperties = formAttribute.GetCustomProperties(formType),
+				CustomProperties = formAttribute.GetCustomProperties(formType).Merge(formType.GetCustomProperties()),
 				EventHandlers = formEventHandlers
 			};
 		}
@@ -450,11 +450,12 @@
 
 				if (clientControlName == ObjectListOutputControlName)
 				{
+					var additionalCustomProperties = property.GetCustomProperties();
 					customProperties = new Dictionary<string, object>
 					{
 						{ "Columns", this.BindOutputFields(property.PropertyType.GenericTypeArguments[0]).ToList() },
 						{ "Customizations", attribute?.GetCustomProperties(property, this) }
-					};
+					}.Merge(additionalCustomProperties);
 				}
 				else
 				{

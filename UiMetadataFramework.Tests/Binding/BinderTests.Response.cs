@@ -11,18 +11,23 @@ namespace UiMetadataFramework.Tests.Binding
 		{
 			public IList<string> Categories { get; set; }
 
-			[CustomProperty("style", "bigtext")]
+			[IntProperty("secret", 123)]
+			[StringProperty("style", "beatiful")]
 			[OutputField(Label = "DoB", OrderIndex = 2)]
 			public DateTime DateOfBirth { get; set; }
-
+			
 			[OutputField(Label = "First name", OrderIndex = 1)]
 			public string FirstName { get; set; }
 
 			[OutputField(Hidden = true)]
 			public int Height { get; set; }
 
+			[IntProperty("secret", 321)]
+			[StringProperty("style", "cool")]
 			public IList<Person> OtherPeople { get; set; }
 
+			[IntProperty("number", 456)]
+			[StringProperty("help", "this is help text")]
 			[OutputField(Hidden = true)]
 			[OutputFieldEventHandler]
 			public decimal Weight { get; set; }

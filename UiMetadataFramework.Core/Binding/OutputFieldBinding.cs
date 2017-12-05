@@ -65,7 +65,9 @@
 		/// <returns>Object representing custom properties for the output field or null if there are none.</returns>
 		public virtual IDictionary<string, object> GetCustomProperties(PropertyInfo property, OutputFieldAttribute attribute, MetadataBinder binder)
 		{
-			return attribute?.GetCustomProperties(property, binder);
+			return property
+				.GetCustomProperties()
+				.Merge(attribute?.GetCustomProperties(property, binder));
 		}
 
 		/// <inheritdoc />

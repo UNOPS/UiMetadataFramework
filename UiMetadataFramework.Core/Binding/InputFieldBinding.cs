@@ -71,7 +71,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <returns>Object representing custom properties for the input field or null if there are none.</returns>
 		public virtual IDictionary<string, object> GetCustomProperties(InputFieldAttribute attribute, PropertyInfo property)
 		{
-			return null;
+			return property.GetCustomProperties();
 		}
 
 		/// <inheritdoc />

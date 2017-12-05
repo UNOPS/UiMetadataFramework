@@ -1,6 +1,8 @@
 namespace UiMetadataFramework.Core.Binding
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Reflection;
 
 	/// <summary>
 	/// Attribute used for decorating input fields.

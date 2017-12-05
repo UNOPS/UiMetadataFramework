@@ -18,6 +18,7 @@ namespace UiMetadataFramework.Tests.Binding
 
 			public DropdownValue<DayOfWeek?> Day { get; set; }
 
+			[StringProperty("secret", "password")]
 			[Option(DayOfWeek.Sunday)]
 			[Option(DayOfWeek.Monday)]
 			public DropdownValue<DayOfWeek> FirstDayOfWeek { get; set; }
@@ -30,6 +31,8 @@ namespace UiMetadataFramework.Tests.Binding
 
 			public bool IsRegistered { get; set; }
 
+			[IntProperty("number-1", 1)]
+			[IntProperty("number-2", 2)]
 			public TextareaValue Notes { get; set; }
 
 			public DateTime? SubmissionDate { get; set; }

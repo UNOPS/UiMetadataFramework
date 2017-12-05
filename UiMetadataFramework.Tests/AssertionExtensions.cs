@@ -65,5 +65,42 @@
 
 			return field;
 		}
+
+		public static OutputFieldMetadata HasCustomProperty<T>(this OutputFieldMetadata field, string name, T value)
+		{
+			return field.AssertHasCustomProperty(name, value);
+		}
+
+		public static InputFieldMetadata HasCustomProperty<T>(this InputFieldMetadata field, string name, T value)
+		{
+			return field.AssertHasCustomProperty(name, value);
+		}
+
+		public static FormMetadata HasCustomProperty<T>(this FormMetadata metadata, string name, T value)
+		{
+			if (metadata.CustomProperties?.ContainsKey(name) == true)
+			{
+				var actual = metadata.CustomProperties[name];
+				Assert.Equal(value, actual);
+
+				return metadata;
+			}
+
+			throw new Exception($"Custom property '{name}' is missing.");
+		}
+
+		private static TFieldMetadata AssertHasCustomProperty<TValue, TFieldMetadata>(this TFieldMetadata field, string name, TValue value)
+			where TFieldMetadata : IFieldMetadata
+		{
+			if (field.CustomProperties?.ContainsKey(name) == true)
+			{
+				var actual = field.CustomProperties[name];
+				Assert.Equal(value, actual);
+
+				return field;
+			}
+
+			throw new Exception($"Custom property '{name}' is missing.");
+		}
 	}
 }

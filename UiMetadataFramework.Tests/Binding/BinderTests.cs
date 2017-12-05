@@ -18,7 +18,9 @@
 			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
 			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
 
-			binder.BindForm<DoMagic, Request, Response>();
+			binder.BindForm<DoMagic, Request, Response>()
+				.HasCustomProperty("style", "blue")
+				.HasCustomProperty("number", 1_001);
 		}
 
 		[Fact]
@@ -33,9 +35,11 @@
 			inputFields.AssertHasInputField(nameof(Request.FirstName), StringInputFieldBinding.ControlName, "First name", orderIndex: 1, required: true);
 			inputFields.AssertHasInputField(nameof(Request.DateOfBirth), DateTimeInputFieldBinding.ControlName, "DoB", orderIndex: 2, required: true);
 			inputFields.AssertHasInputField(nameof(Request.SubmissionDate), DateTimeInputFieldBinding.ControlName, nameof(Request.SubmissionDate));
-			inputFields.AssertHasInputField(nameof(Request.Notes), TextareaInputFieldBinding.ControlName, nameof(Request.Notes));
-
 			inputFields.AssertHasInputField(nameof(Request.Height), NumberInputFieldBinding.ControlName, nameof(Request.Height), hidden: true);
+
+			inputFields.AssertHasInputField(nameof(Request.Notes), TextareaInputFieldBinding.ControlName, nameof(Request.Notes))
+				.HasCustomProperty("number-1", 1)
+				.HasCustomProperty("number-2", 2);
 
 			inputFields.AssertHasInputField(nameof(Request.Weight), NumberInputFieldBinding.ControlName, nameof(Request.Weight), hidden: true, required: true,
 				eventHandlers: new[] { InputFieldEventHandlerAttribute.Identifier });
@@ -46,7 +50,8 @@
 				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 7, "Dropdown has incorrect number of items.");
 
 			inputFields.AssertHasInputField(nameof(Request.FirstDayOfWeek), DropdownInputFieldBinding.ControlName, nameof(Request.FirstDayOfWeek))
-				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 2, "Dropdown has incorrect number of items.");
+				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 2, "Dropdown has incorrect number of items.")
+				.HasCustomProperty("secret", "password");
 
 			inputFields.AssertHasInputField(nameof(Request.Category), DropdownInputFieldBinding.ControlName, nameof(Request.Category))
 				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 3, "Dropdown has incorrect number of items.");
@@ -63,11 +68,20 @@
 
 			Assert.Equal(6, outputFields.Count);
 			outputFields.AssertHasOutputField(nameof(Response.FirstName), StringOutputFieldBinding.ControlName, "First name", false, 1);
-			outputFields.AssertHasOutputField(nameof(Response.DateOfBirth), DateTimeOutputFieldBinding.ControlName, "DoB", false, 2);
+			outputFields.AssertHasOutputField(nameof(Response.DateOfBirth), DateTimeOutputFieldBinding.ControlName, "DoB", false, 2)
+				.HasCustomProperty("style", "beatiful")
+				.HasCustomProperty("secret", 123);
+
 			outputFields.AssertHasOutputField(nameof(Response.Height), NumberOutputFieldBinding.ControlName, nameof(Response.Height), true);
 			outputFields.AssertHasOutputField(nameof(Response.Weight), NumberOutputFieldBinding.ControlName, nameof(Response.Weight), true, 0,
-				new[] { OutputFieldEventHandlerAttribute.Identifier });
-			outputFields.AssertHasOutputField(nameof(Response.OtherPeople), MetadataBinder.ObjectListOutputControlName, nameof(Response.OtherPeople));
+					new[] { OutputFieldEventHandlerAttribute.Identifier })
+				.HasCustomProperty("help", "this is help text")
+				.HasCustomProperty("number", 456);
+
+			outputFields.AssertHasOutputField(nameof(Response.OtherPeople), MetadataBinder.ObjectListOutputControlName, nameof(Response.OtherPeople))
+				.HasCustomProperty("style", "cool")
+				.HasCustomProperty("secret", 321);
+
 			outputFields.AssertHasOutputField(nameof(Response.Categories), MetadataBinder.ValueListOutputControlName, nameof(Response.Categories));
 
 			var ienumerableProperty = outputFields.Single(t => t.Id == nameof(Response.OtherPeople));

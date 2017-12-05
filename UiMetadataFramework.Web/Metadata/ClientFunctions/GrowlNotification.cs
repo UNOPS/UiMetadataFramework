@@ -1,6 +1,8 @@
 ﻿namespace UiMetadataFramework.Web.Metadata.ClientFunctions
 {
+	using System.Collections.Generic;
 	using UiMetadataFramework.Core;
+	using UiMetadataFramework.Core.Binding;
 
 	public class GrowlNotification
 	{
@@ -23,7 +25,12 @@
 
 		public ClientFunctionMetadata GetClientFunctionMetadata()
 		{
-			return new ClientFunctionMetadata("growl", this);
+			var customProperties = new Dictionary<string, object>()
+				.Set(nameof(this.Heading), this.Heading)
+				.Set(nameof(this.Message), this.Heading)
+				.Set(nameof(this.Style), this.Style);
+
+			return new ClientFunctionMetadata("growl", customProperties);
 		}
 
 		public static class Styles
