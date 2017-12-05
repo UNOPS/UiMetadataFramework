@@ -11,7 +11,8 @@ namespace UiMetadataFramework.Basic.Output
 		{
 		}
 
-		public override object GetCustomProperties(PropertyInfo property, OutputFieldAttribute attribute, MetadataBinder binder)
+		/// <inheritdoc cref="OutputFieldBinding.GetCustomProperties"/>
+		public override IDictionary<string, object> GetCustomProperties(PropertyInfo property, OutputFieldAttribute attribute, MetadataBinder binder)
 		{
 			var paginatedItemType = property.PropertyType.GenericTypeArguments[0];
 
@@ -23,10 +24,10 @@ namespace UiMetadataFramework.Basic.Output
 					$"for '{typeof(PaginatedData<>).Name}' output fields.");
 			}
 
-			return new
+			return new Dictionary<string, object>
 			{
-				Columns = binder.BindOutputFields(paginatedItemType).ToList(),
-				Customizations = attribute.GetCustomProperties(property, binder)
+				{ "Columns", binder.BindOutputFields(paginatedItemType).ToList() },
+				{ "Customizations", attribute.GetCustomProperties(property, binder) }
 			};
 		}
 	}
@@ -64,12 +65,10 @@ namespace UiMetadataFramework.Basic.Output
 		/// </summary>
 		public string Paginator { get; set; }
 
-		public override object GetCustomProperties(PropertyInfo property, MetadataBinder binder)
+		public override IDictionary<string, object> GetCustomProperties(PropertyInfo property, MetadataBinder binder)
 		{
-			return new
-			{
-				this.Paginator
-			};
+			return base.GetCustomProperties(property, binder)
+				.Set("Paginator", this.Paginator);
 		}
 	}
 }

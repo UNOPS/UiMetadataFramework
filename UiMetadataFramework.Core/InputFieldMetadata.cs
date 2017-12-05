@@ -19,16 +19,16 @@
 		}
 
 		/// <summary>
-		/// Gets or sets additional parameters for the client control.
-		/// </summary>
-		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-		public object CustomProperties { get; set; }
-
-		/// <summary>
 		/// Gets or sets value indicating wheather value for this input field is required
 		/// before submitting the form.
 		/// </summary>
 		public bool Required { get; set; }
+
+		/// <summary>
+		/// Gets or sets additional parameters for the client control.
+		/// </summary>
+		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+		public IDictionary<string, object> CustomProperties { get; set; }
 
 		/// <summary>
 		/// Gets or sets event handlers for this input.

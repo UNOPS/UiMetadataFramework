@@ -22,7 +22,7 @@
 		/// Gets or sets additional parameters for the client control.
 		/// </summary>
 		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-		public object CustomProperties { get; set; }
+		public IDictionary<string, object> CustomProperties { get; set; }
 
 		/// <summary>
 		/// Gets or sets id of the field to which this metadata belongs.

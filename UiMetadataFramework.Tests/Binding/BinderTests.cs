@@ -1,10 +1,12 @@
 ﻿namespace UiMetadataFramework.Tests.Binding
 {
+	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
 	using UiMetadataFramework.Basic;
 	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Basic.Output;
+	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 	using Xunit;
 
@@ -41,13 +43,13 @@
 			inputFields.AssertHasInputField(nameof(Request.IsRegistered), BooleanInputFieldBinding.ControlName, nameof(Request.IsRegistered), required: true);
 
 			inputFields.AssertHasInputField(nameof(Request.Day), DropdownInputFieldBinding.ControlName, nameof(Request.Day))
-				.HasCustomProperties<DropdownProperties>(t => t.Items.Count == 7, "Dropdown has incorrect number of items.");
+				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 7, "Dropdown has incorrect number of items.");
 
 			inputFields.AssertHasInputField(nameof(Request.FirstDayOfWeek), DropdownInputFieldBinding.ControlName, nameof(Request.FirstDayOfWeek))
-				.HasCustomProperties<DropdownProperties>(t => t.Items.Count == 2, "Dropdown has incorrect number of items.");
+				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 2, "Dropdown has incorrect number of items.");
 
 			inputFields.AssertHasInputField(nameof(Request.Category), DropdownInputFieldBinding.ControlName, nameof(Request.Category))
-				.HasCustomProperties<DropdownProperties>(t => t.Items.Count == 3, "Dropdown has incorrect number of items.");
+				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 3, "Dropdown has incorrect number of items.");
 		}
 
 		[Fact]
@@ -70,7 +72,8 @@
 
 			var ienumerableProperty = outputFields.Single(t => t.Id == nameof(Response.OtherPeople));
 
-			var columns = ((EnumerableOutputFieldProperties)ienumerableProperty.CustomProperties).Columns;
+			Assert.True(ienumerableProperty.CustomProperties.ContainsKey("Customizations"));
+			var columns = ienumerableProperty.CustomProperties["Columns"] as IList<OutputFieldMetadata>;
 			columns.AssertHasOutputField(nameof(Person.FirstName), StringOutputFieldBinding.ControlName, "First name", false, 1);
 			columns.AssertHasOutputField(nameof(Person.DateOfBirth), DateTimeOutputFieldBinding.ControlName, "DoB", false, 2);
 			columns.AssertHasOutputField(nameof(Person.Height), NumberOutputFieldBinding.ControlName, nameof(Person.Height), true);

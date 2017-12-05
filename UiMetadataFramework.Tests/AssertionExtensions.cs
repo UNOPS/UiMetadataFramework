@@ -54,10 +54,10 @@
 			return field;
 		}
 
-		public static InputFieldMetadata HasCustomProperties<T>(this InputFieldMetadata field, Func<T, bool> assertion, string message)
+		public static InputFieldMetadata HasCustomProperty<T>(this InputFieldMetadata field, string property, Func<T, bool> assertion, string message)
 			where T : class
 		{
-			var customProperties = (T)field.CustomProperties;
+			var customProperties = (T)field.CustomProperties[property];
 
 			Assert.NotNull(customProperties);
 

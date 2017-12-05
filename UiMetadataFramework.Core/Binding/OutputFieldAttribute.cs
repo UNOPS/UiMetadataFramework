@@ -1,6 +1,7 @@
 namespace UiMetadataFramework.Core.Binding
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Reflection;
 
 	/// <summary>
@@ -30,7 +31,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="property">Property representing the output field for which to get metadata.</param>
 		/// <param name="binder">Metadata binder being used.</param>
 		/// <returns>Object representing custom properties for the output field or null if there are none.</returns>
-		public virtual object GetCustomProperties(PropertyInfo property, MetadataBinder binder)
+		public virtual IDictionary<string, object> GetCustomProperties(PropertyInfo property, MetadataBinder binder)
 		{
 			return null;
 		}

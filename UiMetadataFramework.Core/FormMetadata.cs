@@ -17,7 +17,7 @@
 		/// <summary>
 		/// Gets or sets additional parameters for the client.
 		/// </summary>
-		public object CustomProperties { get; set; }
+		public IDictionary<string, object> CustomProperties { get; set; }
 
 		/// <summary>
 		/// Gets or sets event handlers for this form.

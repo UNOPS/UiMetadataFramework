@@ -69,7 +69,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="attribute"><see cref="InputFieldAttribute"/> which was applied to the input field.</param>
 		/// <param name="property">Property representing the input field for which to get metadata.</param>
 		/// <returns>Object representing custom properties for the input field or null if there are none.</returns>
-		public virtual object GetCustomProperties(InputFieldAttribute attribute, PropertyInfo property)
+		public virtual IDictionary<string, object> GetCustomProperties(InputFieldAttribute attribute, PropertyInfo property)
 		{
 			return null;
 		}

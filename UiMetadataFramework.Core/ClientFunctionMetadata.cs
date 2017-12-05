@@ -1,5 +1,7 @@
 ﻿namespace UiMetadataFramework.Core
 {
+	using System.Collections.Generic;
+
 	/// <summary>
 	/// Represents a client-side function.
 	/// </summary>
@@ -18,7 +20,7 @@
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="customProperties"></param>
-		public ClientFunctionMetadata(string id, object customProperties)
+		public ClientFunctionMetadata(string id, IDictionary<string, object> customProperties)
 		{
 			this.Id = id;
 			this.CustomProperties = customProperties;
@@ -27,7 +29,7 @@
 		/// <summary>
 		/// Gets or sets custom properties describing how to run the function.
 		/// </summary>
-		public object CustomProperties { get; set; }
+		public IDictionary<string, object> CustomProperties { get; set; }
 
 		/// <summary>Gets or sets id of the function.</summary>
 		public string Id { get; }

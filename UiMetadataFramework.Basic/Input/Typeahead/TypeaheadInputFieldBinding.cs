@@ -3,9 +3,9 @@
 namespace UiMetadataFramework.Basic.Input.Typeahead
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
-	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
 	/// <summary>
@@ -36,8 +36,9 @@ namespace UiMetadataFramework.Basic.Input.Typeahead
 		/// <param name="attribute"><see cref="InputFieldAttribute"/> decorating the <paramref name="property"/>.</param>
 		/// <param name="property">Represents an input field.</param>
 		/// <returns>Custom properties.</returns>
-		public override object GetCustomProperties(InputFieldAttribute attribute, PropertyInfo property)
+		public override IDictionary<string, object> GetCustomProperties(InputFieldAttribute attribute, PropertyInfo property)
 		{
+			// ReSharper disable once UsePatternMatching
 			var typeaheadInputFieldAttribute = attribute as TypeaheadInputFieldAttribute;
 
 			if (typeaheadInputFieldAttribute == null)
@@ -48,11 +49,9 @@ namespace UiMetadataFramework.Basic.Input.Typeahead
 
 			if (typeaheadInputFieldAttribute.Source.GetInterfaces(typeof(ITypeaheadRemoteSource)).Any())
 			{
-				return new TypeaheadCustomProperties
-				{
-					Source = typeaheadInputFieldAttribute.Source.FullName,
-					Parameters = typeaheadInputFieldAttribute.Parameters
-				};
+				return base.GetCustomProperties(attribute, property)
+					.Set("Source", typeaheadInputFieldAttribute.Source.FullName)
+					.Set("Parameters", typeaheadInputFieldAttribute.Parameters);
 			}
 
 			var inlineSource = typeaheadInputFieldAttribute.Source.GetInterfaces(typeof(ITypeaheadInlineSource<>)).SingleOrDefault();
@@ -61,33 +60,12 @@ namespace UiMetadataFramework.Basic.Input.Typeahead
 				var source = this.Container.GetInstance(typeaheadInputFieldAttribute.Source);
 				var items = typeaheadInputFieldAttribute.Source.GetTypeInfo().GetMethod(nameof(ITypeaheadInlineSource<int>.GetItems)).Invoke(source, null);
 
-				return new TypeaheadCustomProperties
-				{
-					Source = items
-				};
+				return base.GetCustomProperties(attribute, property)
+					.Set("Source", items);
 			}
 
 			throw new BindingException($"Field '{property.DeclaringType.FullName}.{property.Name}' is bound to an invalid typeahead source.");
 		}
-	}
-
-	/// <summary>
-	/// Represents data stored in <see cref="InputFieldMetadata.CustomProperties"/> for
-	/// typeahead inputs.
-	/// </summary>
-	public class TypeaheadCustomProperties
-	{
-		/// <summary>
-		/// Gets or sets list of property names inside "request" object. These "request" object
-		/// properties will be serialized and sent to the typeahead source on each request.
-		/// </summary>
-		public string[] Parameters { get; set; }
-
-		/// <summary>
-		/// Gets or sets source for the typeahead items. The type must implement
-		/// <see cref="ITypeaheadRemoteSource"/> or <see cref="ITypeaheadInlineSource{T}"/>.
-		/// </summary>
-		public object Source { get; set; }
 	}
 
 	/// <summary>

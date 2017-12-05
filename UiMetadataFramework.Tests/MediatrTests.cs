@@ -1,6 +1,7 @@
 ﻿namespace UiMetadataFramework.Tests
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
 	using System.Threading.Tasks;
@@ -16,20 +17,15 @@
 	{
 		public class MyForm : FormAttribute
 		{
-			public override object GetCustomProperties(Type type)
+			public override IDictionary<string, object> GetCustomProperties(Type type)
 			{
 				var menuAttribute = type.GetTypeInfo().GetCustomAttribute<MenuAttribute>();
 
-				return new MyFormCustomProperties
+				return new Dictionary<string, object>
 				{
-					ParentMenu = menuAttribute?.ParentMenu
+					{ "ParentMenu", menuAttribute?.ParentMenu }
 				};
 			}
-		}
-
-		public class MyFormCustomProperties
-		{
-			public string ParentMenu { get; set; }
 		}
 
 		public class MenuAttribute : Attribute
@@ -133,7 +129,7 @@
 			var formMetadata = formRegister.GetFormInfo(typeof(Magic))?.Metadata;
 
 			Assert.NotNull(formMetadata);
-			Assert.Equal("Magical tools", ((MyFormCustomProperties)formMetadata.CustomProperties).ParentMenu);
+			Assert.Equal("Magical tools", formMetadata.CustomProperties["ParentMenu"]);
 
 			Assert.True(formMetadata.Id == "Magic");
 			Assert.True(formMetadata.Label == "Do some magic");

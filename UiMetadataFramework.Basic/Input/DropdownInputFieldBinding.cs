@@ -15,7 +15,8 @@
 		{
 		}
 
-		public override object GetCustomProperties(InputFieldAttribute attribute, PropertyInfo property)
+		/// <inheritdoc cref="InputFieldBinding.GetCustomProperties"/>
+		public override IDictionary<string, object> GetCustomProperties(InputFieldAttribute attribute, PropertyInfo property)
 		{
 			// Collect all values from [Option] attributes.
 			var options = property.GetCustomAttributes<OptionAttribute>()
@@ -29,19 +30,15 @@
 			var enumType = GetEnumType(type);
 			if (enumType != null && options.Count == 0)
 			{
-				return new DropdownProperties
-				{
-					Items = Enum.GetValues(enumType)
-						.Cast<Enum>()
-						.Select(t => new DropdownItem(t.Humanize(), t.ToString()))
-						.ToList()
-				};
+				var items = Enum.GetValues(enumType)
+					.Cast<Enum>()
+					.Select(t => new DropdownItem(t.Humanize(), t.ToString()))
+					.ToList();
+
+				return base.GetCustomProperties(attribute, property).Set("Items", items);
 			}
 
-			return new DropdownProperties
-			{
-				Items = options
-			};
+			return base.GetCustomProperties(attribute, property).Set("Items", options);
 		}
 
 		private static Type GetEnumType(Type type)
@@ -83,11 +80,6 @@
 
 		public string Label { get; set; }
 		public string Value { get; set; }
-	}
-
-	public class DropdownProperties
-	{
-		public IList<DropdownItem> Items { get; set; }
 	}
 
 	public class DropdownItem

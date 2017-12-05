@@ -72,10 +72,9 @@ namespace UiMetadataFramework.Tests
 
 			var fields = metadataBinder.BindInputFields<Request>().ToList();
 			var categoryInputField = fields.Single(t => t.Id == nameof(Request.CategoryId));
-			var customProperties = (TypeaheadCustomProperties)categoryInputField.CustomProperties;
-
+			
 			// Ensure that the inline source has 3 items.
-			var source = customProperties.Source as IEnumerable<TypeaheadItem<int>>;
+			var source = categoryInputField.CustomProperties["Source"] as IEnumerable<TypeaheadItem<int>>;
 			Assert.NotNull(source);
 			Assert.Equal(3, source.Count());
 		}

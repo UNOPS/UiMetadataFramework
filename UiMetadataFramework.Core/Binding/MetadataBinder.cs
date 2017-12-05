@@ -439,7 +439,7 @@
 						$"because type '{property.PropertyType.FullName}' is not bound to any output field control.");
 				}
 
-				object customProperties;
+				IDictionary<string, object> customProperties;
 				var attribute = property.GetCustomAttributeSingleOrDefault<OutputFieldAttribute>();
 
 				var clientControlName = isEnumerable
@@ -450,10 +450,10 @@
 
 				if (clientControlName == ObjectListOutputControlName)
 				{
-					customProperties = new EnumerableOutputFieldProperties
+					customProperties = new Dictionary<string, object>
 					{
-						Columns = this.BindOutputFields(property.PropertyType.GenericTypeArguments[0]).ToList(),
-						Customizations = attribute?.GetCustomProperties(property, this)
+						{ "Columns", this.BindOutputFields(property.PropertyType.GenericTypeArguments[0]).ToList() },
+						{ "Customizations", attribute?.GetCustomProperties(property, this) }
 					};
 				}
 				else

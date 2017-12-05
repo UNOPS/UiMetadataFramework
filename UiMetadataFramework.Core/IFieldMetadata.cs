@@ -8,6 +8,11 @@
 	public interface IFieldMetadata
 	{
 		/// <summary>
+		/// Gets or sets additional parameters for the client control.
+		/// </summary>
+		IDictionary<string, object> CustomProperties { get; set; }
+
+		/// <summary>
 		/// Gets or sets event handlers for this field.
 		/// </summary>
 		IList<EventHandlerMetadata> EventHandlers { get; set; }

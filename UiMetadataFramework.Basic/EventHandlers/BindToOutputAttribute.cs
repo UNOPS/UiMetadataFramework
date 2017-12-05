@@ -1,6 +1,7 @@
 namespace UiMetadataFramework.Basic.EventHandlers
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Reflection;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
@@ -41,10 +42,7 @@ namespace UiMetadataFramework.Basic.EventHandlers
 		{
 			return new EventHandlerMetadata(this.Id, this.RunAt)
 			{
-				CustomProperties = new
-				{
-					OutputFieldId = this.OutputFieldId
-				}
+				CustomProperties = new Dictionary<string, object>().Set(nameof(this.OutputFieldId), this.OutputFieldId)
 			};
 		}
 	}

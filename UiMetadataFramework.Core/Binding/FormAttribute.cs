@@ -1,6 +1,7 @@
 ﻿namespace UiMetadataFramework.Core.Binding
 {
 	using System;
+	using System.Collections.Generic;
 
 	/// <summary>
 	/// Used to decorate form, describing how to generate metadata for it.
@@ -42,7 +43,7 @@
 		/// </summary>
 		/// <param name="type">Type to which this attribute is applied.</param>
 		/// <returns>Object representing custom properties for the form or null if there are none.</returns>
-		public virtual object GetCustomProperties(Type type)
+		public virtual IDictionary<string, object> GetCustomProperties(Type type)
 		{
 			return null;
 		}
