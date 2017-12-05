@@ -11,6 +11,7 @@ namespace UiMetadataFramework.Tests.Binding
 		{
 			public IList<string> Categories { get; set; }
 
+			[CustomProperty("style", "bigtext")]
 			[OutputField(Label = "DoB", OrderIndex = 2)]
 			public DateTime DateOfBirth { get; set; }
 
