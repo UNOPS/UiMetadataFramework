@@ -52,6 +52,6 @@ export class TableOutput extends Vue {
 
 	columnsOrdered = function () {
 		// return [this.field.metadata.customProperties.columns].sort((a, b) => { return a.orderIndex - b.orderIndex; });
-		return this.field.metadata.customProperties.columns;
+		return this.field.metadata.customProperties.Columns;
 	}
 }

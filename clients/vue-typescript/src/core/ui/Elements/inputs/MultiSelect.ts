@@ -61,7 +61,7 @@ export class MultiSelectInput extends Vue {
 		this.app = this.$attrs["app"];
 		this.field = this.$attrs["field"];
 		this.tabindex = parseInt(this.$attrs["tabindex"]);
-		this.source = this.field.metadata.customProperties.source;
+		this.source = this.field.metadata.customProperties.Source;
 		this.options = [];
 	}
 
