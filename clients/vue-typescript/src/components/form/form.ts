@@ -20,7 +20,7 @@ export class FormComponent extends Vue {
     disabled: false;
     responseMetadata: any = {};
     urlData: null;
-    useUrl: boolean;
+    useUrl: boolean = true;
     metadata: any;
     form: any;
     app: any;
@@ -45,8 +45,8 @@ export class FormComponent extends Vue {
         if (!this.initialized) {
             this.initialized = true;
             this.visibleInputFields = this.form.inputs.filter(t => t.metadata.hidden == false);
-            this.submitButtonLabel = this.form.metadata.customProperties != null && this.form.metadata.customProperties.submitButtonLabel
-                ? this.form.metadata.customProperties.submitButtonLabel
+            this.submitButtonLabel = this.form.metadata.customProperties != null && this.form.metadata.customProperties.SubmitButtonLabel
+                ? this.form.metadata.customProperties.SubmitButtonLabel
                 : "Submit"
 
             this.form.fire("form:loaded", { app: this.app });

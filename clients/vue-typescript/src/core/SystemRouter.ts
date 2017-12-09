@@ -7,8 +7,7 @@ export class SystemRouter implements umf.IAppRouter {
 	private readonly router: VueRouter;
 
 	constructor(router: VueRouter, app: umf.UmfApp) {
-		var rpb = this.rpb = new RouteParameterBuilder("_", app);
-		var self = this;
+		this.rpb = new RouteParameterBuilder("_", app);
 		this.router = router;
 	}
 
