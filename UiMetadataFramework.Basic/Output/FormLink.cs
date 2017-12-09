@@ -11,6 +11,13 @@
 	public class FormLink
 	{
 		/// <summary>
+		/// Gets or sets a value indicating what to do when user
+		/// clicks on the link. Available actions are listed in
+		/// <see cref="FormLinkActions"/>.
+		/// </summary>
+		public string Action { get; set; }
+
+		/// <summary>
 		/// Gets or sets name of the form to link to.
 		/// </summary>
 		public string Form { get; set; }
