@@ -1,29 +1,6 @@
 import * as umf from "core-framework";
-import VueRouter from 'vue-router';
-import queryString from 'query-string';
 
-export class SystemRouter implements umf.IAppRouter {
-	private readonly rpb: RouteParameterBuilder;
-	private readonly router: VueRouter;
-
-	constructor(router: VueRouter, app: umf.UmfApp) {
-		this.rpb = new RouteParameterBuilder("_", app);
-		this.router = router;
-	}
-
-	go(form: string, values) {
-		this.router.push({
-			path: "/form/" + form,
-			query: this.rpb.buildFormRouteParameters(form, values)
-		});
-	};
-
-	makeUrl(form: string, values): string {
-		return `/#/form/${form}?${queryString.stringify(this.rpb.buildFormRouteParameters(form, values))}`;
-	};
-}
-
-class RouteParameterBuilder {
+export class RouteParameterBuilder {
 	readonly parameterName: string;
 	currentForm: string;
 	getFormInstance: (formId: string, throwError: boolean) => umf.FormInstance;

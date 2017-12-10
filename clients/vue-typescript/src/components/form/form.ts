@@ -13,32 +13,47 @@ import './form.scss'
     }
 })
 export class FormComponent extends Vue {
-    initialized: boolean;
+    initialized: boolean = false;
     visibleInputFields: any[];
     submitButtonLabel: string;
     tabindex: number = 1;
     disabled: false;
     responseMetadata: any = {};
     urlData: null;
-    useUrl: boolean = true;
+    useUrl: boolean;
     metadata: any;
     form: any;
     app: any;
     outputFieldValues: any = null;
     parent: any;
 
-    created() {
-        this.app = this.app || this.$attrs["app"];
+    setForm = async function () {
+        if (this.form == null) {
+            var formInstance = this.app.getFormInstance(this.$route.params._id, true);
+            await formInstance.initializeInputFields(this.$route.params).then(() => {
+                this.metadata = formInstance.metadata;
+                this.form = formInstance;
+            });
+        }
+    }
+
+    setMetadata = function () {
         this.form = this.form || this.$attrs["form"];
         this.metadata = this.metadata || this.$attrs["metadata"];
         this.parent = this.parent || this;
         this.initialized = this.initialized || false;
         this.tabindex += parseInt(this.$attrs["tabindex"]) || 1;
         this.useUrl = this.useUrl || new Boolean(this.$attrs["useUrl"]).valueOf();
+        this.init();
+    }
 
-        if (!this.initialized) {
-            this.init();
-        }
+    created() {
+        this.app = this.app || this.$attrs["app"] || this.$parent.$data.app;
+        this.form = this.form || this.$attrs["form"];
+
+        this.setForm().then(() => {
+            this.setMetadata();
+        });
     }
 
     init = function () {
@@ -100,7 +115,7 @@ export class FormComponent extends Vue {
         // their filters to be saved in the url. This does not apply to forms
         // with postOnLoad == false, because those forms are usually for creating new data
         // and hence should not be tracked in browser's history based on parameters.
-        if (formInstance.metadata.postOnLoad && redirect && this.useUrl) {
+        if (formInstance.metadata.postOnLoad && redirect && self.useUrl) {
             let urlParams = await formInstance.getSerializedInputValues();
 
             // Update url in the browser.
@@ -110,6 +125,7 @@ export class FormComponent extends Vue {
         }
 
         await formInstance.fire("form:posting", { response: null, app: app });
+        console.log(app);
 
         try {
             let response = await app.server.postForm(formInstance.metadata.id, data);
