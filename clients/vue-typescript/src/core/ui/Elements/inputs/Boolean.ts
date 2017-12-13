@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
+import "./Checkbox.scss"
+
 @Component({
 	template: require('./boolean.html')
 })

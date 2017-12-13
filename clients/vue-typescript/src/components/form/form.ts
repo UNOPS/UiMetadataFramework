@@ -20,7 +20,7 @@ export class FormComponent extends Vue {
     disabled: false;
     responseMetadata: any = {};
     urlData: null;
-    useUrl: boolean;
+    useUrl: boolean = true;
     metadata: any;
     form: any;
     app: any;
@@ -125,7 +125,6 @@ export class FormComponent extends Vue {
         }
 
         await formInstance.fire("form:posting", { response: null, app: app });
-        console.log(app);
 
         try {
             let response = await app.server.postForm(formInstance.metadata.id, data);

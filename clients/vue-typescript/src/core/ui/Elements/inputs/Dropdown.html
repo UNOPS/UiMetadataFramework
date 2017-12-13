@@ -1,10 +1,8 @@
-<div>
-	<select id="id"
-	 v-model="field.selected"
-	 required="field.metadata.required"
-	 tabindex="tabindex">
-		<option value=""></option>
-		<option :value="option.value"
-		 v-for="option in field.metadata.customProperties.Items">{{option.label}}</option>
-	</select>
-</div>
+<select id="id"
+ v-model="field.selected"
+ required="field.metadata.required"
+ tabindex="tabindex">
+	<option value=""></option>
+	<option :value="option.value"
+	 v-for="option in field.metadata.customProperties.Items">{{option.label}}</option>
+</select>

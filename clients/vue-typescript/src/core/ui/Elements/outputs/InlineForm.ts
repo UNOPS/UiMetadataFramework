@@ -2,6 +2,8 @@ import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import { FormComponent } from "core-form";
 
+import "./InlineForm.scss"
+
 @Component({
 	template: require('./InlineForm.html')
 })

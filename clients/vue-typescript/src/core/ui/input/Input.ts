@@ -15,8 +15,8 @@ export class Input extends Vue {
     tabindex: number = 1;
     input: any = {};
     id: any;
-    constructor() {
-        super();
+
+    created() {
         this.id = "i" + this.$attrs["id"];
         this.field = this.$attrs["field"];
         this.tabindex = Number.parseInt(this.$attrs["tabindex"]);

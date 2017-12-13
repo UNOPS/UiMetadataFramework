@@ -3,6 +3,8 @@ import { Component } from 'vue-property-decorator';
 import { FormComponent } from "core-form";
 import { Modal } from "./Modal";
 
+import "./ActionList.scss"
+
 @Component({
 	template: require('./ActionList.html'),
 	components: {

@@ -3,6 +3,8 @@ import { Component } from 'vue-property-decorator';
 import { OutputFieldValue } from "core-framework";
 import { TableOutput } from "./Table";
 
+import "./Paginator.scss"
+
 @Component({
 	template: require('./Paginator.html'),
 	components: {
@@ -10,18 +12,14 @@ import { TableOutput } from "./Table";
 	}
 })
 export class Paginator extends Vue {
-	totalCount: 0;
-
+	totalCount: number = 0;
 	app: any;
 	field: any;
 	parent: any;
 	form: any;
-
 	tableField: any;
 
-	constructor() {
-		super();
-
+	created() {
 		this.app = this.$attrs["app"];
 		this.field = this.$attrs["field"];
 		this.parent = this.$attrs["parent"];
@@ -42,13 +40,13 @@ export class Paginator extends Vue {
 		parent.submit(app, form, null, false);
 	}
 
-	pages = (field, form) => {
-		var paginatorInput = form.inputs.find(t => t.metadata.id == field.metadata.customProperties.customizations.paginator);
+	pages = function () {
+		var paginatorInput = this.form.inputs.find(t => t.metadata.id == this.field.metadata.customProperties.customizations.paginator);
 
-		var pageCount = Math.ceil(field.data.totalCount / paginatorInput.value.pageSize);
+		var pageCount = Math.ceil(this.field.data.totalCount / paginatorInput.value.pageSize);
 
 		var params = {};
-		for (let i of form.inputs) {
+		for (let i of this.form.inputs) {
 			params[i.metadata.id] = i.value;
 		}
 

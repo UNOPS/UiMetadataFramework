@@ -2,6 +2,8 @@ import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import { Output } from "../../output";
 
+import "./Table.scss"
+
 @Component({
 	template: require('./Table.html'),
 	components: {
@@ -16,9 +18,7 @@ export class TableOutput extends Vue {
 	data: any;
 	map: any;
 
-	constructor() {
-		super();
-
+	created() {
 		this.app = this.$attrs["app"];
 		this.field = this.$attrs["field"];
 		this.form = this.$attrs["form"];

@@ -1,29 +1,27 @@
-<div>
-	<multiselect id="id"
-	 v-model="field.value"
-	 required="field.metadata.required"
-	 label="label"
-	 track-by="label"
-	 placeholder="Type to search"
-	 open-direction="bottom"
-	 :options="options"
-	 :multiple="field.maxItemCount > 1"
-	 :searchable="true"
-	 :loading="isLoading"
-	 :internal-search="false"
-	 :clear-on-select="false"
-	 :close-on-select="false"
-	 :options-limit="300"
-	 :max-height="600"
-	 :show-no-results="false"
-	 :hide-selected="true"
-	 @search-change="asyncFind">
-		<template slot="clear"
-		 scope="props">
-			<div class="multiselect__clear"
-			 v-if="field.value"
-			 @mousedown.prevent.stop="clearAll(props.search)"></div>
-		</template>
-		<span slot="noResult">Oops! No elements found. Consider changing the search query.</span>
-	</multiselect>
-</div>
+<multiselect id="id"
+ v-model="field.value"
+ required="field.metadata.required"
+ label="label"
+ track-by="label"
+ placeholder="Type to search"
+ open-direction="bottom"
+ :options="options"
+ :multiple="field.maxItemCount > 1"
+ :searchable="true"
+ :loading="isLoading"
+ :internal-search="false"
+ :clear-on-select="false"
+ :close-on-select="false"
+ :options-limit="300"
+ :max-height="600"
+ :show-no-results="false"
+ :hide-selected="true"
+ @search-change="asyncFind">
+	<template slot="clear"
+	 scope="props">
+		<div class="multiselect__clear"
+		 v-if="field.value"
+		 @mousedown.prevent.stop="clearAll(props.search)"></div>
+	</template>
+	<span slot="noResult">Oops! No elements found. Consider changing the search query.</span>
+</multiselect>

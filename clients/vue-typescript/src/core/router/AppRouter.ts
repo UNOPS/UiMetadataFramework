@@ -42,7 +42,7 @@ export class AppRouter implements umf.IAppRouter {
 
 		this.router.beforeEach(function (to, from, next) {
 			if (to.name === 'form') {
-				console.log(`visiting form '${to.params._id}'`);
+				// console.log(`visiting form '${to.params._id}'`);
 	
 				var formInstance = app.getFormInstance(to.params._id, true);
 	

@@ -14,7 +14,6 @@ export class Output extends Vue {
     app: any;
     form: any;
     parent: any;
-    initialized: any;
     self: any;
     alwaysHideLabel: boolean;
     class: string;
@@ -22,31 +21,30 @@ export class Output extends Vue {
     output: any;
 
     created() {
-        this.initialized = this.$attrs["initialized"];
+        this.self = this;
+        this.field = this.$attrs["field"];
+        this.app = this.$attrs["app"];
+        this.parent = this.$attrs["parent"];
+        this.form = this.$attrs["form"];
+        this.output = this.app.controlRegister.getOutput(this.field).constructor || {};
 
-        if (!this.initialized) {
-            this.self = this;
-            this.initialized = true;
-            this.field = this.$attrs["field"];
+        var outputDisplayConfig = this.output.constants || {};
+        this.alwaysHideLabel = outputDisplayConfig.alwaysHideLabel;
 
-            this.app = this.$attrs["app"];
-            this.parent = this.$attrs["parent"];
-            this.form = this.$attrs["form"];
-            this.output = this.app.controlRegister.getOutput(this.field).constructor || {};
+        // new this.output({
+        //     data: {
+        //         field: this.field,
+        //         app: this.app,
+        //         form: this.form,
+        //         parent: this.parent
+        //     }
+        // });
 
-            var outputDisplayConfig = this.output.constants || {};
-            this.alwaysHideLabel = outputDisplayConfig.alwaysHideLabel;
-
-            //new output.constructor({ target: this.$parent, field: this.field, app: this.app, form: this.form, parent: this.parent });
-
-            // Set correct css class based on the field type.
-            if (outputDisplayConfig.block) {
-                this.class = "block";
-            }
-            else {
-                this.class = "inline";
-            }
-
+        // Set correct css class based on the field type.
+        if (outputDisplayConfig.block) {
+            this.class = "block";
+        }
+        else {
             this.class = "inline";
         }
     }
