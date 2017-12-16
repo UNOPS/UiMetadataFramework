@@ -7,8 +7,7 @@ import { HomeComponent } from 'components/home';
 import { AboutComponent } from 'components/about';
 import { FormComponent } from 'components/form';
 import { NavbarComponent } from 'components/navbar';
-import { RouteParameterBuilder } from '../RouteParameterBuilder'
-import { setTimeout } from 'timers';
+import { RouteParameterBuilder } from '../RouteParameterBuilder';
 
 Vue.use(VueRouter);
 
@@ -31,26 +30,25 @@ export class AppRouter implements umf.IAppRouter {
 				},
 				{ path: '*', redirect: '/' } //404
 			],
-			// scrollBehavior(to, from, savedPosition) {
-			// 	return new Promise((resolve, reject) => {
-			// 		setTimeout(() => {
-			// 			resolve({ x: 0, y: 0 })
-			// 		}, 500)
-			// 	})
-			// }
+			scrollBehavior(to, from, savedPosition) {
+				return new Promise((resolve, reject) => {
+					setTimeout(() => {
+						resolve({ x: 0, y: 0 })
+					}, 500)
+				})
+			}
 		});
 
 		this.router.beforeEach(function (to, from, next) {
 			if (to.name === 'form') {
-				// console.log(`visiting form '${to.params._id}'`);
-	
+				rpb.currentForm = to.params._id;
+				Object.assign(to.params, to.query);
 				var formInstance = app.getFormInstance(to.params._id, true);
-	
 				formInstance.initializeInputFields(to.params).then(() => {
 					to.meta['metadata'] = formInstance.metadata;
 					to.meta['form'] = formInstance;
 					to.meta['app'] = app;
-	
+
 					next();
 				});
 			}
