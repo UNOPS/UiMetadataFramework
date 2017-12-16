@@ -28,18 +28,15 @@ export class Paginator extends Vue {
 		this.tableField = new OutputFieldValue();
 		this.tableField.data = this.field.data.results;
 		this.tableField.metadata = this.field.metadata;
-
-		console.log(this);
 	}
 
 	goToPage(page) {
-		var parent = this.$props.get("parent");
-		var form = parent.$props.get("form");
-		var field = this.$props.get("field");
-		var app = this.$props.get("app");
+		var parent = this.parent
+		var form = parent.form
+		var app = this.app;
 
 		form.setInputFields(page.params);
-		parent.submit(app, form, null, false);
+		parent.submit(this.app, form, null, false);
 	}
 
 	pages = function () {

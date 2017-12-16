@@ -31,15 +31,6 @@ export class Output extends Vue {
         var outputDisplayConfig = this.output.constants || {};
         this.alwaysHideLabel = outputDisplayConfig.alwaysHideLabel;
 
-        // new this.output({
-        //     data: {
-        //         field: this.field,
-        //         app: this.app,
-        //         form: this.form,
-        //         parent: this.parent
-        //     }
-        // });
-
         // Set correct css class based on the field type.
         if (outputDisplayConfig.block) {
             this.class = "block";
