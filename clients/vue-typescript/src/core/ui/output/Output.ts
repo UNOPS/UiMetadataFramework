@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
+import './Output.scss';
+
 @Component({
     template: require('./output.html')
 })
@@ -16,7 +18,7 @@ export class Output extends Vue {
     parent: any;
     self: any;
     alwaysHideLabel: boolean;
-    class: string;
+    classObj: string;
     label: string;
     output: any;
 
@@ -33,10 +35,10 @@ export class Output extends Vue {
 
         // Set correct css class based on the field type.
         if (outputDisplayConfig.block) {
-            this.class = "block";
+            this.classObj = "block";
         }
         else {
-            this.class = "inline";
+            this.classObj = "inline";
         }
     }
 }

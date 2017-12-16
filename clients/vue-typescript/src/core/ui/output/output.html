@@ -1,7 +1,7 @@
 <div>
     <strong v-if="showLabel === true && !alwaysHideLabel">{{field.metadata.label}}</strong>
     <component :is="output"
-        class="class"
+        v-bind:class="classObj"
         v-bind:field="field"
         v-bind:app="app"
         v-bind:parent="parent"
