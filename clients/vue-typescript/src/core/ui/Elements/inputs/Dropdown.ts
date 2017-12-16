@@ -11,13 +11,11 @@ export class DropdownInput extends Vue {
     tabindex: number;
     id: any;
 
-    constructor(){
-        super();
-
+    created() {
         this.id = this.$attrs["id"];
         this.form = this.$attrs["form"];
         this.app = this.$attrs["app"];
         this.field = this.$attrs["field"];
-        this.tabindex = parseInt(this.$attrs["tabindex"]);
+        this.tabindex = parseInt(this.$attrs["tabindex"]).valueOf();
     }
 }

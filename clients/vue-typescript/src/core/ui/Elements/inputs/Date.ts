@@ -11,9 +11,7 @@ export class DateInput extends Vue {
     tabindex: number;
     id: any;
 
-    constructor(){
-        super();
-
+    created() {
         this.id = this.$attrs["id"];
         this.form = this.$attrs["form"];
         this.app = this.$attrs["app"];

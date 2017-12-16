@@ -28,6 +28,8 @@ export class Paginator extends Vue {
 		this.tableField = new OutputFieldValue();
 		this.tableField.data = this.field.data.results;
 		this.tableField.metadata = this.field.metadata;
+
+		console.log(this);
 	}
 
 	goToPage(page) {
@@ -41,7 +43,7 @@ export class Paginator extends Vue {
 	}
 
 	pages = function () {
-		var paginatorInput = this.form.inputs.find(t => t.metadata.id == this.field.metadata.customProperties.customizations.paginator);
+		var paginatorInput = this.form.inputs.find(t => t.metadata.id == this.field.metadata.customProperties.Customizations.Paginator);
 
 		var pageCount = Math.ceil(this.field.data.totalCount / paginatorInput.value.pageSize);
 

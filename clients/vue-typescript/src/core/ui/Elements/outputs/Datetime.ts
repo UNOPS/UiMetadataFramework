@@ -9,9 +9,7 @@ export class DateTimeOutput extends Vue {
 	app: any;
 	field: any;
 
-	constructor() {
-		super();
-
+	created() {
 		this.app = this.$attrs["app"];
 		this.field = this.$attrs["field"];
 	}
