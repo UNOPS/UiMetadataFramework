@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { Component, Prop } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
 import { Output } from '../../core/ui/output';
 import { Input } from '../../core/ui/input';
 
@@ -41,14 +41,25 @@ export class FormComponent extends Vue {
         this.form = this.form || this.$attrs["form"];
         this.metadata = this.metadata || this.$attrs["metadata"];
         this.parent = this.parent || this;
-        this.initialized = this.initialized || false;
         this.tabindex += parseInt(this.$attrs["tabindex"]) || 1;
-        this.useUrl = this.useUrl || new Boolean(this.$attrs["useUrl"]).valueOf();
+
+        var url = new Boolean(this.$attrs["useUrl"]).valueOf();
+
+        if (this.$attrs["useUrl"] != null && !url) {
+            this.useUrl = url;
+        }
+
+        var initialized = new Boolean(this.$attrs["initialized"]).valueOf();
+
+        if (this.$attrs["initialized"] != null && initialized) {
+            this.initialized = initialized;
+        }
+
         this.init();
     }
 
     created() {
-        this.app = this.app || this.$attrs["app"] || this.$parent.$data.app;
+        this.app = this.app || this.$attrs["app"];
         this.form = this.form || this.$attrs["form"];
 
         this.setForm().then(() => {
