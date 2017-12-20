@@ -1,11 +1,11 @@
-<div class="container" v-if="initialized">
+<div v-if="initialized">
     <div class="row">
         <div class="content">
             <h1>
                 <strong>{{responseMetadata.title || metadata.label}}</strong>
             </h1>
 
-            <form v-on:submit.prevent="submit(app, form, $event, true)">
+            <form v-on:submit="submit(app, form, $event, true)">
                 <component v-for="(inputField, i) in visibleInputFields"
                     is="FormInput"
                     v-bind:id="i+1"
