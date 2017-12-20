@@ -14,11 +14,8 @@ export class NavbarComponent extends Vue {
 
     object: { default: string } = { default: 'Default object property!' }; // objects as default values don't need to be wrapped into functions
 
-    links: Link[] = [
-        new Link('Home', '/'),
-        new Link('About', '/about'),
-        new Link('People', '/form/People')
-    ];
+    private self;
+    links: Link[] = [];
 
     @Watch('$route.path')
     pathChanged() {
@@ -28,5 +25,18 @@ export class NavbarComponent extends Vue {
     mounted() {
         // if (!this.logger) this.logger = new Logger();
         // this.$nextTick(() => this.logger.info(this.object.default));
+        this.links.push(new Link('Home', '/'));
+        this.links.push(new Link('About', '/about'));
+
+        this.$nextTick(() => {
+            var app = this.$root.$data._app;
+
+            for (let form of app.forms) {
+                if (form.customProperties != null) {
+                    //return app.getMenu(form.customProperties.menu);
+                    this.links.push(new Link(form.label, app.makeUrl(form.id, null)))
+                }
+            }
+        });
     }
 }
