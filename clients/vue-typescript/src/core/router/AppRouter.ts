@@ -60,7 +60,10 @@ export class AppRouter implements umf.IAppRouter {
 		new Vue({
 			el: '#app-main',
 			components: { 'navbar': NavbarComponent },
-			router: this.router
+			router: this.router,
+			data: {
+				_app: app
+			}
 		});
 	}
 
