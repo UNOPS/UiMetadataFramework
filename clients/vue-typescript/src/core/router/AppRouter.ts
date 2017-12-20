@@ -60,21 +60,18 @@ export class AppRouter implements umf.IAppRouter {
 		new Vue({
 			el: '#app-main',
 			components: { 'navbar': NavbarComponent },
-			router: this.router,
-			data: {
-				app: app
-			}
+			router: this.router
 		});
 	}
 
 	go(form: string, values) {
 		this.router.push({
-			path: "/form/" + form,
+			path: `/form/${form}`,
 			query: this.rpb.buildFormRouteParameters(form, values)
 		});
 	};
 
 	makeUrl(form: string, values): string {
-		return `/#/form/${form}?${queryString.stringify(this.rpb.buildFormRouteParameters(form, values))}`;
+		return `/form/${form}?${queryString.stringify(this.rpb.buildFormRouteParameters(form, values))}`;
 	};
 }
