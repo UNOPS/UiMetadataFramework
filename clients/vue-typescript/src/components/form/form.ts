@@ -2,6 +2,7 @@ import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import { Output } from '../../core/ui/output';
 import { Input } from '../../core/ui/input';
+import bus from '../../core/event-bus';
 
 import './form.scss'
 
@@ -15,7 +16,7 @@ import './form.scss'
 export class FormComponent extends Vue {
     initialized: boolean = false;
     visibleInputFields: any[];
-    submitButtonLabel: string;
+    submitButtonLabel: string = null;
     tabindex: number = 1;
     disabled: false;
     responseMetadata: any = {};
@@ -162,10 +163,16 @@ export class FormComponent extends Vue {
             self.enableForm();
 
             // Signal event to child controls.
-            self.fire("form:responseHandled", {
+            bus.$emit("form:responseHandled", {
                 form: self,
                 invokedByUser: event != null
             });
+
+            // Signal event to child controls.
+            // self.fire("form:responseHandled", {
+            //     form: self,
+            //     invokedByUser: event != null
+            // });
         }
         catch (e) {
             self.enableForm();

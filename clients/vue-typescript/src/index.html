@@ -12,7 +12,7 @@
 
   <div id="app-main">
     <navbar :inverted="false"></navbar>
-    <router-view class="container" :key="$route.fullPath">Loading...</router-view>
+    <router-view class="container" :key="$route.fullPath" replace>Loading...</router-view>
   </div>
 
 </body>

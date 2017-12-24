@@ -2,15 +2,13 @@ import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import { FormComponent } from "core-form";
 import { Modal } from "./Modal";
+import bus from '../../../event-bus';
 
 import "./ActionList.scss"
 
 @Component({
 	template: require('./ActionList.html'),
-	components: {
-		'modal': Modal,
-		'FormComponent': FormComponent
-	}
+	components: { 'modal': Modal, 'FormComponent': FormComponent }
 })
 export class ActionList extends Vue {
 	open: boolean = false;
@@ -24,7 +22,8 @@ export class ActionList extends Vue {
 	form: any;
 	parent: any;
 	data: any;
-	modalComponent: any;
+	modalComponent: any = {};
+	invokedByUser: boolean;
 
 	created() {
 		this.field = this.$attrs["field"];
@@ -33,9 +32,16 @@ export class ActionList extends Vue {
 		this.parent = this.$attrs["parent"];
 	}
 
-	run(action, app) {
+	mounted() {
+		bus.$on("form:responseHandled", e => {
+			this.invokedByUser = e.invokedByUser;
+		});
+	}
+
+	run = function (action, app) {
 		this.open = true;
 		this.modalId += 1;
+
 		var formInstance = app.getFormInstance(action.form, true);
 
 		// TODO: find a way to initialize from action.inputFieldValues directly.
@@ -43,31 +49,22 @@ export class ActionList extends Vue {
 
 		formInstance.initializeInputFields(serializedInputValues).then(() => {
 
-			this.modalComponent = new FormComponent({
-				data: {
-					metadata: formInstance.metadata,
-					form: formInstance,
-					app: app,
-					useUrl: false,
-					initialized: true
-				}
-			});
+			// this.$nextTick(() => {});
 
-			this.modalComponent.init();
-
-			this.$nextTick(() => {
-				//console.log(new Date());
-			});
+			this.modalComponent = {
+				metadata: formInstance.metadata,
+				form: formInstance,
+				app: app,
+				useUrl: false
+			}
 
 			var self = this;
 
-			this.modalComponent.$on("form:responseHandled", e => {
-				if (e.invokedByUser && formInstance.metadata.closeOnPostIfModal) {
-					self.close(true);
-				}
-			});
+			if (self.invokedByUser && formInstance.metadata.closeOnPostIfModal) {
+				self.close(true);
+			}
 
-			this.current = this.modalComponent;
+			this.current = this;
 		});
 
 		this.modals.push(this);
@@ -75,18 +72,18 @@ export class ActionList extends Vue {
 
 	close(reloadParentForm) {
 		// Ensure the modal div is hidden.
-		this.open = true;
+		this.open = false;
 
 		// Destroy underlying form instance.
-		var modalForm = this.current;
-		modalForm.$destroy();
+		// var modalForm = this.current;
+		// modalForm.$destroy();
 
 		if (reloadParentForm) {
 			// Refresh parent form.
 			var app = this.app;
 			var form = this.form;
 
-			this.parent.submit(app, form, null, true);
+			this.parent.submit(app, form, null, false);
 		}
 
 		this.modals.slice(this.modals.findIndex(a => a == this));

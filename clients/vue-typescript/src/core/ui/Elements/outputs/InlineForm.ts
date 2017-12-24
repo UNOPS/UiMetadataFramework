@@ -5,32 +5,39 @@ import { FormComponent } from "core-form";
 import "./InlineForm.scss"
 
 @Component({
-	template: require('./InlineForm.html')
+	template: require('./InlineForm.html'),
+	components: {
+		'FormComponent': FormComponent
+	}
 })
 export class InlineForm extends Vue {
 	app: any;
 	field: any;
-
+	current: any;
+	data: any = {};
+	initialized: boolean = false;
 	created() {
 		this.app = this.$attrs["app"];
 		this.field = this.$attrs["field"];
 
-		this.oncreate();
-	}
-
-	oncreate() {
 		var formInstance = this.app.getFormInstance(this.field.data.form, true);
 
 		formInstance.initializeInputFields(this.field.data.inputFieldValues).then(() => {
-			var f = new FormComponent();
-			f.metadata = formInstance.metadata;
-			f.form = formInstance;
-			f.app = this.app;
-			f.useUrl = false;
+			this.data = {
+				metadata: formInstance.metadata,
+				form: formInstance,
+				app: this.app,
+				useUrl: false
+			};
+
+			var f = new FormComponent({
+				data: this.data
+			});
 
 			f.init();
+			this.initialized = f.initialized;
 
-			this.$props.set({ current: f });
+			this.current = f;
 		});
 	}
 }

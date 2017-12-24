@@ -19,6 +19,7 @@ export class AppRouter implements umf.IAppRouter {
 		var rpb = this.rpb = new RouteParameterBuilder("_", app);
 
 		this.router = new VueRouter({
+			mode: 'hash',
 			routes: [
 				{ path: '/', name: 'home', component: HomeComponent },
 				{ path: '/about', name: 'about', component: AboutComponent },

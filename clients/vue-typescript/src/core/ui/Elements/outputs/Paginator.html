@@ -4,7 +4,7 @@
 		 class="paginator">
 			<li v-for="page in pages()"
 			 v-if="parent.useUrl">
-				<a v-bind:href="app.makeUrl(form.metadata.id, page.params)"
+				<a v-bind:href="'#'+app.makeUrl(form.metadata.id, page.params)"
 				 class="page.cssClass">{{page.number}}</a>
 			</li>
 			<li v-else>
