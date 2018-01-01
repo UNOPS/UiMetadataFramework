@@ -22,7 +22,7 @@ export class RouteParameterBuilder {
 			base[this.parameterName] = isNaN(dAsNumber) ? 0 : dAsNumber + 1;
 		}
 
-		return Object.assign(base, { _id: form });
+		return base;//Object.assign(base, { _id: form });
 	}
 
 	static parseQueryStringParameters(url): any {

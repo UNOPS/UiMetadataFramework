@@ -1,27 +1,20 @@
 <span>
-	<template>
-		<ul class="actionlist">
-			<li v-for="action in field.data.actions">
-				<button v-on:click="run(action, app)">{{action.label}}</button>
-			</li>
-		</ul>
+	<ul class="actionlist">
+		<li v-for="action in field.data.actions">
+			<button v-on:click="run(action, app)">{{action.label}}</button>
+		</li>
+	</ul>
 
-		<modal v-if="open"
-		 @close="close(false)">
-			<h3 slot="header"></h3>
-			<div slot="body">
-				<!-- <component is="FormComponent"
-				 v-bind:metadata="modalComponent.metadata"
-				 v-bind:app="modalComponent.app"
-				 v-bind:form="modalComponent.form"
-				 v-bind:useUrl="modalComponent.useUrl">
-				</component> -->
-				<FormComponent v-bind:metadata="modalComponent.metadata"
-				 v-bind:app="modalComponent.app"
-				 v-bind:form="modalComponent.form"
-				 v-bind:useUrl="modalComponent.useUrl">
-				</FormComponent>
-			</div>
-		</modal>
-	</template>
+	<modal v-if="open"
+	 @close="close(false)">
+		<h3 slot="header"></h3>
+		<div slot="body">
+			<FormComponent v-bind:metadata="modalComponent.metadata"
+			 v-bind:app="modalComponent.app"
+			 v-bind:form="modalComponent.form"
+			 v-bind:useUrl="modalComponent.useUrl"
+			 v-bind:parent="parent">
+			</FormComponent>
+		</div>
+	</modal>
 </span>

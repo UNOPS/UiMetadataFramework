@@ -1,34 +1,28 @@
-<div v-if="initialized">
-    <div class="row">
-        <div class="content">
-            <h1>
-                <strong>{{responseMetadata.title || metadata.label}}</strong>
-            </h1>
+<div>
+    <h1>
+        <strong>{{(responseMetadata || {}).title || (metadata || {}).label}}</strong>
+    </h1>
 
-            <form v-on:submit="submit(app, form, $event, true)">
-                <component v-for="(inputField, i) in visibleInputFields"
-                    is="FormInput"
-                    v-bind:id="i+1"
-                    v-bind:field="inputField"
-                    v-bind:app="app"
-                    v-bind:form="form"
-                    v-bind:tabindex="tabindex * 100 + inputField.metadata.orderIndex">
-                </component>
+    <form v-if="initialized && visibleInputFields.length > 0"
+        v-on:submit="submit(app, form, $event, true)">
+        <FormInput v-for="(inputField, i) in visibleInputFields"
+            v-bind:id="i+1"
+            v-bind:field="inputField"
+            v-bind:app="app"
+            v-bind:form="form"
+            v-bind:tabindex="tabindex * 100 + inputField.metadata.orderIndex">
+        </FormInput>
 
-                <button type="submit"
-                    tabindex="-1">{{submitButtonLabel}}</button>
-            </form>
-            <div class="response"
-                v-if="outputFieldValues != null">
-                <component v-for="outputField in outputFieldValues"
-                    v-if="outputField.metadata.hidden == false"
-                    is="FormOutput"
-                    v-bind:field="outputField"
-                    v-bind:app="app"
-                    v-bind:form="form"
-                    v-bind:parent="parent">
-                </component>
-            </div>
-        </div>
+        <button type="submit"
+            tabindex="-1">{{submitButtonLabel}}</button>
+    </form>
+    <div class="response"
+        v-if="outputFieldValues != null">
+        <FormOutput v-if="outputField.metadata.hidden == false"
+            v-for="outputField in outputFieldValues"
+            v-bind:field="outputField"
+            v-bind:app="app"
+            v-bind:form="form"
+            v-bind:parent="self" />
     </div>
 </div>

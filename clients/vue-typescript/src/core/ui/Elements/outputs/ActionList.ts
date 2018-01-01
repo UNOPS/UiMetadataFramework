@@ -30,9 +30,7 @@ export class ActionList extends Vue {
 		this.app = this.$attrs["app"];
 		this.form = this.$attrs["form"];
 		this.parent = this.$attrs["parent"];
-	}
 
-	mounted() {
 		bus.$on("form:responseHandled", e => {
 			this.invokedByUser = e.invokedByUser;
 		});
@@ -59,6 +57,14 @@ export class ActionList extends Vue {
 			}
 
 			var self = this;
+
+			var f = null;
+
+			f = new FormComponent({
+				data: this.modalComponent
+			});
+
+			f.init();
 
 			if (self.invokedByUser && formInstance.metadata.closeOnPostIfModal) {
 				self.close(true);

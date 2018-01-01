@@ -15,33 +15,21 @@ import './form.scss'
 })
 export class FormComponent extends Vue {
     initialized: boolean = false;
-    visibleInputFields: any[];
+    visibleInputFields: any[] = [];
     submitButtonLabel: string = null;
     tabindex: number = 1;
     disabled: false;
-    responseMetadata: any = {};
+    responseMetadata: any = null;
     urlData: null;
     useUrl: boolean = true;
-    metadata: any;
+    metadata: any = null;
     form: any;
     app: any;
     outputFieldValues: any = null;
-    parent: any;
-
-    setForm = async function () {
-        if (this.form == null) {
-            var formInstance = this.app.getFormInstance(this.$route.params._id, true);
-            await formInstance.initializeInputFields(this.$route.params).then(() => {
-                this.metadata = formInstance.metadata;
-                this.form = formInstance;
-            });
-        }
-    }
+    self: any;
 
     setMetadata = function () {
-        this.form = this.form || this.$attrs["form"];
         this.metadata = this.metadata || this.$attrs["metadata"];
-        this.parent = this.parent || this;
         this.tabindex += parseInt(this.$attrs["tabindex"]) || 1;
 
         var url = new Boolean(this.$attrs["useUrl"]).valueOf();
@@ -60,22 +48,26 @@ export class FormComponent extends Vue {
     }
 
     created() {
-        this.app = this.app || this.$attrs["app"];
-        this.form = this.form || this.$attrs["form"];
+        this.setMetadata();
 
-        this.setForm().then(() => {
-            this.setMetadata();
+        this.$on('submit', e => {
+            this.submit(e.app, e.form, null, e.redirect);
+            this.$forceUpdate();
         });
     }
 
     init = function () {
         if (!this.initialized) {
+            this.form = this.form || this.$attrs["form"];
+            this.self = this;
             this.initialized = true;
+
             this.visibleInputFields = this.form.inputs.filter(t => t.metadata.hidden == false);
             this.submitButtonLabel = this.form.metadata.customProperties != null && this.form.metadata.customProperties.SubmitButtonLabel
                 ? this.form.metadata.customProperties.SubmitButtonLabel
-                : "Submit"
+                : "Submit";
 
+            this.app = this.app || this.$attrs["app"];
             this.form.fire("form:loaded", { app: this.app });
 
             // Auto-submit form if necessary.
@@ -100,6 +92,9 @@ export class FormComponent extends Vue {
     };
 
     submit = async function (app, formInstance, event, redirect) {
+        // Force Vue to re-render outputs.
+        this.outputFieldValues = null;
+
         var self = this;
 
         if (event != null) {
@@ -163,10 +158,10 @@ export class FormComponent extends Vue {
             self.enableForm();
 
             // Signal event to child controls.
-            bus.$emit("form:responseHandled", {
-                form: self,
-                invokedByUser: event != null
-            });
+            // bus.$emit("form:responseHandled", {
+            //     form: self,
+            //     invokedByUser: event != null
+            // });
 
             // Signal event to child controls.
             // self.fire("form:responseHandled", {

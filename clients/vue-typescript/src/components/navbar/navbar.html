@@ -9,7 +9,8 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li v-for="link in links" v-bind:class="{'active' : $route.path == link.path}">
-                  <router-link v-bind:to="link.path"><strong>{{link.name}}</strong></router-link>
+                  <!-- <router-link v-bind:to="link.path"><strong>{{link.name}}</strong></router-link> -->
+                  <a v-bind:href="link.path"><strong>{{link.name}}</strong></a>
                 </li>
             </ul>
         </div>

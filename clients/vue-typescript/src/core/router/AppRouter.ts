@@ -76,6 +76,9 @@ export class AppRouter implements umf.IAppRouter {
 	};
 
 	makeUrl(form: string, values): string {
-		return `/form/${form}?${queryString.stringify(this.rpb.buildFormRouteParameters(form, values))}`;
+		return this.router.resolve({
+			path: `/form/${form}`,
+			query: this.rpb.buildFormRouteParameters(form, values)
+		}).href;
 	};
 }

@@ -31,15 +31,16 @@ export class Paginator extends Vue {
 	}
 
 	goToPage(page) {
-		var parent = this.parent
-		var form = parent.form
+		var parent = this.parent;
+		var form = parent.form;
+		var field = this.field;
 		var app = this.app;
 
 		form.setInputFields(page.params);
-		parent.submit(this.app, form, null, false);
+		parent.submit(app, form, null, false);
 	}
 
-	pages = function () {
+	get pages() {
 		var paginatorInput = this.form.inputs.find(t => t.metadata.id == this.field.metadata.customProperties.Customizations.Paginator);
 
 		var pageCount = Math.ceil(this.field.data.totalCount / paginatorInput.value.pageSize);
@@ -64,4 +65,5 @@ export class Paginator extends Vue {
 
 		return pages;
 	}
+
 }

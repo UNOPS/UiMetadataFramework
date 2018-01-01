@@ -1,23 +1,22 @@
-<span>
+<div>
 	<template>
 		<table v-if="field.data.length > 0"
 		 class="table">
 			<thead>
 				<tr>
-					<th v-for="column in columnsOrdered()">{{column.label}}</th>
+					<th v-for="column in columnsOrdered">{{column.label}}</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr v-if="map != null"
 				 v-for="row in field.data">
-					<td v-for="column in columnsOrdered()">
-						<component is="FormOutput"
-						 v-bind:field="getField(row, column)"
+					<td v-for="column in columnsOrdered">
+						<FormOutput v-bind:field="getField(row, column)"
 						 v-bind:app="app"
 						 v-bind:form="form"
 						 v-bind:parent="parent"
 						 v-bind:showLabel="false">
-						</component>
+						</FormOutput>
 					</td>
 				</tr>
 			</tbody>
@@ -27,4 +26,4 @@
 			No data.
 		</div>
 	</template>
-</span>
+</div>

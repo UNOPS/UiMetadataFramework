@@ -1,17 +1,15 @@
 <span>
-	<template>
-		<input v-if="field.metadata.required"
-		 type="checkbox"
-		 id="id"
-		 class='checkbox'
-		 v-model="field.value"
-		 tabindex="tabindex">
+	<input v-if="field.metadata.required"
+	 type="checkbox"
+	 id="id"
+	 class='checkbox'
+	 v-model="field.value"
+	 tabindex="tabindex">
 
-		<select v-else
-		 v-model="field.value">
-			<option></option>
-			<option value="true">Yes</option>
-			<option value="false">No</option>
-		</select>
-	</template>
+	<select v-else
+	 v-model="field.value">
+		<option></option>
+		<option value="true">Yes</option>
+		<option value="false">No</option>
+	</select>
 </span>

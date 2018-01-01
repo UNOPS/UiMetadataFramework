@@ -11,26 +11,28 @@ import "./Table.scss"
 	}
 })
 export class TableOutput extends Vue {
-	field: any;
-	app: any;
-	form: any;
-	parent: any;
-	data: any;
-	map: any;
+	field: any = null;
+	app: any = null;
+	form: any = null;
+	parent: any = null;
+	result: any = null;
+	map: any = null;
 
 	created() {
-		this.app = this.$attrs["app"];
-		this.field = this.$attrs["field"];
-		this.form = this.$attrs["form"];
-		this.parent = this.$attrs["parent"];
+		this.app = this.app || this.$attrs["app"];
+		this.field = this.field || this.$attrs["field"];
+		this.result = this.field.data;
 
-		this.data = this.field.data;
+		this.form = this.form || this.$attrs["form"];
+		this.parent = this.parent || this.$attrs["parent"];
+	}
 
+	mounted() {
 		// Create map, with key being the lowercase version of the property name
 		// and value being the actual property name. 
-		var map = {};
-		if (this.data.length > 0) {
-			let firstRow = this.data[0];
+		var map = [];
+		if (this.result.length > 0) {
+			let firstRow = this.result[0];
 
 			for (let property in firstRow) {
 				if (firstRow.hasOwnProperty(property)) {
@@ -50,8 +52,9 @@ export class TableOutput extends Vue {
 		};
 	}
 
-	columnsOrdered = function () {
-		// return [this.field.metadata.customProperties.columns].sort((a, b) => { return a.orderIndex - b.orderIndex; });
-		return this.field.metadata.customProperties.Columns;
+	get columnsOrdered() {
+		var columns = this.field.metadata.customProperties.Columns.slice();
+		columns.sort((a, b) => { return a.orderIndex - b.orderIndex; })
+		return columns;
 	}
 }

@@ -16,19 +16,17 @@ export class Output extends Vue {
     app: any;
     form: any;
     parent: any;
-    self: any;
     alwaysHideLabel: boolean;
     classObj: string;
     label: string;
     output: any;
 
     created() {
-        this.self = this;
         this.field = this.$attrs["field"];
         this.app = this.$attrs["app"];
         this.parent = this.$attrs["parent"];
         this.form = this.$attrs["form"];
-        
+
         var outputField = this.app.controlRegister.getOutput(this.field);
         this.output = outputField.constructor || {};
         var outputDisplayConfig = outputField.constants || {};
