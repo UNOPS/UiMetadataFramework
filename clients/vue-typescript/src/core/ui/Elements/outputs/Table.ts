@@ -15,24 +15,21 @@ export class TableOutput extends Vue {
 	app: any = null;
 	form: any = null;
 	parent: any = null;
-	result: any = null;
 	map: any = null;
 
 	created() {
 		this.app = this.app || this.$attrs["app"];
 		this.field = this.field || this.$attrs["field"];
-		this.result = this.field.data;
+		var data = this.field.data;
 
 		this.form = this.form || this.$attrs["form"];
 		this.parent = this.parent || this.$attrs["parent"];
-	}
 
-	mounted() {
 		// Create map, with key being the lowercase version of the property name
 		// and value being the actual property name. 
 		var map = [];
-		if (this.result.length > 0) {
-			let firstRow = this.result[0];
+		if (data.length > 0) {
+			let firstRow = data[0];
 
 			for (let property in firstRow) {
 				if (firstRow.hasOwnProperty(property)) {

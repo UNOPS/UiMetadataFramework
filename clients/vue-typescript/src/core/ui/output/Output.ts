@@ -18,7 +18,6 @@ export class Output extends Vue {
     parent: any;
     alwaysHideLabel: boolean;
     classObj: string;
-    label: string;
     output: any;
 
     created() {
@@ -26,6 +25,10 @@ export class Output extends Vue {
         this.app = this.$attrs["app"];
         this.parent = this.$attrs["parent"];
         this.form = this.$attrs["form"];
+
+        if (this.$attrs["showLabel"] != null) {
+            this.showLabel = new Boolean(this.$attrs["showLabel"]).valueOf();
+        }
 
         var outputField = this.app.controlRegister.getOutput(this.field);
         this.output = outputField.constructor || {};

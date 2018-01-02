@@ -13,12 +13,15 @@ import "./InlineForm.scss"
 export class InlineForm extends Vue {
 	app: any;
 	field: any;
+	parent: any;
 	current: any;
 	data: any = {};
 	initialized: boolean = false;
+
 	created() {
 		this.app = this.$attrs["app"];
 		this.field = this.$attrs["field"];
+		this.parent = this.$attrs["parent"];
 
 		var formInstance = this.app.getFormInstance(this.field.data.form, true);
 
@@ -27,6 +30,7 @@ export class InlineForm extends Vue {
 				metadata: formInstance.metadata,
 				form: formInstance,
 				app: this.app,
+				parent: this.parent,
 				useUrl: false
 			};
 
@@ -35,6 +39,7 @@ export class InlineForm extends Vue {
 			});
 
 			f.init();
+
 			this.initialized = f.initialized;
 
 			this.current = f;

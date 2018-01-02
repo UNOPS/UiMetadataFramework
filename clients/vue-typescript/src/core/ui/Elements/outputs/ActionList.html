@@ -1,4 +1,4 @@
-<span>
+<span v-if="field.data != null && field.data.actions != null && field.data.actions.length > 0">
 	<ul class="actionlist">
 		<li v-for="action in field.data.actions">
 			<button v-on:click="run(action, app)">{{action.label}}</button>
