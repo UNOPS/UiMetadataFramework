@@ -159,6 +159,7 @@ It's important to understand that **UI Metadata Framework is not a library, but 
 The team is currently developing multiple clients:
 
 * web client using [Svelte](https://svelte.technology/) - [somewhat ready](https://github.com/UNOPS/UiMetadataFramework/tree/develop/clients/vanilla-js)
+* web client using [Vue](https://vuejs.org/) - [somewhat ready](https://github.com/mohammed-fuad/uimf-vue-typescript-client)
 * web client using [ReactJS](https://facebook.github.io/react/) - WIP
 * web client using [Angular](https://angular.io/) - WIP
 * Android client using [Xamarin][xamarin] - WIP
