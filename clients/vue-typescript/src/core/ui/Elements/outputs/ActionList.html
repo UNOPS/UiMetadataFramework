@@ -6,7 +6,7 @@
 	</ul>
 
 	<modal v-if="open"
-	 @close="close(false)">
+	 @close="close(true)">
 		<h3 slot="header"></h3>
 		<div slot="body">
 			<FormComponent v-bind:metadata="modalComponent.metadata"

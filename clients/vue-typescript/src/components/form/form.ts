@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
-import { Output } from '../../core/ui/output';
-import { Input } from '../../core/ui/input';
-import bus from '../../core/event-bus';
+import { Output } from 'core/ui/output';
+import { Input } from 'core/ui/input';
+import EventBus from 'core/event-bus';
 
-import './form.scss'
+import './form.scss';
 
 @Component({
     template: require('./form.html'),
@@ -49,11 +49,6 @@ export class FormComponent extends Vue {
 
     created() {
         this.setMetadata();
-
-        this.$on('submit', e => {
-            this.submit(e.app, e.form, null, e.redirect);
-            this.$forceUpdate();
-        });
     }
 
     init = function () {
@@ -158,16 +153,10 @@ export class FormComponent extends Vue {
             self.enableForm();
 
             // Signal event to child controls.
-            // bus.$emit("form:responseHandled", {
-            //     form: self,
-            //     invokedByUser: event != null
-            // });
-
-            // Signal event to child controls.
-            // self.fire("form:responseHandled", {
-            //     form: self,
-            //     invokedByUser: event != null
-            // });
+            EventBus.$emit("form:responseHandled", {
+                form: self,
+                invokedByUser: event != null
+            });
         }
         catch (e) {
             self.enableForm();
