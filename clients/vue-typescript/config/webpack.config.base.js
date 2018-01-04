@@ -3,7 +3,7 @@ const helpers = require('./helpers'),
 
 let config = {
   entry: {
-    'main': helpers.root('/src/main.ts')
+    'main': helpers.root('/src/app.ts')
   },
   output: {
     path: helpers.root('/dist'),
@@ -18,6 +18,7 @@ let config = {
       'core-form': helpers.root('/src/components/form/index.ts'),
       'uimf-core': helpers.root('./node_modules/uimf-core/src/index.ts'),
       'core-ui': helpers.root('/src/core/ui'),
+      'core': helpers.root('/src/core'),
       'core-framework': helpers.root('/src/core/framework/index.ts'),
       'core-handlers': helpers.root('/src/core/handlers/index.ts'),
       'core-eventHandlers': helpers.root('/src/core/eventHandlers/index.ts'),

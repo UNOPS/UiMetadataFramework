@@ -6,13 +6,15 @@ import { AppRouter } from "./Core/Router/AppRouter";
 import './sass/main.scss';
 import { Vue } from "vue/types/vue";
 
-var server = new UmfServer("http://localhost:62790/api/form/metadata", "http://localhost:62790/api/form/run");
+var coreServerUrl = "http://localhost:62790";
+
+var server = new UmfServer(`${coreServerUrl}/api/form/metadata`, `${coreServerUrl}/api/form/run`);
 var app = new UmfApp(server, controlRegister);
 
 app.load().then(response => {
     var router = new AppRouter(app);
     app.useRouter(router);
-    
+
     app.registerResponseHandler(new handlers.MessageResponseHandler());
     app.registerResponseHandler(new handlers.ReloadResponseHandler((form, inputFieldValues) => {
         return app.load().then(t => {

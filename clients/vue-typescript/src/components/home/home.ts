@@ -8,7 +8,7 @@ import './home.scss';
 })
 export class HomeComponent extends Vue {
 
-    package: string = 'uimf-vue-typescript';
+    package: string = this.$root.$data.title;
     repo: string = 'https://github.com/mohammed-fuad/uimf-vue-typescript';
     mode: string = process.env.ENV;
 }

@@ -7,7 +7,7 @@ import { HomeComponent } from 'components/home';
 import { AboutComponent } from 'components/about';
 import { FormComponent } from 'components/form';
 import { NavbarComponent } from 'components/navbar';
-import { RouteParameterBuilder } from '../RouteParameterBuilder';
+import { RouteParameterBuilder } from './RouteParameterBuilder';
 
 Vue.use(VueRouter);
 
@@ -63,7 +63,8 @@ export class AppRouter implements umf.IAppRouter {
 			components: { 'navbar': NavbarComponent },
 			router: this.router,
 			data: {
-				_app: app
+				_app: app,
+				title: 'UiMetadataFramework client'
 			}
 		});
 	}
