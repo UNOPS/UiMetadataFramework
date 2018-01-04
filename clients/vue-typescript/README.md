@@ -1,37 +1,27 @@
-# uimf-vue-typescript
+# UI Metadata vue typescript client
 
-> UIMF vue client in typescript language
+This project is initial template client implemented by Vue using typescript language for [UI Metadata Framework](https://github.com/UNOPS/UiMetadataFramework).
 
-## Build Setup
+### How to run the project
+#### 1. Run [`UiMetadataFramework.Web`](https://github.com/UNOPS/UiMetadataFramework/tree/develop/UiMetadataFramework.Web) project
 
-``` bash
-# install dependencies
+#### 2. Install dependencies
+
+```
 npm install
+```
 
-# serve with hot reload at localhost:8080
+#### 3. update UiMetadataFramework.Web address which is considered UI Metadata Framework webserver.
+##### I'm using the default localhost server path for `UI Metadata framework webserver` (default is `http://localhost:62790`)
+
+```javascript
+`App.ts`
+
+var coreServerUrl = "http://mysite.com";
+```
+
+#### 4. serve with hot reload at localhost:9000
+
+```
 npm run dev
-
-# lint the Typescript
-npm run lint
-
-# run the tests
-npm test
-
-# run the tests on changes
-npm run test:watch
-
-# run the test suite and generate a coverage report
-npm run coverage
-
-# run the tests on Teamcity
-npm run ci:teamcity
-
-# run the tests on Jenkins
-npm run ci:jenkins
-
-# build for production with minification
-npm run build
-
-# clean the production build
-npm run clean
 ```
