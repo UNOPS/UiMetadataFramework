@@ -1,4 +1,4 @@
-import * as umf from "core-framework";
+import * as umf from 'core-framework';
 
 export class RouteParameterBuilder {
 	readonly parameterName: string;
@@ -9,31 +9,31 @@ export class RouteParameterBuilder {
 	constructor(parameterName: string, app: umf.UmfApp) {
 		this.getFormInstance = (formId: string, throwError: boolean) => app.getFormInstance(formId, null);
 		this.parameterName = parameterName;
-		this.defaultParameters[parameterName] = "";
+		this.defaultParameters[parameterName] = '';
 	}
 
 	buildFormRouteParameters(form, values) {
-		var formInstance = this.getFormInstance(form, true);
-		var base = formInstance.getSerializedInputValuesFromObject(values);
+		let formInstance = this.getFormInstance(form, true);
+		let base = formInstance.getSerializedInputValuesFromObject(values);
 
 		if (form === this.currentForm) {
-			var d = RouteParameterBuilder.parseQueryStringParameters(location.hash)[this.parameterName] || 0;
-			var dAsNumber = parseInt(d, 10);
+			let d = RouteParameterBuilder.parseQueryStringParameters(location.hash)[this.parameterName] || 0;
+			let dAsNumber = parseInt(d, 10);
 			base[this.parameterName] = isNaN(dAsNumber) ? 0 : dAsNumber + 1;
 		}
 
-		return base;//Object.assign(base, { _id: form });
+		return base;
 	}
 
 	static parseQueryStringParameters(url): any {
-		var queryStartsAt = url.indexOf("?");
+		let queryStartsAt = url.indexOf('?');
 
-		var result = {};
+		let result = {};
 
 		// If there is a query string.
 		if (queryStartsAt !== -1 && url.length > queryStartsAt) {
-			url.substr(queryStartsAt + 1).split("&").filter(t => {
-				var value = t.split("=");
+			url.substr(queryStartsAt + 1).split('&').filter(t => {
+				let value = t.split('=');
 				result[value[0]] = value[1];
 			});
 		}

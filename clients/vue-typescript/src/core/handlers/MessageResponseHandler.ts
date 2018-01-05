@@ -1,5 +1,5 @@
-import * as umf from "uimf-core";
-import { IFormResponseHandler, FormInstance } from "core-framework";
+import * as umf from 'uimf-core';
+import { IFormResponseHandler, FormInstance } from 'core-framework';
 
 export class MessageResponseHandler implements IFormResponseHandler {
 	public readonly name: string = "message";

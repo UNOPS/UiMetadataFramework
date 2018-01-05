@@ -1,8 +1,8 @@
-import * as umf from "core-framework";
+import * as umf from 'core-framework';
 
 export class BooleanInputController extends umf.InputController<boolean> {
 	serializeValue(value: boolean | string): string {
-		var parsed = this.parse(value);
+		let parsed = this.parse(value);
 		return parsed != null ? parsed.toString() : null;
 	}
 
@@ -19,7 +19,7 @@ export class BooleanInputController extends umf.InputController<boolean> {
 
 	private parse(value): boolean {
 		return value != null
-			? value.toString() == "true"
+			? value.toString() == 'true'
 			: this.metadata.required ? false : null;
 	}
 }

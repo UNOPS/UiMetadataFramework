@@ -1,4 +1,4 @@
-import * as umf from "core-framework";
+import * as umf from 'core-framework';
 
 export class PasswordInputController extends umf.InputController<Password> {
 	selected: string;

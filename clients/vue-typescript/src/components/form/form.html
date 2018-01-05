@@ -6,6 +6,7 @@
     <form v-if="initialized && visibleInputFields.length > 0"
         v-on:submit="submit(app, form, $event, true)">
         <FormInput v-for="(inputField, i) in visibleInputFields"
+            :key="inputField.metadata.id"
             v-bind:id="i+1"
             v-bind:field="inputField"
             v-bind:app="app"
@@ -20,6 +21,7 @@
         v-if="outputFieldValues != null">
         <FormOutput v-if="outputField.metadata.hidden == false"
             v-for="outputField in outputFieldValues"
+            :key="outputField.metadata.id"
             v-bind:field="outputField"
             v-bind:app="app"
             v-bind:form="form"

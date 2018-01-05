@@ -1,4 +1,4 @@
-import { UmfApp } from "./UmfApp";
+import { UmfApp } from './UmfApp';
 
 export interface IAppRouter {
 	go: (form: string, values) => void;

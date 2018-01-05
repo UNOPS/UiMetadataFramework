@@ -1,4 +1,4 @@
-import * as umf from "core-framework";
+import * as umf from 'core-framework';
 
 class PaginationParameters {
 	constructor(pageIndex?: number | string, pageSize?: number | string, orderBy?: string, ascending?: boolean | string) {
@@ -14,8 +14,8 @@ class PaginationParameters {
 	orderBy: string;
 
 	private static asInt(value: number | string, defaultValue: number): number {
-		if (typeof (value) === "string") {
-			var result = parseInt(value);
+		if (typeof (value) === 'string') {
+			let result = parseInt(value);
 			return isNaN(result) ? defaultValue : result;
 		}
 
@@ -27,9 +27,9 @@ class PaginationParameters {
 	}
 
 	private static asBool(value: boolean | string, defaultValue: boolean): boolean {
-		if (typeof (value) === "string" || value == null) {
+		if (typeof (value) === 'string' || value == null) {
 			return value != null
-				? value.toString() === "true"
+				? value.toString() === 'true'
 				: defaultValue;
 		}
 
@@ -39,18 +39,18 @@ class PaginationParameters {
 
 export class PaginatorInputController extends umf.InputController<PaginationParameters> {
 	serializeValue(value: PaginationParameters | string): string {
-		var p = typeof (value) === "string" || value == null
+		let p = typeof (value) === 'string' || value == null
 			? this.parse(<string>value)
 			: value;
 
-		if (p.pageIndex == 1 &&
-			p.pageSize == 10 &&
+		if (p.pageIndex === 1 &&
+			p.pageSize === 10 &&
 			p.ascending == null &&
 			p.orderBy == null) {
-			return "";
+			return '';
 		}
 
-		var result = `${p.pageIndex}-${p.pageSize}`;
+		let result = `${p.pageIndex}-${p.pageSize}`;
 
 		if (p.orderBy != null) {
 			result += `-${p.ascending}-${p.orderBy}}`;
@@ -78,7 +78,7 @@ export class PaginatorInputController extends umf.InputController<PaginationPara
 			return new PaginationParameters();
 		}
 
-		var components = value.split("-");
+		let components = value.split('-');
 		return new PaginationParameters(
 			components[0],
 			components[1],

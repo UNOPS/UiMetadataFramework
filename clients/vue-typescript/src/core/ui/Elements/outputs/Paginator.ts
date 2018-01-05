@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
-import { OutputFieldValue } from "core-framework";
-import { TableOutput } from "./Table";
+import { OutputFieldValue } from 'core-framework';
+import { TableOutput } from './Table';
 
-import "./Paginator.scss"
+import './Paginator.scss';
 
 @Component({
 	template: require('./Paginator.html'),
@@ -20,10 +20,10 @@ export class Paginator extends Vue {
 	tableField: any;
 
 	created() {
-		this.app = this.$attrs["app"];
-		this.field = this.$attrs["field"];
-		this.parent = this.$attrs["parent"];
-		this.form = this.$attrs["form"];
+		this.app = this.$attrs['app'];
+		this.field = this.$attrs['field'];
+		this.parent = this.$attrs['parent'];
+		this.form = this.$attrs['form'];
 
 		this.tableField = new OutputFieldValue();
 		this.tableField.data = this.field.data.results;
@@ -31,26 +31,26 @@ export class Paginator extends Vue {
 	}
 
 	goToPage(page) {
-		var parent = this.parent;
-		var form = parent.form;
-		var field = this.field;
-		var app = this.app;
+		let parent = this.parent;
+		let form = parent.form;
+		let field = this.field;
+		let app = this.app;
 
 		form.setInputFields(page.params);
 		parent.submit(app, form, null, false);
 	}
 
 	get pages() {
-		var paginatorInput = this.form.inputs.find(t => t.metadata.id == this.field.metadata.customProperties.Customizations.Paginator);
+		let paginatorInput = this.form.inputs.find(t => t.metadata.id === this.field.metadata.customProperties.Customizations.Paginator);
 
-		var pageCount = Math.ceil(this.field.data.totalCount / paginatorInput.value.pageSize);
+		let pageCount = Math.ceil(this.field.data.totalCount / paginatorInput.value.pageSize);
 
-		var params = {};
+		let params = {};
 		for (let i of this.form.inputs) {
 			params[i.metadata.id] = i.value;
 		}
 
-		var pages = [];
+		let pages = [];
 		for (let p = 1; p <= pageCount; ++p) {
 			let pageParams = Object.assign({}, params);
 			pageParams[paginatorInput.metadata.id] = Object.assign({}, pageParams[paginatorInput.metadata.id]);
@@ -59,7 +59,7 @@ export class Paginator extends Vue {
 			pages.push({
 				number: p,
 				params: pageParams,
-				cssClass: paginatorInput.value.pageIndex == p ? "current" : ""
+				cssClass: paginatorInput.value.pageIndex === p ? 'current' : ''
 			});
 		}
 

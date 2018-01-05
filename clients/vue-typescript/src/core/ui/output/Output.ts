@@ -21,26 +21,26 @@ export class Output extends Vue {
     output: any;
 
     created() {
-        this.field = this.$attrs["field"];
-        this.app = this.$attrs["app"];
-        this.parent = this.$attrs["parent"];
-        this.form = this.$attrs["form"];
+        this.field = this.$attrs['field'];
+        this.app = this.$attrs['app'];
+        this.parent = this.$attrs['parent'];
+        this.form = this.$attrs['form'];
 
-        if (this.$attrs["showLabel"] != null) {
-            this.showLabel = new Boolean(this.$attrs["showLabel"]).valueOf();
+        if (this.$attrs['showLabel'] != null) {
+            this.showLabel = new Boolean(this.$attrs['showLabel']).valueOf();
         }
 
-        var outputField = this.app.controlRegister.getOutput(this.field);
+        let outputField = this.app.controlRegister.getOutput(this.field);
         this.output = outputField.constructor || {};
-        var outputDisplayConfig = outputField.constants || {};
+        let outputDisplayConfig = outputField.constants || {};
         this.alwaysHideLabel = outputDisplayConfig.alwaysHideLabel;
 
         // Set correct css class based on the field type.
         if (outputDisplayConfig.block) {
-            this.classObj = "block";
+            this.classObj = 'block';
         }
         else {
-            this.classObj = "inline";
+            this.classObj = 'inline';
         }
     }
 }

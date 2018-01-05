@@ -1,44 +1,10 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
-import Multiselect from 'vue-multiselect'
-import './Multiselect.scss'
-import * as axiosLib from "axios";
-var axios = axiosLib.default;
+import Multiselect from 'vue-multiselect';
+import * as axiosLib from 'axios';
+let axios = axiosLib.default;
 
-function mapToTypeaheadItems(items) {
-	return items.map(t => {
-		return {
-			label: t.label,
-			value: t.value.toString()
-		};
-	});
-}
-
-function setFieldValue(field, value) {
-	if (field.maxItemCount == 1) {
-		field.value = {
-			value: value[0] != null ? value[0].value : null
-		};
-	}
-	else {
-		field.value = {
-			items: value.map(t => t.value)
-		};
-	}
-}
-
-function setInputValue(a, field) {
-	if (field.maxItemCount == 1) {
-		let v = (field.value || {}).value || null;
-		if (v != null) {
-			a.setValueByChoice(v.toString());
-		}
-	}
-	else {
-		let v = ((field.value || {}).items || []).map(t => t.toString());
-		a.setValueByChoice(v);
-	}
-}
+import './Multiselect.scss';
 
 @Component({
 	template: require('./MultiSelect.html'),
@@ -56,24 +22,24 @@ export class MultiSelectInput extends Vue {
 	isLoading: boolean = false;
 
 	created() {
-		this.id = this.$attrs["id"];
-		this.form = this.$attrs["form"];
-		this.app = this.$attrs["app"];
-		this.field = this.$attrs["field"];
-		this.tabindex = parseInt(this.$attrs["tabindex"]);
+		this.id = this.$attrs['id'];
+		this.form = this.$attrs['form'];
+		this.app = this.$attrs['app'];
+		this.field = this.$attrs['field'];
+		this.tabindex = parseInt(this.$attrs['tabindex']);
 		this.source = this.field.metadata.customProperties.Source;
 		this.options = [];
 	}
 
 	asyncFind(value) {
-		if (typeof (this.source) === "string") {
+		if (typeof (this.source) === 'string') {
 
-			var addedItems = {};
-			var query = "";
-			var timer = null;
+			let addedItems = {};
+			let query = '';
+			let timer = null;
 
 			this.isLoading = true;
-			var self = this;
+			let self = this;
 
 			if (timer != null) {
 				// Cancel previous timer, thus extending the delay until user has stopped typing.
@@ -92,10 +58,10 @@ export class MultiSelectInput extends Vue {
 	}
 
 	clearAll() {
-		this.options = []
+		this.options = [];
 	}
 
 	limitText(count) {
-		return `and ${count} other options`
-	};
+		return `and ${count} other options`;
+	}
 }

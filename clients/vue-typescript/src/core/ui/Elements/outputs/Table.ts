@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
-import { Output } from "../../output";
+import { Output } from '../../output';
 
-import "./Table.scss"
+import './Table.scss';
 
 @Component({
 	template: require('./Table.html'),
@@ -18,16 +18,16 @@ export class TableOutput extends Vue {
 	map: any = null;
 
 	created() {
-		this.app = this.app || this.$attrs["app"];
-		this.field = this.field || this.$attrs["field"];
-		var data = this.field.data;
+		this.app = this.app || this.$attrs['app'];
+		this.field = this.field || this.$attrs['field'];
+		let data = this.field.data;
 
-		this.form = this.form || this.$attrs["form"];
-		this.parent = this.parent || this.$attrs["parent"];
+		this.form = this.form || this.$attrs['form'];
+		this.parent = this.parent || this.$attrs['parent'];
 
 		// Create map, with key being the lowercase version of the property name
 		// and value being the actual property name. 
-		var map = [];
+		let map = [];
 		if (data.length > 0) {
 			let firstRow = data[0];
 
@@ -42,16 +42,16 @@ export class TableOutput extends Vue {
 	}
 
 	getField = function (row, column) {
-		var data = row[this.map[column.id.toLowerCase()]];
+		let data = row[this.map[column.id.toLowerCase()]];
 		return {
 			data: data,
 			metadata: column
 		};
-	}
+	};
 
 	get columnsOrdered() {
-		var columns = this.field.metadata.customProperties.Columns.slice();
-		columns.sort((a, b) => { return a.orderIndex - b.orderIndex; })
+		let columns = this.field.metadata.customProperties.Columns.slice();
+		columns.sort((a, b) => { return a.orderIndex - b.orderIndex; });
 		return columns;
 	}
 }

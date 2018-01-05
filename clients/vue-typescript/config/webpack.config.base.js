@@ -11,7 +11,7 @@ let config = {
   },
   devtool: 'source-map',
   resolve: {
-    extensions: ['.ts', '.js', '.html','.json'],
+    extensions: ['.ts', '.js', '.html', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       'router': helpers.root('/src/router.ts'),

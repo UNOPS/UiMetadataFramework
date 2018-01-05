@@ -29,23 +29,23 @@ export class FormComponent extends Vue {
     self: any;
 
     setMetadata = function () {
-        this.metadata = this.metadata || this.$attrs["metadata"];
-        this.tabindex += parseInt(this.$attrs["tabindex"]) || 1;
+        this.metadata = this.metadata || this.$attrs['metadata'];
+        this.tabindex += parseInt(this.$attrs['tabindex']) || 1;
 
-        var url = new Boolean(this.$attrs["useUrl"]).valueOf();
+        let url = new Boolean(this.$attrs['useUrl']).valueOf();
 
-        if (this.$attrs["useUrl"] != null && !url) {
+        if (this.$attrs['useUrl'] != null && !url) {
             this.useUrl = url;
         }
 
-        var initialized = new Boolean(this.$attrs["initialized"]).valueOf();
+        let initialized = new Boolean(this.$attrs['initialized']).valueOf();
 
-        if (this.$attrs["initialized"] != null && initialized) {
+        if (this.$attrs['initialized'] != null && initialized) {
             this.initialized = initialized;
         }
 
         this.init();
-    }
+    };
 
     created() {
         this.setMetadata();
@@ -53,17 +53,17 @@ export class FormComponent extends Vue {
 
     init = function () {
         if (!this.initialized) {
-            this.form = this.form || this.$attrs["form"];
+            this.form = this.form || this.$attrs['form'];
             this.self = this;
             this.initialized = true;
 
-            this.visibleInputFields = this.form.inputs.filter(t => t.metadata.hidden == false);
+            this.visibleInputFields = this.form.inputs.filter(t => t.metadata.hidden === false);
             this.submitButtonLabel = this.form.metadata.customProperties != null && this.form.metadata.customProperties.SubmitButtonLabel
                 ? this.form.metadata.customProperties.SubmitButtonLabel
-                : "Submit";
+                : 'Submit';
 
-            this.app = this.app || this.$attrs["app"];
-            this.form.fire("form:loaded", { app: this.app });
+            this.app = this.app || this.$attrs['app'];
+            this.form.fire('form:loaded', { app: this.app });
 
             // Auto-submit form if necessary.
             if (this.form.metadata.postOnLoad) {
@@ -73,14 +73,14 @@ export class FormComponent extends Vue {
     };
 
     enableForm = function () {
-        var formInstance = this.form;
+        let formInstance = this.form;
 
         this.visibleInputFields = formInstance.inputs.filter(t => t.metadata.hidden == false);
         this.disabled = false;
     };
 
     renderResponse = function (response: any) {
-        var formInstance = this.form;
+        let formInstance = this.form;
 
         this.outputFieldValues = formInstance.outputs;
         this.responseMetadata = response.metadata;
@@ -90,13 +90,13 @@ export class FormComponent extends Vue {
         // Force Vue to re-render outputs.
         this.outputFieldValues = null;
 
-        var self = this;
+        let self = this;
 
         if (event != null) {
             event.preventDefault();
         }
 
-        var skipValidation =
+        let skipValidation =
             !formInstance.metadata.postOnLoadValidation &&
             formInstance.metadata.postOnLoad &&
             // if initialization of the form, i.e. - first post.
@@ -113,7 +113,7 @@ export class FormComponent extends Vue {
         self.disabled = true;
 
         // If postOnLoad == true, then the input field values should appear in the url.
-        // Reason is that postOnLoad == true is used by "report" pages, which need
+        // Reason is that postOnLoad == true is used by 'report' pages, which need
         // their filters to be saved in the url. This does not apply to forms
         // with postOnLoad == false, because those forms are usually for creating new data
         // and hence should not be tracked in browser's history based on parameters.
@@ -126,11 +126,11 @@ export class FormComponent extends Vue {
             return;
         }
 
-        await formInstance.fire("form:posting", { response: null, app: app });
+        await formInstance.fire('form:posting', { response: null, app: app });
 
         try {
             let response = await app.server.postForm(formInstance.metadata.id, data);
-            await formInstance.fire("form:responseReceived", { response: response, app: app });
+            await formInstance.fire('form:responseReceived', { response: response, app: app });
 
             formInstance.setOutputFieldValues(response);
 
@@ -141,19 +141,19 @@ export class FormComponent extends Vue {
 
             await app.runFunctions(response.metadata.functionsToRun);
 
-            if (response.metadata.handler == "" || response.metadata.handler == null) {
+            if (response.metadata.handler == '' || response.metadata.handler == null) {
                 self.renderResponse(response);
             }
             else {
                 app.handleResponse(response, formInstance);
             }
 
-            await formInstance.fire("form:responseHandled", { response: response, app: app });
+            await formInstance.fire('form:responseHandled', { response: response, app: app });
 
             self.enableForm();
 
             // Signal event to child controls.
-            EventBus.$emit("form:responseHandled", {
+            EventBus.$emit('form:responseHandled', {
                 form: self,
                 invokedByUser: event != null
             });

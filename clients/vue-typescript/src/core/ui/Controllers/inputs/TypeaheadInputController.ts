@@ -1,4 +1,4 @@
-import * as umf from "core-framework";
+import * as umf from 'core-framework';
 
 export interface ITypeaheadConfig {
 	maxItemCount: number;
@@ -10,7 +10,7 @@ export class TypeaheadInputController
 	public maxItemCount = 1;
 
 	serializeValue(value: TypeaheadValue | string): string {
-		if (typeof (value) === "string") {
+		if (typeof (value) === 'string') {
 			return value;
 		}
 
@@ -29,7 +29,7 @@ export class TypeaheadInputController
 	}
 
 	private parse(value: string): TypeaheadValue {
-		return value == null || value == ""
+		return value == null || value == ''
 			? new TypeaheadValue()
 			: new TypeaheadValue(value);
 	}

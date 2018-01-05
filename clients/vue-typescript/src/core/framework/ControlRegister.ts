@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
-import * as umf from "uimf-core";
+import * as umf from 'uimf-core';
 import {
     InputController,
     StringInputController,
@@ -9,7 +9,7 @@ import {
     OutputFieldEventHandler,
     FormEventHandler,
     IFunctionRunner
-} from "core-framework";
+} from 'core-framework';
 
 interface InputFieldControllerConstructor {
     new(metadata: umf.InputFieldMetadata): InputController<any>;
@@ -29,11 +29,11 @@ export class ControlRegister {
     functions: { [id: string]: IFunctionRunner } = {};
 
     createInputControllers(fields: umf.InputFieldMetadata[]) {
-        var result = [];
+        let result = [];
 
         for (let field of fields) {
             // Instantiate new input controller.
-            var entry = this.inputs[field.type] || <InputControlEntry>{};
+            let entry = this.inputs[field.type] || <InputControlEntry>{};
             let ctor = entry.controller || StringInputController;
             result.push(new ctor(field));
         }
@@ -47,14 +47,14 @@ export class ControlRegister {
 
     getOutput(field: OutputFieldValue) {
         return field != null
-            ? this.outputs[field.metadata.type] || this.outputs["text"]
-            : this.outputs["text"];
+            ? this.outputs[field.metadata.type] || this.outputs['text']
+            : this.outputs['text'];
     }
 
     getInput(type: string) {
         return type != null
-            ? this.inputs[type] || this.inputs["text"]
-            : this.inputs["text"];
+            ? this.inputs[type] || this.inputs['text']
+            : this.inputs['text'];
     }
 
     registerInputFieldControl(name: string, vueComponent: any, controller: InputFieldControllerConstructor) {

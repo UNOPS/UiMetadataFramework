@@ -1,10 +1,10 @@
-import * as umf from "uimf-core";
-import { InputFieldValue } from "./InputFieldValue";
-import { OutputFieldValue } from "./OutputFieldValue";
-import { InputController } from "./InputController";
-import { ControlRegister } from "./ControlRegister";
-import { FormEventArguments } from "./FormEventArguments";
-import { UmfApp } from "./UmfApp";
+import * as umf from 'uimf-core';
+import { InputFieldValue } from './InputFieldValue';
+import { OutputFieldValue } from './OutputFieldValue';
+import { InputController } from './InputController';
+import { ControlRegister } from './ControlRegister';
+import { FormEventArguments } from './FormEventArguments';
+import { UmfApp } from './UmfApp';
 
 export class FormInstance {
     public readonly metadata: umf.FormMetadata;
@@ -18,7 +18,7 @@ export class FormInstance {
     }
 
     fire(eventName: string, parameters: FormEventArguments) {
-        var promises = [];
+        let promises = [];
         
         // Run input event handlers.
         for (let input of this.inputs) {
@@ -72,7 +72,7 @@ export class FormInstance {
     }
 
     initializeInputFields(data: any) {
-        var promises = [];
+        let promises = [];
 
         for (let fieldMetadata of this.inputs) {
             let value = null;
@@ -99,15 +99,15 @@ export class FormInstance {
     }
 
     prepareForm(mustHaveAllRequiredInputs: boolean): any {
-        var data = {};
-        var promises = [];
-        var hasRequiredMissingInput = false;
+        let data = {};
+        let promises = [];
+        let hasRequiredMissingInput = false;
 
         for (let input of this.inputs) {
-            var promise = input.getValue().then(value => {
+            let promise = input.getValue().then(value => {
                 data[input.metadata.id] = value;
 
-                if (input.metadata.required && (value == null || (typeof (value) === "string" && value == ""))) {
+                if (input.metadata.required && (value == null || (typeof (value) === 'string' && value == ''))) {
                     hasRequiredMissingInput = true;
                 }
             });
@@ -127,14 +127,14 @@ export class FormInstance {
     }
 
     getSerializedInputValues(): Promise<any> {
-        var data = {};
-        var promises = [];
+        let data = {};
+        let promises = [];
 
         for (let input of this.inputs) {
-            var promise = input.serialize().then(t => {
+            let promise = input.serialize().then(t => {
                 // Don't include inputs without values, because we only
-                // want to serialize "non-default" values.
-                if (t.value != null && t.value != "") {
+                // want to serialize 'non-default' values.
+                if (t.value != null && t.value != '') {
                     data[input.metadata.id] = t.value;
                 }
             });
@@ -146,9 +146,9 @@ export class FormInstance {
     }
 
     getSerializedInputValuesFromObject(value: any): any {
-        var data = {};
+        let data = {};
 
-        var normalizedObject = {};
+        let normalizedObject = {};
         for (let prop in value) {
             if (value.hasOwnProperty(prop)) {
                 normalizedObject[prop.toLowerCase()] = value[prop];
@@ -156,11 +156,11 @@ export class FormInstance {
         }
 
         for (let input of this.inputs) {
-            var valueAsString = input.serializeValue(normalizedObject[input.metadata.id.toLowerCase()]);
+            let valueAsString = input.serializeValue(normalizedObject[input.metadata.id.toLowerCase()]);
 
             // Don't include inputs without values, because we only
-            // want to serialize "non-default" values.
-            if (valueAsString != null && valueAsString != "") {
+            // want to serialize 'non-default' values.
+            if (valueAsString != null && valueAsString != '') {
                 data[input.metadata.id] = valueAsString;
             }
         }
@@ -174,9 +174,9 @@ export class FormInstance {
             return;
         }
 
-        var fields = Array<OutputFieldValue>();
+        let fields = Array<OutputFieldValue>();
 
-        var normalizedResponse = this.getNormalizedObject(response);
+        let normalizedResponse = this.getNormalizedObject(response);
 
         for (let field of this.metadata.outputFields) {
             fields.push({
@@ -193,9 +193,9 @@ export class FormInstance {
     }
 
     private getNormalizedObject(response: umf.FormResponse): any {
-        var normalizedResponse = {};
+        let normalizedResponse = {};
         for (let field in response) {
-            if (response.hasOwnProperty(field) && field !== "metadata") {
+            if (response.hasOwnProperty(field) && field !== 'metadata') {
                 normalizedResponse[field.toLowerCase()] = response[field];
             }
         }

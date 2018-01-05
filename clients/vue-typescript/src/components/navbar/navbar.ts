@@ -29,11 +29,11 @@ export class NavbarComponent extends Vue {
         this.links.push(new Link('About', '/#/about'));
 
         this.$nextTick(() => {
-            var app = this.$root.$data._app;
+            let app = this.$root.$data._app;
 
             for (let form of app.forms) {
                 if (form.customProperties != null && form.label) {
-                    this.links.push(new Link(form.label, app.makeUrl(form.id, null)))
+                    this.links.push(new Link(form.label, app.makeUrl(form.id, null)));
                 }
             }
         });

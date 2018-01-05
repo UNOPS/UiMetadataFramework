@@ -1,5 +1,5 @@
-import * as umf from "uimf-core";
-import { UmfApp } from "./UmfApp";
+import * as umf from 'uimf-core';
+import { UmfApp } from './UmfApp';
 
 export class FormEventArguments
 {

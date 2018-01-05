@@ -1,7 +1,7 @@
-import { InputController } from "./InputController";
-import { FormInstance } from "./FormInstance";
-import { FormEventArguments } from "./FormEventArguments";
-import { EventHandlerMetadata } from "uimf-core";
+import { InputController } from './InputController';
+import { FormInstance } from './FormInstance';
+import { FormEventArguments } from './FormEventArguments';
+import { EventHandlerMetadata } from 'uimf-core';
 
 export abstract class InputFieldEventHandler {
 	id: string;

@@ -1,5 +1,5 @@
-import { FormResponse } from "uimf-core";
-import { FormInstance } from "./FormInstance";
+import { FormResponse } from 'uimf-core';
+import { FormInstance } from './FormInstance';
 
 export interface IFormResponseHandler {
 	readonly name: string;

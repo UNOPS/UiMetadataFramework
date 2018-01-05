@@ -1,1 +1,1 @@
-export * from "./Growl";
+export * from './Growl';

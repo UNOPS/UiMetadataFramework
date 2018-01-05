@@ -1,8 +1,8 @@
-import { FormMetadata, FormResponse, FormResponseMetadata } from "uimf-core";
-import { FormInstance } from "./FormInstance";
-import * as axiosLib from "axios";
+import { FormMetadata, FormResponse, FormResponseMetadata } from 'uimf-core';
+import { FormInstance } from './FormInstance';
+import * as axiosLib from 'axios';
 
-var axios = axiosLib.default;
+let axios = axiosLib.default;
 
 export class UmfServer {
     private readonly getMetadataUrl: string;
@@ -20,7 +20,7 @@ export class UmfServer {
         return axios.get(`${this.getMetadataUrl}/${formId}`).then((response: axiosLib.AxiosResponse) => {
             return <FormMetadata>response.data;
         }).catch(e => {
-            console.warn(`Did not find form "${formId}".`)
+            console.warn(`Did not find form '${formId}'.`);
             return null;
         });
     }
@@ -38,10 +38,10 @@ export class UmfServer {
             InputFieldValues: data
         }]), <axiosLib.AxiosRequestConfig>{
             headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json'
             }
         }).then((response: axiosLib.AxiosResponse) => {
-            var invokeFormResponses = <InvokeFormResponse[]>response.data;
+            let invokeFormResponses = <InvokeFormResponse[]>response.data;
 
             // Make sure metadata is never null.
             invokeFormResponses[0].data.metadata = invokeFormResponses[0].data.metadata || new FormResponseMetadata();

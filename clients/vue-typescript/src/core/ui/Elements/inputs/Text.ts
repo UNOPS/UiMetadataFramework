@@ -12,10 +12,10 @@ export class TextInput extends Vue {
     id: any;
 
     created() {
-        this.id = this.$attrs["id"];
-        this.form = this.$attrs["form"];
-        this.app = this.$attrs["app"];
-        this.field = this.$attrs["field"];
-        this.tabindex = parseInt(this.$attrs["tabindex"]).valueOf();
+        this.id = this.$attrs['id'];
+        this.form = this.$attrs['form'];
+        this.app = this.$attrs['app'];
+        this.field = this.$attrs['field'];
+        this.tabindex = parseInt(this.$attrs['tabindex']).valueOf();
     }
 }

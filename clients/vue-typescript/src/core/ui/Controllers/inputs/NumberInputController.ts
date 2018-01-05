@@ -1,8 +1,8 @@
-import * as umf from "core-framework";
+import * as umf from 'core-framework';
 
 export class NumberInputController extends umf.InputController<number> {
 	serializeValue(value: number | string): string {
-		return value != null ? value.toString() : null
+		return value != null ? value.toString() : null;
 	}
 
 	init(value: string): Promise<NumberInputController> {

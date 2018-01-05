@@ -9,7 +9,7 @@ export class NumberOutput extends Vue {
 	field: any;
 
 	created() {
-		this.app = this.$attrs["app"];
-		this.field = this.$attrs["field"];
+		this.app = this.$attrs['app'];
+		this.field = this.$attrs['field'];
 	}
 }

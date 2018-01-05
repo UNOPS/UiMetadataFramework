@@ -1,6 +1,6 @@
-import { FormInstance } from "./FormInstance";
-import { FormEventArguments } from "./FormEventArguments";
-import { EventHandlerMetadata } from "uimf-core";
+import { FormInstance } from './FormInstance';
+import { FormEventArguments } from './FormEventArguments';
+import { EventHandlerMetadata } from 'uimf-core';
 
 export abstract class FormEventHandler {
 	id: string;

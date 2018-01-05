@@ -1,10 +1,10 @@
-import * as umf from "core-framework";
+import * as umf from 'core-framework';
 
 export class DropdownInputController extends umf.InputController<DropdownValue> {
 	selected: string;
 
 	serializeValue(value: DropdownValue | string): string {
-		if (typeof (value) === "string") {
+		if (typeof (value) === 'string') {
 			return value;
 		}
 
@@ -24,7 +24,7 @@ export class DropdownInputController extends umf.InputController<DropdownValue> 
 	}
 
 	private parse(value: string): DropdownValue {
-		return value == null || value == "" ? null : { value: value };
+		return value == null || value == '' ? null : { value: value };
 	}
 }
 

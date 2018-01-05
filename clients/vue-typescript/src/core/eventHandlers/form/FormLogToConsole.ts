@@ -2,8 +2,8 @@ import {
 	FormInstance,
 	FormEventHandler,
 	FormEventArguments
-} from "../../framework/index";
-import { EventHandlerMetadata } from "uimf-core";
+} from '../../framework/index';
+import { EventHandlerMetadata } from 'uimf-core';
 
 export class FormLogToConsole extends FormEventHandler {
 	run(form: FormInstance, eventHandlerMetadata: EventHandlerMetadata, args: FormEventArguments): Promise<void> {

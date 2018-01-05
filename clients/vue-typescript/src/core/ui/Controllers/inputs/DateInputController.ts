@@ -1,4 +1,4 @@
-import * as umf from "core-framework";
+import * as umf from 'core-framework';
 
 export class DateInputController extends umf.InputController<Date> {
 	valueAsText: string = null;
@@ -13,12 +13,12 @@ export class DateInputController extends umf.InputController<Date> {
 	}
 
 	getValue(): Promise<Date> {
-		var date = this.parseDate(this.valueAsText);
+		let date = this.parseDate(this.valueAsText);
 		return Promise.resolve(date);
 	}
 
 	serializeValue(date: Date | string): string {
-		var asDate = typeof(date) === "string" 
+		let asDate = typeof(date) === 'string' 
 			? this.parseDate(date)
 			: date;
 
@@ -33,6 +33,6 @@ export class DateInputController extends umf.InputController<Date> {
 	}
 
 	private format2DecimalPlaces(n) {
-		return ("0" + n).slice(-2);
+		return ('0' + n).slice(-2);
 	}
 }

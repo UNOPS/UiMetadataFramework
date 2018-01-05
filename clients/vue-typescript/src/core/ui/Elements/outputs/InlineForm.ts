@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
-import { FormComponent } from "core-form";
+import { FormComponent } from 'core-form';
 
-import "./InlineForm.scss"
+import './InlineForm.scss';
 
 @Component({
 	template: require('./InlineForm.html'),
@@ -19,11 +19,11 @@ export class InlineForm extends Vue {
 	initialized: boolean = false;
 
 	created() {
-		this.app = this.$attrs["app"];
-		this.field = this.$attrs["field"];
-		this.parent = this.$attrs["parent"];
+		this.app = this.$attrs['app'];
+		this.field = this.$attrs['field'];
+		this.parent = this.$attrs['parent'];
 
-		var formInstance = this.app.getFormInstance(this.field.data.form, true);
+		let formInstance = this.app.getFormInstance(this.field.data.form, true);
 
 		formInstance.initializeInputFields(this.field.data.inputFieldValues).then(() => {
 			this.data = {
@@ -34,7 +34,7 @@ export class InlineForm extends Vue {
 				useUrl: false
 			};
 
-			var f = new FormComponent({
+			let f = new FormComponent({
 				data: this.data
 			});
 

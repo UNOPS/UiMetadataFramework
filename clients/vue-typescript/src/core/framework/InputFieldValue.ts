@@ -1,5 +1,5 @@
-import * as umf from "uimf-core";
-import { InputController } from "./InputController";
+import * as umf from 'uimf-core';
+import { InputController } from './InputController';
 
 export class InputFieldValue {
     public metadata: umf.InputFieldMetadata;

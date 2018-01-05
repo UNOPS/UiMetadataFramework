@@ -2,8 +2,8 @@ import {
 	OutputFieldValue,
 	OutputFieldEventHandler,
 	FormEventArguments
-} from "../../framework/index";
-import { EventHandlerMetadata } from "uimf-core";
+} from '../../framework/index';
+import { EventHandlerMetadata } from 'uimf-core';
 
 export class OutputLogToConsole extends OutputFieldEventHandler {
 	run(output: OutputFieldValue, eventHandlerMetadata: EventHandlerMetadata, args: FormEventArguments): Promise<void> {

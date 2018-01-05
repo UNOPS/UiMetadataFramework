@@ -1,4 +1,4 @@
-import * as umf from "uimf-core";
+import * as umf from 'uimf-core';
 
 export class OutputFieldValue {
     public metadata: umf.OutputFieldMetadata;

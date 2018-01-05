@@ -1,10 +1,10 @@
-﻿import { FormMetadata, FormResponse, FormResponseMetadata, ClientFunctionMetadata } from "uimf-core";
-import { UmfServer } from "./UmfServer";
-import { FormInstance } from "./FormInstance";
-import { IFormResponseHandler } from "./IFormResponseHandler";
-import { InputFieldValue } from "./InputFieldValue";
-import { ControlRegister } from "./ControlRegister";
-import { IAppRouter } from "./IAppRouter";
+﻿import { FormMetadata, FormResponse, FormResponseMetadata, ClientFunctionMetadata } from 'uimf-core';
+import { UmfServer } from './UmfServer';
+import { FormInstance } from './FormInstance';
+import { IFormResponseHandler } from './IFormResponseHandler';
+import { InputFieldValue } from './InputFieldValue';
+import { ControlRegister } from './ControlRegister';
+import { IAppRouter } from './IAppRouter';
 
 export class UmfApp implements IAppRouter {
 	forms: FormMetadata[];
@@ -23,11 +23,11 @@ export class UmfApp implements IAppRouter {
 	useRouter(router: IAppRouter) {
 		this.go = (form: string, values: any) => {
 			return router.go(form, values);
-		}
+		};
 
 		this.makeUrl = (form: string, values: any) => {
 			return router.makeUrl(form, values);
-		}
+		};
 	}
 
 	registerResponseHandler(handler: IFormResponseHandler) {
@@ -51,10 +51,10 @@ export class UmfApp implements IAppRouter {
 
 	getFormInstance(formId: string, throwError: boolean = false) {
 		let metadata = this.getForm(formId);
-		
+
 		if (metadata == null) {
 			if (throwError) {
-				var error = Error(`Form ${formId} not found.`);
+				let error = Error(`Form ${formId} not found.`);
 				console.error(error);
 				throw error;
 			}
@@ -66,11 +66,11 @@ export class UmfApp implements IAppRouter {
 	}
 
 	handleResponse(response: FormResponse, form: FormInstance) {
-		var responseMetadata = response.metadata || new FormResponseMetadata();
-		var handler = this.formResponseHandlers[responseMetadata.handler];
+		let responseMetadata = response.metadata || new FormResponseMetadata();
+		let handler = this.formResponseHandlers[responseMetadata.handler];
 
 		if (handler == null) {
-			var error = new Error(`Cannot find FormResponseHandler "${responseMetadata.handler}".`);
+			let error = new Error(`Cannot find FormResponseHandler "${responseMetadata.handler}".`);
 			console.error(error);
 			throw error;
 		}
