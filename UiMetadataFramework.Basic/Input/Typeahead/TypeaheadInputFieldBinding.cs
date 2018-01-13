@@ -50,7 +50,7 @@ namespace UiMetadataFramework.Basic.Input.Typeahead
 			if (typeaheadInputFieldAttribute.Source.GetInterfaces(typeof(ITypeaheadRemoteSource)).Any())
 			{
 				return base.GetCustomProperties(attribute, property)
-					.Set("Source", typeaheadInputFieldAttribute.Source.FullName)
+					.Set("Source", typeaheadInputFieldAttribute.Source.GetFormId())
 					.Set("Parameters", typeaheadInputFieldAttribute.Parameters);
 			}
 
