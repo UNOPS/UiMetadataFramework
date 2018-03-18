@@ -7,7 +7,7 @@
 	using System.Reflection;
 
 	/// <summary>
-	/// This class helps holds mapping between server-side types and client-side UI controls. 
+	/// This class holds mappings between server-side types and client-side UI controls. 
 	/// It provides a number of APIs to simplify creation of metadata.
 	/// </summary>
 	public class MetadataBinder
@@ -57,6 +57,16 @@
 		{
 			this.dependencyInjectionContainer = dependencyInjectionContainer;
 		}
+
+		/// <summary>
+		/// Gets list of all registered <see cref="InputFieldBinding"/>.
+		/// </summary>
+		public IReadOnlyDictionary<Type, InputFieldBinding> InputFieldBindings => this.inputFieldMetadataMap;
+
+		/// <summary>
+		/// Gets list of all registered <see cref="OutputFieldBinding"/>.
+		/// </summary>
+		public IReadOnlyDictionary<Type, OutputFieldBinding> OutputFieldBindings => this.outputFieldMetadataMap;
 
 		/// <summary>
 		/// Gets id of the form.
