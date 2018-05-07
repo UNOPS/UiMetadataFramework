@@ -4,6 +4,14 @@ import { EventHandlerMetadata } from "./EventHandlerMetadata";
  * Represents metadata for a single output field.
  */
 export class OutputFieldMetadata {
+	constructor(metadata: any) {
+		for (var property in metadata) {
+			if (metadata.hasOwnProperty(property)) {
+				this[property] = metadata[property];
+			}
+		}
+	}
+
 	/**
 	 * Gets or sets additional parameters for the client control.
 	 */
@@ -13,7 +21,7 @@ export class OutputFieldMetadata {
 	 * Gets or sets event handlers for this output field.
 	 */
 	public eventHandlers: EventHandlerMetadata[];
-	
+
 	/**
 	 * Gets or sets id of the field to which this metadata belongs.
 	 */
@@ -38,4 +46,17 @@ export class OutputFieldMetadata {
 	 * Gets or sets value which will dictate rendering position of this field in relationship to output fields within the same <see cref="FormResponse"/>.
 	 */
 	public orderIndex: number;
+
+	/**
+	 * Gets value of a custom property.
+	 * @param name name of the custom property to get.
+	 * @returns value of the custom property or null if the property is undefined.
+	 */
+	public getCustomProperty(name: string): any {
+		if (this.customProperties != null && this.customProperties[name]) {
+			return this.customProperties[name];
+		}
+
+		return null;
+	}
 }
