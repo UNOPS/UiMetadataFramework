@@ -10,6 +10,16 @@ export class OutputFieldMetadata {
 				this[property] = metadata[property];
 			}
 		}
+
+		// Special case for "paginated-data", to ensure that each column is also
+		// an instance of OutputFieldMetadata class, instead of a plain javascript object.
+		if (this.customProperties != null && this.customProperties.columns != null) {
+			for (let columnPropertyName in this.customProperties.columns) {
+				// Convert column to OutputFieldMetadata instance.
+				let metadataAsJsonObject = this.customProperties.columns[columnPropertyName];
+				this.customProperties.columns[columnPropertyName] = new OutputFieldMetadata(metadataAsJsonObject);
+			}
+		}
 	}
 
 	/**
