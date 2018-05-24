@@ -1,0 +1,10 @@
+<div *ngIf="items != null">
+	<div class="object-list-item"
+	 *ngFor="let itemFields of items">
+		<output-form *ngFor="let itemField of itemFields"
+		 [field]="itemField"
+		 [app]="appOutput"
+		 [form]="formOutput"
+		 [parent]="parentOutput"></output-form>
+	</div>
+</div>

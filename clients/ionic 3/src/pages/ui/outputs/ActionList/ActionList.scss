@@ -1,0 +1,28 @@
+actionlist-output{
+	.modal .card {
+	max-width: 85%;
+	padding: 10px 15px;
+}
+
+.hidden {
+	width: 0;
+	height: 0;
+	position: absolute;
+	left: -1000px;
+}
+
+.actionlist {
+	margin: 10px 0;
+	padding: 0 5px;
+	background: #f5f5f5;
+	border-width: 1px 0;
+	border-style: solid;
+	border-color: #e8e8e8;
+	text-align: right;
+}
+
+.actionlist>li {
+	list-style-type: none;
+	display: inline-block;
+}
+}

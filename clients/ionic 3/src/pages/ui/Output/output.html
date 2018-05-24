@@ -1,0 +1,9 @@
+<div>
+    <strong *ngIf="showLabel === true && !alwaysHideLabel && field.metadata.label">{{field.metadata.label}}</strong>
+    <div #output
+        [class]="classObj"
+        [field]="field"
+        [app]="app"
+        [parent]="parent"
+        [form]="form"></div>
+</div>

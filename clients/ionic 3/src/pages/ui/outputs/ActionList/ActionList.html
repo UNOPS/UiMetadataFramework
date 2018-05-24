@@ -1,0 +1,25 @@
+<span *ngIf="fieldOutput.data != null && fieldOutput.data.actions != null && fieldOutput.data.actions.length > 0">
+	<ul class="actionlist">
+		<li *ngFor="let action of fieldOutput.data.actions">
+			<button (click)="run(action, outputApp)"
+			 class="btn btn-default btn-sm">{{action.label}}</button>
+		</li>
+	</ul>
+
+	<modal-form *ngIf="open">
+		<h3 slot="header">
+			<label for="modalId"
+			 class="close"
+			 (click)="close(true)">Close</label>
+		</h3>
+		<div slot="body">
+			<component-form *ngIf="initialized"
+			 [metadataOutput]="modalComponent.metadata"
+			 [appOutput]="modalComponent.app"
+			 [formOutput]="modalComponent.form"
+			 [useUrlOutput]="modalComponent.useUrl"
+			 [parentOutput]="outputParent">
+			</component-form>
+		</div>
+	</modal-form>
+</span>

@@ -1,0 +1,4 @@
+<div *ngIf="fieldOutput.data != null && fieldOutput.data.values != null" *ngFor="let input of fieldOutput.data.values">
+	<strong>{{input.label}}:</strong>
+	<span>{{input.value}}</span>
+</div>

@@ -1,0 +1,21 @@
+<div>
+	<ul *ngIf="pages.length > 1"
+	 class="paginator">
+		<li *ngIf="page in pages; else btn"
+		*ngIf="parent.useUrl">
+			<a [attr.href]="app.makeUrl(form.metadata.id, page.params)"
+			[ngClass]="page.cssClass">{{page.number}}</a>
+		</li>
+		<li #btn>
+			<button (click)="goToPage(page)"
+			[ngClass]="page.cssClass">
+				{{page.number}}
+			</button>
+		</li>
+	</ul>
+
+	<table-output [field]="tableField"
+	 [app]="app"
+	 [parent]="parent"
+	 [form]="form"></table-output>
+</div>

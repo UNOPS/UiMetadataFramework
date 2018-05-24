@@ -1,0 +1,7 @@
+<div *ngIf="fieldOutput.data != null"
+ class="alert {{fieldOutput.data.style}}">
+	<div *ngIf="fieldOutput.data.heading != null"
+	 class="heading">{{fieldOutput.data.heading}}</div>
+	<div *ngIf="fieldOutput.data.message != null"
+	 class="body">{{fieldOutput.data.message}}</div>
+</div>

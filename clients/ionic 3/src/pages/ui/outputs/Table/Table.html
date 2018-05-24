@@ -1,0 +1,27 @@
+<div>
+	<table *ngIf="fieldOutput.data.length > 0; else noData"
+	 class="table table-hover">
+		<thead>
+			<tr>
+				<th *ngFor="column in columnsOrdered">{{column.label}}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngIf="map != null"
+			*ngFor="row in fieldOutput.data">
+				<td *ngFor="column in columnsOrdered">
+					<output-form [field]="getField(row, column)"
+					 [app]="app"
+					 [form]="form"
+					 [parent]="parent"
+					 [showLabel]="false">
+					</output-form>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div #noData
+	 class="alert-nodata">
+		No data.
+	</div>
+</div>

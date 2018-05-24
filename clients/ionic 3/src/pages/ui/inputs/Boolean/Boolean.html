@@ -1,0 +1,15 @@
+<span>
+	<input *ngIf="inputField.metadata.required; else select"
+	 type="checkbox"
+	 id="{{inputId}}"
+	 class='checkbox'
+	 [(ngModel)]="inputField.value"
+	 tabindex="inputTabindex">
+
+	<select #select
+	[(ngModel)]="inputField.value">
+		<option></option>
+		<option value="true">Yes</option>
+		<option value="false">No</option>
+	</select>
+</span>
