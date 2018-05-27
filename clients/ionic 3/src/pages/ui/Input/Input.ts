@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild, Input, ViewContainerRef, ComponentFactoryResolver, OnInit } from '@angular/core';
 import { IonicPage } from 'ionic-angular';
-import { TextInput } from '../inputs/Text';
+import { TextInput } from '../inputs/Text/Text';
 @IonicPage()
 @Component({
     selector: 'input-form',
@@ -14,6 +14,7 @@ export class InputForm implements OnInit {
     tabindex: number = 1;
     input: any = {};
     id: any;
+    entryRef: any;
 
     @Input() inputId: any;
     @Input() inputField: any;
@@ -29,21 +30,16 @@ export class InputForm implements OnInit {
         this.tabindex = Number.parseInt(this.inputTabindex);
         this.app = this.inputApp;
         this.form = this.inputForm;
-        console.log(this.inputApp);
-
         this.entry.clear();
-        var component = TextInput
-        debugger;
-        console.log();
+        var component = this.app.controlRegister.getInput(this.field.metadata.type).component
         const factory = this.resolver.resolveComponentFactory(component);
-        let entryRef = this.entry.createComponent(factory);
-        entryRef.instance.app = this.app;  
-        entryRef.instance.field = this.field; 
-        entryRef.instance.tabindex = this.tabindex; 
-        entryRef.instance.form = this.form; 
-        entryRef.instance.id = this.id; 
+        this.entryRef = this.entry.createComponent(factory);
+        this.entryRef.instance.app = this.app;  
+        this.entryRef.instance.field = this.field; 
+        this.entryRef.instance.tabindex = this.tabindex; 
+        this.entryRef.instance.form = this.form; 
+        this.entryRef.instance.id = this.id; 
     }
-
     constructor(private resolver: ComponentFactoryResolver) {
 
     }

@@ -1,10 +1,10 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 
 @Component({
 	selector: 'textarea-input',
 	templateUrl: 'Textarea.html'
 })
-export class TextareaInput {
+export class TextareaInput implements OnInit{
 	inputId: any;
 	inputField: any;
 	inputForm: any;
@@ -16,7 +16,7 @@ export class TextareaInput {
 	@Input() tabindex: number;
 	@Input() id: any;
 
-    created() {
+	ngOnInit(): void {
         this.inputId = this.id;
 		this.inputForm = this.form;
 		this.inputApp = this.app;

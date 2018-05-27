@@ -1,20 +1,20 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
-import { TextInput } from '../inputs/Text';
+import { DropdownInput } from './Dropdown';
 
 
 @NgModule({
   declarations: [
-    TextInput
+    DropdownInput
   ],
   imports: [
-    IonicPageModule.forChild(TextInput)
+    IonicPageModule.forChild(DropdownInput)
   ],
   entryComponents: [
-    TextInput
+    DropdownInput
   ],
   exports: [
-    TextInput
+    DropdownInput
   ]
 })
-export class TextInputModule { }
+export class DropdownInputModule { }

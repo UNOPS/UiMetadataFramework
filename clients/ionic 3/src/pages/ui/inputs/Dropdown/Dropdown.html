@@ -1,8 +1,8 @@
-<select id="{{inputId}}"
-[(ngModel)]="inputField.selected"
- required="inputField.metadata.required"
- tabindex="inputTabindex">
-	<option value=""></option>
-	<option value="option.value"
-	 *ngFor="option in inputField.metadata.customProperties.items">{{option.label}}</option>
-</select>
+
+		<ion-select id="{{inputId}}"
+		[(ngModel)]="inputField.selected"
+		 required="inputField.metadata.required"
+		 tabindex="inputTabindex">
+			<ion-option [value]="option.value" 
+			*ngFor="let option of inputField.metadata.customProperties.Items">{{option.label}}</ion-option>
+		</ion-select>

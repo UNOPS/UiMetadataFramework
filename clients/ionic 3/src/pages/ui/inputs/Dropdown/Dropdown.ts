@@ -1,11 +1,11 @@
-import { Component, ElementRef, ViewChild, Input } from '@angular/core';
+import { Component, ElementRef, ViewChild, Input, OnInit } from '@angular/core';
 
 
 @Component({
 	selector: 'dropdown-input',
 	templateUrl: 'Dropdown.html'
 })
-export class DropdownInput {
+export class DropdownInput implements OnInit{
 	inputId: any;
 	inputField: any;
 	inputForm: any;
@@ -17,11 +17,11 @@ export class DropdownInput {
 	@Input() tabindex: number;
 	@Input() id: any;
 
-    created() {
+	ngOnInit(): void {
 		this.inputId = this.id;
 		this.inputForm = this.form;
 		this.inputApp = this.app;
 		this.inputField = this.field;
 		this.inputTabindex = this.tabindex.valueOf();
-    }
+	}
 }

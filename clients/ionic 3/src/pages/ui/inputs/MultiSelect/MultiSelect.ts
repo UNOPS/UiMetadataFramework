@@ -1,4 +1,7 @@
-import { Component, ElementRef, ViewChild, Input } from '@angular/core';
+import { Component, ElementRef, ViewChild, Input, OnInit } from '@angular/core';
+import * as axiosLib from "axios";
+var axios = axiosLib.default;
+
 
 function buildFilter(parentForm, parameters, query) {
 	let promise;
@@ -24,7 +27,8 @@ function buildFilter(parentForm, parameters, query) {
 	selector: 'multi-select',
 	templateUrl: 'MultiSelect.html'
 })
-export class MultiSelectInput {
+export class MultiSelectInput implements OnInit {
+
 	inputField: any;
 	inputForm: any;
 	inputTabindex: any;
@@ -41,7 +45,7 @@ export class MultiSelectInput {
 	isLoading: boolean = false;
 	private selected: any[] = [];
 
-	created() {
+	ngOnInit(): void {
 		this.inputId = this.id;
 		this.inputForm = this.form;
 		this.inputApp = this.app;
@@ -84,7 +88,7 @@ export class MultiSelectInput {
 			});
 		}
 		else {
-			this.options = this.mapToTypeaheadItems(this.source);
+			//this.options = this.mapToTypeaheadItems(this.source);
 			this.setInputValue(this.field, this.options);
 		}
 	}

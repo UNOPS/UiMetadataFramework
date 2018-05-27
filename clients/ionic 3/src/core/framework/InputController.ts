@@ -1,4 +1,3 @@
-import { InputFieldValue } from "./InputFieldValue";
 import * as umf from './uimf-core/src/index';
 
 export abstract class InputController<T> {

@@ -1,10 +1,10 @@
-import { Component, ElementRef, ViewChild, Input } from '@angular/core';
+import { Component, ElementRef, ViewChild, Input, OnInit } from '@angular/core';
 
 @Component({
 	selector: 'dynamic-form',
 	templateUrl: 'DynamicForm.html'
 })
-export class DynamicForm {
+export class DynamicForm implements OnInit{
 	private inputid: number = 0;
 	inputs: any[] = [];
 
@@ -17,15 +17,7 @@ export class DynamicForm {
 	@Input() field: any;
 	@Input() tabindex: number;
 
-	get inputId() {
-		return this.inputid += 1;
-	}
-
-	get id() {
-		return `dfi${this.inputId}`;
-	}
-
-	created() {
+	ngOnInit(): void {
 		this.inputApp = this.app;
 		this.inputField = this.field;
 
@@ -40,6 +32,14 @@ export class DynamicForm {
 		this.initialiseInputs(this.field, this.app).then(() => {
 			self.inputs = this.field.inputs;
 		});
+	}
+
+	get inputId() {
+		return this.inputid += 1;
+	}
+
+	get id() {
+		return `dfi${this.inputId}`;
 	}
 
 	initialiseInputs = async function (field, app) {

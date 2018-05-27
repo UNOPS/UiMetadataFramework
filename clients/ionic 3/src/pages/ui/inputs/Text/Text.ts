@@ -20,7 +20,6 @@ export class TextInput implements OnInit{
 	@Input() id: any;
 
 	ngOnInit(): void {
-		debugger;
 		this.inputId = this.id;
 		this.inputForm = this.form;
 		this.inputApp = this.app;

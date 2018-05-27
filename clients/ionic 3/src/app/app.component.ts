@@ -66,7 +66,7 @@ export class MyApp {
         this.metadata = formInstance.metadata;
         this.form = formInstance;
         this.nav.push('form', {
-          id:'form',
+          id: form,
           app: this.app,
           metadata: this.metadata,
           form: this.form

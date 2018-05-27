@@ -1,6 +1,5 @@
 import * as umf from '../../src/core/framework/index';
 
-import { TextInput } from '../pages/ui/inputs/Text';
 import { NumberInput } from "../pages/ui/inputs/Number/Number";
 import { DateInput } from "../pages/ui/inputs/Date/Date";
 import { DropdownInput } from "../pages/ui/inputs/Dropdown/Dropdown";
@@ -37,6 +36,7 @@ import {
 	InputLogToConsole,
 	OutputLogToConsole
 } from "../core/eventHandlers/index";
+import { TextInput } from '../pages/ui/inputs/Text/Text';
 
 
 

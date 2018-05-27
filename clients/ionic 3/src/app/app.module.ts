@@ -8,8 +8,9 @@ import { ListPage } from '../pages/list/list';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { RouterModule } from '@angular/router';
 import { AppRouter } from './AppRouter';
+import { AutoCompleteModule } from 'ionic2-auto-complete';
+
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { AppRouter } from './AppRouter';
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    AutoCompleteModule 
   ],
   bootstrap: [IonicApp],
   entryComponents: [

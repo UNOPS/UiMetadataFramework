@@ -1,4 +1,7 @@
 <div *ngIf="inputs != null">
-	<input-form *ngFor="let inputField of inputs" [field]="inputField" [app]="inputApp" [tabindex]="inputTabindex * 100 + inputField.metadata.orderIndex"
-	 [form]="inputForm"></input-form>
+	<input-form *ngFor="let inputField of inputs" 
+	[field]="inputField" 
+	[app]="inputApp" 
+	[tabindex]="inputTabindex * 100 + inputField.metadata.orderIndex"
+	[form]="inputForm"></input-form>
 </div>

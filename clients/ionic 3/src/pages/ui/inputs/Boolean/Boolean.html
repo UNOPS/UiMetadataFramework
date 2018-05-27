@@ -1,15 +1,15 @@
-<span>
-	<input *ngIf="inputField.metadata.required; else select"
-	 type="checkbox"
-	 id="{{inputId}}"
-	 class='checkbox'
-	 [(ngModel)]="inputField.value"
-	 tabindex="inputTabindex">
+<ion-item *ngIf="inputField.metadata.required; else select">
+	<ion-input 
+	type="checkbox" 
+	id="{{inputId}}" 
+	[(ngModel)]="inputField.value" 
+	tabindex="inputTabindex">
+	</ion-input>
+</ion-item>
 
-	<select #select
-	[(ngModel)]="inputField.value">
-		<option></option>
-		<option value="true">Yes</option>
-		<option value="false">No</option>
-	</select>
-</span>
+<ng-template #select>
+	<ion-select [(ngModel)]="inputField.value">
+		<ion-option value="true">Yes</ion-option>
+		<ion-option value="false">No</ion-option>
+	</ion-select>
+</ng-template>

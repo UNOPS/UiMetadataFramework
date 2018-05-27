@@ -62,7 +62,23 @@ export class FormComponent implements OnInit{
         this.app = this.params.data.app;
         this.form = this.params.data.form;
         this.metadata = this.params.data.metadata;
+        
     }
+
+    async initialiseInputs(field, app) {
+		field.inputs = app.controlRegister.createInputControllers(field.value.inputs);
+
+		let promises = [];
+		for (let input of field.inputs) {
+			let i = field.value.inputs.find(t => t.inputId === input.metadata.inputId);
+			if (i != null) {
+				let p = input.init(i.value);
+				promises.push(p);
+			}
+		}
+
+		await Promise.all(promises);
+	};
 
     init() {
         if (!this.params.data.initialized) {

@@ -1,11 +1,11 @@
-import { Component, ElementRef, ViewChild, Input } from '@angular/core';
+import { Component, ElementRef, ViewChild, Input, OnInit } from '@angular/core';
 import { NavController } from 'ionic-angular';
 
 @Component({
 	selector: 'date-input',
 	templateUrl: 'Date.html'
 })
-export class DateInput {
+export class DateInput implements OnInit {
 	inputId: any;
 	inputField: any;
 	inputForm: any;
@@ -18,6 +18,9 @@ export class DateInput {
 	@Input() id: any;
 
 	constructor() {
+	}
+
+	ngOnInit(): void {
 		this.inputId = this.id;
 		this.inputForm = this.form;
 		this.inputApp = this.app;
