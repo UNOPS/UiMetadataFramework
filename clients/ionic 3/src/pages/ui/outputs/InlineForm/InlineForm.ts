@@ -1,10 +1,10 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 
 @Component({
 	selector: 'inlineform-output',
 	templateUrl: 'InlineForm.html'
 })
-export class InlineForm {
+export class InlineForm implements OnInit{
 	appOutput: any;
 	fieldOutput: any;
 	parentOutput: any;
@@ -15,7 +15,7 @@ export class InlineForm {
 	@Input() parent: any;
 	data: any = {};
 
-	created() {
+	ngOnInit() {
 		this.appOutput = this.app;
 		this.fieldOutput = this.field;
 		this.parentOutput = this.parent;

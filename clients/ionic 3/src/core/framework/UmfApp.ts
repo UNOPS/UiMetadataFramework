@@ -65,7 +65,7 @@ export class UmfApp implements IAppRouter {
 		return new FormInstance(metadata, this.controlRegister);
 	}
 
-	handleResponse(response: FormResponse, form: FormInstance) {
+	handleResponse(response: FormResponse, form: FormInstance, args: any) {
 		var responseMetadata = response.metadata || new FormResponseMetadata();
 		var handler = this.formResponseHandlers[responseMetadata.handler];
 
@@ -75,7 +75,7 @@ export class UmfApp implements IAppRouter {
 			throw error;
 		}
 
-		return handler.handle(response, form);
+		return handler.handle(response, form, args);
 	}
 
 	runFunctions(functionMetadata: ClientFunctionMetadata[]) {

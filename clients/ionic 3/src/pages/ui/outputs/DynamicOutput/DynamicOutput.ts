@@ -1,12 +1,12 @@
 import * as umf from '../../../../core/framework/index';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
 	selector: 'dynamic-output',
 	templateUrl: 'DynamicOutput.html'
 })
 
-export class DynamicOutput {
+export class DynamicOutput implements OnInit{
 	formOutput: any;
 	appOutput: any;
 	fieldOutput: any;
@@ -18,7 +18,7 @@ export class DynamicOutput {
 	@Input() form: any;
 	@Input() parent: any;
 
-	created() {
+	ngOnInit() {
 		this.appOutput = this.app;
 		this.fieldOutput = this.field;
 		this.formOutput = this.form;

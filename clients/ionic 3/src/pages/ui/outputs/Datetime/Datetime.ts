@@ -1,12 +1,12 @@
 import * as moment from 'angular2-moment';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 
 @Component({
 	selector: 'datetime-output',
 	templateUrl: 'Datetime.html'
 })
-export class DateTimeOutput {
+export class DateTimeOutput implements OnInit{
 	appOutput: any;
 
 	fieldOutput: any;
@@ -17,7 +17,7 @@ export class DateTimeOutput {
 	@Input() parent: any;
 	@Input() showLabel: any;
 
-	created() {
+	ngOnInit() {
 		this.appOutput = this.app;
 		this.fieldOutput = this.field;
 	}

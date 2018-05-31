@@ -1,11 +1,12 @@
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
 	selector: 'alert-output',
 	templateUrl: 'Alert.html'
 })
-export class Alert {
+export class Alert implements OnInit{
+
 	fieldOutput: any;
 
 	@Input() field: any;
@@ -14,7 +15,7 @@ export class Alert {
 	@Input() parent: any;
 	@Input() showLabel: any;
 
-	created() {
+	ngOnInit() {
 		this.fieldOutput = this.field;
 	}
 }

@@ -3,9 +3,10 @@ import * as umf from '../../src/core/framework/index';
 import { RouteParameterBuilder } from './RouteParameterBuilder';
 import { HomePage } from '../pages/home/home';
 import { AboutPage } from '../pages/about/about';
-import { FormComponent } from '../pages/ui/form';
 import { Nav } from 'ionic-angular';
 import { ViewChild } from '@angular/core';
+import { Deeplinks } from '@ionic-native/deeplinks';
+
 
 export class AppRouter implements umf.IAppRouter {
   static appRoutes: any;
@@ -45,8 +46,9 @@ export class AppRouter implements umf.IAppRouter {
 	}
 
 	go(form: string, values) {
-		this.nav.push(`/form/${form}`,
-			{ queryParams: this.rpb.buildFormRouteParameters(form, values) });
+		var queryParams = this.rpb.buildFormRouteParameters(form, values);
+		queryParams.id = form;
+		this.nav.push("form", queryParams);
 	}
 
 	makeUrl(form: string, values): string {

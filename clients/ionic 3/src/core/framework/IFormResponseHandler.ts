@@ -3,5 +3,5 @@ import { FormInstance } from "./FormInstance";
 
 export interface IFormResponseHandler {
 	readonly name: string;
-	handle(response: FormResponse, form: FormInstance);
+	handle(response: FormResponse, form: FormInstance, args: any);
 }

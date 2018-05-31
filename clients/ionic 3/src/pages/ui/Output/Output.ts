@@ -1,11 +1,11 @@
-import { Component, ElementRef, ViewChild, Input, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
+import { Component, ElementRef, ViewChild, Input, ViewContainerRef, ComponentFactoryResolver, OnInit } from '@angular/core';
 
 
 @Component({
 	selector: 'output-form',
 	templateUrl: 'output.html'
 })
-export class OutputForm {
+export class OutputForm implements OnInit{
     showLabel: boolean = true;
     tabindex: number = 1;
     visibleInputFields: any[];
@@ -17,17 +17,18 @@ export class OutputForm {
     parent: any;
     alwaysHideLabel: boolean;
     classObj: string;
-    @ViewChild('input', { read: ViewContainerRef }) entry: ViewContainerRef;
+    @ViewChild('output', { read: ViewContainerRef }) entry: ViewContainerRef;
     constructor(private resolver: ComponentFactoryResolver){
-        
     }
     @Input() outputField: any;
     @Input() outputForm: any;
     @Input() outputParent: any;
     @Input() outputApp: any;
-    @Input() outputshowLabel: any;
+    @Input() outputshowLabel : any;
+    entryRef: any;
 
-    created() {
+    ngOnInit() {
+        debugger;
         this.field = this.outputField;
         this.app = this.outputApp;
         this.parent = this.outputParent;
@@ -40,10 +41,15 @@ export class OutputForm {
         let outputField = this.app.controlRegister.getOutput(this.field);
 
         this.entry.clear();
-        const factory = this.resolver.resolveComponentFactory(
-            this.app.controlRegister.getOutput(this.field).constructor);
+        var component = outputField.constructor;
+        const factory = this.resolver.resolveComponentFactory(component);
 
-        this.entry.createComponent(factory) || {};
+        this.entryRef = this.entry.createComponent(factory);
+        this.entryRef.instance.app = this.app;  
+        this.entryRef.instance.field = this.field; 
+        this.entryRef.instance.form = this.form; 
+        this.entryRef.instance.parent = this.parent; 
+
         let outputDisplayConfig = outputField.constants || {};
         this.alwaysHideLabel = outputDisplayConfig.alwaysHideLabel;
 

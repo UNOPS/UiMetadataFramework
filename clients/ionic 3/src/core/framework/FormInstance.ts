@@ -126,6 +126,54 @@ export class FormInstance {
         });
     }
 
+    private enforceCanPostOnLoad() {
+        // If user is trying to auto-submit a form which is not enabled for `PostOnLoad`.
+        if (!this.metadata.postOnLoad) {
+            throw new Error(`Invalid invocation of form '${this.metadata.id}'. Form cannot be auto-posted, because *PostOnLoad* is set to false.`);
+        }
+    }
+
+    async submit(app: UmfApp, asPostOnLoad: boolean, args: any) {
+                debugger;
+        if (asPostOnLoad) {
+            this.enforceCanPostOnLoad();
+        }
+
+        let formData = await this.getFormData(asPostOnLoad);
+
+        // If not all required inputs are filled.
+        if (formData == null) {
+            throw new Error(`Form '${this.metadata.id}' cannot be submitted, because some required input fields do not have values.`);
+        }
+
+        //await this.fire('form:posting', new FormEventArguments(app));
+
+        let response = await app.server.postForm(this.metadata.id, formData);
+       // await this.fire('form:responseReceived', new FormResponseEventArguments(app, response));
+        return response;
+        //this.setOutputFieldValues(response);
+
+        // // Null response is treated as a server-side error.
+        // if (response == null) {
+        //     throw new Error(`Received null response.`);
+        // }
+
+        // await app.runFunctions(response.metadata.functionsToRun);
+        //app.handleResponse(response, this, args);
+
+        //await this.fire('form:responseHandled', new FormResponseEventArguments(app, response));
+    }
+
+    async allRequiredInputsHaveData(asPostOnLoad: boolean): Promise<boolean> {
+        if (asPostOnLoad) {
+            this.enforceCanPostOnLoad();
+        }
+
+        let formData = await this.getFormData(asPostOnLoad);
+
+        return formData != null;
+    }
+
     getSerializedInputValues(): Promise<any> {
         var data = {};
         var promises = [];
@@ -233,5 +281,40 @@ export class FormInstance {
         }
 
         return normalizedResponse;
+    }
+
+    private async getFormData(asPostOnLoad: boolean): Promise<any> {
+        let data = {};
+        let promises = [];
+        let hasRequiredMissingInput = false;
+
+        for (let input of this.inputs) {
+            let promise = input.getValue().then(value => {
+                data[input.metadata.id] = value;
+
+                if (input.metadata.required && (value == null || (typeof (value) === 'string' && value === ''))) {
+                    hasRequiredMissingInput = true;
+                }
+            });
+
+            promises.push(promise);
+        }
+
+        await Promise.all(promises);
+
+        let skipValidation =
+            !this.metadata.postOnLoadValidation &&
+            this.metadata.postOnLoad &&
+            // if initialization of the form, i.e. - first post.
+            asPostOnLoad;
+
+
+        // If not all required inputs were entered, then do not post.
+        if (hasRequiredMissingInput &&
+            !skipValidation) {
+            return null;
+        }
+
+        return data;
     }
 }

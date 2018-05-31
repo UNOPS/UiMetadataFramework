@@ -1,9 +1,5 @@
-<div>
-    <strong *ngIf="showLabel === true && !alwaysHideLabel && field.metadata.label">{{field.metadata.label}}</strong>
-    <div #output
-        [class]="classObj"
-        [field]="field"
-        [app]="app"
-        [parent]="parent"
-        [form]="form"></div>
-</div>
+<ion-item>
+    <ion-label *ngIf="showLabel === true && !alwaysHideLabel && field.metadata.label">{{field.metadata.label}}</ion-label>
+    <div item-content #output
+        [class]="classObj"></div>
+</ion-item>

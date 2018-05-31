@@ -37,8 +37,8 @@ export class MyApp {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
       var server = new UmfServer(
-        "http://localhost:62790/api/form/metadata",
-        "http://localhost:62790/api/form/run");
+        "/local/api/form/metadata",
+        "/local/api/form/run");
 
       this.app = new UmfApp(server, controlRegister);
       this.app.load().then(response => {
@@ -46,6 +46,7 @@ export class MyApp {
           this.app.useRouter(router);
           this.forms = this.app.forms;
 
+          this.app.registerResponseHandler(new handlers.FormComponentResponseHandler());
           this.app.registerResponseHandler(new handlers.MessageResponseHandler());
           this.app.registerResponseHandler(new handlers.ReloadResponseHandler((form, inputFieldValues) => {
             return this.app.load().then(t => {

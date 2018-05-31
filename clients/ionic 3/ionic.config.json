@@ -4,5 +4,11 @@
   "type": "ionic-angular",
   "integrations": {
     "cordova": {}
-  }
+  },
+  "proxies": [
+   {
+     "path": "/local/api",
+     "proxyUrl": "http://localhost:62790/api"
+   }
+ ]
 }

@@ -1,10 +1,10 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 
 @Component({
 	selector: 'formInstance-output',
 	templateUrl: 'FormInstance.html'
 })
-export class FormInstance {
+export class FormInstance implements OnInit{
 	fieldOutput: any;
 
 	@Input() field: any;
@@ -13,7 +13,7 @@ export class FormInstance {
 	@Input() parent: any;
 	@Input() showLabel: any;
 
-	created() {
+	ngOnInit() {
 		this.fieldOutput = this.field;
 	}
 }

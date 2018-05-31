@@ -1,17 +1,17 @@
-import { Component, Output } from "@angular/core";
+import { Component, Output, OnInit, Input } from "@angular/core";
 
 @Component({
 	selector: 'text-output',
 	templateUrl: 'Text.html'
 })
-export class TextOutput {
+export class TextOutput implements OnInit{
 	appOutput: any;
 	fieldOutput: any;
 
-	@Output() app: any;
-	@Output() field: any;
+	@Input() app: any;
+	@Input() field: any;
 
-	created() {
+	ngOnInit() {
 		this.appOutput = this.app;
 		this.fieldOutput = this.field;
 	}

@@ -1,17 +1,17 @@
 import { OutputFieldValue } from '../../../../core/framework/index';
 import { TableOutput } from '../Table/Table';
-import { Output, Component } from '@angular/core';
+import { Output, Component, OnInit, Input } from '@angular/core';
 
 @Component({
 	selector: 'paginator-output',
 	templateUrl: 'Paginator.html'
 })
-export class Paginator {
+export class Paginator implements OnInit{
 	totalCount: number = 0;
-	@Output() app: any;
-	@Output() field: any;
-	@Output() parent: any;
-	@Output() form: any;
+	@Input() app: any;
+	@Input() field: any;
+	@Input() parent: any;
+	@Input() form: any;
 
 	tableField: any;
 	appOutput: any;
@@ -19,7 +19,7 @@ export class Paginator {
 	parentOutput: any;
 	formOutput: any;
 
-	created() {
+	ngOnInit() {
 		this.appOutput = this.app;
 		this.fieldOutput = this.field;
 		this.parentOutput = this.parent;

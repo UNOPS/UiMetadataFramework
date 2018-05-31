@@ -1,14 +1,15 @@
 import { Modal } from '../Model/Modal';
 import { ActionListEventArguments } from './ActionListEventArguments';
 
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { EventBusService } from '../../../../core/event-bus';
 
 @Component({
 	selector: 'actionlist-output',
 	templateUrl: 'ActionList.html'
 })
-export class ActionList {
+export class ActionList implements OnInit{
+
 	eventBusService: any;
 	open: boolean = false;
 	current: any = null;
@@ -37,7 +38,7 @@ export class ActionList {
 	get modalId() {
 		return this.modalid;
 	}
-	created() {
+	ngOnInit() {
 		this.outputField = this.field;
 		this.outputApp = this.app;
 		this.outputForm = this.form;

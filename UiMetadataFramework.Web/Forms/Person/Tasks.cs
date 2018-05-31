@@ -31,6 +31,7 @@
 
 		public Response Handle(Request message)
 		{
+			message.TaskOwnerName = "buy milk";
 			var random = new Random(message.TaskOwnerName.GetHashCode());
 
 			return new Response
@@ -63,7 +64,7 @@
 
 		public class Request : IRequest<Response>
 		{
-			[InputField(Required = true, Hidden = true)]
+			[InputField(Hidden = true)]
 			public string TaskOwnerName { get; set; }
 		}
 

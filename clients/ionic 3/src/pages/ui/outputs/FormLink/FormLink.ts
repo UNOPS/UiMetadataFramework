@@ -1,11 +1,11 @@
 import * as moment from 'angular2-moment';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
 	selector: 'formLink-output',
 	templateUrl: 'FormLink.html'
 })
-export class FormLink {
+export class FormLink implements OnInit{
 	appOutput: any;
 	fieldOutput: any;
 	@Input() field: any;
@@ -14,7 +14,7 @@ export class FormLink {
 	@Input() parent: any;
 	@Input() showLabel: any;
 
-	created() {
+	ngOnInit() {
 		this.appOutput = this.app;
 		this.fieldOutput = this.field;
 	}

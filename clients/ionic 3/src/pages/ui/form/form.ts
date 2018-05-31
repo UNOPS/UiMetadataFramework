@@ -1,6 +1,5 @@
 import { Component, ElementRef, ViewChild, EventEmitter, Output, Input, OnInit } from '@angular/core';
-import { EventBusService } from '../../../core/event-bus';
-import { IonicPage, NavParams } from 'ionic-angular';
+import { IonicPage, NavParams, NavController, Events } from 'ionic-angular';
 import * as umf from '../../../core/framework/index';
 import { UmfApp } from '../../../core/framework/index';
 
@@ -15,7 +14,7 @@ function bindEventHandlersToCustomEvents(formComponent, eventHandlers) {
         if (eventHandler.runAt.indexOf('form:') === 0) {
             continue;
         }
-        formComponent.$on(eventHandler.runAt, e => {
+        formComponent.events.subscribe(eventHandler.runAt, e => {
             // Augment event args with form which is firing the event. This is needed,
             // so that event handler can know from which particular form this event is coming.
             e.form = formComponent;
@@ -32,11 +31,10 @@ function bindEventHandlersToCustomEvents(formComponent, eventHandlers) {
 
 @Component({
     selector: 'component-form',
-    templateUrl: 'form.html',
-    providers: [EventBusService]
+    templateUrl: 'form.html'
 })
 
-export class FormComponent implements OnInit{
+export class FormComponent implements OnInit {
 
     tabindex: number = 1;
     urlData: null;
@@ -49,78 +47,86 @@ export class FormComponent implements OnInit{
     disabled: boolean = false;
     self: any;
     submitButtonLabel: any;
-    app:any;
-    form:any;
-    metadata:any;
+    app: any;
+    form: any;
+    metadata: any;
+    nav: any;
+    events: any;
+    @Input() initializedForm: boolean;
 
-    constructor(params: NavParams) {
-        this.params = params;
-        this.init();
+    constructor(public paramsCtrl: NavParams,
+        public navCtrl: NavController,
+        public eventCtrl: Events) {
+        this.params = paramsCtrl;
+        this.nav = navCtrl;
+        this.events = eventCtrl;
     }
 
     ngOnInit() {
+        debugger;
         this.app = this.params.data.app;
         this.form = this.params.data.form;
         this.metadata = this.params.data.metadata;
-        
+        this.self = this;
+        this.initialized = this.initializedForm;
+        this.init();
     }
 
     async initialiseInputs(field, app) {
-		field.inputs = app.controlRegister.createInputControllers(field.value.inputs);
+        field.inputs = app.controlRegister.createInputControllers(field.value.inputs);
 
-		let promises = [];
-		for (let input of field.inputs) {
-			let i = field.value.inputs.find(t => t.inputId === input.metadata.inputId);
-			if (i != null) {
-				let p = input.init(i.value);
-				promises.push(p);
-			}
-		}
+        let promises = [];
+        for (let input of field.inputs) {
+            let i = field.value.inputs.find(t => t.inputId === input.metadata.inputId);
+            if (i != null) {
+                let p = input.init(i.value);
+                promises.push(p);
+            }
+        }
 
-		await Promise.all(promises);
-	};
+        await Promise.all(promises);
+    };
 
     init() {
-        if (!this.params.data.initialized) {
-            var form = this.params.data.form;
-            this.self = this;
+        if (!this.initialized) {
+            var form = this.form;
             this.initialized = true;
-            this.visibleInputFields = form.inputs.filter(t => t.metadata.hidden == false);
-            this.submitButtonLabel = form.metadata.customProperties != null && form.metadata.customProperties.submitButtonLabel
-                ? form.metadata.customProperties.submitButtonLabel
-                : "Submit"
+            this.visibleInputFields = form.inputs.filter(t => t.metadata.hidden == false),
+                this.submitButtonLabel = form.metadata.customProperties != null && form.metadata.customProperties.submitButtonLabel
+                    ? form.metadata.customProperties.submitButtonLabel
+                    : "Submit";
 
             this.tabindex += 1;
 
-            var app = this.params.data.app;
+            var app = this.app;
 
-            form.fire("form:loaded", { app: app });
+            this.events.publish("form:loaded", { app: app });
 
             // Auto-submit form if necessary.
             if (form.metadata.postOnLoad) {
-                this.submit(app, form);
+                this.submit(app, form, null);
             }
         }
-    }
-
+    };
     enableForm() {
-        var formInstance = this.params.data.form;
+        var formInstance = this.form;
 
         // Hide all inputs, to re-render them. This is needed due to the way that
         // Svelte *seems* to work - it doesn't re-render nested components, unless they are recreated.
         this.visibleInputFields = [];
-        this.visibleInputFields = formInstance.inputs.filter(t => t.metadata.hidden == false);
-    }
+        this.visibleInputFields = formInstance.inputs.filter(t => t.metadata.hidden == false),
+            this.disabled = false;
+    };
     renderResponse(response) {
-        var formInstance = this.params.data.form;
+        var formInstance = this.form;
+
         // Force Svelte to re-render outputs.
         this.outputFieldValues = null;
-        this.outputFieldValues = formInstance.outputs,
-            this.responseMetadata = response.metadata
-    }
-    async submit(app, formInstance, event = null, redirect = null) {
-        var self = this;
-
+        this.outputFieldValues = formInstance.outputs;
+        this.responseMetadata = response.metadata;
+    };
+    async submit(app, formInstance, event, redirect = null) {
+        debugger;
         if (event != null) {
             event.preventDefault();
         }
@@ -139,17 +145,16 @@ export class FormComponent implements OnInit{
         }
 
         // Disable double-posts.
-        self.disabled = true;
+        this.disabled = true;
 
         // If postOnLoad == true, then the input field values should appear in the url.
         // Reason is that postOnLoad == true is used by "report" pages, which need
         // their filters to be saved in the url. This does not apply to forms
         // with postOnLoad == false, because those forms are usually for creating new data
         // and hence should not be tracked in browser's history based on parameters.
-        if (formInstance.metadata.postOnLoad && redirect
-            // && this.get("useUrl")
-        ) {
+        if (formInstance.metadata.postOnLoad && redirect) {
             let urlParams = await formInstance.getSerializedInputValues();
+
             // Update url in the browser.
             app.go(formInstance.metadata.id, urlParams);
 
@@ -160,6 +165,7 @@ export class FormComponent implements OnInit{
 
         try {
             let response = await app.server.postForm(formInstance.metadata.id, data);
+            debugger;
             await formInstance.fire("form:responseReceived", { response: response, app: app });
 
             formInstance.setOutputFieldValues(response);
@@ -172,7 +178,7 @@ export class FormComponent implements OnInit{
             await app.runFunctions(response.metadata.functionsToRun);
 
             if (response.metadata.handler == "" || response.metadata.handler == null) {
-                self.renderResponse(response);
+                this.renderResponse(response);
             }
             else {
                 app.handleResponse(response, formInstance);
@@ -180,16 +186,16 @@ export class FormComponent implements OnInit{
 
             await formInstance.fire("form:responseHandled", { response: response, app: app });
 
-            self.enableForm();
+            this.enableForm();
 
             // Signal event to child controls.
-            // self.fire("form:responseHandled", {
-            //     form: self,
-            //     invokedByUser: event != null
-            // });
+            this.events.publish("form:responseHandled", {
+                form: self,
+                invokedByUser: event != null
+            });
         }
         catch (e) {
-            self.enableForm();
+            this.enableForm();
         }
     }
 };

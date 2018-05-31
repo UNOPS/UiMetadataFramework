@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
-import { FormComponent } from '.';
 import { InputForm } from '../Input/Input';
 import { InputFormModule } from '../Input/input.module';
+import { OutputFormModule } from '../Output/Output.module';
+import { FormComponent } from './form';
 
 
 @NgModule({
@@ -11,7 +12,8 @@ import { InputFormModule } from '../Input/input.module';
   ],
   imports: [
     IonicPageModule.forChild(FormComponent),
-    InputFormModule
+    InputFormModule,
+    OutputFormModule
   ],
   entryComponents: [
     FormComponent

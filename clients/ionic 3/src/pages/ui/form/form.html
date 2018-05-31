@@ -8,28 +8,18 @@
 </ion-header>
 
 <ion-content padding>
-        <form *ngIf="initialized && visibleInputFields.length > 0" 
-            (ngSubmit)="submit(app, form, $event, true)">
-            <input-form *ngFor="let inputField of visibleInputFields" 
-            [inputId]="i+1" 
-            [inputField]="inputField" 
-            [inputApp]="app" 
-            [inputForm]="form"
+    <form *ngIf="initialized && visibleInputFields.length > 0" (ngSubmit)="submit(app, form, $event, true)">
+        <input-form *ngFor="let inputField of visibleInputFields" [inputId]="i+1" [inputField]="inputField" [inputApp]="app" [inputForm]="form"
             [inputTabindex]="tabindex * 100 + inputField.metadata.orderIndex">
-            </input-form>
+        </input-form>
 
-            <button type="submit" tabindex="-1" disabled="{{disabled}}" class="btn btn-info btn-sm">
-                {{submitButtonLabel}}</button>
-        </form>
-        <!-- <div class="response"
-                        *ngIf="outputFieldValues != null">
-                        <div *ngFor="let outputField of outputFieldValues">
-                            <output-form *ngIf="outputField.metadata.hidden == false"
-                            [field]="outputField"
-                            [app]="app"
-                            [form]="form"
-                            [parent]="self">
-                        </output-form>
-                        </div>
-        </div> -->
+        <button type="submit" tabindex="-1"  class="btn btn-info btn-sm">
+            {{submitButtonLabel}}</button>
+    </form>
+    <div class="response" *ngIf="outputFieldValues != null">
+        <div *ngFor="let outputField of outputFieldValues">
+            <output-form *ngIf="outputField.metadata.hidden == false" [outputField]="outputField" [outputApp]="app" [outputForm]="form" [outputParent]="self">
+            </output-form>
+        </div>
+    </div>
 </ion-content>

@@ -2,9 +2,9 @@
 	<div class="object-list-item"
 	 *ngFor="let itemFields of items">
 		<output-form *ngFor="let itemField of itemFields"
-		 [field]="itemField"
-		 [app]="appOutput"
-		 [form]="formOutput"
-		 [parent]="parentOutput"></output-form>
+		 [outputField]="itemField"
+		 [outputApp]="appOutput"
+		 [outputForm]="formOutput"
+		 [outputParent]="parentOutput"></output-form>
 	</div>
 </div>
