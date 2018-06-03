@@ -11,6 +11,8 @@ namespace UiMetadataFramework.Tests.Binding
 			[Option("Low", "L")]
 			[Option("Mid", "M")]
 			[Option("High", "H")]
+			[Documentation("1")]
+			[Documentation("2")]
 			public DropdownValue<string> Category { get; set; }
 
 			[InputField(Label = "DoB", OrderIndex = 2)]

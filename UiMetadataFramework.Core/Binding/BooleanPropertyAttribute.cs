@@ -6,6 +6,7 @@ namespace UiMetadataFramework.Core.Binding
 	/// <see cref="ICustomPropertyAttribute"/> implementation for <see cref="bool"/> properties.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
+	[CustomPropertyConfig(IsArray = false)]
 	public class BooleanPropertyAttribute : Attribute, ICustomPropertyAttribute
 	{
 		/// <summary>

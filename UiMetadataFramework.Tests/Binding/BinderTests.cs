@@ -18,9 +18,16 @@
 			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
 			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
 
-			binder.BindForm<DoMagic, Request, Response>()
+			var formMetadata = binder.BindForm<DoMagic, Request, Response>();
+
+			formMetadata
 				.HasCustomProperty("style", "blue")
 				.HasCustomProperty("number", 1_001);
+
+			var docs = ((List<object>)formMetadata.CustomProperties["documentation"]).Cast<string>().ToList();
+			Assert.True(docs.Count == 2);
+			Assert.True(docs[0] == "help 1");
+			Assert.True(docs[1] == "help 2");
 		}
 
 		[Fact]
@@ -54,7 +61,8 @@
 				.HasCustomProperty("secret", "password");
 
 			inputFields.AssertHasInputField(nameof(Request.Category), DropdownInputFieldBinding.ControlName, nameof(Request.Category))
-				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 3, "Dropdown has incorrect number of items.");
+				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 3, "Dropdown has incorrect number of items.")
+				.HasCustomProperty<IList<object>>("documentation", t => t.Cast<string>().Count() == 2, "Custom property 'documentation' has incorrect value.");
 		}
 
 		[Fact]
@@ -80,7 +88,8 @@
 
 			outputFields.AssertHasOutputField(nameof(Response.OtherPeople), MetadataBinder.ObjectListOutputControlName, nameof(Response.OtherPeople))
 				.HasCustomProperty("style", "cool")
-				.HasCustomProperty("secret", 321);
+				.HasCustomProperty("secret", 321)
+				.HasCustomProperty<IList<object>>("documentation", t => t.Cast<string>().Count() == 2, "Custom property 'documentation' has incorrect value.");
 
 			outputFields.AssertHasOutputField(nameof(Response.Categories), MetadataBinder.ValueListOutputControlName, nameof(Response.Categories));
 

@@ -24,6 +24,8 @@ namespace UiMetadataFramework.Tests.Binding
 
 			[IntProperty("secret", 321)]
 			[StringProperty("style", "cool")]
+			[Documentation("1")]
+			[Documentation("2")]
 			public IList<Person> OtherPeople { get; set; }
 
 			[IntProperty("number", 456)]

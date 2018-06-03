@@ -19,16 +19,9 @@
 		/// were found.</returns>
 		public static IDictionary<string, object> GetCustomProperties(this Type type)
 		{
-			var customPropertyAttributes = type.GetCustomAttributesImplementingInterface<ICustomPropertyAttribute>();
-
-			IDictionary<string, object> result = null;
-
-			foreach (var customProperty in customPropertyAttributes)
-			{
-				result = result.Set(customProperty.Name, customProperty.GetValue());
-			}
-
-			return result;
+			return GetCustomProperties(
+				type.GetCustomAttributesImplementingInterface<ICustomPropertyAttribute>(),
+				type.FullName);
 		}
 
 		/// <summary>
@@ -40,16 +33,9 @@
 		/// were found.</returns>
 		public static IDictionary<string, object> GetCustomProperties(this PropertyInfo propertyInfo)
 		{
-			var customPropertyAttributes = propertyInfo.GetCustomAttributesImplementingInterface<ICustomPropertyAttribute>();
-
-			IDictionary<string, object> result = null;
-
-			foreach (var customProperty in customPropertyAttributes)
-			{
-				result = result.Set(customProperty.Name, customProperty.GetValue());
-			}
-
-			return result;
+			return GetCustomProperties(
+				propertyInfo.GetCustomAttributesImplementingInterface<ICustomPropertyAttribute>(),
+				propertyInfo.DeclaringType.FullName + "." + propertyInfo.Name);
 		}
 
 		/// <summary>
@@ -198,6 +184,53 @@
 			}
 
 			return null;
+		}
+
+		private static IDictionary<string, object> GetCustomProperties(
+			IEnumerable<ICustomPropertyAttribute> attributes,
+			string nameOfTheDecoratedElement)
+		{
+			var customPropertyAttributes = attributes
+				.Select(t => new
+				{
+					Attribute = t,
+					Usage = t.GetType().GetTypeInfo().GetCustomAttribute<CustomPropertyConfigAttribute>()
+				})
+				.ToList();
+
+			IDictionary<string, object> result = null;
+
+			var singleValueCustomProperties = customPropertyAttributes
+				.Where(t => t.Usage == null || t.Usage.IsArray == false)
+				.ToList();
+
+			foreach (var customProperty in singleValueCustomProperties)
+			{
+				if (result?.ContainsKey(customProperty.Attribute.Name) == true)
+				{
+					throw new BindingException(
+						$"Invalid attempt to add multiple values for custom property '{customProperty.Attribute.Name}' " +
+						$"on '{nameOfTheDecoratedElement}'. To allow having multiple values for the custom property " +
+						$"'{customProperty.Attribute.Name}', please decorate attribue '{customProperty.Attribute.GetType().FullName}' " +
+						$"with '{nameof(CustomPropertyConfigAttribute)}' and set " +
+						$"'{nameof(CustomPropertyConfigAttribute)}.{nameof(CustomPropertyConfigAttribute.IsArray)}' to true.");
+				}
+
+				result = result.Set(customProperty.Attribute.Name, customProperty.Attribute.GetValue());
+			}
+
+			var multiValueCustomProperties = customPropertyAttributes
+				.Where(t => t.Usage?.IsArray == true)
+				.GroupBy(t => t.Attribute.Name)
+				.ToList();
+
+			foreach (var customProperty in multiValueCustomProperties)
+			{
+				var values = customProperty.Select(t => t.Attribute.GetValue()).ToList();
+				result = result.Set(customProperty.Key, values);
+			}
+
+			return result;
 		}
 	}
 }

@@ -10,9 +10,9 @@ namespace UiMetadataFramework.Core.Binding
 	public interface ICustomPropertyAttribute
 	{
 		/// <summary>
-		/// Gets or sets name of the custom property.
+		/// Gets name of the custom property.
 		/// </summary>
-		string Name { get; set; }
+		string Name { get; }
 
 		/// <summary>
 		/// Gets value for the custom property.

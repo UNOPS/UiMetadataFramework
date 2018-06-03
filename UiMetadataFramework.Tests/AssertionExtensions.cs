@@ -57,13 +57,13 @@
 		public static InputFieldMetadata HasCustomProperty<T>(this InputFieldMetadata field, string property, Func<T, bool> assertion, string message)
 			where T : class
 		{
-			var customProperties = (T)field.CustomProperties[property];
+			return field.HasCustomPropertyInternal(property, assertion, message);
+		}
 
-			Assert.NotNull(customProperties);
-
-			Assert.True(assertion(customProperties), message);
-
-			return field;
+		public static OutputFieldMetadata HasCustomProperty<T>(this OutputFieldMetadata field, string property, Func<T, bool> assertion, string message)
+			where T : class
+		{
+			return field.HasCustomPropertyInternal(property, assertion, message);
 		}
 
 		public static OutputFieldMetadata HasCustomProperty<T>(this OutputFieldMetadata field, string name, T value)
@@ -101,6 +101,23 @@
 			}
 
 			throw new Exception($"Custom property '{name}' is missing.");
+		}
+
+		private static TFieldMetadata HasCustomPropertyInternal<TFieldMetadata, T>(
+			this TFieldMetadata field,
+			string property,
+			Func<T, bool> assertion,
+			string message)
+			where T : class
+			where TFieldMetadata : IFieldMetadata
+		{
+			var customProperties = (T)field.CustomProperties[property];
+
+			Assert.NotNull(customProperties);
+
+			Assert.True(assertion(customProperties), message);
+
+			return field;
 		}
 	}
 }

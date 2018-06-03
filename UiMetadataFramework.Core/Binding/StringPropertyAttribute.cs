@@ -6,6 +6,7 @@ namespace UiMetadataFramework.Core.Binding
 	/// <see cref="ICustomPropertyAttribute"/> implementation for <see cref="string"/> properties.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
+	[CustomPropertyConfig(IsArray = false)]
 	public class StringPropertyAttribute : Attribute, ICustomPropertyAttribute
 	{
 		/// <summary>
