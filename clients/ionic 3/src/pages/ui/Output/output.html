@@ -1,5 +1,4 @@
 <ion-item>
     <ion-label *ngIf="showLabel === true && !alwaysHideLabel && field.metadata.label">{{field.metadata.label}}</ion-label>
-    <div item-content #output
-        [class]="classObj"></div>
+    <ng-container item-content #output></ng-container>
 </ion-item>

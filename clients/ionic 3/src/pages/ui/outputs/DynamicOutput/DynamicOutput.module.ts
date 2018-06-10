@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { DynamicOutput } from './DynamicOutput';
+import { OutputFormModule } from '../../Output';
 
 
 @NgModule({
@@ -9,6 +10,7 @@ import { DynamicOutput } from './DynamicOutput';
   ],
   imports: [
     IonicPageModule.forChild(DynamicOutput),
+    OutputFormModule
   ],
   exports: [
     DynamicOutput

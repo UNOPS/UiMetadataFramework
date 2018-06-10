@@ -26,7 +26,6 @@ export class TableOutput implements OnInit {
 	}
 
 	ngOnInit() {
-		debugger;
 		this.appOutput = this.app;
 		this.fieldOutput = this.field;
 		let data = this.fieldOutput.data;

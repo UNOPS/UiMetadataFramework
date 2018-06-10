@@ -134,7 +134,6 @@ export class FormInstance {
     }
 
     async submit(app: UmfApp, asPostOnLoad: boolean, args: any) {
-                debugger;
         if (asPostOnLoad) {
             this.enforceCanPostOnLoad();
         }

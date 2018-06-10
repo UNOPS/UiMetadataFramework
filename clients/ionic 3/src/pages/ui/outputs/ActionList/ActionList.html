@@ -13,13 +13,13 @@
 			 (click)="close(true)">Close</label>
 		</h3>
 		<div slot="body">
-			<component-form *ngIf="initialized"
-			 [metadataOutput]="modalComponent.metadata"
-			 [appOutput]="modalComponent.app"
-			 [formOutput]="modalComponent.form"
-			 [useUrlOutput]="modalComponent.useUrl"
-			 [parentOutput]="outputParent">
-			</component-form>
+			<!-- <factory-form *ngIf="initialized"
+			 [metadata]="modalComponent.metadata"
+			 [app]="modalComponent.app"
+			 [form]="modalComponent.form"
+			 [useUrl]="modalComponent.useUrl"
+			 [parent]="outputParent">
+		</factory-form> -->
 		</div>
 	</modal-form>
 </span>

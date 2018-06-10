@@ -41,8 +41,7 @@ export class Paginator implements OnInit{
 	}
 
 	get pages() {
-		let paginatorInput = this.form.inputs.find(t => t.metadata.id === this.fieldOutput.metadata.customProperties.customizations.paginator);
-
+		let paginatorInput = this.form.inputs.find(t => t.metadata.id === this.fieldOutput.metadata.customProperties.Customizations.Paginator);
 		let pageCount = Math.ceil(this.fieldOutput.data.totalCount / paginatorInput.value.pageSize);
 
 		let params = {};

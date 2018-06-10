@@ -28,7 +28,6 @@ export class OutputForm implements OnInit{
     entryRef: any;
 
     ngOnInit() {
-        debugger;
         this.field = this.outputField;
         this.app = this.outputApp;
         this.parent = this.outputParent;

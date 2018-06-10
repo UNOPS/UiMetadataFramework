@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { TableOutput } from './Table';
 import { OutputFormModule } from '../../Output/Output.module';
-import { ComponentFactoryModule } from '../ComponentFactory/ComponentFactory.module';
 
 
 @NgModule({
@@ -10,9 +9,7 @@ import { ComponentFactoryModule } from '../ComponentFactory/ComponentFactory.mod
     TableOutput
   ],
   imports: [
-    IonicPageModule.forChild(TableOutput),
-    ComponentFactoryModule
-    
+    IonicPageModule.forChild(TableOutput)
   ],
   exports: [
     TableOutput

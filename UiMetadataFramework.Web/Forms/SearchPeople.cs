@@ -26,9 +26,9 @@
 				.ToList()
 				.AsQueryable();
 
-			if (message.Name?.Value != null)
+			if (!string.IsNullOrEmpty(message.FirstName))
 			{
-				queryable = queryable.Where(t => t.FirstName.Label.Contains(message.Name.Value, StringComparison.OrdinalIgnoreCase));
+				queryable = queryable.Where(t => t.FirstName.Label.Contains(message.FirstName, StringComparison.OrdinalIgnoreCase));
 			}
 
 			return new Response
@@ -77,7 +77,7 @@
 			public PaginatedData<FamilyPerson> Results { get; set; }
 
 			[OutputField(Hidden = true)]
-			public decimal Weight { get; set; }
+			public decimal? Weight { get; set; }
 		}
 
 		public class FamilyPerson : Person
@@ -181,10 +181,10 @@
 
 			[Option(DayOfWeek.Sunday)]
 			[Option(DayOfWeek.Monday)]
-			[InputField(Required = true)]
+			[InputField(Required = false)]
 			public DropdownValue<DayOfWeek> FirstDayOfWeek { get; set; }
 
-			[InputField(Label = "First name", OrderIndex = 1, Required = true)]
+			[InputField(Label = "First name", OrderIndex = 1)]
 			public string FirstName { get; set; }
 
 			[InputField(Hidden = true)]
@@ -192,13 +192,13 @@
 
 			public bool? IsRegistered { get; set; }
 
-			[TypeaheadInputField(typeof(PersonTypeaheadRemoteSource))]
-			public TypeaheadValue<string> Name { get; set; }
+			//[TypeaheadInputField(typeof(PersonTypeaheadRemoteSource))]
+			//public TypeaheadValue<string> Name { get; set; }
 
 			public Paginator Paginator { get; set; }
 
 			[InputField(Hidden = false)]
-			public decimal Weight { get; set; }
+			public decimal? Weight { get; set; }
 		}
 	}
 }

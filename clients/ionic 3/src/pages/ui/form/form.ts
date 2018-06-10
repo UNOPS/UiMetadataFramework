@@ -54,6 +54,13 @@ export class FormComponent implements OnInit {
     events: any;
     @Input() initializedForm: boolean;
 
+    @Input() appOutput: any = null;
+    @Input() formOutput: any = null;
+    @Input() useUrlOutput: any = null;
+    @Input() fieldOutput: any = null;
+    @Input() parentOutput: boolean = true;
+
+
     constructor(public paramsCtrl: NavParams,
         public navCtrl: NavController,
         public eventCtrl: Events) {
@@ -63,7 +70,6 @@ export class FormComponent implements OnInit {
     }
 
     ngOnInit() {
-        debugger;
         this.app = this.params.data.app;
         this.form = this.params.data.form;
         this.metadata = this.params.data.metadata;
@@ -126,7 +132,6 @@ export class FormComponent implements OnInit {
         this.responseMetadata = response.metadata;
     };
     async submit(app, formInstance, event, redirect = null) {
-        debugger;
         if (event != null) {
             event.preventDefault();
         }
@@ -138,7 +143,6 @@ export class FormComponent implements OnInit {
             redirect == null;
 
         let data = await formInstance.prepareForm(!skipValidation);
-
         // If not all required inputs are filled.
         if (data == null) {
             return;
@@ -165,7 +169,6 @@ export class FormComponent implements OnInit {
 
         try {
             let response = await app.server.postForm(formInstance.metadata.id, data);
-            debugger;
             await formInstance.fire("form:responseReceived", { response: response, app: app });
 
             formInstance.setOutputFieldValues(response);

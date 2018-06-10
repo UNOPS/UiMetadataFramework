@@ -64,7 +64,7 @@
 
 		public class Request : IRequest<Response>
 		{
-			[InputField(Hidden = true)]
+			[InputField(Label = "Name")]
 			public string TaskOwnerName { get; set; }
 		}
 

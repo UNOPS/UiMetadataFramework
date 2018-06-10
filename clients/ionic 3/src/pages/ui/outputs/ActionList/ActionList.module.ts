@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { ActionList } from './ActionList';
 import { FormComponentModule } from '../../form/form.module';
+import { ModalModule } from '../Model/Modal.module';
 
 
 @NgModule({
@@ -10,7 +11,7 @@ import { FormComponentModule } from '../../form/form.module';
   ],
   imports: [
     IonicPageModule.forChild(ActionList),
-    FormComponentModule
+    ModalModule
   ],
   exports: [
     ActionList
