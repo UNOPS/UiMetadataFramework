@@ -60,7 +60,7 @@
 		/// Gets custom properties of the output field.
 		/// </summary>
 		/// <param name="property">Property representing the output field for which to get metadata.</param>
-		/// <param name="attribute"><see cref="OutputFieldAttribute"/> which was applied to the input field.</param>
+		/// <param name="attribute"><see cref="OutputFieldAttribute"/> which was applied to the output field.</param>
 		/// <param name="binder">Metadata binder being used.</param>
 		/// <returns>Object representing custom properties for the output field or null if there are none.</returns>
 		public virtual IDictionary<string, object> GetCustomProperties(PropertyInfo property, OutputFieldAttribute attribute, MetadataBinder binder)
