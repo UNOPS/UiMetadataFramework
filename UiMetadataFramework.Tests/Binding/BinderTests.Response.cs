@@ -2,6 +2,7 @@ namespace UiMetadataFramework.Tests.Binding
 {
 	using System;
 	using System.Collections.Generic;
+	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
@@ -15,12 +16,16 @@ namespace UiMetadataFramework.Tests.Binding
 			[StringProperty("style", "beatiful")]
 			[OutputField(Label = "DoB", OrderIndex = 2)]
 			public DateTime DateOfBirth { get; set; }
-			
+
 			[OutputField(Label = "First name", OrderIndex = 1)]
 			public string FirstName { get; set; }
 
 			[OutputField(Hidden = true)]
 			public int Height { get; set; }
+
+			[PaginatedData(nameof(Request.MainPeoplePaginator))]
+			[StringProperty("style", "main")]
+			public PaginatedData<Person> MainPeople { get; set; }
 
 			[IntProperty("secret", 321)]
 			[StringProperty("style", "cool")]

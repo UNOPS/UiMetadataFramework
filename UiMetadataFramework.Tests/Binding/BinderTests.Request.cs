@@ -8,6 +8,8 @@ namespace UiMetadataFramework.Tests.Binding
 	{
 		public class Request
 		{
+			public Paginator MainPeoplePaginator { get; set; }
+
 			[Option("Low", "L")]
 			[Option("Mid", "M")]
 			[Option("High", "H")]

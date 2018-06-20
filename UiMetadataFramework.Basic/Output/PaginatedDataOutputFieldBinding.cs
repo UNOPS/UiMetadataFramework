@@ -24,11 +24,9 @@ namespace UiMetadataFramework.Basic.Output
 					$"for '{typeof(PaginatedData<>).Name}' output fields.");
 			}
 
-			return new Dictionary<string, object>
-			{
-				{ "Columns", binder.BindOutputFields(paginatedItemType).ToList() },
-				{ "Customizations", attribute.GetCustomProperties(property, binder) }
-			};
+			return property.GetCustomProperties()
+				.Set("Columns", binder.BindOutputFields(paginatedItemType).ToList())
+				.Set("Customizations", attribute.GetCustomProperties(property, binder));
 		}
 	}
 
