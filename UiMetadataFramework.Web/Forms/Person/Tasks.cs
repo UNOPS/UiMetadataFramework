@@ -10,7 +10,7 @@
 	using UiMetadataFramework.Web.Metadata;
 
 	[Form(Id = "Tasks", Label = "Tasks", PostOnLoad = true)]
-	public class Tasks : IMyForm<Tasks.Request, Tasks.Response>
+	public class Tasks : MyForm<Tasks.Request, Tasks.Response>
 	{
 		public enum TaskCategory
 		{
@@ -29,7 +29,7 @@
 			Done
 		}
 
-		public Response Handle(Request message)
+		protected override Response Handle(Request message)
 		{
 			message.TaskOwnerName = "buy milk";
 			var random = new Random(message.TaskOwnerName.GetHashCode());

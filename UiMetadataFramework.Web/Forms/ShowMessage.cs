@@ -7,9 +7,9 @@
 	using UiMetadataFramework.MediatR;
 
 	[Form(Id = "Message", Label = "Show message handler", PostOnLoad = false)]
-	public class ShowMessage : IForm<ShowMessage.Request, ShowMessage.Response>
+	public class ShowMessage : Form<ShowMessage.Request, ShowMessage.Response>
 	{
-		public Response Handle(Request message)
+		protected override Response Handle(Request message)
 		{
 			return new Response
 			{

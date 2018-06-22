@@ -4,7 +4,7 @@
 	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.MediatR;
 
-	public interface ITypeaheadRemoteSource<in TRequest, TKey> : IForm<TRequest, TypeaheadResponse<TKey>>, ITypeaheadRemoteSource
+	public abstract class TypeaheadRemoteSource<TRequest, TKey> : Form<TRequest, TypeaheadResponse<TKey>>, ITypeaheadRemoteSource
 		where TRequest : IRequest<TypeaheadResponse<TKey>>
 	{
 	}

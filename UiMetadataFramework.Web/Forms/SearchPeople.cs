@@ -5,17 +5,15 @@
 	using System.Linq;
 	using global::MediatR;
 	using UiMetadataFramework.Basic.Input;
-	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.Web.Forms.Person;
-	using UiMetadataFramework.Web.Forms.Pickers;
 	using UiMetadataFramework.Web.Metadata;
 
 	[MyForm(Id = "People", Label = "Search people", PostOnLoad = true, SubmitButtonLabel = "Search", CloseOnPostIfModal = false)]
-	public class SearchPeople : IMyForm<SearchPeople.Request, SearchPeople.Response>
+	public class SearchPeople : MyForm<SearchPeople.Request, SearchPeople.Response>
 	{
-		public Response Handle(Request message)
+		protected override Response Handle(Request message)
 		{
 			var height = message.Height == 0 || message.Height == null ? 170 : message.Height.Value;
 			var weight = message.Weight;

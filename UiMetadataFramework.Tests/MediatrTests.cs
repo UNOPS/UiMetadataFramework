@@ -4,7 +4,6 @@
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
-	using System.Threading.Tasks;
 	using global::MediatR;
 	using UiMetadataFramework.Basic;
 	using UiMetadataFramework.Basic.Output;
@@ -38,11 +37,11 @@
 			public string ParentMenu { get; set; }
 		}
 
-		public class BaseForm : IAsyncForm<BaseForm.Request, BaseForm.Response>, IComparable
+		public class BaseForm : Form<BaseForm.Request, BaseForm.Response>, IComparable
 		{
-			public Task<Response> Handle(Request message)
+			protected override Response Handle(Request message)
 			{
-				return Task.FromResult(new Response());
+				return new Response();
 			}
 
 			public int CompareTo(object obj)

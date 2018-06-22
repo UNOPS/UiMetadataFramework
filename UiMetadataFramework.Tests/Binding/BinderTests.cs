@@ -19,7 +19,7 @@
 			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
 
 			var formMetadata = binder.BindForm<DoMagic, Request, Response>();
-
+			
 			formMetadata
 				.HasCustomProperty("style", "blue")
 				.HasCustomProperty("number", 1_001);

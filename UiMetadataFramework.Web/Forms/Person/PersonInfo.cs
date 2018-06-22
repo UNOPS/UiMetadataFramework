@@ -8,9 +8,9 @@
 	using UiMetadataFramework.Web.Metadata;
 
 	[Form(Id = "Person", PostOnLoad = true)]
-	public class PersonInfo : IMyForm<PersonInfo.Request, PersonInfo.Response>
+	public class PersonInfo : MyForm<PersonInfo.Request, PersonInfo.Response>
 	{
-		public Response Handle(Request message)
+		protected override Response Handle(Request message)
 		{
 			var person = SearchPeople.FamilyPerson.RandomFamilyPerson(message.Name);
 			return new Response

@@ -7,9 +7,9 @@
 	using UiMetadataFramework.Web.Metadata.Typeahead;
 
 	[Form]
-	public class PersonTypeaheadRemoteSource : ITypeaheadRemoteSource<PersonTypeaheadRemoteSource.Request, string>
+	public class PersonTypeaheadRemoteSource : TypeaheadRemoteSource<PersonTypeaheadRemoteSource.Request, string>
 	{
-		public TypeaheadResponse<string> Handle(Request message)
+		protected override TypeaheadResponse<string> Handle(Request message)
 		{
 			var random = new Random(1);
 			var people = Enumerable.Range(0, 100)

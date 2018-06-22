@@ -16,9 +16,9 @@
 
 	[MyForm(Id = "EditPerson", PostOnLoad = true, SubmitButtonLabel = "Save changes")]
 	[LogToConsole(FormEvents.FormLoaded)]
-	public class Edit : IMyForm<Edit.Request, Edit.Response>
+	public class Edit : MyForm<Edit.Request, Edit.Response>
 	{
-		public Response Handle(Request message)
+		protected override Response Handle(Request message)
 		{
 			var person = SearchPeople.FamilyPerson.RandomFamilyPerson(message.Name);
 

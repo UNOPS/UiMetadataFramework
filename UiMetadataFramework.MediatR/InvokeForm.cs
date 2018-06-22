@@ -11,7 +11,7 @@ namespace UiMetadataFramework.MediatR
 	/// <summary>
 	/// Invokes form and returns its result.
 	/// </summary>
-	public class InvokeForm : IAsyncRequestHandler<InvokeForm.Request, InvokeForm.Response>
+	public class InvokeForm : IRequestHandler<InvokeForm.Request, InvokeForm.Response>
 	{
 		private readonly FormRegister formRegister;
 		private readonly IMediator mediator;
@@ -22,7 +22,7 @@ namespace UiMetadataFramework.MediatR
 			this.formRegister = formRegister;
 		}
 
-		public async Task<Response> Handle(Request message)
+		public async Task<Response> Handle(Request message, CancellationToken cancellationToken)
 		{
 			// Get form type and interface.
 			var formType = this.formRegister.GetFormInfo(message.Form);

@@ -5,6 +5,7 @@
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
+	using global::MediatR;
 	using UiMetadataFramework.Core.Binding;
 
 	/// <summary>
@@ -90,42 +91,20 @@
 		/// <summary>
 		/// Adds specific form to the register.
 		/// </summary>
-		/// <param name="formType">Type which implements <see cref="IForm{TRequest,TResponse,TResponseMetadata}"/> 
-		/// or <see cref="IAsyncForm{TRequest,TResponse,TResponseMetadata}"/>.</param>
+		/// <param name="formType">Type which implements <see cref="Form{TRequest,TResponse,TResponseMetadata}"/> 
+		/// or <see cref="AsyncForm{TRequest,TResponse,TResponseMetadata}"/>.</param>
 		public void RegisterForm(Type formType)
 		{
-			var iformInterfaces = formType.GetTypeInfo()
-				.GetInterfaces()
-				.Select(t => t)
-				.Where(t =>
-				{
-					if (!t.IsConstructedGenericType)
-					{
-						return false;
-					}
-
-					var type = t.GetGenericTypeDefinition();
-					return
-						type == typeof(IForm<,,>) ||
-						type == typeof(IAsyncForm<,,>);
-				})
-				.ToList();
-
-			if (iformInterfaces.Count == 0)
+			if (!formType.ImplementsClass(typeof(AsyncForm<,,>)))
 			{
 				throw new InvalidConfigurationException(
 					$"Type '{formType.FullName}' was decorated with FormAttribute, but does not implement IForm<,,> or IAsyncForm<,,> interface.");
 			}
 
-			if (iformInterfaces.Count > 1)
-			{
-				throw new InvalidConfigurationException(
-					$"Type '{formType.FullName}' implements multiple IForm<,,> and/or IAsyncForm<,,> interfaces. Only one of these interfaces can be implemented.");
-			}
+			var iRequestHandlerInterface = formType.GetInterfaces(typeof(IRequestHandler<,>)).Single();
 
-			var iformInterface = iformInterfaces.Single();
-			var requestType = iformInterface.GetTypeInfo().GenericTypeArguments[0];
-			var responseType = iformInterface.GenericTypeArguments[1];
+			var requestType = iRequestHandlerInterface.GenericTypeArguments[0];
+			var responseType = iRequestHandlerInterface.GenericTypeArguments[1];
 
 			var formMetadata = this.binder.BindForm(formType, requestType, responseType);
 
