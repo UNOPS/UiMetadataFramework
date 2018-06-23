@@ -1,8 +1,10 @@
 namespace UiMetadataFramework.Tests.Binding
 {
 	using System;
-	using UiMetadataFramework.Basic.Input;
-	using UiMetadataFramework.Core.Binding;
+    using System.Collections.Generic;
+    using UiMetadataFramework.Basic.Input;
+    using UiMetadataFramework.Basic.Input.Dropdown;
+    using UiMetadataFramework.Core.Binding;
 
 	public partial class BinderTests
 	{
@@ -27,6 +29,9 @@ namespace UiMetadataFramework.Tests.Binding
 			[Option(DayOfWeek.Monday)]
 			public DropdownValue<DayOfWeek> FirstDayOfWeek { get; set; }
 
+            [DropdownInputField(typeof(GenderInlineSource))]
+            public DropdownValue<int> Gender { get; set; }
+
 			[InputField(Label = "First name", OrderIndex = 1, Required = true)]
 			public string FirstName { get; set; }
 
@@ -46,4 +51,12 @@ namespace UiMetadataFramework.Tests.Binding
 			public decimal Weight { get; set; }
 		}
 	}
+
+    public class GenderInlineSource:IDropdownInlineSource
+    {
+        public IEnumerable<DropdownItem> GetItems()
+        {
+            return new[] {new DropdownItem("Female","female"),new  DropdownItem("Male","male") };
+        }
+    }
 }

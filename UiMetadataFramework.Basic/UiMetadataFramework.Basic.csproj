@@ -5,7 +5,7 @@
 		<AssemblyName>UiMetadataFramework.Basic</AssemblyName>
 		<RootNamespace>UiMetadataFramework.Basic</RootNamespace>
 		<Description>Basic metadata components (input/output fields, response types) for UiMetadataFramework.</Description>
-		<Version>0.0.15-beta</Version>
+		<Version>0.0.16-beta</Version>
 		<Authors>UNOPS</Authors>
 		<FileVersion>0.0.1.0</FileVersion>
 		<PackageTags>ui metadata forms basic</PackageTags>
@@ -16,6 +16,8 @@
 
 	<PropertyGroup>
 		<DocumentationFile>bin\$(Configuration)\$(Platform)\UiMetadataFramework.Basic.xml</DocumentationFile>
+		<PackageReleaseNotes>Support inline source for dropdown input</PackageReleaseNotes>
+		<AssemblyVersion>0.0.16.0</AssemblyVersion>
 	</PropertyGroup>
 
 	<ItemGroup>

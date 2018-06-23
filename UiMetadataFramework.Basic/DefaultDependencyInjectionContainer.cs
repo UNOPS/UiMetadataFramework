@@ -1,7 +1,8 @@
 ﻿namespace UiMetadataFramework.Basic
 {
 	using System;
-	using UiMetadataFramework.Basic.Input.Typeahead;
+    using UiMetadataFramework.Basic.Input;
+    using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Core.Binding;
 
 	/// <summary>
@@ -29,6 +30,11 @@
 				{
 					return new TypeaheadInputFieldBinding(this);
 				}
+
+                if (t == typeof(DropdownInputFieldBinding))
+                {
+                    return new DropdownInputFieldBinding(this);
+                }
 
 				return Activator.CreateInstance(t);
 			};

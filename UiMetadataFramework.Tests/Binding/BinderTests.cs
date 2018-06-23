@@ -38,7 +38,7 @@
 
 			var inputFields = binder.BindInputFields<Request>().OrderBy(t => t.OrderIndex).ToList();
 
-			Assert.Equal(11, inputFields.Count);
+			Assert.Equal(12, inputFields.Count);
 			inputFields.AssertHasInputField(nameof(Request.FirstName), StringInputFieldBinding.ControlName, "First name", orderIndex: 1, required: true);
 			inputFields.AssertHasInputField(nameof(Request.DateOfBirth), DateTimeInputFieldBinding.ControlName, "DoB", orderIndex: 2, required: true);
 			inputFields.AssertHasInputField(nameof(Request.SubmissionDate), DateTimeInputFieldBinding.ControlName, nameof(Request.SubmissionDate));
@@ -47,6 +47,7 @@
 			inputFields.AssertHasInputField(nameof(Request.Notes), TextareaInputFieldBinding.ControlName, nameof(Request.Notes))
 				.HasCustomProperty("number-1", 1)
 				.HasCustomProperty("number-2", 2);
+            
 
 			inputFields.AssertHasInputField(nameof(Request.Weight), NumberInputFieldBinding.ControlName, nameof(Request.Weight), hidden: true, required: true,
 				eventHandlers: new[] { InputFieldEventHandlerAttribute.Identifier });
@@ -60,7 +61,15 @@
 				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 2, "Dropdown has incorrect number of items.")
 				.HasCustomProperty("secret", "password");
 
-			inputFields.AssertHasInputField(nameof(Request.Category), DropdownInputFieldBinding.ControlName, nameof(Request.Category))
+
+            inputFields.AssertHasInputField(nameof(Request.Gender), DropdownInputFieldBinding.ControlName, nameof(Request.Gender));
+
+            var dropdownInputField = inputFields.Single(t => t.Id == nameof(Request.Gender));
+            var items = dropdownInputField.CustomProperties["Items"] as IEnumerable<DropdownItem>;
+            Assert.NotNull(items);
+            Assert.Equal(2, items.Count());
+
+            inputFields.AssertHasInputField(nameof(Request.Category), DropdownInputFieldBinding.ControlName, nameof(Request.Category))
 				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 3, "Dropdown has incorrect number of items.")
 				.HasCustomProperty<IList<object>>("documentation", t => t.Cast<string>().Count() == 2, "Custom property 'documentation' has incorrect value.");
 		}
