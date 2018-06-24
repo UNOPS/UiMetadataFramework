@@ -3,7 +3,7 @@
 	using System;
 	using System.Collections.Generic;
 	using UiMetadataFramework.Basic.EventHandlers;
-	using UiMetadataFramework.Basic.Input;
+	using UiMetadataFramework.Basic.Input.Dropdown;
 	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;

@@ -5,6 +5,7 @@
 	using System.Reflection;
 	using UiMetadataFramework.Basic;
 	using UiMetadataFramework.Basic.Input;
+	using UiMetadataFramework.Basic.Input.Dropdown;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
@@ -19,7 +20,7 @@
 			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
 
 			var formMetadata = binder.BindForm<DoMagic, Request, Response>();
-			
+
 			formMetadata
 				.HasCustomProperty("style", "blue")
 				.HasCustomProperty("number", 1_001);
@@ -47,7 +48,6 @@
 			inputFields.AssertHasInputField(nameof(Request.Notes), TextareaInputFieldBinding.ControlName, nameof(Request.Notes))
 				.HasCustomProperty("number-1", 1)
 				.HasCustomProperty("number-2", 2);
-            
 
 			inputFields.AssertHasInputField(nameof(Request.Weight), NumberInputFieldBinding.ControlName, nameof(Request.Weight), hidden: true, required: true,
 				eventHandlers: new[] { InputFieldEventHandlerAttribute.Identifier });
@@ -61,15 +61,14 @@
 				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 2, "Dropdown has incorrect number of items.")
 				.HasCustomProperty("secret", "password");
 
+			inputFields.AssertHasInputField(nameof(Request.Gender), DropdownInputFieldBinding.ControlName, nameof(Request.Gender));
 
-            inputFields.AssertHasInputField(nameof(Request.Gender), DropdownInputFieldBinding.ControlName, nameof(Request.Gender));
+			var dropdownInputField = inputFields.Single(t => t.Id == nameof(Request.Gender));
+			var items = dropdownInputField.CustomProperties["Items"] as IEnumerable<DropdownItem>;
+			Assert.NotNull(items);
+			Assert.Equal(2, items.Count());
 
-            var dropdownInputField = inputFields.Single(t => t.Id == nameof(Request.Gender));
-            var items = dropdownInputField.CustomProperties["Items"] as IEnumerable<DropdownItem>;
-            Assert.NotNull(items);
-            Assert.Equal(2, items.Count());
-
-            inputFields.AssertHasInputField(nameof(Request.Category), DropdownInputFieldBinding.ControlName, nameof(Request.Category))
+			inputFields.AssertHasInputField(nameof(Request.Category), DropdownInputFieldBinding.ControlName, nameof(Request.Category))
 				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 3, "Dropdown has incorrect number of items.")
 				.HasCustomProperty<IList<object>>("documentation", t => t.Cast<string>().Count() == 2, "Custom property 'documentation' has incorrect value.");
 		}

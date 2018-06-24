@@ -16,8 +16,6 @@
 
 	<PropertyGroup>
 		<DocumentationFile>bin\$(Configuration)\$(Platform)\UiMetadataFramework.Basic.xml</DocumentationFile>
-		<PackageReleaseNotes>Support inline source for dropdown input</PackageReleaseNotes>
-		<AssemblyVersion>0.0.16.0</AssemblyVersion>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -1,17 +1,15 @@
 namespace UiMetadataFramework.Tests.Binding
 {
 	using System;
-    using System.Collections.Generic;
-    using UiMetadataFramework.Basic.Input;
-    using UiMetadataFramework.Basic.Input.Dropdown;
-    using UiMetadataFramework.Core.Binding;
+	using System.Collections.Generic;
+	using UiMetadataFramework.Basic.Input;
+	using UiMetadataFramework.Basic.Input.Dropdown;
+	using UiMetadataFramework.Core.Binding;
 
 	public partial class BinderTests
 	{
 		public class Request
 		{
-			public Paginator MainPeoplePaginator { get; set; }
-
 			[Option("Low", "L")]
 			[Option("Mid", "M")]
 			[Option("High", "H")]
@@ -29,16 +27,17 @@ namespace UiMetadataFramework.Tests.Binding
 			[Option(DayOfWeek.Monday)]
 			public DropdownValue<DayOfWeek> FirstDayOfWeek { get; set; }
 
-            [DropdownInputField(typeof(GenderInlineSource))]
-            public DropdownValue<int> Gender { get; set; }
-
 			[InputField(Label = "First name", OrderIndex = 1, Required = true)]
 			public string FirstName { get; set; }
+
+			[DropdownInputField(typeof(GenderInlineSource))]
+			public DropdownValue<int> Gender { get; set; }
 
 			[InputField(Hidden = true)]
 			public int? Height { get; set; }
 
 			public bool IsRegistered { get; set; }
+			public Paginator MainPeoplePaginator { get; set; }
 
 			[IntProperty("number-1", 1)]
 			[IntProperty("number-2", 2)]
@@ -50,13 +49,13 @@ namespace UiMetadataFramework.Tests.Binding
 			[InputFieldEventHandler]
 			public decimal Weight { get; set; }
 		}
-	}
 
-    public class GenderInlineSource:IDropdownInlineSource
-    {
-        public IEnumerable<DropdownItem> GetItems()
-        {
-            return new[] {new DropdownItem("Female","female"),new  DropdownItem("Male","male") };
-        }
-    }
+		public class GenderInlineSource : IDropdownInlineSource
+		{
+			public IEnumerable<DropdownItem> GetItems()
+			{
+				return new[] { new DropdownItem("Female", "female"), new DropdownItem("Male", "male") };
+			}
+		}
+	}
 }

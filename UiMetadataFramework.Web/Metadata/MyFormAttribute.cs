@@ -2,7 +2,6 @@
 {
 	using System;
 	using System.Collections.Generic;
-	using UiMetadataFramework.Basic;
 	using UiMetadataFramework.Core.Binding;
 
 	public class MyFormAttribute : FormAttribute
