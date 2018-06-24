@@ -9,7 +9,8 @@ import { OutputFormModule } from '../../Output/Output.module';
     TableOutput
   ],
   imports: [
-    IonicPageModule.forChild(TableOutput)
+    IonicPageModule.forChild(TableOutput),
+    OutputFormModule
   ],
   exports: [
     TableOutput

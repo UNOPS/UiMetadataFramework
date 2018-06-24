@@ -9,8 +9,7 @@ import { InputFormModule } from '../../Input/Input.module';
     DynamicForm
   ],
   imports: [
-    IonicPageModule.forChild(DynamicForm),
-    InputFormModule
+    IonicPageModule.forChild(DynamicForm)
   ],
   entryComponents: [
     DynamicForm

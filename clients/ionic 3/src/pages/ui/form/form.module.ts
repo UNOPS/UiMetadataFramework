@@ -1,9 +1,8 @@
-import { NgModule } from '@angular/core';
-import { IonicPageModule } from 'ionic-angular';
-import { InputForm } from '../Input/Input';
-import { InputFormModule } from '../Input/input.module';
-import { OutputFormModule } from '../Output/Output.module';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { IonicPageModule, IonicModule } from 'ionic-angular';
 import { FormComponent } from './form';
+import { InputFormModule } from '../Input/Input.module';
+import { OutputFormModule } from '../Output';
 
 
 @NgModule({
@@ -16,10 +15,9 @@ import { FormComponent } from './form';
     OutputFormModule
   ],
   entryComponents: [
-    FormComponent
   ],
   exports: [
     FormComponent
-  ]
+  ],
 })
 export class FormComponentModule { }

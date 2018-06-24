@@ -31,7 +31,8 @@ export class InputForm implements OnInit {
         this.app = this.inputApp;
         this.form = this.inputForm;
         this.entry.clear();
-        var component = this.app.controlRegister.getInput(this.field.metadata.type).component
+        var component = this.app.controlRegister.getInput(this.field.metadata.type).component;
+        debugger;
         const factory = this.resolver.resolveComponentFactory(component);
         this.entryRef = this.entry.createComponent(factory);
         this.entryRef.instance.app = this.app;  
