@@ -7,12 +7,11 @@ import { EventHandlerMetadata } from "./EventHandlerMetadata";
  */
 export class FormMetadata {
 	constructor(metadata: any) {
-		for (var property in metadata) {
-			if (metadata.hasOwnProperty(property)) {
-				this[property] = metadata[property];
-			}
+		for (var property of Object.keys(metadata)) {
+			this[property] = metadata[property];
 		}
 
+		this.inputFields = metadata.inputFields.map(t => new InputFieldMetadata(t));
 		this.outputFields = metadata.outputFields.map(t => new OutputFieldMetadata(t));
 	}
 

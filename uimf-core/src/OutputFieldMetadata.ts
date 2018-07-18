@@ -5,10 +5,8 @@ import { EventHandlerMetadata } from "./EventHandlerMetadata";
  */
 export class OutputFieldMetadata {
 	constructor(metadata: any) {
-		for (var property in metadata) {
-			if (metadata.hasOwnProperty(property)) {
-				this[property] = metadata[property];
-			}
+		for (var property of Object.keys(metadata)) {
+			this[property] = metadata[property];
 		}
 
 		// Special case for "paginated-data", to ensure that each column is also
