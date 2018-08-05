@@ -166,8 +166,8 @@ The team is currently developing multiple clients:
 
 ## How do I use this?
 
-The easiest way to try UI Metadata Framework is to use the [uimf-app project template](https://github.com/niaher/uimf-app). The template uses ASP.NET Core 2 for server and [Svelte](svelte) for client implementation. Go check it out!
+The easiest way to try UI Metadata Framework is to use the [uimf-app project template](https://github.com/niaher/uimf-app). It does all the heavy-lifting for you, so you can get right to writing your business logic and take full advantage of the UI Metadata Framework. Go check it out!
 
 [mediatr]:https://github.com/jbogard/MediatR
-[xamarin]:https://www.xamarin.com/
-[svelte](https://svelte.technology/)
+[xamarin]:https://www.xamarin.com
+[svelte]:https://svelte.technology
