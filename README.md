@@ -158,12 +158,16 @@ It's important to understand that **UI Metadata Framework is not a library, but 
 
 The team is currently developing multiple clients:
 
-* web client using [Svelte](https://svelte.technology/) - [somewhat ready](https://github.com/UNOPS/UiMetadataFramework/tree/develop/clients/vanilla-js)
-* web client using [Vue](https://vuejs.org/) - [somewhat ready](https://github.com/mohammed-fuad/uimf-vue-typescript-client)
-* web client using [ReactJS](https://facebook.github.io/react/) - WIP
-* web client using [Angular](https://angular.io/) - WIP
-* Android client using [Xamarin][xamarin] - WIP
-* IOS client using [Xamarin][xamarin] - WIP
+* web client using [Svelte](svelte) - production-ready
+* web client using [Vue](https://vuejs.org/) - work in progress
+* web client using [Angular](https://angular.io/) - work in progress
+* Android client using [Xamarin][xamarin] - work in progress
+* IOS client using [Xamarin][xamarin] - work in progress
+
+## How do I use this?
+
+The easiest way to try UI Metadata Framework is to use the [uimf-app project template](https://github.com/niaher/uimf-app). The template uses ASP.NET Core 2 for server and [Svelte](svelte) for client implementation. Go check it out!
 
 [mediatr]:https://github.com/jbogard/MediatR
 [xamarin]:https://www.xamarin.com/
+[svelte](https://svelte.technology/)
