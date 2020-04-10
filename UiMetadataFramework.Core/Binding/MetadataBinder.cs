@@ -61,12 +61,12 @@
 		/// <summary>
 		/// Gets list of all registered <see cref="InputFieldBinding"/>.
 		/// </summary>
-		public IReadOnlyDictionary<Type, InputFieldBinding> InputFieldBindings => this.inputFieldMetadataMap;
+		public IReadOnlyDictionary<Type, InputFieldBinding> InputFieldBindings => this.inputFieldMetadataMap.AsReadOnlyDictionary();
 
-		/// <summary>
-		/// Gets list of all registered <see cref="OutputFieldBinding"/>.
-		/// </summary>
-		public IReadOnlyDictionary<Type, OutputFieldBinding> OutputFieldBindings => this.outputFieldMetadataMap;
+        /// <summary>
+        /// Gets list of all registered <see cref="OutputFieldBinding"/>.
+        /// </summary>
+        public IReadOnlyDictionary<Type, OutputFieldBinding> OutputFieldBindings => this.outputFieldMetadataMap.AsReadOnlyDictionary();
 
 		/// <summary>
 		/// Gets id of the form.

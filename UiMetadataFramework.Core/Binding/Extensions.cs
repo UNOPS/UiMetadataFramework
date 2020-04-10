@@ -1,6 +1,7 @@
 ﻿namespace UiMetadataFramework.Core.Binding
 {
 	using System;
+	using System.Collections.Concurrent;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
@@ -110,6 +111,11 @@
 			}
 
 			return result;
+		}
+
+		internal static IReadOnlyDictionary<TKey, TValue> AsReadOnlyDictionary<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dictionary)
+		{
+			return (IReadOnlyDictionary<TKey, TValue>)dictionary;
 		}
 
 		internal static void ForEach<T>(this IEnumerable<T> items, Action<T> action)
