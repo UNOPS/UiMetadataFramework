@@ -13,7 +13,7 @@ namespace UiMetadataFramework.Basic.Input.Typeahead
 	/// </summary>
 	public class TypeaheadInputFieldBinding : InputFieldBinding
 	{
-		internal TypeaheadInputFieldBinding(Type serverType, string clientType, DependencyInjectionContainer container)
+		public TypeaheadInputFieldBinding(Type serverType, string clientType, DependencyInjectionContainer container)
 			: base(serverType, clientType)
 		{
 			this.Container = container;
