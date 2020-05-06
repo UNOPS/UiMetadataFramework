@@ -4,7 +4,7 @@
 	using System.Linq;
 	using UiMetadataFramework.Core.Binding;
 
-	public class MultiSelectInputFieldBinding : TypeaheadInputFieldBinding
+	public class MultiSelectInputFieldBinding : TypeaheadInputFieldBindingBase
 	{
 		public MultiSelectInputFieldBinding(DependencyInjectionContainer container) : base(typeof(MultiSelect<>), "multiselect", container)
 		{
