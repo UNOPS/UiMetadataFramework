@@ -8,17 +8,10 @@
 	/// </summary>
 	public class DropdownInputFieldAttribute : InputFieldAttribute
 	{
-		public DropdownInputFieldAttribute(Type source, params string[] parameters)
+		public DropdownInputFieldAttribute(Type source)
 		{
 			this.Source = source;
-			this.Parameters = parameters;
 		}
-
-		/// <summary>
-		/// Gets or sets list of property names inside "request" object. These "request" object
-		/// properties will be serialized and sent to the typeahead source on each request.
-		/// </summary>
-		public string[] Parameters { get; set; }
 
 		/// <summary>
 		/// Gets or sets source for the dropdown items. The type must implement

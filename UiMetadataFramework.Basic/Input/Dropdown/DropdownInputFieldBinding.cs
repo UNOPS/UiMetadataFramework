@@ -5,6 +5,7 @@
 	using System.Linq;
 	using System.Reflection;
 	using Humanizer;
+	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Core.Binding;
 
 	public class DropdownInputFieldBinding : InputFieldBinding
@@ -37,9 +38,13 @@
 				// Collect all values from remote source if exists
 				if (dropdownInputFieldAttribute.Source.GetInterfaces(typeof(IDropdownRemoteSource)).Any())
 				{
+					var parameters = property.GetCustomAttributes<RemoteSourceArgumentAttribute>()
+						.Select(t => t.GetArgument())
+						.ToList();
+
 					return base.GetCustomProperties(attribute, property)
 						.Set("Source", dropdownInputFieldAttribute.Source.GetFormId())
-						.Set("Parameters", dropdownInputFieldAttribute.Parameters);
+						.Set("Parameters", parameters);
 				}
 			}
 

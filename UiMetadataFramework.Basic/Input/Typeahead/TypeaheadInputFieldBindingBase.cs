@@ -46,9 +46,13 @@
 
 			if (typeaheadInputFieldAttribute.Source.GetInterfaces(typeof(ITypeaheadRemoteSource)).Any())
 			{
+				var parameters = property.GetCustomAttributes<RemoteSourceArgumentAttribute>()
+					.Select(t => t.GetArgument())
+					.ToList();
+
 				return base.GetCustomProperties(attribute, property)
 					.Set("Source", typeaheadInputFieldAttribute.Source.GetFormId())
-					.Set("Parameters", typeaheadInputFieldAttribute.Parameters);
+					.Set("Parameters", parameters);
 			}
 
 			var inlineSource = typeaheadInputFieldAttribute.Source.GetInterfaces(typeof(ITypeaheadInlineSource<>)).SingleOrDefault();
