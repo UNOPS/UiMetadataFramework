@@ -5,12 +5,12 @@
 		<AssemblyName>UiMetadataFramework.Basic</AssemblyName>
 		<RootNamespace>UiMetadataFramework.Basic</RootNamespace>
 		<Description>Basic metadata components (input/output fields, response types) for UiMetadataFramework.</Description>
-		<Version>0.0.19-beta</Version>
+		<Version>0.0.21-beta</Version>
 		<Authors>UNOPS</Authors>
 		<FileVersion>0.0.1.0</FileVersion>
 		<PackageTags>ui metadata forms basic</PackageTags>
 		<RepositoryUrl>https://github.com/UNOPS/UiMetadataFramework</RepositoryUrl>
-		<Copyright>Copyright 2017 (c) UNOPS. All rights reserved.</Copyright>
+		<Copyright>Copyright 2020 (c) UNOPS. All rights reserved.</Copyright>
 		<PackageProjectUrl>https://github.com/UNOPS/UiMetadataFramework</PackageProjectUrl>
 	</PropertyGroup>
 
