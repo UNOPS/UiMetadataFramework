@@ -13,7 +13,7 @@
   ],
   "devDependencies": {
     "abstract-state-router": "^5.16.2",
-    "axios": "^0.16.2",
+    "axios": "^0.19.2",
     "browser-sync": "^2.18.12",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
