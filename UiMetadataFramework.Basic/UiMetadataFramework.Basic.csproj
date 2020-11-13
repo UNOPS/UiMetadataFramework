@@ -12,6 +12,7 @@
 		<RepositoryUrl>https://github.com/UNOPS/UiMetadataFramework</RepositoryUrl>
 		<Copyright>Copyright 2020 (c) UNOPS. All rights reserved.</Copyright>
 		<PackageProjectUrl>https://github.com/UNOPS/UiMetadataFramework</PackageProjectUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 
 	<PropertyGroup>

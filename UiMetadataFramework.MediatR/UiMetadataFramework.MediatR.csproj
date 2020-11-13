@@ -11,6 +11,7 @@
 		<PackageTags>ui metadata forms</PackageTags>
 		<RepositoryUrl>https://github.com/UNOPS/UiMetadataFramework</RepositoryUrl>
 		<Copyright>Copyright 2017 (c) UNOPS. All rights reserved.</Copyright>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 
 	<PropertyGroup>
