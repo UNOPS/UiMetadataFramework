@@ -19,7 +19,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Humanizer" Version="2.2.0" />
+	  <PackageReference Include="Humanizer.Core" Version="2.8.26" />
 	</ItemGroup>
 
 	<ItemGroup>
