@@ -4,7 +4,10 @@
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
+	using System.Threading;
+	using System.Threading.Tasks;
 	using global::MediatR;
+	using Microsoft.Extensions.DependencyInjection;
 	using UiMetadataFramework.Basic;
 	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Core;
@@ -39,15 +42,15 @@
 
 		public class BaseForm : Form<BaseForm.Request, BaseForm.Response>, IComparable
 		{
-			protected override Response Handle(Request message)
-			{
-				return new Response();
-			}
-
 			public int CompareTo(object obj)
 			{
 				// This method is just to make sure IForms can implement any arbitrary non-generic interface.
 				throw new NotImplementedException();
+			}
+
+			protected override Response Handle(Request message)
+			{
+				return new Response();
 			}
 
 			public class Response : FormResponse
@@ -116,6 +119,30 @@
 			}
 		}
 
+		private static IServiceProvider GetDiContainer()
+		{
+			var di = new DefaultDependencyInjectionContainer();
+			var binder = new MetadataBinder(di);
+			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+
+			var formRegister = new FormRegister(binder);
+			formRegister.RegisterForm(typeof(Magic));
+
+			var services = new ServiceCollection();
+
+			services.AddSingleton(di);
+			services.AddSingleton(binder);
+			services.AddSingleton(formRegister);
+
+			services.AddMediatR(
+				typeof(MediatrTests).Assembly,
+				typeof(InvokeForm).Assembly,
+				typeof(StringOutputFieldBinding).Assembly);
+
+			var provider = new DefaultServiceProviderFactory().CreateServiceProvider(services);
+			return provider;
+		}
+
 		[Fact]
 		public void CanGetFormsFromRegistry()
 		{
@@ -140,6 +167,52 @@
 			var formEventHandler = formMetadata.EventHandlers.First();
 			Assert.True(formEventHandler.Id == "log-form-event");
 			Assert.True(formEventHandler.RunAt == FormEvents.FormLoaded);
+		}
+
+		[Fact]
+		public async Task CanInvokeFormWithDictionaryRequest()
+		{
+			var di = GetDiContainer();
+
+			var mediator = di.GetService<IMediator>();
+
+			var response = await mediator.Send(new InvokeForm.Request
+			{
+				Form = typeof(Magic).GetFormId(),
+				InputFieldValues = new BaseForm.Request
+				{
+					FirstName = "John",
+					Height = 1,
+					DateOfBirth = DateTime.Now,
+					IsRegistered = true,
+					Weight = 2
+				}.ToDictionary()
+			}, CancellationToken.None);
+
+			Assert.NotNull(response);
+		}
+
+		[Fact]
+		public async Task CanInvokeFormWithObjectRequest()
+		{
+			var di = GetDiContainer();
+
+			var mediator = di.GetService<IMediator>();
+
+			var response = await mediator.Send(new InvokeForm.Request
+			{
+				Form = typeof(Magic).GetFormId(),
+				InputFieldValues = new
+				{
+					FirstName = "John",
+					Height = 1,
+					DateOfBirth = DateTime.Now,
+					IsRegistered = true,
+					Weight = 2
+				}
+			}, CancellationToken.None);
+
+			Assert.NotNull(response);
 		}
 
 		[Fact]

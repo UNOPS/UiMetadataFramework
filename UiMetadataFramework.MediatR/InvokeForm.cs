@@ -29,7 +29,7 @@ namespace UiMetadataFramework.MediatR
 
 			// Create request object.
 			var request = message.InputFieldValues != null
-				? JsonConvert.DeserializeObject(message.InputFieldValues.ToString(), formType.RequestType)
+				? JsonConvert.DeserializeObject(JsonConvert.SerializeObject(message.InputFieldValues), formType.RequestType)
 				: Activator.CreateInstance(formType.RequestType);
 
 			// Send request via MediatR. Calling IForm instance directly won't apply the decorators, 
