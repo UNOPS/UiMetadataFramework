@@ -30,8 +30,8 @@ namespace UiMetadataFramework.Core.Binding
 
 		/// <inheritdoc />
 		public object GetValue()
-		{
-			throw new NotImplementedException();
-		}
+        {
+            return this.Value;
+        }
 	}
 }

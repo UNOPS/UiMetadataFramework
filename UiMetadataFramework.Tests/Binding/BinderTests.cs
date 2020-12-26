@@ -23,7 +23,9 @@
 
 			formMetadata
 				.HasCustomProperty("style", "blue")
-				.HasCustomProperty("number", 1_001);
+				.HasCustomProperty("number", 1_001)
+                .HasCustomProperty("bool-false", false)
+                .HasCustomProperty("bool-true", true);
 
 			var docs = ((List<object>)formMetadata.CustomProperties["documentation"]).Cast<string>().ToList();
 			Assert.True(docs.Count == 2);
