@@ -5,12 +5,12 @@
 		<AssemblyName>UiMetadataFramework.MediatR</AssemblyName>
 		<RootNamespace>UiMetadataFramework.MediatR</RootNamespace>
 		<Description>UiMetadataFramework implementation on top of MediatR's IRequestHandler.</Description>
-		<Version>0.0.19-beta</Version>
+		<Version>0.0.24-beta</Version>
 		<Authors>UNOPS</Authors>
 		<FileVersion>0.0.1.0</FileVersion>
 		<PackageTags>ui metadata forms</PackageTags>
 		<RepositoryUrl>https://github.com/UNOPS/UiMetadataFramework</RepositoryUrl>
-		<Copyright>Copyright 2017 (c) UNOPS. All rights reserved.</Copyright>
+		<Copyright>Copyright 2020 (c) UNOPS. All rights reserved.</Copyright>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 
