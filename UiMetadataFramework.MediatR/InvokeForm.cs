@@ -38,7 +38,9 @@ namespace UiMetadataFramework.MediatR
 				.GetType()
 				.GetTypeInfo()
 				.GetMethods()
-				.Single(t => t.Name == nameof(Mediator.Send) && t.ReturnType.Name.Contains("Task`"))
+                .Where(t => t.Name == nameof(Mediator.Send))
+                .Where(t => t.GetParameters().FirstOrDefault()?.ParameterType.Name.Contains("IRequest`") == true)
+				.Single(t => t.ReturnType.Name.Contains("Task`"))
 				.MakeGenericMethod(formType.ResponseType);
 
 			var result = await method.InvokeAsync(this.mediator, request, default(CancellationToken));
