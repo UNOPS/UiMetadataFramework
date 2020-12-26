@@ -60,7 +60,10 @@
 			return field.HasCustomPropertyInternal(property, assertion, message);
 		}
 
-		public static OutputFieldMetadata HasCustomProperty<T>(this OutputFieldMetadata field, string property, Func<T, bool> assertion, string message)
+		public static OutputFieldMetadata HasCustomProperty<T>(this OutputFieldMetadata field,
+			string property,
+			Func<T, bool> assertion,
+			string message)
 			where T : class
 		{
 			return field.HasCustomPropertyInternal(property, assertion, message);
