@@ -48,18 +48,7 @@
 		/// <returns>Unique identifier of the form.</returns>
 		public static string GetFormId(this Type formType)
 		{
-			var formAttribute = formType.GetTypeInfo().GetCustomAttribute<FormAttribute>();
-
-			if (formAttribute == null)
-			{
-				throw new ArgumentException(
-					$"Type '{formType.FullName}' is not a form, " +
-					$"because it does not have '{nameof(FormAttribute)}' applied to it.");
-			}
-
-			return !string.IsNullOrWhiteSpace(formAttribute.Id)
-				? formAttribute.Id
-				: formType.FullName;
+			return MetadataBinder.GetFormId(formType);
 		}
 
 		/// <summary>
