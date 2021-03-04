@@ -1,4 +1,4 @@
-﻿namespace UiMetadataFramework.Core.Binding
+namespace UiMetadataFramework.Core.Binding
 {
 	using System;
 	using System.Collections.Concurrent;
@@ -13,7 +13,7 @@
 	public class MetadataBinder
 	{
 		/// <summary>
-		/// Name of the client-side control which should be able to render tablular data.
+		/// Name of the client-side control which should be able to render tabular data.
 		/// </summary>
 		public const string ObjectListOutputControlName = "table";
 

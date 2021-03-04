@@ -26,7 +26,7 @@ namespace UiMetadataFramework.Core.Binding
 		public int OrderIndex { get; set; }
 
 		/// <summary>
-		/// Gets or sets value indicating wheather value for this input field is required
+		/// Gets or sets value indicating whether value for this input field is required
 		/// before submitting the form.
 		/// </summary>
 		public bool Required { get; set; }
