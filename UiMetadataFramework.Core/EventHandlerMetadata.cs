@@ -1,5 +1,7 @@
 ﻿namespace UiMetadataFramework.Core
 {
+	using System.Collections.Generic;
+
 	/// <summary>
 	/// Represents a client-side function which will run when a specific client-side event occurs.
 	/// </summary>
@@ -14,10 +16,24 @@
 		{
 			this.RunAt = runAt;
 		}
-		
+
 		/// <summary>Gets or sets event at which the function will run.</summary>
 		/// <remarks><see cref="FormEvents"/> enumerates standard form events, which will be sufficient
 		/// for most of the use cases. However each client might have their own custom events.</remarks>
 		public string RunAt { get; }
+
+		/// <summary>
+		/// Creates a copy of this instance.
+		/// </summary>
+		/// <returns>New instance.</returns>
+		public virtual EventHandlerMetadata Copy()
+		{
+			return new EventHandlerMetadata(this.Id, this.RunAt)
+			{
+				CustomProperties = this.CustomProperties != null
+					? new Dictionary<string, object>(this.CustomProperties)
+					: null
+			};
+		}
 	}
 }

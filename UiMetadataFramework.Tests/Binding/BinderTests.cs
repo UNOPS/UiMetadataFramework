@@ -13,19 +13,47 @@
 
 	public partial class BinderTests
 	{
+		public BinderTests()
+		{
+			this.binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
+			this.binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+			this.binder.RegisterAssembly(typeof(BinderTests).GetTypeInfo().Assembly);
+		}
+
+		private readonly MetadataBinder binder;
+
+		[Fact]
+		public void CanBindDerivedInputFieldAttribute()
+		{
+			var inputField = this.binder.BindInputFields<Request>().Single(t => t.Id == nameof(Request.IsRegistered));
+
+			var custom = inputField as CustomInputFieldAttribute.Metadata;
+
+			Assert.NotNull(custom);
+			Assert.Equal("fancy", custom.Style);
+		}
+
+		[Fact]
+		public void CanBindDerivedOutputFieldAttribute()
+		{
+			var outputField = this.binder.BindOutputFields<Response>().Single(t => t.Id == nameof(Response.Weight));
+
+			var custom = outputField as CustomOutputFieldAttribute.Metadata;
+
+			Assert.NotNull(custom);
+			Assert.Equal("fancy-output", custom.Style);
+		}
+
 		[Fact]
 		public void CanGetFormMetadata()
 		{
-			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
-			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
-
-			var formMetadata = binder.BindForm<DoMagic, Request, Response>();
+			var formMetadata = this.binder.BindForm<DoMagic, Request, Response>();
 
 			formMetadata
 				.HasCustomProperty("style", "blue")
 				.HasCustomProperty("number", 1_001)
-                .HasCustomProperty("bool-false", false)
-                .HasCustomProperty("bool-true", true);
+				.HasCustomProperty("bool-false", false)
+				.HasCustomProperty("bool-true", true);
 
 			var docs = ((List<object>)formMetadata.CustomProperties["documentation"]).Cast<string>().ToList();
 			Assert.True(docs.Count == 2);
@@ -36,13 +64,11 @@
 		[Fact]
 		public void CanGetInputFieldsMetadata()
 		{
-			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
-			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
-
-			var inputFields = binder.BindInputFields<Request>().OrderBy(t => t.OrderIndex).ToList();
+			var inputFields = this.binder.BindInputFields<Request>().OrderBy(t => t.OrderIndex).ToList();
 
 			Assert.Equal(12, inputFields.Count);
-			inputFields.AssertHasInputField(nameof(Request.FirstName), StringInputFieldBinding.ControlName, "First name", orderIndex: 1, required: true);
+			inputFields.AssertHasInputField(nameof(Request.FirstName), StringInputFieldBinding.ControlName, "First name", orderIndex: 1,
+				required: true);
 			inputFields.AssertHasInputField(nameof(Request.DateOfBirth), DateTimeInputFieldBinding.ControlName, "DoB", orderIndex: 2, required: true);
 			inputFields.AssertHasInputField(nameof(Request.SubmissionDate), DateTimeInputFieldBinding.ControlName, nameof(Request.SubmissionDate));
 			inputFields.AssertHasInputField(nameof(Request.Height), NumberInputFieldBinding.ControlName, nameof(Request.Height), hidden: true);
@@ -51,10 +77,12 @@
 				.HasCustomProperty("number-1", 1)
 				.HasCustomProperty("number-2", 2);
 
-			inputFields.AssertHasInputField(nameof(Request.Weight), NumberInputFieldBinding.ControlName, nameof(Request.Weight), hidden: true, required: true,
+			inputFields.AssertHasInputField(nameof(Request.Weight), NumberInputFieldBinding.ControlName, nameof(Request.Weight), hidden: true,
+				required: true,
 				eventHandlers: new[] { InputFieldEventHandlerAttribute.Identifier });
 
-			inputFields.AssertHasInputField(nameof(Request.IsRegistered), BooleanInputFieldBinding.ControlName, nameof(Request.IsRegistered), required: true);
+			inputFields.AssertHasInputField(nameof(Request.IsRegistered), BooleanInputFieldBinding.ControlName, nameof(Request.IsRegistered),
+				required: true);
 
 			inputFields.AssertHasInputField(nameof(Request.Day), DropdownInputFieldBinding.ControlName, nameof(Request.Day))
 				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 7, "Dropdown has incorrect number of items.");
@@ -72,17 +100,14 @@
 
 			inputFields.AssertHasInputField(nameof(Request.Category), DropdownInputFieldBinding.ControlName, nameof(Request.Category))
 				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 3, "Dropdown has incorrect number of items.")
-				.HasCustomProperty<IList<object>>("documentation", t => t.Cast<string>().Count() == 2, "Custom property 'documentation' has incorrect value.");
+				.HasCustomProperty<IList<object>>("documentation", t => t.Cast<string>().Count() == 2,
+					"Custom property 'documentation' has incorrect value.");
 		}
 
 		[Fact]
 		public void CanGetOutputFieldsMetadata()
 		{
-			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
-			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
-			binder.RegisterAssembly(typeof(BinderTests).GetTypeInfo().Assembly);
-
-			var outputFields = binder.BindOutputFields<Response>().OrderBy(t => t.OrderIndex).ToList();
+			var outputFields = this.binder.BindOutputFields<Response>().OrderBy(t => t.OrderIndex).ToList();
 
 			Assert.Equal(7, outputFields.Count);
 			outputFields.AssertHasOutputField(nameof(Response.FirstName), StringOutputFieldBinding.ControlName, "First name", false, 1);
@@ -99,7 +124,8 @@
 			outputFields.AssertHasOutputField(nameof(Response.OtherPeople), MetadataBinder.ObjectListOutputControlName, nameof(Response.OtherPeople))
 				.HasCustomProperty("style", "cool")
 				.HasCustomProperty("secret", 321)
-				.HasCustomProperty<IList<object>>("documentation", t => t.Cast<string>().Count() == 2, "Custom property 'documentation' has incorrect value.");
+				.HasCustomProperty<IList<object>>("documentation", t => t.Cast<string>().Count() == 2,
+					"Custom property 'documentation' has incorrect value.");
 
 			outputFields.AssertHasOutputField(nameof(Response.Categories), MetadataBinder.ValueListOutputControlName, nameof(Response.Categories));
 
@@ -119,20 +145,15 @@
 		[Fact]
 		public void DuplicateAttemptsToBindSameAssemblyAreIgnored()
 		{
-			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
-			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
-			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+			this.binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+			this.binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
 		}
 
 		[Fact]
 		public void EventHandlerCanOnlyBeAppliedToIntendedElements()
 		{
-			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
-			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
-			binder.RegisterAssembly(typeof(BinderTests).GetTypeInfo().Assembly);
-
-			Assert.Throws<BindingException>(() => binder.BindInputFields<InvalidRequest>().ToList());
-			Assert.Throws<BindingException>(() => binder.BindOutputFields<InvalidResponse>().ToList());
+			Assert.Throws<BindingException>(() => this.binder.BindInputFields<InvalidRequest>().ToList());
+			Assert.Throws<BindingException>(() => this.binder.BindOutputFields<InvalidResponse>().ToList());
 		}
 	}
 }

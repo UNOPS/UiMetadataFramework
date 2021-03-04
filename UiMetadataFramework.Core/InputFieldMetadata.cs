@@ -1,6 +1,8 @@
 ﻿namespace UiMetadataFramework.Core
 {
+	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using Newtonsoft.Json;
 
 	/// <summary>
@@ -19,7 +21,30 @@
 		}
 
 		/// <summary>
-		/// Gets or sets value indicating wheather value for this input field is required
+		/// Creates a copy of the specified instance.
+		/// </summary>
+		/// <param name="metadata">Instance to copy.</param>
+		protected InputFieldMetadata(InputFieldMetadata metadata) : this(metadata.Type)
+		{
+			if (metadata == null)
+			{
+				throw new ArgumentNullException(nameof(metadata));
+			}
+
+			this.Id = metadata.Id;
+			this.Hidden = metadata.Hidden;
+			this.Label = metadata.Label;
+			this.Required = metadata.Required;
+			this.OrderIndex = metadata.OrderIndex;
+			this.EventHandlers = metadata.EventHandlers?.Select(t => t.Copy()).ToList();
+
+			this.CustomProperties = metadata.CustomProperties != null
+				? new Dictionary<string, object>(metadata.CustomProperties)
+				: null;
+		}
+
+		/// <summary>
+		/// Gets or sets value indicating whether value for this input field is required
 		/// before submitting the form.
 		/// </summary>
 		public bool Required { get; set; }

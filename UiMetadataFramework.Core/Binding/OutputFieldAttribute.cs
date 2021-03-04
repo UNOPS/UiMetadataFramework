@@ -2,6 +2,7 @@ namespace UiMetadataFramework.Core.Binding
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Reflection;
 
 	/// <summary>
@@ -34,6 +35,73 @@ namespace UiMetadataFramework.Core.Binding
 		public virtual IDictionary<string, object> GetCustomProperties(PropertyInfo property, MetadataBinder binder)
 		{
 			return null;
+		}
+
+		/// <summary>
+		/// Gets metadata for the output field decorated with this attribute.
+		/// </summary>
+		/// <param name="property">Output field that has been decorated with this attribute.</param>
+		/// <param name="binding">Binding for the output field.</param>
+		/// <param name="binder">Metadata binder.</param>
+		/// <returns>Instance of <see cref="OutputFieldMetadata"/>.</returns>
+		/// <remarks>This method will be used internally by <see cref="MetadataBinder"/>.</remarks>
+		public virtual OutputFieldMetadata GetMetadata(PropertyInfo property, OutputFieldBinding binding, MetadataBinder binder)
+		{
+			var isEnumerable = property.IsEnumerable();
+
+			if (!isEnumerable && binding == null)
+			{
+				throw new KeyNotFoundException(
+					$"Cannot retrieve metadata for '{property.DeclaringType}.{property.Name}', " +
+					$"because type '{property.PropertyType.FullName}' is not bound to any output field control.");
+			}
+
+			var clientControlName = isEnumerable
+				? property.PropertyType.GenericTypeArguments[0].IsSimpleType()
+					? MetadataBinder.ValueListOutputControlName
+					: MetadataBinder.ObjectListOutputControlName
+				: binding.ClientType;
+
+			IDictionary<string, object> customProperties = null;
+
+			if (clientControlName == MetadataBinder.ObjectListOutputControlName)
+			{
+				var additionalCustomProperties = property.GetCustomProperties();
+				customProperties = new Dictionary<string, object>
+				{
+					{ "Columns", binder.BindOutputFields(property.PropertyType.GenericTypeArguments[0]).ToList() },
+					{ "Customizations", this.GetCustomProperties(property, binder) }
+				}.Merge(additionalCustomProperties);
+			}
+			else
+			{
+				customProperties = binding != null
+					// All non-enumerable properties (i.e. - custom properties) will
+					// have binding.
+					? binding.GetCustomProperties(property, this, binder)
+					// Only for "ValueListOutputControlName" (i.e. - string[], int[], etc) 
+					// will the code come here. 
+					: this.GetCustomProperties(property, binder);
+			}
+
+			var eventHandlerAttributes = property.GetCustomAttributesImplementingInterface<IFieldEventHandlerAttribute>().ToList();
+			var illegalAttributes = eventHandlerAttributes.Where(t => !t.ApplicableToOutputField).ToList();
+			if (illegalAttributes.Any())
+			{
+				throw new BindingException(
+					$"Input '{property.DeclaringType.FullName}.{property.Name}' cannot use " +
+					$"'{illegalAttributes[0].GetType().FullName}', because the attribute is not applicable for input fields.");
+			}
+
+			return new OutputFieldMetadata(clientControlName)
+			{
+				Id = property.Name,
+				Hidden = this.Hidden,
+				Label = this.Label ?? property.Name,
+				OrderIndex = this.OrderIndex,
+				CustomProperties = customProperties,
+				EventHandlers = eventHandlerAttributes.Select(t => t.ToMetadata(property, binder)).ToList()
+			};
 		}
 	}
 }

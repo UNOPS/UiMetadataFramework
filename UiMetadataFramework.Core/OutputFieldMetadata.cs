@@ -1,6 +1,7 @@
 ﻿namespace UiMetadataFramework.Core
 {
 	using System.Collections.Generic;
+	using System.Linq;
 	using Newtonsoft.Json;
 
 	/// <summary>
@@ -16,6 +17,23 @@
 		public OutputFieldMetadata(string type)
 		{
 			this.Type = type;
+		}
+
+		/// <summary>
+		/// Creates a copy of the specified instance.
+		/// </summary>
+		/// <param name="metadata">Instance to copy.</param>
+		protected OutputFieldMetadata(OutputFieldMetadata metadata) : this(metadata.Type)
+		{
+			this.Id = metadata.Id;
+			this.Label = metadata.Label;
+			this.OrderIndex = metadata.OrderIndex;
+			this.Hidden = metadata.Hidden;
+			this.EventHandlers = metadata.EventHandlers?.Select(t => t.Copy()).ToList();
+
+			this.CustomProperties = metadata.CustomProperties != null
+				? new Dictionary<string, object>(metadata.CustomProperties)
+				: null;
 		}
 
 		/// <summary>

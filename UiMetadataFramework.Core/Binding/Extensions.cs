@@ -1,6 +1,7 @@
 ﻿namespace UiMetadataFramework.Core.Binding
 {
 	using System;
+	using System.Collections;
 	using System.Collections.Concurrent;
 	using System.Collections.Generic;
 	using System.Linq;
@@ -49,6 +50,39 @@
 		public static string GetFormId(this Type formType)
 		{
 			return MetadataBinder.GetFormId(formType);
+		}
+
+		/// <summary>
+		/// Checks if the property implements <see cref="System.Collections.IEnumerable"/> interface.
+		/// </summary>
+		/// <param name="propertyInfo">Property to check.</param>
+		/// <returns>True/false.</returns>
+		public static bool IsEnumerable(this PropertyInfo propertyInfo)
+		{
+			return
+				propertyInfo.PropertyType.GetTypeInfo().IsGenericType &&
+				propertyInfo.PropertyType.GetGenericTypeDefinition().GetTypeInfo().GetInterfaces()
+					.Any(t => t == typeof(IEnumerable));
+		}
+
+		/// <summary>
+		/// Checks if the property is nullable.
+		/// </summary>
+		/// <param name="propertyInfo">Property to check.</param>
+		/// <returns>True/false.</returns>
+		public static bool IsNullabble(this PropertyInfo propertyInfo)
+		{
+			return Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null;
+		}
+
+		/// <summary>
+		/// Checks if the type is a value type (<see cref="Type.IsValueType"/>) or a <see cref="string"/>.
+		/// </summary>
+		/// <param name="type">Type to check.</param>
+		/// <returns>True/false.</returns>
+		public static bool IsSimpleType(this Type type)
+		{
+			return type == typeof(string) || type.GetTypeInfo().IsValueType;
 		}
 
 		/// <summary>

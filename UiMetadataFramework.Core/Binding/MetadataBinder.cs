@@ -1,4 +1,4 @@
-namespace UiMetadataFramework.Core.Binding
+﻿namespace UiMetadataFramework.Core.Binding
 {
 	using System;
 	using System.Collections.Concurrent;
@@ -63,10 +63,10 @@ namespace UiMetadataFramework.Core.Binding
 		/// </summary>
 		public IReadOnlyDictionary<Type, InputFieldBinding> InputFieldBindings => this.inputFieldMetadataMap.AsReadOnlyDictionary();
 
-        /// <summary>
-        /// Gets list of all registered <see cref="OutputFieldBinding"/>.
-        /// </summary>
-        public IReadOnlyDictionary<Type, OutputFieldBinding> OutputFieldBindings => this.outputFieldMetadataMap.AsReadOnlyDictionary();
+		/// <summary>
+		/// Gets list of all registered <see cref="OutputFieldBinding"/>.
+		/// </summary>
+		public IReadOnlyDictionary<Type, OutputFieldBinding> OutputFieldBindings => this.outputFieldMetadataMap.AsReadOnlyDictionary();
 
 		/// <summary>
 		/// Gets id of the form.
@@ -118,7 +118,8 @@ namespace UiMetadataFramework.Core.Binding
 			{
 				if (this.outputFieldMetadataMap.ContainsKey(serverType))
 				{
-					throw new InvalidOperationException($"Type '{binding.ServerTypes}' is already bound to output field control '{binding.ClientType}'.");
+					throw new InvalidOperationException(
+						$"Type '{binding.ServerTypes}' is already bound to output field control '{binding.ClientType}'.");
 				}
 
 				if (serverType.GetTypeInfo().IsValueType)
@@ -158,7 +159,8 @@ namespace UiMetadataFramework.Core.Binding
 			{
 				if (this.inputFieldMetadataMap.ContainsKey(serverType))
 				{
-					throw new InvalidOperationException($"Type '{binding.ServerTypes}' is already bound to input field control '{binding.ClientType}'.");
+					throw new InvalidOperationException(
+						$"Type '{binding.ServerTypes}' is already bound to input field control '{binding.ClientType}'.");
 				}
 
 				if (serverType.GetTypeInfo().IsValueType)
@@ -354,30 +356,13 @@ namespace UiMetadataFramework.Core.Binding
 				: formType.FullName;
 		}
 
-		private static bool IsEnumerable(PropertyInfo propertyInfo)
-		{
-			return
-				propertyInfo.PropertyType.GetTypeInfo().IsGenericType &&
-				propertyInfo.PropertyType.GetGenericTypeDefinition().GetTypeInfo().GetInterfaces().Any(t => t == typeof(System.Collections.IEnumerable));
-		}
-
-		private static bool IsNullabble(PropertyInfo propertyInfo)
-		{
-			return Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null;
-		}
-
-		private static bool IsSimpleType(Type itemType)
-		{
-			return itemType == typeof(string) || itemType.GetTypeInfo().IsValueType;
-		}
-
 		private IEnumerable<InputFieldMetadata> BindInputFieldsInternal(Type type)
 		{
 			var properties = type.GetPublicProperties();
 
 			foreach (var property in properties)
 			{
-				var propertyType = property.PropertyType.IsConstructedGenericType && !IsNullabble(property)
+				var propertyType = property.PropertyType.IsConstructedGenericType && !property.IsNullabble()
 					? property.PropertyType.GetGenericTypeDefinition()
 					: property.PropertyType;
 
@@ -388,41 +373,13 @@ namespace UiMetadataFramework.Core.Binding
 						$"because type '{propertyType.FullName}' is not bound to any input field control.");
 				}
 
-				var attribute = property.GetCustomAttributeSingleOrDefault<InputFieldAttribute>();
-
-				var required = propertyType.GetTypeInfo().IsValueType
-					// non-nullable value types are automatically required,
-					// nullable types are automatically NOT required.
-					? Nullable.GetUnderlyingType(propertyType) == null
-					// reference types use attribute
-					: attribute?.Required ?? false;
-
-				if (binding.IsInputAlwaysHidden && attribute?.Hidden == false)
+				var attribute = property.GetCustomAttributeSingleOrDefault<InputFieldAttribute>() ?? new InputFieldAttribute
 				{
-					throw new BindingException(
-						$"Input '{property.DeclaringType.FullName}.{property.Name}' cannot have `Hidden = true`, " +
-						$"because '{propertyType.FullName}' inputs are preconfigured by '{binding.GetType().FullName}' to always be hidden.");
-				}
-
-				var eventHandlerAttributes = property.GetCustomAttributesImplementingInterface<IFieldEventHandlerAttribute>().ToList();
-				var illegalAttributes = eventHandlerAttributes.Where(t => !t.ApplicableToInputField).ToList();
-				if (illegalAttributes.Any())
-				{
-					throw new BindingException(
-						$"Input '{property.DeclaringType.FullName}.{property.Name}' cannot use " +
-						$"'{illegalAttributes[0].GetType().FullName}', because the attribute is not applicable for input fields.");
-				}
-
-				var metadata = new InputFieldMetadata(binding.ClientType)
-				{
-					Id = property.Name,
-					Hidden = binding.IsInputAlwaysHidden || (attribute?.Hidden ?? false),
-					Label = attribute?.Label ?? property.Name,
-					OrderIndex = attribute?.OrderIndex ?? 0,
-					Required = required,
-					EventHandlers = eventHandlerAttributes.Select(t => t.ToMetadata(property, this)).ToList(),
-					CustomProperties = binding.GetCustomProperties(attribute, property)
+					Required = false,
+					Hidden = false,
 				};
+
+				var metadata = attribute.GetMetadata(property, binding, this);
 
 				yield return metadata;
 			}
@@ -434,70 +391,15 @@ namespace UiMetadataFramework.Core.Binding
 
 			foreach (var property in properties)
 			{
-				var propertyType = property.PropertyType.IsConstructedGenericType && !IsNullabble(property)
+				var propertyType = property.PropertyType.IsConstructedGenericType && !property.IsNullabble()
 					? property.PropertyType.GetGenericTypeDefinition()
 					: property.PropertyType;
 
 				this.outputFieldMetadataMap.TryGetValue(propertyType, out OutputFieldBinding binding);
 
-				bool isEnumerable = IsEnumerable(property);
+				var attribute = property.GetCustomAttributeSingleOrDefault<OutputFieldAttribute>() ?? new OutputFieldAttribute();
 
-				if (!isEnumerable && binding == null)
-				{
-					throw new KeyNotFoundException(
-						$"Cannot retrieve metadata for '{type.FullName}.{property.Name}', " +
-						$"because type '{property.PropertyType.FullName}' is not bound to any output field control.");
-				}
-
-				IDictionary<string, object> customProperties;
-				var attribute = property.GetCustomAttributeSingleOrDefault<OutputFieldAttribute>();
-
-				var clientControlName = isEnumerable
-					? (IsSimpleType(property.PropertyType.GenericTypeArguments[0])
-						? ValueListOutputControlName
-						: ObjectListOutputControlName)
-					: binding.ClientType;
-
-				if (clientControlName == ObjectListOutputControlName)
-				{
-					var additionalCustomProperties = property.GetCustomProperties();
-					customProperties = new Dictionary<string, object>
-					{
-						{ "Columns", this.BindOutputFields(property.PropertyType.GenericTypeArguments[0]).ToList() },
-						{ "Customizations", attribute?.GetCustomProperties(property, this) }
-					}.Merge(additionalCustomProperties);
-				}
-				else
-				{
-					customProperties = binding != null
-						// All non-enumerable properties (i.e. - custom properties) will
-						// have binding.
-						? binding.GetCustomProperties(property, attribute, this)
-						// Only for "ValueListOutputControlName" (i.e. - string[], int[], etc) 
-						// will the code come here. 
-						: attribute?.GetCustomProperties(property, this);
-				}
-
-				var eventHandlerAttributes = property.GetCustomAttributesImplementingInterface<IFieldEventHandlerAttribute>().ToList();
-				var illegalAttributes = eventHandlerAttributes.Where(t => !t.ApplicableToOutputField).ToList();
-				if (illegalAttributes.Any())
-				{
-					throw new BindingException(
-						$"Input '{property.DeclaringType.FullName}.{property.Name}' cannot use " +
-						$"'{illegalAttributes[0].GetType().FullName}', because the attribute is not applicable for input fields.");
-				}
-
-				var metadata = new OutputFieldMetadata(clientControlName)
-				{
-					Id = property.Name,
-					Hidden = attribute?.Hidden ?? false,
-					Label = attribute?.Label ?? property.Name,
-					OrderIndex = attribute?.OrderIndex ?? 0,
-					CustomProperties = customProperties,
-					EventHandlers = eventHandlerAttributes.Select(t => t.ToMetadata(property, this)).ToList()
-				};
-
-				yield return metadata;
+				yield return attribute.GetMetadata(property, binding, this);
 			}
 		}
 	}

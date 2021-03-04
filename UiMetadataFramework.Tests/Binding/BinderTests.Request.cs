@@ -2,8 +2,10 @@ namespace UiMetadataFramework.Tests.Binding
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Reflection;
 	using UiMetadataFramework.Basic.Input;
 	using UiMetadataFramework.Basic.Input.Dropdown;
+	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
 	public partial class BinderTests
@@ -36,7 +38,9 @@ namespace UiMetadataFramework.Tests.Binding
 			[InputField(Hidden = true)]
 			public int? Height { get; set; }
 
+			[CustomInputField(Style = "fancy")]
 			public bool IsRegistered { get; set; }
+
 			public Paginator MainPeoplePaginator { get; set; }
 
 			[IntProperty("number-1", 1)]
@@ -55,6 +59,35 @@ namespace UiMetadataFramework.Tests.Binding
 			public IEnumerable<DropdownItem> GetItems()
 			{
 				return new[] { new DropdownItem("Female", "female"), new DropdownItem("Male", "male") };
+			}
+		}
+
+		public class CustomInputFieldAttribute : InputFieldAttribute
+		{
+			public string Style { get; set; }
+
+			public override InputFieldMetadata GetMetadata(PropertyInfo property, InputFieldBinding binding, MetadataBinder binder)
+			{
+				var basic = base.GetMetadata(property, binding, binder);
+
+				return new Metadata(basic)
+				{
+					Style = this.Style
+				};
+			}
+
+			public class Metadata : InputFieldMetadata
+			{
+				public Metadata(InputFieldMetadata basic)
+					: base(basic)
+				{
+				}
+
+				public Metadata(string type) : base(type)
+				{
+				}
+
+				public string Style { get; set; }
 			}
 		}
 	}
