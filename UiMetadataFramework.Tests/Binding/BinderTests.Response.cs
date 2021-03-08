@@ -39,6 +39,8 @@ namespace UiMetadataFramework.Tests.Binding
 			[CustomOutputField(Hidden = true, Style = "fancy-output")]
 			[OutputFieldEventHandler]
 			public decimal Weight { get; set; }
+
+			public IList<FormLink> Links { get; set; }
 		}
 	}
 

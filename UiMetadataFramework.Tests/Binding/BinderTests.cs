@@ -22,6 +22,26 @@
 
 		private readonly MetadataBinder binder;
 
+		[Theory]
+		[InlineData(nameof(Response.Links))]
+		[InlineData(nameof(Response.Categories))]
+		public void EnumerableOfKnownOutputTypeIsBoundToList(string property)
+		{
+			var outputField = this.binder.BindOutputFields<Response>().Single(t => t.Id == property);
+
+			Assert.Equal(MetadataBinder.ValueListOutputControlName, outputField.Type);
+		}
+
+		[Theory]
+		[InlineData(nameof(Response.Links), "formlink")]
+		[InlineData(nameof(Response.Categories), StringInputFieldBinding.ControlName)]
+		public void EnumerableOfKnownOutputTypeIndicatesType(string property, string itemType)
+		{
+			var outputField = this.binder.BindOutputFields<Response>().Single(t => t.Id == property);
+
+			outputField.HasCustomProperty<string>("Type", t => t == itemType, null);
+		}
+
 		[Fact]
 		public void CanBindDerivedInputFieldAttribute()
 		{
@@ -109,7 +129,7 @@
 		{
 			var outputFields = this.binder.BindOutputFields<Response>().OrderBy(t => t.OrderIndex).ToList();
 
-			Assert.Equal(7, outputFields.Count);
+			Assert.Equal(8, outputFields.Count);
 			outputFields.AssertHasOutputField(nameof(Response.FirstName), StringOutputFieldBinding.ControlName, "First name", false, 1);
 			outputFields.AssertHasOutputField(nameof(Response.DateOfBirth), DateTimeOutputFieldBinding.ControlName, "DoB", false, 2)
 				.HasCustomProperty("style", "beatiful")
@@ -147,6 +167,14 @@
 		{
 			this.binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
 			this.binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+		}
+
+		[Fact]
+		public void EnumerableOfUnknownTypeIsBoundToTable()
+		{
+			var outputField = this.binder.BindOutputFields<Response>().Single(t => t.Id == nameof(Response.OtherPeople));
+
+			Assert.Equal(MetadataBinder.ObjectListOutputControlName, outputField.Type);
 		}
 
 		[Fact]

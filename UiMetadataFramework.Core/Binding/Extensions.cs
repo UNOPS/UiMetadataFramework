@@ -76,16 +76,6 @@
 		}
 
 		/// <summary>
-		/// Checks if the type is a value type (<see cref="Type.IsValueType"/>) or a <see cref="string"/>.
-		/// </summary>
-		/// <param name="type">Type to check.</param>
-		/// <returns>True/false.</returns>
-		public static bool IsSimpleType(this Type type)
-		{
-			return type == typeof(string) || type.GetTypeInfo().IsValueType;
-		}
-
-		/// <summary>
 		/// Merges two dictionaries together. If both dictionaries have the same key, then
 		/// items in <paramref name="another"/> dictionary will take precedence.
 		/// </summary>

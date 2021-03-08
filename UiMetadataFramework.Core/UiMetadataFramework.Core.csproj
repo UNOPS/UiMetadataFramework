@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
 		<AssemblyName>UiMetadataFramework.Core</AssemblyName>
 		<RootNamespace>UiMetadataFramework.Core</RootNamespace>
 		<Description>UiMetadataFramework is a very simple .NET Standard library to help you build UI using metadata. This package includes core functionality without UI implementation.</Description>
-		<Version>0.0.26-beta</Version>
+		<Version>0.0.27-beta</Version>
 		<Authors>UNOPS</Authors>
 		<FileVersion>0.0.1.0</FileVersion>
 		<PackageTags>ui metadata forms</PackageTags>

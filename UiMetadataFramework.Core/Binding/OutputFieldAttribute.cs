@@ -57,12 +57,12 @@ namespace UiMetadataFramework.Core.Binding
 			}
 
 			var clientControlName = isEnumerable
-				? property.PropertyType.GenericTypeArguments[0].IsSimpleType()
+				? binder.OutputFieldBindings.ContainsKey(property.PropertyType.GenericTypeArguments[0])
 					? MetadataBinder.ValueListOutputControlName
 					: MetadataBinder.ObjectListOutputControlName
 				: binding.ClientType;
 
-			IDictionary<string, object> customProperties = null;
+			IDictionary<string, object> customProperties;
 
 			if (clientControlName == MetadataBinder.ObjectListOutputControlName)
 			{
@@ -75,13 +75,23 @@ namespace UiMetadataFramework.Core.Binding
 			}
 			else
 			{
-				customProperties = binding != null
-					// All non-enumerable properties (i.e. - custom properties) will
-					// have binding.
-					? binding.GetCustomProperties(property, this, binder)
-					// Only for "ValueListOutputControlName" (i.e. - string[], int[], etc) 
-					// will the code come here. 
-					: this.GetCustomProperties(property, binder);
+				if (binding != null)
+				{
+					// All non-enumerable properties (i.e. - custom properties) will have binding.
+					customProperties = binding.GetCustomProperties(property, this, binder);
+				}
+				else
+				{
+					// Only for "ValueListOutputControlName" (i.e. - string[], int[], FormLink[], etc) will the code come here.
+					// Basically only the outputs of IEnumerable{T} where T is a known type with a binding.
+
+					var itemBinding = binder.OutputFieldBindings[property.PropertyType.GenericTypeArguments[0]];
+
+					customProperties = new Dictionary<string, object>
+					{
+						{ "Type", itemBinding.ClientType }
+					}.Merge(itemBinding.GetCustomProperties(property, this, binder));
+				}
 			}
 
 			var eventHandlerAttributes = property.GetCustomAttributesImplementingInterface<IFieldEventHandlerAttribute>().ToList();
