@@ -5,7 +5,7 @@
 		<AssemblyName>UiMetadataFramework.Basic</AssemblyName>
 		<RootNamespace>UiMetadataFramework.Basic</RootNamespace>
 		<Description>Basic metadata components (input/output fields, response types) for UiMetadataFramework.</Description>
-		<Version>0.0.25-beta</Version>
+		<Version>0.0.27-beta</Version>
 		<Authors>UNOPS</Authors>
 		<FileVersion>0.0.1.0</FileVersion>
 		<PackageTags>ui metadata forms basic</PackageTags>
