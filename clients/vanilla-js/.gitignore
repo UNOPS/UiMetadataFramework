@@ -1,7 +1,0 @@
-node_modules
-bower_modules
-.rpt2_cache
-wwwroot/js
-wwwroot/css
-build
-es2015

@@ -1,8 +1,0 @@
-<div class="tabstrip">
-	<div *ngFor="let tab of field.data.tabs">
-		<a [attr.href]="app.makeUrl(tab.form, tab.inputFieldValues)"
-		 class="getCssClass(tab, field.data)">
-			{{tab.label}}
-		</a>
-	</div>
-</div>
