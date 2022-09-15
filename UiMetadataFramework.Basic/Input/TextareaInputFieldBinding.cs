@@ -2,17 +2,11 @@
 {
 	using UiMetadataFramework.Core.Binding;
 
-	public class TextareaInputFieldBinding : InputFieldBinding
-	{
-		public const string ControlName = "textarea";
-
-		public TextareaInputFieldBinding() : base(typeof(TextareaValue), ControlName)
-		{
-		}
-	}
-
+	[InputFieldType(ControlName)]
 	public class TextareaValue
 	{
+		public const string ControlName = "textarea";
+		
 		public string Value { get; set; }
 	}
 }

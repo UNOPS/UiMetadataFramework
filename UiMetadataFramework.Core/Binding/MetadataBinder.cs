@@ -347,6 +347,16 @@
 			{
 				this.AddBinding(binding);
 			}
+			
+			assembly.ExportedTypes.ForEach(t =>
+			{
+				var attribute = t.GetTypeInfo().GetCustomAttributeSingleOrDefault<InputFieldTypeAttribute>();
+
+				if (attribute != null)
+				{
+					this.AddBinding(new InputFieldBinding(t, attribute.ClientType));
+				}
+			});
 		}
 
 		private static string GetFormId(Type formType, FormAttribute formAttribute)
