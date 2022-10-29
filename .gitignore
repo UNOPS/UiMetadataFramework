@@ -60,3 +60,4 @@ bower_modules
 /packages/*
 !/packages/repositories.config
 !NuGet.exe
+.idea/

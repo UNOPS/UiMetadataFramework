@@ -8,7 +8,7 @@
 
 	internal static class Pagination
 	{
-		public static IQueryable<TSource> OrderBy<TSource>(this IQueryable<TSource> query, string key, bool ascending = true)
+		private static IQueryable<TSource> OrderBy<TSource>(this IQueryable<TSource> query, string key, bool ascending = true)
 		{
 			if (string.IsNullOrWhiteSpace(key))
 			{

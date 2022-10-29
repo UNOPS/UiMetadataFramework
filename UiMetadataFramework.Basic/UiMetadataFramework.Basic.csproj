@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+		<TargetFrameworks>net48;net6.0;netstandard2.0;netstandard2.1</TargetFrameworks>
 		<AssemblyName>UiMetadataFramework.Basic</AssemblyName>
 		<RootNamespace>UiMetadataFramework.Basic</RootNamespace>
 		<Description>Basic metadata components (input/output fields, response types) for UiMetadataFramework.</Description>
@@ -13,6 +13,7 @@
 		<Copyright>Copyright 2020 (c) UNOPS. All rights reserved.</Copyright>
 		<PackageProjectUrl>https://github.com/UNOPS/UiMetadataFramework</PackageProjectUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<LangVersion>10</LangVersion>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -20,7 +21,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Humanizer.Core" Version="2.8.26" />
+	  <PackageReference Include="Humanizer.Core" Version="2.14.1" />
 	</ItemGroup>
 
 	<ItemGroup>
