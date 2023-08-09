@@ -156,13 +156,7 @@ It's important to understand that **UI Metadata Framework is not a library, but 
 
 ## Client implementations
 
-The team is currently developing multiple clients:
-
-* web client using [Svelte](svelte) - production-ready
-* web client using [Vue](https://vuejs.org/) - work in progress
-* web client using [Angular](https://angular.io/) - work in progress
-* Android client using [Xamarin][xamarin] - work in progress
-* IOS client using [Xamarin][xamarin] - work in progress
+* [uimf-svelte](https://github.com/unops/uimf-svelte) - web client built with [Svelte](svelte)
 
 ## How do I use this?
 
