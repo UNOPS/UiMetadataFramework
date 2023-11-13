@@ -12,31 +12,39 @@
 	/// </summary>
 	public class OutputFieldBinding
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="OutputFieldBinding"/> class.
-		/// </summary>
-		/// <param name="serverType">Type which should be rendered on the client.</param>
-		/// <param name="clientType">Name of the client control which will render the specified type.</param>
-		public OutputFieldBinding(Type serverType, string clientType)
-			: this(new[] { serverType }, clientType)
-		{
-		}
+        /// <summary>
+        /// Gets the attribute that must be applied to all uses of that output type.
+        /// </summary>
+        public Type Attribute { get; }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="OutputFieldBinding"/> class.
-		/// </summary>
-		/// <param name="serverTypes">Types which should be rendered on the client.</param>
-		/// <param name="clientType">Name of the client control which will render the specified types.</param>
-		public OutputFieldBinding(IEnumerable<Type> serverTypes, string clientType)
-		{
-			this.ServerTypes = serverTypes;
-			this.ClientType = clientType;
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OutputFieldBinding"/> class.
+        /// </summary>
+        /// <param name="serverType">Type which should be rendered on the client.</param>
+        /// <param name="clientType">Name of the client control which will render the specified type.</param>
+        /// <param name="attribute">The required attribute for the output component.</param>
+        public OutputFieldBinding(Type serverType, string clientType, Type attribute)
+            : this(new[] { serverType }, clientType, attribute)
+        {
+        }
 
-		/// <summary>
-		/// Gets name of the client control which will render the output field.
-		/// </summary>
-		public string ClientType { get; }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OutputFieldBinding"/> class.
+        /// </summary>
+        /// <param name="serverTypes">Types which should be rendered on the client.</param>
+        /// <param name="clientType">Name of the client control which will render the specified types.</param>
+        /// <param name="attribute">The required attribute for the output component.</param>
+        public OutputFieldBinding(IEnumerable<Type> serverTypes, string clientType, Type attribute)
+        {
+            this.ServerTypes = serverTypes;
+            this.ClientType = clientType;
+            this.Attribute = attribute;
+        }
+
+        /// <summary>
+        /// Gets name of the client control which will render the output field.
+        /// </summary>
+        public string ClientType { get; }
 
 		/// <summary>
 		/// Gets the server-side types being bound.

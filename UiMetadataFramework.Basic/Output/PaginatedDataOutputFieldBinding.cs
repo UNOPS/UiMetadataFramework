@@ -6,8 +6,9 @@ namespace UiMetadataFramework.Basic.Output
 	using UiMetadataFramework.Core.Binding;
 
 	public class PaginatedDataOutputFieldBinding : OutputFieldBinding
+
 	{
-		public PaginatedDataOutputFieldBinding() : base(typeof(PaginatedData<>), "paginated-data")
+		public PaginatedDataOutputFieldBinding() : base(typeof(PaginatedData<>), "paginated-data", typeof(PaginatedDataAttribute))
 		{
 		}
 
