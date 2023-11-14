@@ -378,12 +378,25 @@
                 : formType.FullName;
         }
 
-        private IEnumerable<InputFieldMetadata> BindInputFieldsInternal(Type type, bool inputAttributeRequired = false)
+        private IEnumerable<InputFieldMetadata> BindInputFieldsInternal(Type type, bool strict = false)
         {
             var properties = type.GetPublicProperties();
 
             foreach (var property in properties)
             {
+                var attribute = property.GetCustomAttributeSingleOrDefault<InputFieldAttribute>();
+
+                if (strict && attribute == null)
+                {
+                    continue;
+                }
+
+                attribute = attribute ?? new InputFieldAttribute
+                {
+                    Required = false,
+                    Hidden = false
+                };
+
                 var propertyType = property.PropertyType.IsConstructedGenericType && !property.IsNullabble()
                     ? property.PropertyType.GetGenericTypeDefinition()
                     : property.PropertyType;
@@ -395,43 +408,30 @@
                         $"because type '{propertyType.FullName}' is not bound to any input field control.");
                 }
 
-                var attribute = property.GetCustomAttributeSingleOrDefault<InputFieldAttribute>();
-
-                if (inputAttributeRequired && attribute == null)
-                {
-                    continue;
-                }
-
-                attribute = attribute ?? new InputFieldAttribute
-                {
-                    Required = false,
-                    Hidden = false
-                };
-
                 var metadata = attribute.GetMetadata(property, binding, this);
 
                 yield return metadata;
             }
         }
 
-        private IEnumerable<OutputFieldMetadata> BindOutputFieldsInternal(Type type, bool attributeRequired = false)
+        private IEnumerable<OutputFieldMetadata> BindOutputFieldsInternal(Type type, bool strict = false)
         {
             var properties = type.GetPublicProperties();
 
             foreach (var property in properties)
             {
+                var attribute = property.GetCustomAttributeSingleOrDefault<OutputFieldAttribute>();
+
+                if (strict && attribute == null)
+                {
+                    continue;
+                }
+
                 var propertyType = property.PropertyType.IsConstructedGenericType && !property.IsNullabble()
                     ? property.PropertyType.GetGenericTypeDefinition()
                     : property.PropertyType;
 
                 this.outputFieldMetadataMap.TryGetValue(propertyType, out OutputFieldBinding binding);
-
-                var attribute = property.GetCustomAttributeSingleOrDefault<OutputFieldAttribute>();
-
-                if (attributeRequired && attribute == null)
-                {
-                    continue;
-                }
 
                 attribute = attribute ?? new OutputFieldAttribute();
 
