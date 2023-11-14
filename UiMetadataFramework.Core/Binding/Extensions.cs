@@ -66,13 +66,13 @@
 		}
 
 		/// <summary>
-		/// Checks if the property is nullable.
+		/// Checks if the type is nullable.
 		/// </summary>
-		/// <param name="propertyInfo">Property to check.</param>
+		/// <param name="type"></param>
 		/// <returns>True/false.</returns>
-		public static bool IsNullabble(this PropertyInfo propertyInfo)
+		public static bool IsNullabble(this Type type)
 		{
-			return Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null;
+			return Nullable.GetUnderlyingType(type) != null;
 		}
 
 		/// <summary>

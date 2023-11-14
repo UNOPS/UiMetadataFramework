@@ -1,4 +1,4 @@
-﻿namespace UiMetadataFramework.Core.Binding
+namespace UiMetadataFramework.Core.Binding
 {
     using System;
     using System.Collections.Concurrent;
@@ -397,7 +397,7 @@
                     Hidden = false
                 };
 
-                var propertyType = property.PropertyType.IsConstructedGenericType && !property.IsNullabble()
+                var propertyType = property.PropertyType.IsConstructedGenericType && !property.PropertyType.IsNullabble()
                     ? property.PropertyType.GetGenericTypeDefinition()
                     : property.PropertyType;
 
@@ -427,7 +427,7 @@
                     continue;
                 }
 
-                var propertyType = property.PropertyType.IsConstructedGenericType && !property.IsNullabble()
+                var propertyType = property.PropertyType.IsConstructedGenericType && !property.PropertyType.IsNullabble()
                     ? property.PropertyType.GetGenericTypeDefinition()
                     : property.PropertyType;
 

@@ -41,7 +41,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <remarks>This method will be used internally by <see cref="MetadataBinder"/>.</remarks>
 		public virtual InputFieldMetadata GetMetadata(PropertyInfo property, InputFieldBinding binding, MetadataBinder binder)
 		{
-			var propertyType = property.PropertyType.IsConstructedGenericType && !property.IsNullabble()
+			var propertyType = property.PropertyType.IsConstructedGenericType && !property.PropertyType.IsNullabble()
 				? property.PropertyType.GetGenericTypeDefinition()
 				: property.PropertyType;
 
