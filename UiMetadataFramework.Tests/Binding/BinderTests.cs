@@ -22,6 +22,24 @@
 
 		private readonly MetadataBinder binder;
 
+		[Fact]
+		public void StrictModeIgnoresPropertiesWithoutAttribute()
+		{
+			var inputs = this.binder
+				.BindInputFields(typeof(InputsAndOutputsTogether), strict: true)
+				.ToList();
+
+			var outputs = this.binder
+				.BindOutputFields(typeof(InputsAndOutputsTogether), strict: true)
+				.ToList();
+
+			Assert.Equal(1, inputs.Count);
+			Assert.Equal(nameof(InputsAndOutputsTogether.Value), inputs[0].Id);
+
+			Assert.Equal(1, outputs.Count);
+			Assert.Equal(nameof(InputsAndOutputsTogether.Label), outputs[0].Id);
+		}
+
 		[Theory]
 		[InlineData(nameof(Response.Links))]
 		[InlineData(nameof(Response.Categories))]
