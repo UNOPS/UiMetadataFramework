@@ -22,8 +22,11 @@ namespace UiMetadataFramework.Core.Binding
         /// </summary>
         public const string ValueListOutputControlName = "list";
 
-        private readonly DependencyInjectionContainer dependencyInjectionContainer;
-
+        /// <summary>
+        /// <see cref="IServiceProvider"/> instance used when/if necessary.
+        /// </summary>
+        public readonly IServiceProvider Container;
+        
         private readonly ConcurrentDictionary<Type, IEnumerable<InputFieldMetadata>> inputFieldMetadataCache = new();
         private readonly ConcurrentDictionary<Type, InputFieldBinding> inputFieldMetadataMap = new();
         private readonly object key = new();
@@ -48,9 +51,9 @@ namespace UiMetadataFramework.Core.Binding
         /// <see cref="InputFieldBinding"/> and <see cref="OutputFieldBinding"/> when registering
         /// a new assembly.
         /// </summary>
-        public MetadataBinder(DependencyInjectionContainer dependencyInjectionContainer)
+        public MetadataBinder(IServiceProvider container)
         {
-            this.dependencyInjectionContainer = dependencyInjectionContainer;
+            this.Container = container;
         }
 
         /// <summary>
@@ -297,7 +300,7 @@ namespace UiMetadataFramework.Core.Binding
                         !typeInfo.IsAbstract &&
                         typeInfo.IsSubclassOf(typeof(OutputFieldBinding));
                 })
-                .Select(t => this.dependencyInjectionContainer.GetInstance(t))
+                .Select(t => this.Container.GetService(t))
                 .Cast<OutputFieldBinding>();
 
             foreach (var binding in outputFieldBindings)
@@ -323,7 +326,7 @@ namespace UiMetadataFramework.Core.Binding
                         !typeInfo.IsAbstract &&
                         typeInfo.IsSubclassOf(typeof(InputFieldBinding));
                 })
-                .Select(t => this.dependencyInjectionContainer.GetInstance(t))
+                .Select(t => this.Container.GetService(t))
                 .Cast<InputFieldBinding>();
 
             foreach (var binding in inputFieldBindings)

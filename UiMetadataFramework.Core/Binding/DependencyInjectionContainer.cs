@@ -5,7 +5,7 @@ namespace UiMetadataFramework.Core.Binding
 	/// <summary>
 	/// Represents a dependency injection container that will be used by the framework.
 	/// </summary>
-	public class DependencyInjectionContainer
+	public class DependencyInjectionContainer : IServiceProvider
 	{
 		/// <summary>
 		/// Creates a new instance of the <see cref="DependencyInjectionContainer"/> class
@@ -54,6 +54,11 @@ namespace UiMetadataFramework.Core.Binding
 		public T GetInstance<T>()
 		{
 			return (T)this.GetInstance(typeof(T));
+		}
+
+		public object GetService(Type serviceType)
+		{
+			return this.GetInstance(serviceType);
 		}
 	}
 }
