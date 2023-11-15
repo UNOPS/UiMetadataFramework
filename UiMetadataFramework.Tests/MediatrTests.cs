@@ -19,11 +19,11 @@
 	{
 		public class MyForm : FormAttribute
 		{
-			public override IDictionary<string, object> GetCustomProperties(Type type)
+			public override IDictionary<string, object?> GetCustomProperties(Type type)
 			{
 				var menuAttribute = type.GetTypeInfo().GetCustomAttribute<MenuAttribute>();
 
-				return new Dictionary<string, object>
+				return new Dictionary<string, object?>
 				{
 					{ "ParentMenu", menuAttribute?.ParentMenu }
 				};
@@ -56,10 +56,10 @@
 			public class Response : FormResponse
 			{
 				[OutputField(Label = "DoB", OrderIndex = 2)]
-				public DateTime DateOfBirth { get; set; }
+				public DateTime? DateOfBirth { get; set; }
 
 				[OutputField(Label = "First name", OrderIndex = 1)]
-				public string FirstName { get; set; }
+				public string? FirstName { get; set; }
 
 				[OutputField(Hidden = true)]
 				public int Height { get; set; }
@@ -74,7 +74,7 @@
 				public DateTime DateOfBirth { get; set; }
 
 				[InputField(Label = "First name", OrderIndex = 1, Required = true)]
-				public string FirstName { get; set; }
+				public string FirstName { get; set; } = null!;
 
 				[InputField(Hidden = true)]
 				public int Height { get; set; }
@@ -155,7 +155,7 @@
 			var formMetadata = formRegister.GetFormInfo(typeof(Magic))?.Metadata;
 
 			Assert.NotNull(formMetadata);
-			Assert.Equal("Magical tools", formMetadata.CustomProperties["ParentMenu"]);
+			Assert.Equal("Magical tools", formMetadata!.CustomProperties?["ParentMenu"]);
 
 			Assert.True(formMetadata.Id == "Magic");
 			Assert.True(formMetadata.Label == "Do some magic");
@@ -164,7 +164,7 @@
 			Assert.True(formMetadata.InputFields.Count == 5);
 			Assert.True(formMetadata.OutputFields.Count == 4);
 
-			var formEventHandler = formMetadata.EventHandlers.First();
+			var formEventHandler = formMetadata.EventHandlers!.First();
 			Assert.True(formEventHandler.Id == "log-form-event");
 			Assert.True(formEventHandler.RunAt == FormEvents.FormLoaded);
 		}
@@ -246,7 +246,7 @@
 			var formRegister = new FormRegister(binder);
 			formRegister.RegisterForm(typeof(FormWithoutId));
 
-			var metadata = formRegister.GetFormInfo(typeof(FormWithoutId)).Metadata;
+			var metadata = formRegister.GetFormInfo(typeof(FormWithoutId))!.Metadata;
 
 			Assert.Equal(typeof(FormWithoutId).FullName, metadata.Id);
 		}

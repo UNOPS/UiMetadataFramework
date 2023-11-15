@@ -14,7 +14,7 @@ namespace UiMetadataFramework.Tests
 		public class Request
 		{
 			[TypeaheadInputField(typeof(CategorySource))]
-			public TypeaheadValue<int> CategoryId { get; set; }
+			public TypeaheadValue<int>? CategoryId { get; set; }
 		}
 
 		public class Database
@@ -23,9 +23,9 @@ namespace UiMetadataFramework.Tests
 			{
 				return new List<TypeaheadItem<int>>
 				{
-					new TypeaheadItem<int>("one", 1),
-					new TypeaheadItem<int>("two", 2),
-					new TypeaheadItem<int>("3", 3)
+					new("one", 1),
+					new("two", 2),
+					new("3", 3)
 				};
 			}
 		}
@@ -72,9 +72,9 @@ namespace UiMetadataFramework.Tests
 
 			var fields = metadataBinder.BindInputFields<Request>().ToList();
 			var categoryInputField = fields.Single(t => t.Id == nameof(Request.CategoryId));
-			
+
 			// Ensure that the inline source has 3 items.
-			var source = categoryInputField.CustomProperties["Source"] as IEnumerable<TypeaheadItem<int>>;
+			var source = categoryInputField.CustomProperties?["Source"] as IEnumerable<TypeaheadItem<int>>;
 			Assert.NotNull(source);
 			Assert.Equal(3, source.Count());
 		}

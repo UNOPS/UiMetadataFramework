@@ -5,7 +5,7 @@ namespace UiMetadataFramework.Tests.Binding
 		public class InvalidRequest
 		{
 			[OutputFieldEventHandler]
-			public string Name { get; set; }
+			public string? Name { get; set; }
 		}
 	}
 }

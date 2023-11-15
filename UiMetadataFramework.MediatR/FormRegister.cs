@@ -14,10 +14,10 @@
 	public class FormRegister
 	{
 		private readonly MetadataBinder binder;
-		private readonly ConcurrentDictionary<string, FormInfo> formMetadata = new ConcurrentDictionary<string, FormInfo>();
-		private readonly object key = new object();
-		private readonly List<string> registeredAssemblies = new List<string>();
-		private readonly ConcurrentDictionary<string, Type> registeredForms = new ConcurrentDictionary<string, Type>();
+		private readonly ConcurrentDictionary<string, FormInfo> formMetadata = new();
+		private readonly object key = new();
+		private readonly List<string> registeredAssemblies = new();
+		private readonly ConcurrentDictionary<string, Type> registeredForms = new();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FormRegister"/> class.
@@ -31,18 +31,18 @@
 		/// <summary>
 		/// Gets list of all registered forms.
 		/// </summary>
-		public IEnumerable<FormInfo> RegisteredForms => this.registeredForms.Select(t => this.GetFormInfo(t.Key));
+		public IEnumerable<FormInfo?> RegisteredForms => this.registeredForms.Select(t => this.GetFormInfo(t.Key));
 
 		/// <summary>
 		/// Gets <see cref="FormInfo"/> by form's id.
 		/// </summary>
 		/// <param name="id">Id of the form.</param>
 		/// <returns><see cref="FormInfo"/> instance or null if no metadata for the form was found.</returns>
-		public FormInfo GetFormInfo(string id)
+		public FormInfo? GetFormInfo(string id)
 		{
 			if (this.registeredForms.TryGetValue(id, out var formType))
 			{
-				return this.formMetadata.GetOrAdd(id, t => this.BuildFormMetadata(formType));
+				return this.formMetadata.GetOrAdd(id, _ => this.BuildFormMetadata(formType));
 			}
 
 			return null;
@@ -53,7 +53,7 @@
 		/// </summary>
 		/// <param name="formType">Type that is decorated with <see cref="FormAttribute"/>.</param>
 		/// <returns><see cref="FormInfo"/> instance or null if no metadata for the form was found.</returns>
-		public FormInfo GetFormInfo(Type formType)
+		public FormInfo? GetFormInfo(Type formType)
 		{
 			var formId = formType.GetFormId();
 			return this.GetFormInfo(formId);
@@ -100,13 +100,12 @@
 		/// or <see cref="AsyncForm{TRequest,TResponse,TResponseMetadata}"/>.</param>
 		public void RegisterForm(Type formType)
 		{
-			if (this.registeredForms.TryGetValue(formType.GetFormId(), out var existingFormType))
+			if (this.registeredForms.TryGetValue(formType.GetFormId(), out var existingFormType) &&
+				formType != existingFormType)
 			{
-				if (formType != existingFormType)
-				{
-					throw new InvalidConfigurationException(
-						$"Types '{formType.FullName}' and '{existingFormType.FullName}' have same form ID. Each form must have a unique form ID.");
-				}
+				throw new InvalidConfigurationException(
+					$"Types '{formType.FullName}' and '{existingFormType.FullName}' have same form ID. " +
+					"Each form must have a unique form ID.");
 			}
 
 			this.registeredForms.GetOrAdd(
@@ -127,14 +126,14 @@
 			var requestType = iRequestHandlerInterface.GenericTypeArguments[0];
 			var responseType = iRequestHandlerInterface.GenericTypeArguments[1];
 
-			var formMetadata = this.binder.BindForm(formType, requestType, responseType);
+			var form = this.binder.BindForm(formType, requestType, responseType);
 
 			return new FormInfo
 			{
 				FormType = formType,
 				RequestType = requestType,
 				ResponseType = responseType,
-				Metadata = formMetadata
+				Metadata = form
 			};
 		}
 	}

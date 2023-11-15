@@ -16,16 +16,25 @@ namespace UiMetadataFramework.MediatR
 		private readonly FormRegister formRegister;
 		private readonly IMediator mediator;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="InvokeForm"/> class.
+		/// </summary>
 		public InvokeForm(IMediator mediator, FormRegister formRegister)
 		{
 			this.mediator = mediator;
 			this.formRegister = formRegister;
 		}
 
+		/// <inheritdoc />
 		public async Task<Response> Handle(Request message, CancellationToken cancellationToken)
 		{
 			// Get form type and interface.
 			var formType = this.formRegister.GetFormInfo(message.Form);
+
+			if (formType == null)
+			{
+				throw new ArgumentException($"Form '{message.Form}' was not found.");
+			}
 
 			// Create request object.
 			var request = message.InputFieldValues != null
@@ -38,8 +47,8 @@ namespace UiMetadataFramework.MediatR
 				.GetType()
 				.GetTypeInfo()
 				.GetMethods()
-                .Where(t => t.Name == nameof(Mediator.Send))
-                .Where(t => t.GetParameters().FirstOrDefault()?.ParameterType.Name.Contains("IRequest`") == true)
+				.Where(t => t.Name == nameof(Mediator.Send))
+				.Where(t => t.GetParameters().FirstOrDefault()?.ParameterType.Name.Contains("IRequest`") == true)
 				.Single(t => t.ReturnType.Name.Contains("Task`"))
 				.MakeGenericMethod(formType.ResponseType);
 
@@ -52,12 +61,18 @@ namespace UiMetadataFramework.MediatR
 			};
 		}
 
+		/// <inheritdoc />
 		public class Request : IRequest<Response>
 		{
 			/// <summary>
 			/// Gets or sets id of the form to retrieve.
 			/// </summary>
-			public string Form { get; set; }
+			public string Form { get; set; } = null!;
+
+			/// <summary>
+			/// Gets or sets form parameters.
+			/// </summary>
+			public object? InputFieldValues { get; set; }
 
 			/// <summary>
 			/// Gets or sets identifier for this request. When set, the value
@@ -65,18 +80,24 @@ namespace UiMetadataFramework.MediatR
 			/// </summary>
 			/// <remarks>This property is useful if client combines multiple requests 
 			/// and needs to know for which particular request the response is for.</remarks>
-			public string RequestId { get; set; }
-
-			/// <summary>
-			/// Gets or sets form parameters.
-			/// </summary>
-			public object InputFieldValues { get; set; }
+			public string? RequestId { get; set; }
 		}
 
+		/// <summary>
+		/// Response for the received request.
+		/// </summary>
 		public class Response
 		{
-			public object Data { get; set; }
-			public string RequestId { get; set; }
+			/// <summary>
+			/// The response object returned by the invoked form.
+			/// </summary>
+			public object? Data { get; set; }
+
+			/// <summary>
+			/// The request id that corresponds to the request id of the
+			/// received request (<see cref="Request.RequestId"/>).
+			/// </summary>
+			public string? RequestId { get; set; }
 		}
 	}
 }

@@ -5,7 +5,7 @@ namespace UiMetadataFramework.Tests.Binding
 		public class InvalidResponse
 		{
 			[InputFieldEventHandler]
-			public string Name { get; set; }
+			public string? Name { get; set; }
 		}
 	}
 }

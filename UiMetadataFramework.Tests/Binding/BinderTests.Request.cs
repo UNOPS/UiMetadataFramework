@@ -19,13 +19,13 @@ namespace UiMetadataFramework.Tests.Binding
 
 			[StringProperty("secret", "password")]
 			[DropdownInputField(typeof(EnumSource<DayOfWeek>))]
-			public DropdownValue<DayOfWeek> Day { get; set; }
+			public DropdownValue<DayOfWeek>? Day { get; set; }
 
 			[InputField(Label = "First name", OrderIndex = 1, Required = true)]
-			public string FirstName { get; set; }
+			public string? FirstName { get; set; }
 
 			[DropdownInputField(typeof(GenderInlineSource))]
-			public DropdownValue<int> Gender { get; set; }
+			public DropdownValue<int>? Gender { get; set; }
 
 			[InputField(Hidden = true)]
 			public int? Height { get; set; }
@@ -33,11 +33,11 @@ namespace UiMetadataFramework.Tests.Binding
 			[CustomInputField(Style = "fancy")]
 			public bool IsRegistered { get; set; }
 
-			public Paginator MainPeoplePaginator { get; set; }
+			public Paginator? MainPeoplePaginator { get; set; }
 
 			[IntProperty("number-1", 1)]
 			[IntProperty("number-2", 2)]
-			public TextareaValue Notes { get; set; }
+			public TextareaValue? Notes { get; set; }
 
 			public DateTime? SubmissionDate { get; set; }
 
@@ -56,7 +56,7 @@ namespace UiMetadataFramework.Tests.Binding
 
 		public class CustomInputFieldAttribute : InputFieldAttribute
 		{
-			public string Style { get; set; }
+			public string? Style { get; set; }
 
 			public override InputFieldMetadata GetMetadata(PropertyInfo property, InputFieldBinding binding, MetadataBinder binder)
 			{
@@ -79,7 +79,7 @@ namespace UiMetadataFramework.Tests.Binding
 				{
 				}
 
-				public string Style { get; set; }
+				public string? Style { get; set; }
 			}
 		}
 	}

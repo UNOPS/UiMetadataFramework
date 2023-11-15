@@ -7,12 +7,12 @@
         public class InputsAndOutputsTogether
         {
             [OutputField]
-            public string Label { get; set; }
+            public string? Label { get; set; }
 
-            public string NotField { get; set; }
+            public string? NotField { get; set; }
 
             [InputField]
-            public string Value { get; set; }
+            public string? Value { get; set; }
         }
     }
 }

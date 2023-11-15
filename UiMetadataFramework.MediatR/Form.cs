@@ -14,11 +14,15 @@ namespace UiMetadataFramework.MediatR
 		where TResponse : FormResponse<TResponseMetadata>
 		where TResponseMetadata : FormResponseMetadata
 	{
+		/// <inheritdoc />
 		public override Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken)
 		{
 			return Task.FromResult(this.Handle(request));
 		}
 
+		/// <summary>Handles a request</summary>
+		/// <param name="request">The request</param>
+		/// <returns>Response from the request</returns>
 		protected abstract TResponse Handle(TRequest request);
 	}
 

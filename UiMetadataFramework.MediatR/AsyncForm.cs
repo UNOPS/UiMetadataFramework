@@ -14,6 +14,7 @@ namespace UiMetadataFramework.MediatR
 		where TResponse : FormResponse<TResponseMetadata>
 		where TResponseMetadata : FormResponseMetadata
 	{
+		/// <inheritdoc />
 		public abstract Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken);
 	}
 
@@ -25,6 +26,7 @@ namespace UiMetadataFramework.MediatR
 		where TRequest : IRequest<TResponse>
 		where TResponse : FormResponse<FormResponseMetadata>
 	{
+		/// <inheritdoc />
 		public abstract override Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken);
 	}
 }

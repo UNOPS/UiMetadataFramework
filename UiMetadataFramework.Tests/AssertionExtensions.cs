@@ -19,14 +19,14 @@
 			bool required = false,
 			string[]? eventHandlers = null)
 		{
-			var field = fields.FirstOrDefault(t =>
-				t.Id == id &&
-				t.Hidden == hidden &&
-				t.Type == type &&
-				t.OrderIndex == orderIndex &&
-				t.Label == label &&
-				t.Required == required &&
-				eventHandlers == null || eventHandlers?.All(p => t.EventHandlers.Any(x => x.Id == p)) == true);
+			var field = fields
+				.Where(t => t.Id == id)
+				.Where(t => t.Hidden == hidden)
+				.Where(t => t.Type == type)
+				.Where(t => t.OrderIndex == orderIndex)
+				.Where(t => t.Label == label)
+				.Where(t => t.Required == required)
+				.FirstOrDefault(t => eventHandlers == null || eventHandlers.All(p => t.EventHandlers?.Any(x => x.Id == p) == true));
 
 			field.Should().NotBeNull();
 
@@ -40,31 +40,36 @@
 			string label,
 			bool hidden = false,
 			int orderIndex = 0,
-			string[] eventHandlers = null)
+			string[]? eventHandlers = null)
 		{
-			var field = fields.FirstOrDefault(t =>
-				t.Id == id &&
-				t.Hidden == hidden &&
-				t.Type == type &&
-				t.OrderIndex == orderIndex &&
-				t.Label == label &&
-				eventHandlers == null || eventHandlers?.All(p => t.EventHandlers.Any(x => x.Id == p)) == true);
+			var field = fields
+				.Where(t => t.Id == id)
+				.Where(t => t.Hidden == hidden)
+				.Where(t => t.Type == type)
+				.Where(t => t.OrderIndex == orderIndex)
+				.Where(t => t.Label == label)
+				.FirstOrDefault(t => eventHandlers == null || eventHandlers.All(p => t.EventHandlers?.Any(x => x.Id == p) == true));
 
 			Assert.NotNull(field);
 
 			return field;
 		}
 
-		public static InputFieldMetadata HasCustomProperty<T>(this InputFieldMetadata field, string property, Func<T, bool> assertion, string message)
+		public static InputFieldMetadata HasCustomProperty<T>(
+			this InputFieldMetadata field,
+			string property,
+			Func<T, bool> assertion,
+			string message)
 			where T : class
 		{
 			return field.HasCustomPropertyInternal(property, assertion, message);
 		}
 
-		public static OutputFieldMetadata HasCustomProperty<T>(this OutputFieldMetadata field,
+		public static OutputFieldMetadata HasCustomProperty<T>(
+			this OutputFieldMetadata field,
 			string property,
 			Func<T, bool> assertion,
-			string message)
+			string? message = null)
 			where T : class
 		{
 			return field.HasCustomPropertyInternal(property, assertion, message);
@@ -82,9 +87,8 @@
 
 		public static FormMetadata HasCustomProperty<T>(this FormMetadata metadata, string name, T value)
 		{
-			if (metadata.CustomProperties?.ContainsKey(name) == true)
+			if (metadata.CustomProperties?.TryGetValue(name, out var actual) is true)
 			{
-				var actual = metadata.CustomProperties[name];
 				Assert.Equal(value, actual);
 
 				return metadata;
@@ -96,9 +100,8 @@
 		private static TFieldMetadata AssertHasCustomProperty<TValue, TFieldMetadata>(this TFieldMetadata field, string name, TValue value)
 			where TFieldMetadata : IFieldMetadata
 		{
-			if (field.CustomProperties?.ContainsKey(name) == true)
+			if (field.CustomProperties?.TryGetValue(name, out var actual) is true)
 			{
-				var actual = field.CustomProperties[name];
 				Assert.Equal(value, actual);
 
 				return field;
@@ -110,12 +113,17 @@
 		private static TFieldMetadata HasCustomPropertyInternal<TFieldMetadata, T>(
 			this TFieldMetadata field,
 			string property,
-			Func<T?, bool> assertion,
-			string message)
+			Func<T, bool> assertion,
+			string? message = null)
 			where T : class
 			where TFieldMetadata : IFieldMetadata
 		{
 			var customProperties = (T?)field.CustomProperties?[property];
+			
+			if (customProperties == null)
+			{
+				throw new Exception($"Custom property '{property}' is missing.");
+			}
 
 			customProperties
 				.Should()

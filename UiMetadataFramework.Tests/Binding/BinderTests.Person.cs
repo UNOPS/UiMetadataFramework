@@ -11,7 +11,7 @@ namespace UiMetadataFramework.Tests.Binding
 			public DateTime? DateOfBirth { get; set; }
 
 			[OutputField(Label = "First name", OrderIndex = 1)]
-			public string FirstName { get; set; }
+			public string? FirstName { get; set; }
 
 			[OutputField(Hidden = true)]
 			public int Height { get; set; }

@@ -39,29 +39,33 @@
 		{
 			var outputField = this.binder.BindOutputFields<Response>().Single(t => t.Id == property);
 
-			outputField.HasCustomProperty<string>("Type", t => t == itemType, null);
+			outputField.HasCustomProperty<string>("Type", t => t == itemType);
 		}
 
 		[Fact]
 		public void CanBindDerivedInputFieldAttribute()
 		{
-			var inputField = this.binder.BindInputFields<Request>().Single(t => t.Id == nameof(Request.IsRegistered));
+			var inputField = this.binder
+				.BindInputFields<Request>()
+				.Single(t => t.Id == nameof(Request.IsRegistered));
 
 			var custom = inputField as CustomInputFieldAttribute.Metadata;
 
 			Assert.NotNull(custom);
-			Assert.Equal("fancy", custom.Style);
+			Assert.Equal("fancy", custom!.Style);
 		}
 
 		[Fact]
 		public void CanBindDerivedOutputFieldAttribute()
 		{
-			var outputField = this.binder.BindOutputFields<Response>().Single(t => t.Id == nameof(Response.Weight));
+			var outputField = this.binder
+				.BindOutputFields<Response>()
+				.Single(t => t.Id == nameof(Response.Weight));
 
 			var custom = outputField as CustomOutputFieldAttribute.Metadata;
 
 			Assert.NotNull(custom);
-			Assert.Equal("fancy-output", custom.Style);
+			Assert.Equal("fancy-output", custom!.Style);
 		}
 
 		[Fact]
@@ -75,7 +79,7 @@
 				.HasCustomProperty("bool-false", false)
 				.HasCustomProperty("bool-true", true);
 
-			var docs = ((List<object>)formMetadata.CustomProperties["documentation"]).Cast<string>().ToList();
+			var docs = ((List<object>)formMetadata.CustomProperties!["documentation"]!).Cast<string>().ToList();
 			Assert.True(docs.Count == 2);
 			Assert.True(docs[0] == "help 1");
 			Assert.True(docs[1] == "help 2");
@@ -191,8 +195,8 @@
 
 			var ienumerableProperty = outputFields.Single(t => t.Id == nameof(Response.OtherPeople));
 
-			Assert.True(ienumerableProperty.CustomProperties.ContainsKey("Customizations"));
-			var columns = ienumerableProperty.CustomProperties["Columns"] as IList<OutputFieldMetadata>;
+			Assert.True(ienumerableProperty.CustomProperties?.ContainsKey("Customizations"));
+			var columns = ienumerableProperty.CustomProperties?["Columns"] as IList<OutputFieldMetadata> ?? new List<OutputFieldMetadata>();
 			columns.AssertHasOutputField(nameof(Person.FirstName), StringOutputFieldBinding.ControlName, "First name", false, 1);
 			columns.AssertHasOutputField(nameof(Person.DateOfBirth), DateTimeOutputFieldBinding.ControlName, "DoB", false, 2);
 			columns.AssertHasOutputField(nameof(Person.Height), NumberOutputFieldBinding.ControlName, nameof(Person.Height), true);

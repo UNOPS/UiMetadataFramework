@@ -1034,5 +1034,6 @@
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/RecentSearch/=201209140727582515/@KeyIndexDefined">True</s:Boolean>
 	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/RecentSearch/=201209140727582515/LanguageName/@EntryValue">ASPX</s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/RecentSearch/=201209140727582515/SearchPattern/@EntryValue">hdnFirstYearExperience</s:String>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Mediat/@EntryIndexedValue">True</s:Boolean>
 	
 	</wpf:ResourceDictionary>

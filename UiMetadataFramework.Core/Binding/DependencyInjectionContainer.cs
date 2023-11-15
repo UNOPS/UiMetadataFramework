@@ -36,6 +36,12 @@ namespace UiMetadataFramework.Core.Binding
 		/// </summary>
 		public Func<Type, object> GetInstanceFunc { get; set; } = null!;
 
+		/// <inheritdoc />
+		public object GetService(Type serviceType)
+		{
+			return this.GetInstance(serviceType);
+		}
+
 		/// <summary>
 		/// Instantiates the given type.
 		/// </summary>
@@ -54,11 +60,6 @@ namespace UiMetadataFramework.Core.Binding
 		public T GetInstance<T>()
 		{
 			return (T)this.GetInstance(typeof(T));
-		}
-
-		public object GetService(Type serviceType)
-		{
-			return this.GetInstance(serviceType);
 		}
 	}
 }

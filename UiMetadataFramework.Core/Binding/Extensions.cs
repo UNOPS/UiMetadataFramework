@@ -110,7 +110,7 @@
 		/// <param name="value">Value to set to.</param>
 		/// <returns>New dictionary containing items from <paramref name="dictionary"/> and the new item
 		/// added by this method.</returns>
-		public static IDictionary<string, T?> Set<T>(this IDictionary<string, T?>? dictionary, string key, T value)
+		public static IDictionary<string, T?> Set<T>(this IDictionary<string, T?>? dictionary, string key, T? value)
 		{
 			var result = dictionary.Copy() ?? new Dictionary<string, T?>();
 
