@@ -1,4 +1,4 @@
-// ReSharper disable UnusedMember.Global
+﻿// ReSharper disable UnusedMember.Global
 
 namespace UiMetadataFramework.Basic.Input.Dropdown
 {
@@ -11,7 +11,7 @@ namespace UiMetadataFramework.Basic.Input.Dropdown
 	[InputFieldType(ControlName, typeof(DropdownInputFieldAttribute))]
 	public class DropdownValue<T>
 	{
-		public const string ControlName = "dropdown";
+		internal const string ControlName = "dropdown";
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DropdownValue{T}"/> class.
