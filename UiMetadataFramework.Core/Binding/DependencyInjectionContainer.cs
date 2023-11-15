@@ -1,13 +1,25 @@
-﻿namespace UiMetadataFramework.Core.Binding
+namespace UiMetadataFramework.Core.Binding
 {
 	using System;
 
+	/// <summary>
+	/// Represents a dependency injection container that will be used by the framework.
+	/// </summary>
 	public class DependencyInjectionContainer
 	{
+		/// <summary>
+		/// Creates a new instance of the <see cref="DependencyInjectionContainer"/> class
+		/// that will use the default constructor when attempting to create an instance of a type.
+		/// </summary>
 		public DependencyInjectionContainer()
 		{
 		}
 
+		/// <summary>
+		/// Initializes a new <see cref="DependencyInjectionContainer"/> that will use
+		/// the provided function as a factory function.
+		/// </summary>
+		/// <param name="getInstanceFunc">Function that will get instances of a type.</param>
 		public DependencyInjectionContainer(Func<Type, object> getInstanceFunc)
 		{
 			this.GetInstanceFunc = getInstanceFunc;
@@ -19,6 +31,9 @@
 		/// </summary>
 		public static DependencyInjectionContainer Default { get; set; } = new DependencyInjectionContainer(Activator.CreateInstance);
 
+		/// <summary>
+		/// Factory function that will be used to get instances of a type.
+		/// </summary>
 		public Func<Type, object> GetInstanceFunc { get; set; }
 
 		/// <summary>
