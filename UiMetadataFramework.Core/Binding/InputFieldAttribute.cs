@@ -69,7 +69,7 @@ namespace UiMetadataFramework.Core.Binding
 				OrderIndex = this.OrderIndex,
 				Required = required,
 				EventHandlers = eventHandlerAttributes.Select(t => t.ToMetadata(property, binder)).ToList(),
-				CustomProperties = binding.GetCustomProperties(this, property)
+				CustomProperties = property.GetCustomProperties()
 			};
 		}
 	}

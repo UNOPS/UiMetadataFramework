@@ -1,8 +1,6 @@
 ﻿namespace UiMetadataFramework.Basic
 {
 	using System;
-	using UiMetadataFramework.Basic.Input.Dropdown;
-	using UiMetadataFramework.Basic.Input.Typeahead;
 	using UiMetadataFramework.Core.Binding;
 
 	/// <summary>
@@ -19,21 +17,6 @@
 				if (t == typeof(DependencyInjectionContainer))
 				{
 					return this;
-				}
-
-				if (t == typeof(MultiSelectInputFieldBinding))
-				{
-					return new MultiSelectInputFieldBinding(this);
-				}
-
-				if (t == typeof(TypeaheadInputFieldBinding))
-				{
-					return new TypeaheadInputFieldBinding(this);
-				}
-
-				if (t == typeof(DropdownInputFieldBinding))
-				{
-					return new DropdownInputFieldBinding(this);
 				}
 
 				return Activator.CreateInstance(t);

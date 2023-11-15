@@ -4,13 +4,7 @@
 	using System.Linq;
 	using UiMetadataFramework.Core.Binding;
 
-	public class MultiSelectInputFieldBinding : TypeaheadInputFieldBindingBase
-	{
-		public MultiSelectInputFieldBinding(DependencyInjectionContainer container) : base(typeof(MultiSelect<>), "multiselect", container)
-		{
-		}
-	}
-
+	[InputFieldType("multiselect")]
 	public class MultiSelect<T>
 	{
 		public MultiSelect()
@@ -26,6 +20,6 @@
 			}
 		}
 
-		public IList<T> Items { get; set; }
+		public IList<T>? Items { get; set; }
 	}
 }

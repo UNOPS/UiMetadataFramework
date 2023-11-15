@@ -122,21 +122,21 @@
 			inputFields.AssertHasInputField(nameof(Request.IsRegistered), BooleanInputFieldBinding.ControlName, nameof(Request.IsRegistered),
 				required: true);
 
-			inputFields.AssertHasInputField(nameof(Request.Day), DropdownInputFieldBinding.ControlName, nameof(Request.Day))
+			inputFields.AssertHasInputField(nameof(Request.Day), DropdownValue<int>.ControlName, nameof(Request.Day))
 				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 7, "Dropdown has incorrect number of items.");
 
-			inputFields.AssertHasInputField(nameof(Request.FirstDayOfWeek), DropdownInputFieldBinding.ControlName, nameof(Request.FirstDayOfWeek))
+			inputFields.AssertHasInputField(nameof(Request.FirstDayOfWeek), DropdownValue<int>.ControlName, nameof(Request.FirstDayOfWeek))
 				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 2, "Dropdown has incorrect number of items.")
 				.HasCustomProperty("secret", "password");
 
-			inputFields.AssertHasInputField(nameof(Request.Gender), DropdownInputFieldBinding.ControlName, nameof(Request.Gender));
+			inputFields.AssertHasInputField(nameof(Request.Gender), DropdownValue<int>.ControlName, nameof(Request.Gender));
 
 			var dropdownInputField = inputFields.Single(t => t.Id == nameof(Request.Gender));
 			var items = dropdownInputField.CustomProperties["Items"] as IEnumerable<DropdownItem>;
 			Assert.NotNull(items);
 			Assert.Equal(2, items.Count());
 
-			inputFields.AssertHasInputField(nameof(Request.Category), DropdownInputFieldBinding.ControlName, nameof(Request.Category))
+			inputFields.AssertHasInputField(nameof(Request.Category), DropdownValue<int>.ControlName, nameof(Request.Category))
 				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 3, "Dropdown has incorrect number of items.")
 				.HasCustomProperty<IList<object>>("documentation", t => t.Cast<string>().Count() == 2,
 					"Custom property 'documentation' has incorrect value.");
