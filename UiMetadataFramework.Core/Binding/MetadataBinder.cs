@@ -1,416 +1,424 @@
 namespace UiMetadataFramework.Core.Binding
 {
-    using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
+	using System;
+	using System.Collections.Concurrent;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Reflection;
 
-    /// <summary>
-    /// This class holds mappings between server-side types and client-side UI controls. 
-    /// It provides a number of APIs to simplify creation of metadata.
-    /// </summary>
-    public class MetadataBinder
-    {
-        /// <summary>
-        /// Name of the client-side control which should be able to render tabular data.
-        /// </summary>
-        public const string ObjectListOutputControlName = "table";
+	/// <summary>
+	/// This class holds mappings between server-side types and client-side UI controls. 
+	/// It provides a number of APIs to simplify creation of metadata.
+	/// </summary>
+	public class MetadataBinder
+	{
+		/// <summary>
+		/// Name of the client-side control which should be able to render tabular data.
+		/// </summary>
+		public const string ObjectListOutputControlName = "table";
 
-        /// <summary>
-        /// Name of the client-side control which should be able to render collection of items as a bullet-point list or similar.
-        /// </summary>
-        public const string ValueListOutputControlName = "list";
+		/// <summary>
+		/// Name of the client-side control which should be able to render collection of items as a bullet-point list or similar.
+		/// </summary>
+		public const string ValueListOutputControlName = "list";
 
-        /// <summary>
-        /// <see cref="IServiceProvider"/> instance used when/if necessary.
-        /// </summary>
-        public readonly IServiceProvider Container;
-        
-        private readonly ConcurrentDictionary<Type, IEnumerable<InputFieldMetadata>> inputFieldMetadataCache = new();
-        private readonly ConcurrentDictionary<Type, InputFieldBinding> inputFieldMetadataMap = new();
-        private readonly object key = new();
-        private readonly ConcurrentDictionary<Type, IEnumerable<OutputFieldMetadata>> outputFieldMetadataCache = new();
-        private readonly ConcurrentDictionary<Type, OutputFieldBinding> outputFieldMetadataMap = new();
-        private readonly List<string> registeredAssemblies = new();
+		/// <summary>
+		/// <see cref="IServiceProvider"/> instance used when/if necessary.
+		/// </summary>
+		public readonly IServiceProvider Container;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MetadataBinder"/> class and configures
-        /// <see cref="DependencyInjectionContainer.Default"/> to be responsible for instantiating
-        /// <see cref="InputFieldBinding"/> and <see cref="OutputFieldBinding"/> when registering
-        /// a new assembly.
-        /// </summary>
-        public MetadataBinder()
-            : this(DependencyInjectionContainer.Default)
-        {
-        }
+		private readonly ConcurrentDictionary<Type, IEnumerable<InputFieldMetadata>> inputFieldMetadataCache = new();
+		private readonly ConcurrentDictionary<Type, InputFieldBinding> inputFieldMetadataMap = new();
+		private readonly object key = new();
+		private readonly ConcurrentDictionary<Type, IEnumerable<OutputFieldMetadata>> outputFieldMetadataCache = new();
+		private readonly ConcurrentDictionary<Type, OutputFieldBinding> outputFieldMetadataMap = new();
+		private readonly List<string> registeredAssemblies = new();
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MetadataBinder"/> class and configures the given
-        /// <see cref="DependencyInjectionContainer"/> to be responsible for instantiating
-        /// <see cref="InputFieldBinding"/> and <see cref="OutputFieldBinding"/> when registering
-        /// a new assembly.
-        /// </summary>
-        public MetadataBinder(IServiceProvider container)
-        {
-            this.Container = container;
-        }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MetadataBinder"/> class and configures
+		/// <see cref="DependencyInjectionContainer.Default"/> to be responsible for instantiating
+		/// <see cref="InputFieldBinding"/> and <see cref="OutputFieldBinding"/> when registering
+		/// a new assembly.
+		/// </summary>
+		public MetadataBinder()
+			: this(DependencyInjectionContainer.Default)
+		{
+		}
 
-        /// <summary>
-        /// Gets list of all registered <see cref="InputFieldBinding"/>.
-        /// </summary>
-        public IReadOnlyDictionary<Type, InputFieldBinding> InputFieldBindings => this.inputFieldMetadataMap.AsReadOnlyDictionary();
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MetadataBinder"/> class and configures the given
+		/// <see cref="DependencyInjectionContainer"/> to be responsible for instantiating
+		/// <see cref="InputFieldBinding"/> and <see cref="OutputFieldBinding"/> when registering
+		/// a new assembly.
+		/// </summary>
+		public MetadataBinder(IServiceProvider container)
+		{
+			this.Container = container;
+		}
 
-        /// <summary>
-        /// Gets list of all registered <see cref="OutputFieldBinding"/>.
-        /// </summary>
-        public IReadOnlyDictionary<Type, OutputFieldBinding> OutputFieldBindings => this.outputFieldMetadataMap.AsReadOnlyDictionary();
+		/// <summary>
+		/// Gets list of all registered <see cref="InputFieldBinding"/>.
+		/// </summary>
+		public IReadOnlyDictionary<Type, InputFieldBinding> InputFieldBindings => this.inputFieldMetadataMap.AsReadOnlyDictionary();
 
-        /// <summary>
-        /// Gets id of the form.
-        /// </summary>
-        /// <param name="formType">Type representing the form.</param>
-        /// <returns>Id of the form.</returns>
-        public static string GetFormId(Type formType)
-        {
-            var attribute = formType.GetTypeInfo().GetCustomAttributeSingleOrDefault<FormAttribute>();
+		/// <summary>
+		/// Gets list of all registered <see cref="OutputFieldBinding"/>.
+		/// </summary>
+		public IReadOnlyDictionary<Type, OutputFieldBinding> OutputFieldBindings => this.outputFieldMetadataMap.AsReadOnlyDictionary();
 
-            if (attribute == null)
-            {
-                throw new BindingException(
-                    $"Type '{formType.FullName}' does not have mandatory attribute '{typeof(FormAttribute).FullName}'.");
-            }
+		/// <summary>
+		/// Gets id of the form.
+		/// </summary>
+		/// <param name="formType">Type representing the form.</param>
+		/// <returns>Id of the form.</returns>
+		public static string GetFormId(Type formType)
+		{
+			var attribute = formType.GetTypeInfo().GetCustomAttributeSingleOrDefault<FormAttribute>();
 
-            return GetFormId(formType, attribute);
-        }
+			if (attribute == null)
+			{
+				throw new BindingException(
+					$"Type '{formType.FullName}' does not have mandatory attribute '{typeof(FormAttribute).FullName}'.");
+			}
 
-        /// <summary>
-        /// Registers given <see cref="OutputFieldBinding"/> instance.
-        /// </summary>
-        /// <param name="binding"><see cref="OutputFieldBinding"/> instance.</param>
-        public void AddBinding(OutputFieldBinding binding)
-        {
-            var existingBinding = this.outputFieldMetadataMap.Values.FirstOrDefault(t => t.ClientType == binding.ClientType);
+			return GetFormId(formType, attribute);
+		}
 
-            if (existingBinding != null)
-            {
-                if (existingBinding.Equals(binding))
-                {
-                    return;
-                }
+		/// <summary>
+		/// Registers given <see cref="OutputFieldBinding"/> instance.
+		/// </summary>
+		/// <param name="binding"><see cref="OutputFieldBinding"/> instance.</param>
+		public void AddBinding(OutputFieldBinding binding)
+		{
+			var existingBinding = this.outputFieldMetadataMap.Values.FirstOrDefault(t => t.ClientType == binding.ClientType);
 
-                throw new BindingException(
-                    $"Multiple output field bindings are trying to use client type '{binding.ClientType}'. " +
-                    "Each binding must have a unique client type.");
-            }
+			if (existingBinding != null)
+			{
+				if (existingBinding.Equals(binding))
+				{
+					return;
+				}
 
-            if (binding.ClientType == ObjectListOutputControlName ||
-                binding.ClientType == ValueListOutputControlName)
-            {
-                throw new BindingException(
-                    $"Binding '{binding.GetType().FullName}' attempts to bind to built-in " +
-                    $"client type '{binding.ClientType}', which is not allowed.");
-            }
+				throw new BindingException(
+					$"Multiple output field bindings are trying to use client type '{binding.ClientType}'. " +
+					"Each binding must have a unique client type.");
+			}
 
-            foreach (var serverType in binding.ServerTypes)
-            {
-                if (this.outputFieldMetadataMap.ContainsKey(serverType))
-                {
-                    throw new InvalidOperationException(
-                        $"Type '{binding.ServerTypes}' is already bound to output field control '{binding.ClientType}'.");
-                }
+			if (binding.ClientType == ObjectListOutputControlName ||
+				binding.ClientType == ValueListOutputControlName)
+			{
+				throw new BindingException(
+					$"Binding '{binding.GetType().FullName}' attempts to bind to built-in " +
+					$"client type '{binding.ClientType}', which is not allowed.");
+			}
 
-                if (serverType.GetTypeInfo().IsValueType)
-                {
-                    // Bind nullable version of the value type.
-                    // For example when binding "int", also bind "int?".
-                    var nullable = typeof(Nullable<>).MakeGenericType(serverType);
+			foreach (var serverType in binding.ServerTypes)
+			{
+				if (this.outputFieldMetadataMap.ContainsKey(serverType))
+				{
+					throw new InvalidOperationException(
+						$"Type '{binding.ServerTypes}' is already bound to output field control '{binding.ClientType}'.");
+				}
 
-                    this.outputFieldMetadataMap.TryAdd(nullable, binding);
-                }
+				if (serverType.GetTypeInfo().IsValueType)
+				{
+					// Bind nullable version of the value type.
+					// For example when binding "int", also bind "int?".
+					var nullable = typeof(Nullable<>).MakeGenericType(serverType);
 
-                this.outputFieldMetadataMap.TryAdd(serverType, binding);
-            }
-        }
+					this.outputFieldMetadataMap.TryAdd(nullable, binding);
+				}
 
-        /// <summary>
-        /// Registers given <see cref="InputFieldBinding"/> instance.
-        /// </summary>
-        /// <param name="binding"><see cref="InputFieldBinding"/> instance.</param>
-        public void AddBinding(InputFieldBinding binding)
-        {
-            var existingBinding = this.inputFieldMetadataMap.Values.FirstOrDefault(t => t.ClientType == binding.ClientType);
+				this.outputFieldMetadataMap.TryAdd(serverType, binding);
+			}
+		}
 
-            if (existingBinding != null)
-            {
-                if (existingBinding.Equals(binding))
-                {
-                    return;
-                }
+		/// <summary>
+		/// Registers given <see cref="InputFieldBinding"/> instance.
+		/// </summary>
+		/// <param name="binding"><see cref="InputFieldBinding"/> instance.</param>
+		public void AddBinding(InputFieldBinding binding)
+		{
+			var existingBinding = this.inputFieldMetadataMap.Values.FirstOrDefault(t => t.ClientType == binding.ClientType);
 
-                throw new BindingException(
-                    $"Bindings '{binding.GetType().FullName}' and '{existingBinding.GetType().FullName}' " +
-                    $"indicate same client type '{binding.ClientType}'. Each binding must have a unique client type.");
-            }
+			if (existingBinding != null)
+			{
+				if (existingBinding.Equals(binding))
+				{
+					return;
+				}
 
-            foreach (var serverType in binding.ServerTypes)
-            {
-                if (this.inputFieldMetadataMap.ContainsKey(serverType))
-                {
-                    throw new InvalidOperationException(
-                        $"Type '{binding.ServerTypes}' is already bound to input field control '{binding.ClientType}'.");
-                }
+				throw new BindingException(
+					$"Bindings '{binding.GetType().FullName}' and '{existingBinding.GetType().FullName}' " +
+					$"indicate same client type '{binding.ClientType}'. Each binding must have a unique client type.");
+			}
 
-                if (serverType.GetTypeInfo().IsValueType)
-                {
-                    // Bind nullable version of the value type.
-                    // For example when binding "int", also bind "int?".
-                    var nullable = typeof(Nullable<>).MakeGenericType(serverType);
+			foreach (var serverType in binding.ServerTypes)
+			{
+				if (this.inputFieldMetadataMap.ContainsKey(serverType))
+				{
+					throw new InvalidOperationException(
+						$"Type '{binding.ServerTypes}' is already bound to input field control '{binding.ClientType}'.");
+				}
 
-                    this.inputFieldMetadataMap.TryAdd(nullable, binding);
-                }
+				if (serverType.GetTypeInfo().IsValueType)
+				{
+					// Bind nullable version of the value type.
+					// For example when binding "int", also bind "int?".
+					var nullable = typeof(Nullable<>).MakeGenericType(serverType);
 
-                this.inputFieldMetadataMap.TryAdd(serverType, binding);
-            }
-        }
+					this.inputFieldMetadataMap.TryAdd(nullable, binding);
+				}
 
-        /// <summary>
-        /// Binds specified "server-side" type to the specified "client-side" input control type.
-        /// </summary>
-        /// <param name="clientType">Name of the client control which will render the output field.</param>
-        /// <typeparam name="TServerType">Type to bind to a specific client control.</typeparam>
-        public void AddInputFieldBinding<TServerType>(string clientType)
-        {
-            this.AddBinding(new InputFieldBinding(typeof(TServerType), clientType));
-        }
+				this.inputFieldMetadataMap.TryAdd(serverType, binding);
+			}
+		}
 
-        /// <summary>
-        /// Binds specified "server-side" type to the specified "client-side" output control type.
-        /// </summary>
-        /// <param name="clientType">Name of the client control which will render the output field.</param>
-        /// <typeparam name="TServerType">Type to bind to a specific client control.</typeparam>
-        public void AddOutputFieldBinding<TServerType>(string clientType)
-        {
-            this.AddBinding(new OutputFieldBinding(typeof(TServerType), clientType));
-        }
+		/// <summary>
+		/// Binds specified "server-side" type to the specified "client-side" input control type.
+		/// </summary>
+		/// <param name="clientType">Name of the client control which will render the output field.</param>
+		/// <typeparam name="TServerType">Type to bind to a specific client control.</typeparam>
+		public void AddInputFieldBinding<TServerType>(string clientType)
+		{
+			this.AddBinding(new InputFieldBinding(typeof(TServerType), clientType));
+		}
 
-        /// <summary>
-        /// Gets form metadata for the specified form.
-        /// </summary>
-        /// <typeparam name="TForm">Type representing the form.</typeparam>
-        /// <typeparam name="TRequest">Type representing request for the form. 
-        /// <see cref="FormMetadata.InputFields"/> will be deduced from this class.</typeparam>
-        /// <typeparam name="TResponse">Type representing response of the form. 
-        /// <see cref="FormMetadata.OutputFields"/> will be deduced from this class.</typeparam>
-        /// <returns><see cref="FormMetadata"/> instance.</returns>
-        public FormMetadata BindForm<TForm, TRequest, TResponse>()
-        {
-            return this.BindForm(typeof(TForm), typeof(TRequest), typeof(TResponse));
-        }
+		/// <summary>
+		/// Binds specified "server-side" type to the specified "client-side" output control type.
+		/// </summary>
+		/// <param name="clientType">Name of the client control which will render the output field.</param>
+		/// <typeparam name="TServerType">Type to bind to a specific client control.</typeparam>
+		public void AddOutputFieldBinding<TServerType>(string clientType)
+		{
+			this.AddBinding(new OutputFieldBinding(typeof(TServerType), clientType));
+		}
 
-        /// <summary>
-        /// Gets form metadata for the specified form.
-        /// </summary>
-        /// <param name="formType"> name="TForm">Type representing the form.</param>
-        /// <param name="requestType">Type representing request for the form. 
-        /// <see cref="FormMetadata.InputFields"/> will be deduced from this class.</param>
-        /// <param name="responseType">Type representing response of the form. 
-        /// <see cref="FormMetadata.OutputFields"/> will be deduced from this class.</param>
-        /// <returns><see cref="FormMetadata"/> instance.</returns>
-        public FormMetadata BindForm(Type formType, Type requestType, Type responseType)
-        {
-            return new FormMetadata(this, formType, requestType, responseType);
-        }
+		/// <summary>
+		/// Gets form metadata for the specified form.
+		/// </summary>
+		/// <typeparam name="TForm">Type representing the form.</typeparam>
+		/// <typeparam name="TRequest">Type representing request for the form. 
+		/// <see cref="FormMetadata.InputFields"/> will be deduced from this class.</typeparam>
+		/// <typeparam name="TResponse">Type representing response of the form. 
+		/// <see cref="FormMetadata.OutputFields"/> will be deduced from this class.</typeparam>
+		/// <returns><see cref="FormMetadata"/> instance.</returns>
+		public FormMetadata BindForm<TForm, TRequest, TResponse>()
+		{
+			return this.BindForm(typeof(TForm), typeof(TRequest), typeof(TResponse));
+		}
 
-        /// <summary>
-        /// Retrieves input field metadata for the given type.
-        /// </summary>
-        /// <typeparam name="T">Type which should be rendered on the client as input field(s).</typeparam>
-        /// <param name="strict">If true, then only properties that have <see cref="InputFieldAttribute"/>
-        /// will be taken into account.</param>
-        /// <returns>List of input field metadata.</returns>
-        public IEnumerable<InputFieldMetadata> BindInputFields<T>(bool strict = false)
-        {
-            return this.BindInputFields(typeof(T), strict);
-        }
+		/// <summary>
+		/// Gets form metadata for the specified form.
+		/// </summary>
+		/// <param name="formType"> name="TForm">Type representing the form.</param>
+		/// <param name="requestType">Type representing request for the form. 
+		/// <see cref="FormMetadata.InputFields"/> will be deduced from this class.</param>
+		/// <param name="responseType">Type representing response of the form. 
+		/// <see cref="FormMetadata.OutputFields"/> will be deduced from this class.</param>
+		/// <returns><see cref="FormMetadata"/> instance.</returns>
+		public FormMetadata BindForm(Type formType, Type requestType, Type responseType)
+		{
+			return new FormMetadata(this, formType, requestType, responseType);
+		}
 
-        /// <summary>
-        /// Retrieves input field metadata for the given type.
-        /// </summary>
-        /// <param name="type">Type which should be rendered on the client as input field(s).</param>
-        /// <param name="strict">If true, then only properties that have <see cref="InputFieldAttribute"/>
-        /// will be taken into account.</param>
-        /// <returns>List of input field metadata.</returns>
-        public IEnumerable<InputFieldMetadata> BindInputFields(Type type, bool strict = false)
-        {
-            return this.inputFieldMetadataCache.GetOrAdd(
-                type,
-                t => this.BindInputFieldsInternal(t, strict));
-        }
+		/// <summary>
+		/// Retrieves input field metadata for the given type.
+		/// </summary>
+		/// <typeparam name="T">Type which should be rendered on the client as input field(s).</typeparam>
+		/// <param name="strict">If true, then only properties that have <see cref="InputFieldAttribute"/>
+		/// will be taken into account.</param>
+		/// <returns>List of input field metadata.</returns>
+		public IEnumerable<InputFieldMetadata> BindInputFields<T>(bool strict = false)
+		{
+			return this.BindInputFields(typeof(T), strict);
+		}
 
-        /// <summary>
-        /// Retrieves output field metadata for the given type.
-        /// </summary>
-        /// <param name="type">Type which should be rendered on the client as output field(s).</param>
-        /// <param name="strict">If true, then only properties that have <see cref="OutputFieldAttribute"/>
-        /// will be taken into account.</param>
-        /// <returns>List of output field metadata.</returns>
-        public IEnumerable<OutputFieldMetadata> BindOutputFields(Type type, bool strict = false)
-        {
-            return this.outputFieldMetadataCache.GetOrAdd(
-                type,
-                t => this.BindOutputFieldsInternal(t, strict));
-        }
+		/// <summary>
+		/// Retrieves input field metadata for the given type.
+		/// </summary>
+		/// <param name="type">Type which should be rendered on the client as input field(s).</param>
+		/// <param name="strict">If true, then only properties that have <see cref="InputFieldAttribute"/>
+		/// will be taken into account.</param>
+		/// <returns>List of input field metadata.</returns>
+		public IEnumerable<InputFieldMetadata> BindInputFields(Type type, bool strict = false)
+		{
+			return this.inputFieldMetadataCache.GetOrAdd(
+				type,
+				t => this.BindInputFieldsInternal(t, strict));
+		}
 
-        /// <summary>
-        /// Retrieves output field metadata for the given type.
-        /// </summary>
-        /// <typeparam name="T">Type which should be rendered on the client as output field(s).</typeparam>
-        /// <param name="strict">If true, then only properties that have <see cref="OutputFieldAttribute"/>
-        /// will be taken into account.</param>
-        /// <returns>List of output field metadata.</returns>
-        public IEnumerable<OutputFieldMetadata> BindOutputFields<T>(bool strict = false)
-        {
-            return this.BindOutputFields(typeof(T), strict);
-        }
+		/// <summary>
+		/// Retrieves output field metadata for the given type.
+		/// </summary>
+		/// <param name="type">Type which should be rendered on the client as output field(s).</param>
+		/// <param name="strict">If true, then only properties that have <see cref="OutputFieldAttribute"/>
+		/// will be taken into account.</param>
+		/// <returns>List of output field metadata.</returns>
+		public IEnumerable<OutputFieldMetadata> BindOutputFields(Type type, bool strict = false)
+		{
+			return this.outputFieldMetadataCache.GetOrAdd(
+				type,
+				t => this.BindOutputFieldsInternal(t, strict));
+		}
 
-        /// <summary>
-        /// Scans assembly for implementations of <see cref="OutputFieldBinding"/>, <see cref="InputFieldBinding"/>
-        /// and registers them in this instance of <see cref="MetadataBinder"/>.
-        /// </summary>
-        /// <param name="assembly">Assembly to scan.</param>
-        public void RegisterAssembly(Assembly assembly)
-        {
-            // Avoid registering the same assembly twice.
-            lock (this.key)
-            {
-                if (this.registeredAssemblies.Contains(assembly.FullName))
-                {
-                    return;
-                }
+		/// <summary>
+		/// Retrieves output field metadata for the given type.
+		/// </summary>
+		/// <typeparam name="T">Type which should be rendered on the client as output field(s).</typeparam>
+		/// <param name="strict">If true, then only properties that have <see cref="OutputFieldAttribute"/>
+		/// will be taken into account.</param>
+		/// <returns>List of output field metadata.</returns>
+		public IEnumerable<OutputFieldMetadata> BindOutputFields<T>(bool strict = false)
+		{
+			return this.BindOutputFields(typeof(T), strict);
+		}
 
-                this.registeredAssemblies.Add(assembly.FullName);
-            }
+		/// <summary>
+		/// Scans assembly for implementations of <see cref="OutputFieldBinding"/>, <see cref="InputFieldBinding"/>
+		/// and registers them in this instance of <see cref="MetadataBinder"/>.
+		/// </summary>
+		/// <param name="assembly">Assembly to scan.</param>
+		public void RegisterAssembly(Assembly assembly)
+		{
+			// Avoid registering the same assembly twice.
+			lock (this.key)
+			{
+				if (this.registeredAssemblies.Contains(assembly.FullName))
+				{
+					return;
+				}
 
-            var outputFieldBindings = assembly.ExportedTypes
-                .Where(t =>
-                {
-                    var typeInfo = t.GetTypeInfo();
-                    return typeInfo.IsClass &&
-                        !typeInfo.IsAbstract &&
-                        typeInfo.IsSubclassOf(typeof(OutputFieldBinding));
-                })
-                .Select(t => this.Container.GetService(t))
-                .Cast<OutputFieldBinding>();
+				this.registeredAssemblies.Add(assembly.FullName);
+			}
 
-            foreach (var binding in outputFieldBindings)
-            {
-                this.AddBinding(binding);
-            }
+			var outputFieldBindings = assembly.ExportedTypes
+				.Where(t =>
+				{
+					var typeInfo = t.GetTypeInfo();
+					return typeInfo.IsClass &&
+						!typeInfo.IsAbstract &&
+						typeInfo.IsSubclassOf(typeof(OutputFieldBinding));
+				})
+				.Select(t => this.Container.GetService(t))
+				.Cast<OutputFieldBinding>();
 
-            assembly.ExportedTypes.ForEach(t =>
-            {
-                var attribute = t.GetTypeInfo().GetCustomAttributeSingleOrDefault<OutputFieldTypeAttribute>();
+			foreach (var binding in outputFieldBindings)
+			{
+				this.AddBinding(binding);
+			}
 
-                if (attribute != null)
-                {
-                    this.AddBinding(new OutputFieldBinding(t, attribute.ClientType));
-                }
-            });
+			assembly.ExportedTypes.ForEach(t =>
+			{
+				var attribute = t.GetTypeInfo().GetCustomAttributeSingleOrDefault<OutputFieldTypeAttribute>();
 
-            var inputFieldBindings = assembly.ExportedTypes
-                .Where(t =>
-                {
-                    var typeInfo = t.GetTypeInfo();
-                    return typeInfo.IsClass &&
-                        !typeInfo.IsAbstract &&
-                        typeInfo.IsSubclassOf(typeof(InputFieldBinding));
-                })
-                .Select(t => this.Container.GetService(t))
-                .Cast<InputFieldBinding>();
+				if (attribute != null)
+				{
+					this.AddBinding(new OutputFieldBinding(t, attribute.ClientType));
+				}
+			});
 
-            foreach (var binding in inputFieldBindings)
-            {
-                this.AddBinding(binding);
-            }
+			var inputFieldBindings = assembly.ExportedTypes
+				.Where(t =>
+				{
+					var typeInfo = t.GetTypeInfo();
+					return typeInfo.IsClass &&
+						!typeInfo.IsAbstract &&
+						typeInfo.IsSubclassOf(typeof(InputFieldBinding));
+				})
+				.Select(t => this.Container.GetService(t))
+				.Cast<InputFieldBinding>();
 
-            assembly.ExportedTypes.ForEach(t =>
-            {
-                var attribute = t.GetTypeInfo().GetCustomAttributeSingleOrDefault<InputFieldTypeAttribute>();
+			foreach (var binding in inputFieldBindings)
+			{
+				this.AddBinding(binding);
+			}
 
-                if (attribute != null)
-                {
-                    this.AddBinding(new InputFieldBinding(t, attribute.ClientType));
-                }
-            });
-        }
+			assembly.ExportedTypes.ForEach(t =>
+			{
+				var attribute = t.GetTypeInfo().GetCustomAttributeSingleOrDefault<InputFieldTypeAttribute>();
 
-        internal static string GetFormId(Type formType, FormAttribute formAttribute)
-        {
-            return !string.IsNullOrWhiteSpace(formAttribute.Id)
-                ? formAttribute.Id!
-                : formType.FullName ?? throw new BindingException($"Cannot form ID for type `{formType}`.");
-        }
+				if (attribute != null)
+				{
+					this.AddBinding(new InputFieldBinding(t, attribute));
+				}
+			});
+		}
 
-        private IEnumerable<InputFieldMetadata> BindInputFieldsInternal(Type type, bool strict = false)
-        {
-            var properties = type.GetPublicProperties();
+		internal static string GetFormId(Type formType, FormAttribute formAttribute)
+		{
+			return !string.IsNullOrWhiteSpace(formAttribute.Id)
+				? formAttribute.Id!
+				: formType.FullName ?? throw new BindingException($"Cannot form ID for type `{formType}`.");
+		}
 
-            foreach (var property in properties)
-            {
-                var attribute = property.GetCustomAttributeSingleOrDefault<InputFieldAttribute>();
+		private IEnumerable<InputFieldMetadata> BindInputFieldsInternal(Type type, bool strict = false)
+		{
+			var properties = type.GetPublicProperties();
 
-                if (strict && attribute == null)
-                {
-                    continue;
-                }
+			foreach (var property in properties)
+			{
+				var attribute = property.GetCustomAttributeSingleOrDefault<InputFieldAttribute>();
 
-                attribute ??= new InputFieldAttribute
-                {
-                    Required = false,
-                    Hidden = false
-                };
+				if (strict && attribute == null)
+				{
+					continue;
+				}
 
-                var propertyType = property.PropertyType.IsConstructedGenericType && !property.PropertyType.IsNullabble()
-                    ? property.PropertyType.GetGenericTypeDefinition()
-                    : property.PropertyType;
+				var propertyType = property.PropertyType.IsConstructedGenericType && !property.PropertyType.IsNullabble()
+					? property.PropertyType.GetGenericTypeDefinition()
+					: property.PropertyType;
 
-                if (!this.inputFieldMetadataMap.TryGetValue(propertyType, out InputFieldBinding binding))
-                {
-                    throw new KeyNotFoundException(
-                        $"Cannot retrieve metadata for '{type.FullName}.{property.Name}', " +
-                        $"because type '{propertyType.FullName}' is not bound to any input field control.");
-                }
+				if (!this.inputFieldMetadataMap.TryGetValue(propertyType, out InputFieldBinding binding))
+				{
+					throw new KeyNotFoundException(
+						$"Cannot retrieve metadata for '{type.FullName}.{property.Name}', " +
+						$"because type '{propertyType.FullName}' is not bound to any input field control.");
+				}
 
-                var metadata = attribute.GetMetadata(property, binding, this);
+				if (binding.MandatoryAttribute != null &&
+					attribute?.GetType().ImplementsClass(binding.MandatoryAttribute) != true)
+				{
+					throw new BindingException(
+						$"Property '{type.FullName}.{property.Name}' is missing a mandatory attribute " +
+						$"of type '{binding.MandatoryAttribute.FullName}'.");
+				}
 
-                yield return metadata;
-            }
-        }
+				attribute ??= new InputFieldAttribute
+				{
+					Required = false,
+					Hidden = false
+				};
 
-        private IEnumerable<OutputFieldMetadata> BindOutputFieldsInternal(Type type, bool strict = false)
-        {
-            var properties = type.GetPublicProperties();
+				var metadata = attribute.GetMetadata(property, binding, this);
 
-            foreach (var property in properties)
-            {
-                var attribute = property.GetCustomAttributeSingleOrDefault<OutputFieldAttribute>();
+				yield return metadata;
+			}
+		}
 
-                if (strict && attribute == null)
-                {
-                    continue;
-                }
+		private IEnumerable<OutputFieldMetadata> BindOutputFieldsInternal(Type type, bool strict = false)
+		{
+			var properties = type.GetPublicProperties();
 
-                var propertyType = property.PropertyType.IsConstructedGenericType && !property.PropertyType.IsNullabble()
-                    ? property.PropertyType.GetGenericTypeDefinition()
-                    : property.PropertyType;
+			foreach (var property in properties)
+			{
+				var attribute = property.GetCustomAttributeSingleOrDefault<OutputFieldAttribute>();
 
-                this.outputFieldMetadataMap.TryGetValue(propertyType, out OutputFieldBinding binding);
+				if (strict && attribute == null)
+				{
+					continue;
+				}
 
-                attribute ??= new OutputFieldAttribute();
+				var propertyType = property.PropertyType.IsConstructedGenericType && !property.PropertyType.IsNullabble()
+					? property.PropertyType.GetGenericTypeDefinition()
+					: property.PropertyType;
 
-                yield return attribute.GetMetadata(property, binding, this);
-            }
-        }
-    }
+				this.outputFieldMetadataMap.TryGetValue(propertyType, out OutputFieldBinding binding);
+
+				attribute ??= new OutputFieldAttribute();
+
+				yield return attribute.GetMetadata(property, binding, this);
+			}
+		}
+	}
 }

@@ -12,22 +12,14 @@ namespace UiMetadataFramework.Tests.Binding
 	{
 		public class Request
 		{
-			[Option("Low", "L")]
-			[Option("Mid", "M")]
-			[Option("High", "H")]
 			[Documentation("1")]
 			[Documentation("2")]
-			public DropdownValue<string> Category { get; set; }
-
 			[InputField(Label = "DoB", OrderIndex = 2)]
 			public DateTime DateOfBirth { get; set; }
 
-			public DropdownValue<DayOfWeek?> Day { get; set; }
-
 			[StringProperty("secret", "password")]
-			[Option(DayOfWeek.Sunday)]
-			[Option(DayOfWeek.Monday)]
-			public DropdownValue<DayOfWeek> FirstDayOfWeek { get; set; }
+			[DropdownInputField(typeof(EnumSource<DayOfWeek>))]
+			public DropdownValue<DayOfWeek> Day { get; set; }
 
 			[InputField(Label = "First name", OrderIndex = 1, Required = true)]
 			public string FirstName { get; set; }

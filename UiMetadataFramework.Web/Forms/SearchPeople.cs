@@ -161,7 +161,6 @@
 							{ nameof(Request.Weight), (int)weight },
 							{ nameof(Request.DateOfBirth), dateOfBirth },
 							{ nameof(Request.FavouriteDayOfWeek), new DropdownValue<DayOfWeek>((DayOfWeek)r.Next(0, 6)) },
-							{ nameof(Request.FirstDayOfWeek), new DropdownValue<DayOfWeek>((DayOfWeek)r.Next(0, 1)) },
 							{ nameof(Request.IsRegistered), r.Next(0, 1) == 1 }
 						}
 					},
@@ -178,11 +177,6 @@
 
 			public DropdownValue<DayOfWeek?> FavouriteDayOfWeek { get; set; }
 
-			[Option(DayOfWeek.Sunday)]
-			[Option(DayOfWeek.Monday)]
-			[InputField(Required = false)]
-			public DropdownValue<DayOfWeek> FirstDayOfWeek { get; set; }
-
 			[InputField(Label = "First name", OrderIndex = 1)]
 			public string FirstName { get; set; }
 
@@ -190,9 +184,6 @@
 			public int? Height { get; set; }
 
 			public bool? IsRegistered { get; set; }
-
-			//[TypeaheadInputField(typeof(PersonTypeaheadRemoteSource))]
-			//public TypeaheadValue<string> Name { get; set; }
 
 			public Paginator Paginator { get; set; }
 

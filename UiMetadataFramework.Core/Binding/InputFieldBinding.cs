@@ -24,6 +24,17 @@ namespace UiMetadataFramework.Core.Binding
 		/// <summary>
 		/// Initializes a new instance of the <see cref="InputFieldBinding"/> class.
 		/// </summary>
+		/// <param name="serverType">Type which should be rendered on the client.</param>
+		/// <param name="attribute"><see cref="InputFieldTypeAttribute"/> instance.</param>
+		public InputFieldBinding(Type serverType, InputFieldTypeAttribute attribute)
+			: this(new[] { serverType }, attribute.ClientType)
+		{
+			this.MandatoryAttribute = attribute.MandatoryAttribute;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="InputFieldBinding"/> class.
+		/// </summary>
 		/// <param name="serverTypes">Types which should be rendered on the client.</param>
 		/// <param name="clientType">Name of the client control which will render the specified types.</param>
 		public InputFieldBinding(IEnumerable<Type> serverTypes, string clientType)
@@ -43,6 +54,14 @@ namespace UiMetadataFramework.Core.Binding
 		/// be true.
 		/// </summary>
 		public bool IsInputAlwaysHidden { get; set; }
+
+		/// <summary>
+		/// Indicates a specific subtype of <see cref="InputFieldAttribute"/> that must be applied
+		/// on an input field. If null then any <see cref="InputFieldAttribute"/> can be applied or
+		/// no attribute can be applied at all.
+		/// </summary>
+		/// <remarks>Attributes that derive from the specified type are also allowed.</remarks>
+		public Type? MandatoryAttribute { get; }
 
 		/// <summary>
 		/// Gets the server-side types being bound.

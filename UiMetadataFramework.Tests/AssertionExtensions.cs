@@ -3,6 +3,7 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using FluentAssertions;
 	using UiMetadataFramework.Core;
 	using Xunit;
 
@@ -16,7 +17,7 @@
 			bool hidden = false,
 			int orderIndex = 0,
 			bool required = false,
-			string[] eventHandlers = null)
+			string[]? eventHandlers = null)
 		{
 			var field = fields.FirstOrDefault(t =>
 				t.Id == id &&
@@ -27,9 +28,9 @@
 				t.Required == required &&
 				eventHandlers == null || eventHandlers?.All(p => t.EventHandlers.Any(x => x.Id == p)) == true);
 
-			Assert.NotNull(field);
+			field.Should().NotBeNull();
 
-			return field;
+			return field!;
 		}
 
 		public static OutputFieldMetadata AssertHasOutputField(
@@ -109,14 +110,16 @@
 		private static TFieldMetadata HasCustomPropertyInternal<TFieldMetadata, T>(
 			this TFieldMetadata field,
 			string property,
-			Func<T, bool> assertion,
+			Func<T?, bool> assertion,
 			string message)
 			where T : class
 			where TFieldMetadata : IFieldMetadata
 		{
-			var customProperties = (T)field.CustomProperties[property];
+			var customProperties = (T?)field.CustomProperties?[property];
 
-			Assert.NotNull(customProperties);
+			customProperties
+				.Should()
+				.NotBeNull($"field '{property}' is expected to have custom properties");
 
 			Assert.True(assertion(customProperties), message);
 

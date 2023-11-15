@@ -22,24 +22,6 @@
 
 		private readonly MetadataBinder binder;
 
-		[Fact]
-		public void StrictModeIgnoresPropertiesWithoutAttribute()
-		{
-			var inputs = this.binder
-				.BindInputFields(typeof(InputsAndOutputsTogether), strict: true)
-				.ToList();
-
-			var outputs = this.binder
-				.BindOutputFields(typeof(InputsAndOutputsTogether), strict: true)
-				.ToList();
-
-			Assert.Equal(1, inputs.Count);
-			Assert.Equal(nameof(InputsAndOutputsTogether.Value), inputs[0].Id);
-
-			Assert.Equal(1, outputs.Count);
-			Assert.Equal(nameof(InputsAndOutputsTogether.Label), outputs[0].Id);
-		}
-
 		[Theory]
 		[InlineData(nameof(Response.Links))]
 		[InlineData(nameof(Response.Categories))]
@@ -102,44 +84,81 @@
 		[Fact]
 		public void CanGetInputFieldsMetadata()
 		{
-			var inputFields = this.binder.BindInputFields<Request>().OrderBy(t => t.OrderIndex).ToList();
+			var inputFields = this.binder.BindInputFields<Request>()
+				.OrderBy(t => t.OrderIndex)
+				.ToList();
 
-			Assert.Equal(12, inputFields.Count);
-			inputFields.AssertHasInputField(nameof(Request.FirstName), StringInputFieldBinding.ControlName, "First name", orderIndex: 1,
-				required: true);
-			inputFields.AssertHasInputField(nameof(Request.DateOfBirth), DateTimeInputFieldBinding.ControlName, "DoB", orderIndex: 2, required: true);
-			inputFields.AssertHasInputField(nameof(Request.SubmissionDate), DateTimeInputFieldBinding.ControlName, nameof(Request.SubmissionDate));
-			inputFields.AssertHasInputField(nameof(Request.Height), NumberInputFieldBinding.ControlName, nameof(Request.Height), hidden: true);
+			Assert.Equal(10, inputFields.Count);
 
-			inputFields.AssertHasInputField(nameof(Request.Notes), TextareaValue.ControlName, nameof(Request.Notes))
+			inputFields
+				.AssertHasInputField(
+					nameof(Request.FirstName),
+					StringInputFieldBinding.ControlName,
+					"First name",
+					orderIndex: 1,
+					required: true);
+
+			inputFields
+				.AssertHasInputField(
+					nameof(Request.DateOfBirth),
+					DateTimeInputFieldBinding.ControlName,
+					"DoB",
+					orderIndex: 2,
+					required: true)
+				.HasCustomProperty<IList<object>>(
+					"documentation",
+					t => t.Cast<string>().Count() == 2,
+					"Custom property 'documentation' has incorrect value.");
+
+			inputFields
+				.AssertHasInputField(
+					nameof(Request.SubmissionDate),
+					DateTimeInputFieldBinding.ControlName,
+					nameof(Request.SubmissionDate));
+
+			inputFields
+				.AssertHasInputField(
+					nameof(Request.Height),
+					NumberInputFieldBinding.ControlName,
+					nameof(Request.Height),
+					hidden: true);
+
+			inputFields
+				.AssertHasInputField(nameof(Request.Notes), TextareaValue.ControlName, nameof(Request.Notes))
 				.HasCustomProperty("number-1", 1)
 				.HasCustomProperty("number-2", 2);
 
-			inputFields.AssertHasInputField(nameof(Request.Weight), NumberInputFieldBinding.ControlName, nameof(Request.Weight), hidden: true,
-				required: true,
-				eventHandlers: new[] { InputFieldEventHandlerAttribute.Identifier });
+			inputFields
+				.AssertHasInputField(
+					nameof(Request.Weight),
+					NumberInputFieldBinding.ControlName,
+					nameof(Request.Weight), hidden: true,
+					required: true,
+					eventHandlers: new[] { InputFieldEventHandlerAttribute.Identifier });
 
-			inputFields.AssertHasInputField(nameof(Request.IsRegistered), BooleanInputFieldBinding.ControlName, nameof(Request.IsRegistered),
-				required: true);
+			inputFields
+				.AssertHasInputField(
+					nameof(Request.IsRegistered),
+					BooleanInputFieldBinding.ControlName,
+					nameof(Request.IsRegistered),
+					required: true);
 
-			inputFields.AssertHasInputField(nameof(Request.Day), DropdownValue<int>.ControlName, nameof(Request.Day))
-				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 7, "Dropdown has incorrect number of items.");
-
-			inputFields.AssertHasInputField(nameof(Request.FirstDayOfWeek), DropdownValue<int>.ControlName, nameof(Request.FirstDayOfWeek))
-				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 2, "Dropdown has incorrect number of items.")
+			inputFields
+				.AssertHasInputField(nameof(Request.Day), DropdownValue<int>.ControlName, nameof(Request.Day))
+				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 7, "Dropdown has incorrect number of items.")
 				.HasCustomProperty("secret", "password");
 
-			inputFields.AssertHasInputField(nameof(Request.Gender), DropdownValue<int>.ControlName, nameof(Request.Gender));
+			inputFields
+				.AssertHasInputField(
+					nameof(Request.Gender),
+					DropdownValue<int>.ControlName,
+					nameof(Request.Gender));
 
 			var dropdownInputField = inputFields.Single(t => t.Id == nameof(Request.Gender));
-			var items = dropdownInputField.CustomProperties["Items"] as IEnumerable<DropdownItem>;
+			var items = dropdownInputField.CustomProperties?["Items"] as IEnumerable<DropdownItem>;
+
 			Assert.NotNull(items);
 			Assert.Equal(2, items.Count());
-
-			inputFields.AssertHasInputField(nameof(Request.Category), DropdownValue<int>.ControlName, nameof(Request.Category))
-				.HasCustomProperty<IList<DropdownItem>>("Items", t => t.Count == 3, "Dropdown has incorrect number of items.")
-				.HasCustomProperty<IList<object>>("documentation", t => t.Cast<string>().Count() == 2,
-					"Custom property 'documentation' has incorrect value.");
 		}
 
 		[Fact]
@@ -200,6 +219,24 @@
 		{
 			Assert.Throws<BindingException>(() => this.binder.BindInputFields<InvalidRequest>().ToList());
 			Assert.Throws<BindingException>(() => this.binder.BindOutputFields<InvalidResponse>().ToList());
+		}
+
+		[Fact]
+		public void StrictModeIgnoresPropertiesWithoutAttribute()
+		{
+			var inputs = this.binder
+				.BindInputFields(typeof(InputsAndOutputsTogether), strict: true)
+				.ToList();
+
+			var outputs = this.binder
+				.BindOutputFields(typeof(InputsAndOutputsTogether), strict: true)
+				.ToList();
+
+			Assert.Equal(1, inputs.Count);
+			Assert.Equal(nameof(InputsAndOutputsTogether.Value), inputs[0].Id);
+
+			Assert.Equal(1, outputs.Count);
+			Assert.Equal(nameof(InputsAndOutputsTogether.Label), outputs[0].Id);
 		}
 	}
 }
