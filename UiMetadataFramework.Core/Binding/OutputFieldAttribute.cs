@@ -99,8 +99,9 @@ namespace UiMetadataFramework.Core.Binding
 			if (illegalAttributes.Any())
 			{
 				throw new BindingException(
-					$"Input '{property.DeclaringType!.FullName}.{property.Name}' cannot use " +
-					$"'{illegalAttributes[0].GetType().FullName}', because the attribute is not applicable for input fields.");
+					$"Output '{property.DeclaringType!.FullName}.{property.Name}' cannot use " +
+					$"'{illegalAttributes[0].GetType().FullName}', because the attribute is not " +
+					$"applicable for output fields.");
 			}
 
 			return new OutputFieldMetadata(clientControlName)
