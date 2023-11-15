@@ -24,17 +24,12 @@ namespace UiMetadataFramework.Core.Binding
 
         private readonly DependencyInjectionContainer dependencyInjectionContainer;
 
-        private readonly ConcurrentDictionary<Type, IEnumerable<InputFieldMetadata>> inputFieldMetadataCache =
-            new ConcurrentDictionary<Type, IEnumerable<InputFieldMetadata>>();
-
-        private readonly ConcurrentDictionary<Type, InputFieldBinding> inputFieldMetadataMap = new ConcurrentDictionary<Type, InputFieldBinding>();
-        private readonly object key = new object();
-
-        private readonly ConcurrentDictionary<Type, IEnumerable<OutputFieldMetadata>> outputFieldMetadataCache =
-            new ConcurrentDictionary<Type, IEnumerable<OutputFieldMetadata>>();
-
-        private readonly ConcurrentDictionary<Type, OutputFieldBinding> outputFieldMetadataMap = new ConcurrentDictionary<Type, OutputFieldBinding>();
-        private readonly List<string> registeredAssemblies = new List<string>();
+        private readonly ConcurrentDictionary<Type, IEnumerable<InputFieldMetadata>> inputFieldMetadataCache = new();
+        private readonly ConcurrentDictionary<Type, InputFieldBinding> inputFieldMetadataMap = new();
+        private readonly object key = new();
+        private readonly ConcurrentDictionary<Type, IEnumerable<OutputFieldMetadata>> outputFieldMetadataCache = new();
+        private readonly ConcurrentDictionary<Type, OutputFieldBinding> outputFieldMetadataMap = new();
+        private readonly List<string> registeredAssemblies = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MetadataBinder"/> class and configures
