@@ -221,31 +221,7 @@ namespace UiMetadataFramework.Core.Binding
         /// <returns><see cref="FormMetadata"/> instance.</returns>
         public FormMetadata BindForm(Type formType, Type requestType, Type responseType)
         {
-            var formAttribute = formType.GetTypeInfo().GetCustomAttributeSingleOrDefault<FormAttribute>();
-            if (formAttribute == null)
-            {
-                throw new BindingException(
-                    $"Type '{formType.FullName}' is not decorated with " +
-                    $"the mandatory '{typeof(FormAttribute).FullName}' attribute.");
-            }
-
-            var formEventHandlers = formType
-                .GetCustomAttributesImplementingInterface<IFormEventHandlerAttribute>()
-                .Select(t => t.ToMetadata(formType, this))
-                .ToList();
-
-            return new FormMetadata
-            {
-                Label = formAttribute.Label,
-                Id = GetFormId(formType, formAttribute),
-                PostOnLoad = formAttribute.PostOnLoad,
-                PostOnLoadValidation = formAttribute.PostOnLoadValidation,
-                CloseOnPostIfModal = formAttribute.CloseOnPostIfModal,
-                OutputFields = this.BindOutputFields(responseType).ToList(),
-                InputFields = this.BindInputFields(requestType).ToList(),
-                CustomProperties = formAttribute.GetCustomProperties(formType).Merge(formType.GetCustomProperties()),
-                EventHandlers = formEventHandlers
-            };
+            return new FormMetadata(this, formType, requestType, responseType);
         }
 
         /// <summary>
@@ -371,11 +347,11 @@ namespace UiMetadataFramework.Core.Binding
             });
         }
 
-        private static string GetFormId(Type formType, FormAttribute formAttribute)
+        internal static string GetFormId(Type formType, FormAttribute formAttribute)
         {
             return !string.IsNullOrWhiteSpace(formAttribute.Id)
-                ? formAttribute.Id
-                : formType.FullName;
+                ? formAttribute.Id!
+                : formType.FullName ?? throw new BindingException($"Cannot form ID for type `{formType}`.");
         }
 
         private IEnumerable<InputFieldMetadata> BindInputFieldsInternal(Type type, bool strict = false)
@@ -391,7 +367,7 @@ namespace UiMetadataFramework.Core.Binding
                     continue;
                 }
 
-                attribute = attribute ?? new InputFieldAttribute
+                attribute ??= new InputFieldAttribute
                 {
                     Required = false,
                     Hidden = false
@@ -433,7 +409,7 @@ namespace UiMetadataFramework.Core.Binding
 
                 this.outputFieldMetadataMap.TryGetValue(propertyType, out OutputFieldBinding binding);
 
-                attribute = attribute ?? new OutputFieldAttribute();
+                attribute ??= new OutputFieldAttribute();
 
                 yield return attribute.GetMetadata(property, binding, this);
             }

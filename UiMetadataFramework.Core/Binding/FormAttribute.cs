@@ -11,19 +11,19 @@
 		/// <summary>
 		/// Gets or sets value indicating how the form behaves when it was open as a modal and user submits it. If
 		/// set to <code>true</code>, then whenever user submits the form the modal will be automatically closed
-		/// (after receving the response). If set to <code>false</code>, then the modal will remain open.
+		/// (after receiving the response). If set to <code>false</code>, then the modal will remain open.
 		/// </summary>
 		public bool CloseOnPostIfModal { get; set; } = true;
 
 		/// <summary>
 		/// Gets or sets unique identifier for the form.
 		/// </summary>
-		public string Id { get; set; }
+		public string? Id { get; set; }
 
 		/// <summary>
 		/// Gets or sets label for this form.
 		/// </summary>
-		public string Label { get; set; }
+		public string? Label { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the form should be auto-posted
@@ -43,7 +43,7 @@
 		/// </summary>
 		/// <param name="type">Type to which this attribute is applied.</param>
 		/// <returns>Object representing custom properties for the form or null if there are none.</returns>
-		public virtual IDictionary<string, object> GetCustomProperties(Type type)
+		public virtual IDictionary<string, object?>? GetCustomProperties(Type type)
 		{
 			return null;
 		}

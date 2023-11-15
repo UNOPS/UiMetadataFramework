@@ -44,7 +44,7 @@
 		public IEnumerable<Type> ServerTypes { get; }
 
 		/// <inheritdoc />
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			if (!(obj is OutputFieldBinding binding))
 			{
@@ -63,7 +63,10 @@
 		/// <param name="attribute"><see cref="OutputFieldAttribute"/> which was applied to the output field.</param>
 		/// <param name="binder">Metadata binder being used.</param>
 		/// <returns>Object representing custom properties for the output field or null if there are none.</returns>
-		public virtual IDictionary<string, object> GetCustomProperties(PropertyInfo property, OutputFieldAttribute attribute, MetadataBinder binder)
+		public virtual IDictionary<string, object?>? GetCustomProperties(
+			PropertyInfo property,
+			OutputFieldAttribute? attribute,
+			MetadataBinder binder)
 		{
 			return property
 				.GetCustomProperties()
@@ -75,7 +78,7 @@
 		{
 			unchecked
 			{
-				return ((this.ClientType != null ? this.ClientType.GetHashCode() : 0) * 397) ^ (this.ServerTypes != null ? this.ServerTypes.GetHashCode() : 0);
+				return (this.ClientType.GetHashCode() * 397) ^ this.ServerTypes.GetHashCode();
 			}
 		}
 	}

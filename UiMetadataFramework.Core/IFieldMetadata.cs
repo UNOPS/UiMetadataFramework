@@ -10,12 +10,12 @@
 		/// <summary>
 		/// Gets or sets additional parameters for the client control.
 		/// </summary>
-		IDictionary<string, object> CustomProperties { get; set; }
+		IDictionary<string, object?>? CustomProperties { get; set; }
 
 		/// <summary>
 		/// Gets or sets event handlers for this field.
 		/// </summary>
-		IList<EventHandlerMetadata> EventHandlers { get; set; }
+		IList<EventHandlerMetadata>? EventHandlers { get; set; }
 
 		/// <summary>
 		/// Gets or sets value indicating whether this field should be visible or not.
@@ -25,12 +25,12 @@
 		/// <summary>
 		/// Gets or sets id of the field to which this metadata belongs.
 		/// </summary>
-		string Id { get; }
+		string? Id { get; }
 
 		/// <summary>
 		/// Gets or sets label for the output field.
 		/// </summary>
-		string Label { get; }
+		string? Label { get; }
 
 		/// <summary>
 		/// Gets or sets value which will dictate rendering position of this field

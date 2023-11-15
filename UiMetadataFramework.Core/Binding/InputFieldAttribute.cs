@@ -17,7 +17,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <summary>
 		/// Gets or sets label for the field.
 		/// </summary>
-		public string Label { get; set; }
+		public string? Label { get; set; }
 
 		/// <summary>
 		/// Gets or sets value which will dictate rendering position of this field
@@ -57,7 +57,7 @@ namespace UiMetadataFramework.Core.Binding
 			if (illegalAttributes.Any())
 			{
 				throw new BindingException(
-					$"Input '{property.DeclaringType.FullName}.{property.Name}' cannot use " +
+					$"Input '{property.DeclaringType!.FullName}.{property.Name}' cannot use " +
 					$"'{illegalAttributes[0].GetType().FullName}', because the attribute is not applicable for input fields.");
 			}
 

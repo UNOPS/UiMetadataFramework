@@ -39,7 +39,7 @@
 			this.EventHandlers = metadata.EventHandlers?.Select(t => t.Copy()).ToList();
 
 			this.CustomProperties = metadata.CustomProperties != null
-				? new Dictionary<string, object>(metadata.CustomProperties)
+				? new Dictionary<string, object?>(metadata.CustomProperties)
 				: null;
 		}
 
@@ -53,24 +53,24 @@
 		/// Gets or sets additional parameters for the client control.
 		/// </summary>
 		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-		public IDictionary<string, object> CustomProperties { get; set; }
+		public IDictionary<string, object?>? CustomProperties { get; set; }
 
 		/// <summary>
 		/// Gets or sets event handlers for this input.
 		/// </summary>
 		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-		public IList<EventHandlerMetadata> EventHandlers { get; set; }
+		public IList<EventHandlerMetadata>? EventHandlers { get; set; }
 
 		/// <summary>
 		/// Gets or sets id of the field to which this metadata belongs.
 		/// </summary>
-		public string Id { get; set; }
+		public string? Id { get; set; }
 
 		/// <summary>
 		/// Gets or sets label for the output field.
 		/// </summary>
 		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-		public string Label { get; set; }
+		public string? Label { get; set; }
 
 		/// <summary>
 		/// Gets name of the client control which will render this output field.

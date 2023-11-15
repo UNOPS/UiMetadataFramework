@@ -19,11 +19,11 @@
 		/// <param name="type">Type to scan for <see cref="ICustomPropertyAttribute"/>.</param>
 		/// <returns>Dictionary with custom properties or null, if no <see cref="ICustomPropertyAttribute"/>
 		/// were found.</returns>
-		public static IDictionary<string, object> GetCustomProperties(this Type type)
+		public static IDictionary<string, object?>? GetCustomProperties(this Type type)
 		{
 			return GetCustomProperties(
 				type.GetCustomAttributesImplementingInterface<ICustomPropertyAttribute>(),
-				type.FullName);
+				type.FullName ?? throw new BindingException($"Cannot get full name of type `{type}`."));
 		}
 
 		/// <summary>
@@ -33,11 +33,11 @@
 		/// <param name="propertyInfo">Property to scan for <see cref="ICustomPropertyAttribute"/>.</param>
 		/// <returns>Dictionary with custom properties or null, if no <see cref="ICustomPropertyAttribute"/>
 		/// were found.</returns>
-		public static IDictionary<string, object> GetCustomProperties(this PropertyInfo propertyInfo)
+		public static IDictionary<string, object?>? GetCustomProperties(this PropertyInfo propertyInfo)
 		{
 			return GetCustomProperties(
 				propertyInfo.GetCustomAttributesImplementingInterface<ICustomPropertyAttribute>(),
-				propertyInfo.DeclaringType.FullName + "." + propertyInfo.Name);
+				propertyInfo.DeclaringType!.FullName + "." + propertyInfo.Name);
 		}
 
 		/// <summary>
@@ -85,7 +85,7 @@
 		/// Values from this dictionary will be added to <paramref name="dictionary"/>.</param>
 		/// <returns>New dictionary containing both items from <paramref name="dictionary"/> 
 		/// and <paramref name="another"/>.</returns>
-		public static IDictionary<string, T> Merge<T>(this IDictionary<string, T> dictionary, IDictionary<string, T> another)
+		public static IDictionary<string, T?>? Merge<T>(this IDictionary<string, T?>? dictionary, IDictionary<string, T?>? another)
 		{
 			var result = dictionary.Copy();
 
@@ -110,25 +110,18 @@
 		/// <param name="value">Value to set to.</param>
 		/// <returns>New dictionary containing items from <paramref name="dictionary"/> and the new item
 		/// added by this method.</returns>
-		public static IDictionary<string, T> Set<T>(this IDictionary<string, T> dictionary, string key, T value)
+		public static IDictionary<string, T?> Set<T>(this IDictionary<string, T?>? dictionary, string key, T value)
 		{
-			var result = dictionary.Copy() ?? new Dictionary<string, T>();
+			var result = dictionary.Copy() ?? new Dictionary<string, T?>();
 
-			if (result.ContainsKey(key))
-			{
-				result[key] = value;
-			}
-			else
-			{
-				result.Add(key, value);
-			}
+			result[key] = value;
 
 			return result;
 		}
 
 		internal static IReadOnlyDictionary<TKey, TValue> AsReadOnlyDictionary<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dictionary)
 		{
-			return (IReadOnlyDictionary<TKey, TValue>)dictionary;
+			return dictionary;
 		}
 
 		internal static void ForEach<T>(this IEnumerable<T> items, Action<T> action)
@@ -156,7 +149,7 @@
 				.Cast<T>();
 		}
 
-		internal static T GetCustomAttributeSingleOrDefault<T>(this TypeInfo typeInfo) where T : Attribute
+		internal static T? GetCustomAttributeSingleOrDefault<T>(this TypeInfo typeInfo) where T : Attribute
 		{
 			try
 			{
@@ -170,7 +163,7 @@
 			}
 		}
 
-		internal static T GetCustomAttributeSingleOrDefault<T>(this PropertyInfo propertyInfo) where T : Attribute
+		internal static T? GetCustomAttributeSingleOrDefault<T>(this PropertyInfo propertyInfo) where T : Attribute
 		{
 			try
 			{
@@ -179,7 +172,7 @@
 			catch (AmbiguousMatchException)
 			{
 				throw new BindingException(
-					$"Property '{propertyInfo.DeclaringType.FullName}.{propertyInfo.Name}' is decorated with multiple attributes of type " +
+					$"Property '{propertyInfo.DeclaringType!.FullName}.{propertyInfo.Name}' is decorated with multiple attributes of type " +
 					$"'{typeof(T).FullName}'. Only one instance of the attribute is allowed.");
 			}
 		}
@@ -195,17 +188,17 @@
 		/// <summary>
 		/// Creates a copy of the dictionary.
 		/// </summary>
-		private static IDictionary<string, T> Copy<T>(this IDictionary<string, T> dictionary)
+		private static IDictionary<string, T?>? Copy<T>(this IDictionary<string, T?>? dictionary)
 		{
 			if (dictionary != null)
 			{
-				return new Dictionary<string, T>(dictionary);
+				return new Dictionary<string, T?>(dictionary);
 			}
 
 			return null;
 		}
 
-		private static IDictionary<string, object> GetCustomProperties(
+		private static IDictionary<string, object?>? GetCustomProperties(
 			IEnumerable<ICustomPropertyAttribute> attributes,
 			string nameOfTheDecoratedElement)
 		{
@@ -217,7 +210,7 @@
 				})
 				.ToList();
 
-			IDictionary<string, object> result = null;
+			IDictionary<string, object?>? result = null;
 
 			var singleValueCustomProperties = customPropertyAttributes
 				.Where(t => t.Usage == null || t.Usage.IsArray == false)
@@ -246,7 +239,7 @@
 			foreach (var customProperty in multiValueCustomProperties)
 			{
 				var values = customProperty.Select(t => t.Attribute.GetValue()).ToList();
-				result = result.Set(customProperty.Key, values);
+				result = result!.Set(customProperty.Key, values);
 			}
 
 			return result;

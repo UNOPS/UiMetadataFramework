@@ -51,7 +51,7 @@ namespace UiMetadataFramework.Core.Binding
 		public IEnumerable<Type> ServerTypes { get; }
 
 		/// <inheritdoc />
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			if (!(obj is InputFieldBinding binding))
 			{
@@ -69,7 +69,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="attribute"><see cref="InputFieldAttribute"/> which was applied to the input field.</param>
 		/// <param name="property">Property representing the input field for which to get metadata.</param>
 		/// <returns>Object representing custom properties for the input field or null if there are none.</returns>
-		public virtual IDictionary<string, object> GetCustomProperties(InputFieldAttribute attribute, PropertyInfo property)
+		public virtual IDictionary<string, object?>? GetCustomProperties(InputFieldAttribute attribute, PropertyInfo property)
 		{
 			return property.GetCustomProperties();
 		}
@@ -79,8 +79,8 @@ namespace UiMetadataFramework.Core.Binding
 		{
 			unchecked
 			{
-				var hashCode = this.ClientType != null ? this.ClientType.GetHashCode() : 0;
-				hashCode = (hashCode * 397) ^ (this.ServerTypes != null ? this.ServerTypes.GetHashCode() : 0);
+				var hashCode = this.ClientType.GetHashCode();
+				hashCode = (hashCode * 397) ^ this.ServerTypes.GetHashCode();
 				return hashCode;
 			}
 		}

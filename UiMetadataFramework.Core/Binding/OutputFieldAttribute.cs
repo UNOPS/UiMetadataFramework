@@ -18,7 +18,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <summary>
 		/// Gets or sets label for the output field.
 		/// </summary>
-		public string Label { get; set; }
+		public string? Label { get; set; }
 
 		/// <summary>
 		/// Gets or sets value which will dictate rendering position of this field
@@ -32,7 +32,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="property">Property representing the output field for which to get metadata.</param>
 		/// <param name="binder">Metadata binder being used.</param>
 		/// <returns>Object representing custom properties for the output field or null if there are none.</returns>
-		public virtual IDictionary<string, object> GetCustomProperties(PropertyInfo property, MetadataBinder binder)
+		public virtual IDictionary<string, object?>? GetCustomProperties(PropertyInfo property, MetadataBinder binder)
 		{
 			return null;
 		}
@@ -45,7 +45,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="binder">Metadata binder.</param>
 		/// <returns>Instance of <see cref="OutputFieldMetadata"/>.</returns>
 		/// <remarks>This method will be used internally by <see cref="MetadataBinder"/>.</remarks>
-		public virtual OutputFieldMetadata GetMetadata(PropertyInfo property, OutputFieldBinding binding, MetadataBinder binder)
+		public virtual OutputFieldMetadata GetMetadata(PropertyInfo property, OutputFieldBinding? binding, MetadataBinder binder)
 		{
 			var isEnumerable = property.IsEnumerable();
 
@@ -60,14 +60,14 @@ namespace UiMetadataFramework.Core.Binding
 				? binder.OutputFieldBindings.ContainsKey(property.PropertyType.GenericTypeArguments[0])
 					? MetadataBinder.ValueListOutputControlName
 					: MetadataBinder.ObjectListOutputControlName
-				: binding.ClientType;
+				: binding!.ClientType;
 
-			IDictionary<string, object> customProperties;
+			IDictionary<string, object?>? customProperties;
 
 			if (clientControlName == MetadataBinder.ObjectListOutputControlName)
 			{
 				var additionalCustomProperties = property.GetCustomProperties();
-				customProperties = new Dictionary<string, object>
+				customProperties = new Dictionary<string, object?>
 				{
 					{ "Columns", binder.BindOutputFields(property.PropertyType.GenericTypeArguments[0]).ToList() },
 					{ "Customizations", this.GetCustomProperties(property, binder) }
@@ -87,7 +87,7 @@ namespace UiMetadataFramework.Core.Binding
 
 					var itemBinding = binder.OutputFieldBindings[property.PropertyType.GenericTypeArguments[0]];
 
-					customProperties = new Dictionary<string, object>
+					customProperties = new Dictionary<string, object?>
 					{
 						{ "Type", itemBinding.ClientType }
 					}.Merge(itemBinding.GetCustomProperties(property, this, binder));
@@ -99,7 +99,7 @@ namespace UiMetadataFramework.Core.Binding
 			if (illegalAttributes.Any())
 			{
 				throw new BindingException(
-					$"Input '{property.DeclaringType.FullName}.{property.Name}' cannot use " +
+					$"Input '{property.DeclaringType!.FullName}.{property.Name}' cannot use " +
 					$"'{illegalAttributes[0].GetType().FullName}', because the attribute is not applicable for input fields.");
 			}
 

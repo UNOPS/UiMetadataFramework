@@ -12,7 +12,7 @@
 		/// Represents response which has additional metadata describing how to render the results.
 		/// </summary>
 		[NotField]
-		public T Metadata { get; set; }
+		public T? Metadata { get; set; }
 	}
 
 	/// <summary>
@@ -20,12 +20,16 @@
 	/// </summary>
 	public class FormResponse : FormResponse<FormResponseMetadata>
 	{
+		/// <summary>
+		/// Creates a new instance of <see cref="FormResponse"/> class with default
+		/// handler (i.e. "null"). 
+		/// </summary>
 		public FormResponse()
 		{
 		}
 
 		/// <summary>
-		/// Creates a new instances of <see cref="FormResponse"/> class, with specified 
+		/// Creates a new instance of <see cref="FormResponse"/> class, with specified 
 		/// <see cref="FormResponse"/> handler.
 		/// </summary>
 		/// <param name="handler"></param>

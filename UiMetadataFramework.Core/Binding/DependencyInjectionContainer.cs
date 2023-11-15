@@ -34,7 +34,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <summary>
 		/// Factory function that will be used to get instances of a type.
 		/// </summary>
-		public Func<Type, object> GetInstanceFunc { get; set; }
+		public Func<Type, object> GetInstanceFunc { get; set; } = null!;
 
 		/// <summary>
 		/// Instantiates the given type.
