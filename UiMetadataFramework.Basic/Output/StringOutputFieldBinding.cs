@@ -2,11 +2,19 @@
 {
 	using UiMetadataFramework.Core.Binding;
 
+	/// <inheritdoc />
 	public class StringOutputFieldBinding : OutputFieldBinding
 	{
-		public const string ControlName = "text";
+		internal const string ControlName = "text";
 
-		public StringOutputFieldBinding() : base(new[] { typeof(string), typeof(bool) }, ControlName)
+		/// <inheritdoc />
+		public StringOutputFieldBinding() : base(
+			new[]
+			{
+				typeof(string),
+				typeof(bool)
+			},
+			ControlName)
 		{
 		}
 	}

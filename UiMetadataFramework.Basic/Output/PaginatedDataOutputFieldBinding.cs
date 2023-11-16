@@ -1,3 +1,6 @@
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+// ReSharper disable MemberCanBePrivate.Global
+
 namespace UiMetadataFramework.Basic.Output
 {
 	using System.Collections.Generic;
@@ -5,21 +8,26 @@ namespace UiMetadataFramework.Basic.Output
 	using System.Reflection;
 	using UiMetadataFramework.Core.Binding;
 
+	/// <inheritdoc />
 	public class PaginatedDataOutputFieldBinding : OutputFieldBinding
 	{
+		/// <inheritdoc />
 		public PaginatedDataOutputFieldBinding() : base(typeof(PaginatedData<>), "paginated-data")
 		{
 		}
 
 		/// <inheritdoc cref="OutputFieldBinding.GetCustomProperties"/>
-		public override IDictionary<string, object> GetCustomProperties(PropertyInfo property, OutputFieldAttribute attribute, MetadataBinder binder)
+		public override IDictionary<string, object?> GetCustomProperties(
+			PropertyInfo property,
+			OutputFieldAttribute? attribute,
+			MetadataBinder binder)
 		{
 			var paginatedItemType = property.PropertyType.GenericTypeArguments[0];
 
 			if (!(attribute is PaginatedDataAttribute))
 			{
 				throw new BindingException(
-					$"Property '{property.DeclaringType.FullName}.{property.Name}' must be decorated by " +
+					$"Property '{property.DeclaringType!.FullName}.{property.Name}' must be decorated by " +
 					$"'{nameof(PaginatedDataAttribute)}' attribute. '{nameof(PaginatedDataAttribute)}' attribute is mandatory " +
 					$"for '{typeof(PaginatedData<>).Name}' output fields.");
 			}
@@ -39,7 +47,7 @@ namespace UiMetadataFramework.Basic.Output
 		/// <summary>
 		/// Gets or sets items.
 		/// </summary>
-		public IEnumerable<T> Results { get; set; }
+		public IEnumerable<T>? Results { get; set; }
 
 		/// <summary>
 		/// Gets or sets total number of matching items in the data store.
@@ -53,6 +61,7 @@ namespace UiMetadataFramework.Basic.Output
 	/// </summary>
 	public class PaginatedDataAttribute : OutputFieldAttribute
 	{
+		/// <inheritdoc />
 		public PaginatedDataAttribute(string paginator)
 		{
 			this.Paginator = paginator;
@@ -61,9 +70,10 @@ namespace UiMetadataFramework.Basic.Output
 		/// <summary>
 		/// Gets or sets name of the input field which will control the pagination parameters.
 		/// </summary>
-		public string Paginator { get; set; }
+		public string Paginator { get; }
 
-		public override IDictionary<string, object> GetCustomProperties(PropertyInfo property, MetadataBinder binder)
+		/// <inheritdoc />
+		public override IDictionary<string, object?> GetCustomProperties(PropertyInfo property, MetadataBinder binder)
 		{
 			return base.GetCustomProperties(property, binder)
 				.Set("Paginator", this.Paginator);

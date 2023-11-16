@@ -2,11 +2,22 @@
 {
 	using UiMetadataFramework.Core.Binding;
 
+	/// <inheritdoc />
 	public class NumberInputFieldBinding : InputFieldBinding
 	{
-		public const string ControlName = "number";
+		internal const string ControlName = "number";
 
-		public NumberInputFieldBinding() : base(new[] { typeof(int), typeof(decimal), typeof(double), typeof(short), typeof(long), typeof(byte) },
+		/// <inheritdoc />
+		public NumberInputFieldBinding() : base(
+			new[]
+			{
+				typeof(int),
+				typeof(decimal),
+				typeof(double),
+				typeof(short),
+				typeof(long),
+				typeof(byte)
+			},
 			ControlName)
 		{
 		}

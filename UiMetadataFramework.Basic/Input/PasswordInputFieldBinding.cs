@@ -2,9 +2,15 @@
 {
     using UiMetadataFramework.Core.Binding;
 
+    /// <summary>
+    /// Represents a password input field.
+    /// </summary>
     [InputFieldType("password")]
     public class Password
     {
-        public string Value { get; set; }
+        /// <summary>
+        /// The password value.
+        /// </summary>
+        public string? Value { get; set; }
     }
 }

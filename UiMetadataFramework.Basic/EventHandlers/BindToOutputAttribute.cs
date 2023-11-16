@@ -42,7 +42,8 @@ namespace UiMetadataFramework.Basic.EventHandlers
 		{
 			return new EventHandlerMetadata(this.Id, this.RunAt)
 			{
-				CustomProperties = new Dictionary<string, object>().Set(nameof(this.OutputFieldId), this.OutputFieldId)
+				CustomProperties = new Dictionary<string, object?>()
+					.Set(nameof(this.OutputFieldId), this.OutputFieldId)
 			};
 		}
 	}

@@ -1,4 +1,6 @@
-﻿namespace UiMetadataFramework.Basic.Input.Typeahead
+﻿// ReSharper disable MemberCanBePrivate.Global
+
+namespace UiMetadataFramework.Basic.Input.Typeahead
 {
 	using System;
 	using System.Collections.Generic;
@@ -21,14 +23,18 @@
 		{
 			this.Source = source;
 		}
-		
+
 		/// <summary>
 		/// Gets or sets source for the typeahead items. The type must implement
 		/// <see cref="ITypeaheadRemoteSource"/> or <see cref="ITypeaheadInlineSource{T}"/>.
 		/// </summary>
 		public Type Source { get; }
 
-		public override InputFieldMetadata GetMetadata(PropertyInfo property, InputFieldBinding binding, MetadataBinder binder)
+		/// <inheritdoc />
+		public override InputFieldMetadata GetMetadata(
+			PropertyInfo property,
+			InputFieldBinding binding,
+			MetadataBinder binder)
 		{
 			var result = base.GetMetadata(property, binding, binder);
 
@@ -45,7 +51,7 @@
 		/// <param name="property">Represents an input field.</param>
 		/// <param name="binder"><see cref="MetadataBinder"/> instance.</param>
 		/// <returns>Custom properties.</returns>
-		protected IDictionary<string, object?>? GetCustomProperties(PropertyInfo property, MetadataBinder binder)
+		protected IDictionary<string, object?> GetCustomProperties(PropertyInfo property, MetadataBinder binder)
 		{
 			if (this.Source.GetInterfaces(typeof(ITypeaheadRemoteSource)).Any())
 			{
@@ -61,11 +67,11 @@
 			var inlineSource = this.Source
 				.GetInterfaces(typeof(ITypeaheadInlineSource<>))
 				.SingleOrDefault();
-			
+
 			if (inlineSource != null)
 			{
 				var source = binder.Container.GetService(this.Source);
-				
+
 				var items = this.Source.GetTypeInfo()
 					.GetMethod(nameof(ITypeaheadInlineSource<int>.GetItems))
 					!.Invoke(source, null);

@@ -13,11 +13,11 @@
 		/// <summary>
 		/// Gets or sets name of the form to render.
 		/// </summary>
-		public string Form { get; set; }
+		public string Form { get; set; } = null!;
 
 		/// <summary>
 		/// Gets or sets values for the input fields of the form (i.e. - <see cref="FormMetadata.InputFields"/>).
 		/// </summary>
-		public IDictionary<string, object> InputFieldValues { get; set; }
+		public IDictionary<string, object?>? InputFieldValues { get; set; }
 	}
 }

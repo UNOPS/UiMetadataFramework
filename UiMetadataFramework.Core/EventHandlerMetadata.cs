@@ -31,7 +31,7 @@
 			return new EventHandlerMetadata(this.Id, this.RunAt)
 			{
 				CustomProperties = this.CustomProperties != null
-					? new Dictionary<string, object>(this.CustomProperties)
+					? new Dictionary<string, object?>(this.CustomProperties)
 					: null
 			};
 		}

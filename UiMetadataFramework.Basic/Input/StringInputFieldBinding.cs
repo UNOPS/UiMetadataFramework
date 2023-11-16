@@ -2,10 +2,12 @@
 {
 	using UiMetadataFramework.Core.Binding;
 
+	/// <inheritdoc />
 	public class StringInputFieldBinding : InputFieldBinding
 	{
-		public const string ControlName = "text";
+		internal const string ControlName = "text";
 
+		/// <inheritdoc />
 		public StringInputFieldBinding() : base(typeof(string), ControlName)
 		{
 		}

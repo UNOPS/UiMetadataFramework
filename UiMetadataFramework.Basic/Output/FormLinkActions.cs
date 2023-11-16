@@ -13,7 +13,7 @@
 
 		/// <summary>
 		/// Indicates that the form should not be run immediately after user has clicked on the <see cref="FormLink"/>.
-		/// Instead the form should be openned in a modal allowing user to review it before running.
+		/// Instead the form should be opened in a modal allowing user to review it before running.
 		/// </summary>
 		public const string OpenModal = "open-modal";
 

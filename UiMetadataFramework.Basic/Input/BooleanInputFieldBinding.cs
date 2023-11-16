@@ -2,10 +2,12 @@
 {
 	using UiMetadataFramework.Core.Binding;
 
+	/// <inheritdoc />
 	public class BooleanInputFieldBinding : InputFieldBinding
 	{
-		public const string ControlName = "boolean";
+		internal const string ControlName = "boolean";
 
+		/// <inheritdoc />
 		public BooleanInputFieldBinding() : base(typeof(bool), ControlName)
 		{
 		}

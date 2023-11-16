@@ -2,11 +2,17 @@
 {
 	using UiMetadataFramework.Core.Binding;
 
+	/// <summary>
+	/// Represents an input field for multiline text.
+	/// </summary>
 	[InputFieldType(ControlName)]
 	public class TextareaValue
 	{
-		public const string ControlName = "textarea";
-		
-		public string Value { get; set; }
+		internal const string ControlName = "textarea";
+
+		/// <summary>
+		/// The value of the input field.
+		/// </summary>
+		public string? Value { get; set; }
 	}
 }

@@ -4,9 +4,15 @@
 	using System.Linq;
 	using UiMetadataFramework.Core.Binding;
 
+	/// <summary>
+	/// Represents a list of actions that user can perform.
+	/// </summary>
 	[OutputFieldType("action-list")]
 	public class ActionList
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ActionList"/> class.
+		/// </summary>
 		public ActionList(params FormLink[] actions)
 		{
 			// We need to convert actions to list, so that items can be added at a later point too.
@@ -15,6 +21,9 @@
 			this.Actions = actions.ToList();
 		}
 
+		/// <summary>
+		/// Gets or sets list of actions.
+		/// </summary>
 		public IList<FormLink> Actions { get; set; }
 	}
 }
