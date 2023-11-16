@@ -168,7 +168,7 @@
 			var items = dropdownInputField.CustomProperties?["Items"] as IEnumerable<DropdownItem>;
 
 			Assert.NotNull(items);
-			Assert.Equal(2, items.Count());
+			Assert.Equal(2, items!.Count());
 		}
 
 		[Fact]

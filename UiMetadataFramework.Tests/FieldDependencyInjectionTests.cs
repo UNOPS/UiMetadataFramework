@@ -76,7 +76,7 @@ namespace UiMetadataFramework.Tests
 			// Ensure that the inline source has 3 items.
 			var source = categoryInputField.CustomProperties?["Source"] as IEnumerable<TypeaheadItem<int>>;
 			Assert.NotNull(source);
-			Assert.Equal(3, source.Count());
+			Assert.Equal(3, source!.Count());
 		}
 	}
 }

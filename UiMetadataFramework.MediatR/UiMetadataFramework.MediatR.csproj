@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
 		<AssemblyName>UiMetadataFramework.MediatR</AssemblyName>
 		<RootNamespace>UiMetadataFramework.MediatR</RootNamespace>
 		<Description>UiMetadataFramework implementation on top of MediatR's IRequestHandler.</Description>

@@ -52,7 +52,7 @@
 
 			Assert.NotNull(field);
 
-			return field;
+			return field!;
 		}
 
 		public static InputFieldMetadata HasCustomProperty<T>(

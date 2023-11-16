@@ -9,7 +9,6 @@
 	using global::MediatR;
 	using Microsoft.Extensions.DependencyInjection;
 	using UiMetadataFramework.Basic;
-	using UiMetadataFramework.Basic.Output;
 	using UiMetadataFramework.Basic.Output.Text;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
@@ -43,7 +42,7 @@
 
 		public class BaseForm : Form<BaseForm.Request, BaseForm.Response>, IComparable
 		{
-			public int CompareTo(object obj)
+			public int CompareTo(object? obj)
 			{
 				// This method is just to make sure IForms can implement any arbitrary non-generic interface.
 				throw new NotImplementedException();

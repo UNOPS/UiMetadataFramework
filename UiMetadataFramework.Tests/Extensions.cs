@@ -7,16 +7,16 @@
 
 	public static class Extensions
 	{
-		public static Dictionary<string, object> ToDictionary(this IBaseRequest request)
+		public static Dictionary<string, object?> ToDictionary(this IBaseRequest? request)
 		{
 			if (request == null)
 			{
-				return new Dictionary<string, object>();
+				return new Dictionary<string, object?>();
 			}
 
 			return request.GetType().GetProperties()
-				.Where(t => t.CanRead && t.MemberType == MemberTypes.Property)
-				.Where(t => t.GetMethod.IsPublic)
+				.Where(t => t is { CanRead: true, MemberType: MemberTypes.Property })
+				.Where(t => t.GetMethod!.IsPublic)
 				.ToDictionary(t => t.Name, t => t.GetValue(request));
 		}
 	}
