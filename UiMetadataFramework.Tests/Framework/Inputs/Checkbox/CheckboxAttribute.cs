@@ -1,10 +1,10 @@
-﻿namespace UiMetadataFramework.Tests.Framework.Inputs.Custom;
+﻿namespace UiMetadataFramework.Tests.Framework.Inputs.Checkbox;
 
 using System.Reflection;
 using UiMetadataFramework.Core;
 using UiMetadataFramework.Core.Binding;
 
-public class CustomInputFieldAttribute : InputFieldAttribute
+public class CheckboxAttribute : InputFieldAttribute
 {
 	public string? Style { get; set; }
 
