@@ -21,4 +21,8 @@
 	  <ProjectReference Include="..\UiMetadataFramework.Core\UiMetadataFramework.Core.csproj" />
 	  <ProjectReference Include="..\UiMetadataFramework.MediatR\UiMetadataFramework.MediatR.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Framework\Form\" />
+	</ItemGroup>
 </Project>
