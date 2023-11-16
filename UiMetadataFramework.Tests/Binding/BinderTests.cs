@@ -142,7 +142,8 @@
 				.AssertHasInputField(
 					nameof(Request.Weight),
 					NumberInputFieldBinding.ControlName,
-					nameof(Request.Weight), hidden: true,
+					nameof(Request.Weight),
+					hidden: true,
 					required: true,
 					eventHandlers: new[] { InputFieldEventHandlerAttribute.Identifier });
 
@@ -177,32 +178,74 @@
 			var outputFields = this.binder.BindOutputFields<Response>().OrderBy(t => t.OrderIndex).ToList();
 
 			Assert.Equal(8, outputFields.Count);
-			outputFields.AssertHasOutputField(nameof(Response.FirstName), StringOutputFieldBinding.ControlName, "First name", false, 1);
-			outputFields.AssertHasOutputField(nameof(Response.DateOfBirth), DateTimeOutputFieldBinding.ControlName, "DoB", false, 2)
+
+			outputFields
+				.AssertHasOutputField(
+					nameof(Response.FirstName),
+					StringOutputFieldBinding.ControlName,
+					"First name",
+					false,
+					1);
+
+			outputFields
+				.AssertHasOutputField(
+					nameof(Response.DateOfBirth),
+					DateTimeOutputFieldBinding.ControlName,
+					"DoB",
+					false,
+					2)
 				.HasCustomProperty("style", "beatiful")
 				.HasCustomProperty("secret", 123);
 
-			outputFields.AssertHasOutputField(nameof(Response.Height), NumberOutputFieldBinding.ControlName, nameof(Response.Height), true);
-			outputFields.AssertHasOutputField(nameof(Response.Weight), NumberOutputFieldBinding.ControlName, nameof(Response.Weight), true, 0,
+			outputFields
+				.AssertHasOutputField(
+					nameof(Response.Height),
+					NumberOutputFieldBinding.ControlName,
+					nameof(Response.Height),
+					true);
+
+			outputFields
+				.AssertHasOutputField(
+					nameof(Response.Weight),
+					NumberOutputFieldBinding.ControlName,
+					nameof(Response.Weight),
+					true,
+					0,
 					new[] { OutputFieldEventHandlerAttribute.Identifier })
 				.HasCustomProperty("help", "this is help text")
 				.HasCustomProperty("number", 456);
 
-			outputFields.AssertHasOutputField(nameof(Response.OtherPeople), MetadataBinder.ObjectListOutputControlName, nameof(Response.OtherPeople))
+			outputFields
+				.AssertHasOutputField(
+					nameof(Response.OtherPeople),
+					MetadataBinder.ObjectListOutputControlName,
+					nameof(Response.OtherPeople))
 				.HasCustomProperty("style", "cool")
 				.HasCustomProperty("secret", 321)
-				.HasCustomProperty<IList<object>>("documentation", t => t.Cast<string>().Count() == 2,
+				.HasCustomProperty<IList<object>>(
+					"documentation",
+					t => t.Cast<string>().Count() == 2,
 					"Custom property 'documentation' has incorrect value.");
 
-			outputFields.AssertHasOutputField(nameof(Response.Categories), MetadataBinder.ValueListOutputControlName, nameof(Response.Categories));
+			outputFields
+				.AssertHasOutputField(
+					nameof(Response.Categories),
+					MetadataBinder.ValueListOutputControlName,
+					nameof(Response.Categories));
 
-			outputFields.AssertHasOutputField(nameof(Response.MainPeople), "paginated-data", nameof(Response.MainPeople))
+			outputFields
+				.AssertHasOutputField(
+					nameof(Response.MainPeople),
+					"paginated-data",
+					nameof(Response.MainPeople))
 				.HasCustomProperty("style", "main");
 
 			var ienumerableProperty = outputFields.Single(t => t.Id == nameof(Response.OtherPeople));
 
 			Assert.True(ienumerableProperty.CustomProperties?.ContainsKey("Customizations"));
+			
 			var columns = ienumerableProperty.CustomProperties?["Columns"] as IList<OutputFieldMetadata> ?? new List<OutputFieldMetadata>();
+			
 			columns.AssertHasOutputField(nameof(Person.FirstName), StringOutputFieldBinding.ControlName, "First name", false, 1);
 			columns.AssertHasOutputField(nameof(Person.DateOfBirth), DateTimeOutputFieldBinding.ControlName, "DoB", false, 2);
 			columns.AssertHasOutputField(nameof(Person.Height), NumberOutputFieldBinding.ControlName, nameof(Person.Height), true);
