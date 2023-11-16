@@ -4,8 +4,8 @@ namespace UiMetadataFramework.Tests
 	using System.Linq;
 	using System.Reflection;
 	using UiMetadataFramework.Basic;
-	using UiMetadataFramework.Basic.Input;
-	using UiMetadataFramework.Basic.Input.Typeahead;
+	using UiMetadataFramework.Basic.Inputs.Text;
+	using UiMetadataFramework.Basic.Inputs.Typeahead;
 	using UiMetadataFramework.Core.Binding;
 	using Xunit;
 

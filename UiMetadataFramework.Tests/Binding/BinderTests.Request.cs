@@ -3,8 +3,9 @@ namespace UiMetadataFramework.Tests.Binding
 	using System;
 	using System.Collections.Generic;
 	using System.Reflection;
-	using UiMetadataFramework.Basic.Input;
-	using UiMetadataFramework.Basic.Input.Dropdown;
+	using UiMetadataFramework.Basic.Inputs.Dropdown;
+	using UiMetadataFramework.Basic.Inputs.Paginator;
+	using UiMetadataFramework.Basic.Inputs.Textarea;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 

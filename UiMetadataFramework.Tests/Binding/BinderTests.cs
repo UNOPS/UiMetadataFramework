@@ -4,9 +4,15 @@
 	using System.Linq;
 	using System.Reflection;
 	using UiMetadataFramework.Basic;
-	using UiMetadataFramework.Basic.Input;
-	using UiMetadataFramework.Basic.Input.Dropdown;
-	using UiMetadataFramework.Basic.Output;
+	using UiMetadataFramework.Basic.Inputs.Boolean;
+	using UiMetadataFramework.Basic.Inputs.DateTime;
+	using UiMetadataFramework.Basic.Inputs.Dropdown;
+	using UiMetadataFramework.Basic.Inputs.Number;
+	using UiMetadataFramework.Basic.Inputs.Text;
+	using UiMetadataFramework.Basic.Inputs.Textarea;
+	using UiMetadataFramework.Basic.Output.DateTime;
+	using UiMetadataFramework.Basic.Output.Number;
+	using UiMetadataFramework.Basic.Output.Text;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 	using Xunit;

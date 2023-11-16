@@ -10,6 +10,7 @@
 	using Microsoft.Extensions.DependencyInjection;
 	using UiMetadataFramework.Basic;
 	using UiMetadataFramework.Basic.Output;
+	using UiMetadataFramework.Basic.Output.Text;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 	using UiMetadataFramework.MediatR;

@@ -4,6 +4,8 @@ namespace UiMetadataFramework.Tests.Binding
 	using System.Collections.Generic;
 	using System.Reflection;
 	using UiMetadataFramework.Basic.Output;
+	using UiMetadataFramework.Basic.Output.FormLink;
+	using UiMetadataFramework.Basic.Output.PaginatedData;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
