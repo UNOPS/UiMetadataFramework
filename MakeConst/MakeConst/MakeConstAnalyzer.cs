@@ -33,7 +33,7 @@ namespace MakeConst
 
             // TODO: Consider registering other actions that act on syntax instead of or in addition to symbols
             // See https://github.com/dotnet/roslyn/blob/main/docs/analyzers/Analyzer%20Actions%20Semantics.md for more information
-            context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.NamedType);
+            context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.LocalDeclarationStatement);
         }
 
         private static void AnalyzeSymbol(SymbolAnalysisContext context)
@@ -49,6 +49,9 @@ namespace MakeConst
 
                 context.ReportDiagnostic(diagnostic);
             }
+        }
+        private void AnalyzeNode(SyntaxNodeAnalysisContext context)
+        {
         }
     }
 }
