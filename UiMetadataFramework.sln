@@ -17,15 +17,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UiMetadataFramework.Basic", "UiMetadataFramework.Basic\UiMetadataFramework.Basic.csproj", "{67AA6D88-3B45-4C07-A021-F26ACFFDADA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeConst", "MakeConst\MakeConst\MakeConst.csproj", "{463D6BF8-9B89-4361-820F-3FC1C00B0EB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MakeConst", "MakeConst\MakeConst\MakeConst.csproj", "{463D6BF8-9B89-4361-820F-3FC1C00B0EB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeConst.CodeFixes", "MakeConst\MakeConst.CodeFixes\MakeConst.CodeFixes.csproj", "{F8EA9712-09B5-48D8-AFEE-6523F3C578A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MakeConst.CodeFixes", "MakeConst\MakeConst.CodeFixes\MakeConst.CodeFixes.csproj", "{F8EA9712-09B5-48D8-AFEE-6523F3C578A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeConst.Package", "MakeConst\MakeConst.Package\MakeConst.Package.csproj", "{E85AF6FB-AB05-410A-B300-3C6EAD1E8C2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MakeConst.Package", "MakeConst\MakeConst.Package\MakeConst.Package.csproj", "{E85AF6FB-AB05-410A-B300-3C6EAD1E8C2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeConst.Test", "MakeConst\MakeConst.Test\MakeConst.Test.csproj", "{295710BA-A6C9-4AEC-9A0A-AFBDB377E06C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MakeConst.Test", "MakeConst\MakeConst.Test\MakeConst.Test.csproj", "{295710BA-A6C9-4AEC-9A0A-AFBDB377E06C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeConst.Vsix", "MakeConst\MakeConst.Vsix\MakeConst.Vsix.csproj", "{34B4FDEF-7DE9-4D6B-8C97-E4FF12B24C85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MakeConst.Vsix", "MakeConst\MakeConst.Vsix\MakeConst.Vsix.csproj", "{34B4FDEF-7DE9-4D6B-8C97-E4FF12B24C85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingForAnalyzer", "TestingForAnalyzer\TestingForAnalyzer.csproj", "{F8CF8DB8-9079-4E11-B994-96083AF493F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,10 @@ Global
 		{34B4FDEF-7DE9-4D6B-8C97-E4FF12B24C85}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34B4FDEF-7DE9-4D6B-8C97-E4FF12B24C85}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34B4FDEF-7DE9-4D6B-8C97-E4FF12B24C85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8CF8DB8-9079-4E11-B994-96083AF493F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8CF8DB8-9079-4E11-B994-96083AF493F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8CF8DB8-9079-4E11-B994-96083AF493F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8CF8DB8-9079-4E11-B994-96083AF493F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

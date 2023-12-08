@@ -20,7 +20,7 @@ namespace MakeConst
         private static readonly LocalizableString Title = new LocalizableResourceString(nameof(Resources.AnalyzerTitle), Resources.ResourceManager, typeof(Resources));
         private static readonly LocalizableString MessageFormat = new LocalizableResourceString(nameof(Resources.AnalyzerMessageFormat), Resources.ResourceManager, typeof(Resources));
         private static readonly LocalizableString Description = new LocalizableResourceString(nameof(Resources.AnalyzerDescription), Resources.ResourceManager, typeof(Resources));
-        private const string Category = "Naming";
+        private const string Category = "Usage";
 
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 
@@ -52,6 +52,29 @@ namespace MakeConst
         }
         private void AnalyzeNode(SyntaxNodeAnalysisContext context)
         {
+            int x = 0;
+            Console.WriteLine(x);
+            var localDeclaration = (LocalDeclarationStatementSyntax)context.Node;
+
+            if (localDeclaration.Modifiers.Any(SyntaxKind.ConstKeyword))
+            {
+                return;
+            }
+            // Finally, you need to check that the variable could be const. That means making sure it is never assigned after it is initialized.
+            
+            // Perform data flow analysis on the local declaration.
+            DataFlowAnalysis dataFlowAnalysis = context.SemanticModel.AnalyzeDataFlow(localDeclaration);
+
+            // Retrieve the local symbol for each variable in the local declaration
+            // and ensure that it is not written outside of the data flow analysis region.
+            VariableDeclaratorSyntax variable = localDeclaration.Declaration.Variables.Single();
+            ISymbol variableSymbol = context.SemanticModel.GetDeclaredSymbol(variable, context.CancellationToken);
+            if (dataFlowAnalysis.WrittenOutside.Contains(variableSymbol))
+            {
+                return;
+            }
+            context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation(), localDeclaration.Declaration.Variables.First().Identifier.ValueText));
         }
+
     }
 }
