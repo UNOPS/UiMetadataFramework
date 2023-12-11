@@ -52,8 +52,6 @@ namespace MakeConst
         }
         private void AnalyzeNode(SyntaxNodeAnalysisContext context)
         {
-            int x = 0;
-            Console.WriteLine(x);
             var localDeclaration = (LocalDeclarationStatementSyntax)context.Node;
 
             if (localDeclaration.Modifiers.Any(SyntaxKind.ConstKeyword))
