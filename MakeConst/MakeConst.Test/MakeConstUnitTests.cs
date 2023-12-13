@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
+
 using VerifyCS = MakeConst.Test.CSharpCodeFixVerifier<
     MakeConst.MakeConstAnalyzer,
     MakeConst.MakeConstCodeFixProvider>;
@@ -52,8 +53,15 @@ namespace MakeConst.Test
         }
     }";
 
-            var expected = VerifyCS.Diagnostic("MakeConst").WithLocation(0).WithArguments("TypeName");
-            await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
+            var expected = VerifyCS
+                .Diagnostic("MakeConst")
+                .WithLocation(0)
+                .WithArguments("TypeName");
+            
+            await VerifyCS.VerifyCodeFixAsync(
+                source: test,
+                expected: expected,
+                fixedSource: fixtest);
         }
     }
 }

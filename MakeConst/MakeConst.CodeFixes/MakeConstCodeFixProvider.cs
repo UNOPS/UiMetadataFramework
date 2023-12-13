@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 
 namespace MakeConst
 {
+    using System.Reflection;
+
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MakeConstCodeFixProvider)), Shared]
     public class MakeConstCodeFixProvider : CodeFixProvider
     {
