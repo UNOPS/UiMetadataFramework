@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -13,32 +14,32 @@ namespace UiMetadataFramework.Analyzers;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class SampleSyntaxAnalyzer : DiagnosticAnalyzer
 {
-	public const string CompanyName = "MyCompany";
+	public const string AnalyzerName = "InputFieldBindingAnalyzer";
 
 	// Preferred format of DiagnosticId is Your Prefix + Number, e.g. CA1234.
-	public const string DiagnosticId = "AB0001";
+	public const string DiagnosticId = "IFB001";
 
 	// Feel free to use raw strings if you don't need localization.
 	private static readonly LocalizableString Title = new LocalizableResourceString(
-		nameof(Resources.AB0001Title),
+		nameof(Resources.IFB001Title),
 		Resources.ResourceManager,
 		typeof(Resources));
 
 	// The message that will be displayed to the user.
 	private static readonly LocalizableString MessageFormat =
 		new LocalizableResourceString(
-			nameof(Resources.AB0001MessageFormat),
+			nameof(Resources.IFB001MessageFormat),
 			Resources.ResourceManager,
 			typeof(Resources));
 
 	private static readonly LocalizableString Description =
 		new LocalizableResourceString(
-			nameof(Resources.AB0001Description),
+			nameof(Resources.IFB001Description),
 			Resources.ResourceManager,
 			typeof(Resources));
 
 	// The category of the diagnostic (Design, Naming etc.).
-	private const string Category = "Naming";
+	private const string Category = "Usage";
 
 	private static readonly DiagnosticDescriptor Rule = new(
 		DiagnosticId,
@@ -63,7 +64,7 @@ public class SampleSyntaxAnalyzer : DiagnosticAnalyzer
 
 		// Subscribe to the Syntax Node with the appropriate 'SyntaxKind' (ClassDeclaration) action.
 		// To figure out which Syntax Nodes you should choose, consider installing the Roslyn syntax tree viewer plugin Rossynt: https://plugins.jetbrains.com/plugin/16902-rossynt/
-		context.RegisterSyntaxNodeAction(AnalyzeSyntax, SyntaxKind.ClassDeclaration);
+		context.RegisterSyntaxNodeAction(AnalyzeSyntax, SyntaxKind.ObjectCreationExpression);
 
 		// Check other 'context.Register...' methods that might be helpful for your purposes.
 	}
@@ -74,14 +75,21 @@ public class SampleSyntaxAnalyzer : DiagnosticAnalyzer
 	/// <param name="context">Operation context.</param>
 	private void AnalyzeSyntax(SyntaxNodeAnalysisContext context)
 	{
+		var objectCreation = (ObjectCreationExpressionSyntax)context.Node;
 		// The Roslyn architecture is based on inheritance.
 		// To get the required metadata, we should match the 'Node' object to the particular type: 'ClassDeclarationSyntax'.
-		if (context.Node is not ClassDeclarationSyntax classDeclarationNode)
-			return;
-
-		// 'Identifier' means the token of the node. In this case, the identifier of the 'ClassDeclarationNode' is the class name.
+		var objectType = context.SemanticModel.GetTypeInfo(objectCreation).Type;
+		if (objectType?.Name == "InputFieldBinding") 
+		{
+			var constructor = context.SemanticModel.GetSymbolInfo(objectCreation).Symbol as IMethodSymbol;
+			if (constructor != null && constructor.Parameters.Length == 2 && !ContainsInputFieldTypeAttribute(constructor.Parameters[1]))
+			{ 
+				
+			}
+		}
+		/*// 'Identifier' means the token of the node. In this case, the identifier of the 'ClassDeclarationNode' is the class name.
 		var classDeclarationIdentifier = classDeclarationNode.Identifier;
-
+		var objectType = context.SemanticModel.GetTypeInfo(ObjectCreation).Type;
 		// Find class symbols whose name contains the company name.
 		if (classDeclarationIdentifier.Text.Contains(CompanyName))
 		{
@@ -94,6 +102,11 @@ public class SampleSyntaxAnalyzer : DiagnosticAnalyzer
 
 			// Reporting a diagnostic is the primary outcome of the analyzer.
 			context.ReportDiagnostic(diagnostic);
-		}
+		}*/
 	}
+    private static bool ContainsInputFieldTypeAttribute(IParameterSymbol parameter)
+    {
+        return parameter.Type.AllInterfaces.Any(i => i.Name == "InputFieldTypeAttribute");
+    }
+    
 }
