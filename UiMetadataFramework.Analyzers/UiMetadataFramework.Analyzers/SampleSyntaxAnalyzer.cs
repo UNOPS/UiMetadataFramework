@@ -83,9 +83,10 @@ public class SampleSyntaxAnalyzer : DiagnosticAnalyzer
 		{
 			var constructor = context.SemanticModel.GetSymbolInfo(objectCreation).Symbol as IMethodSymbol;
 			if (constructor != null && constructor.Parameters.Length == 2 && !ContainsInputFieldTypeAttribute(constructor.Parameters[1]))
-			{ 
-				
-			}
+			{
+                var diagnostic = Diagnostic.Create(Rule, objectCreation.GetLocation());
+                context.ReportDiagnostic(diagnostic);
+            }
 		}
 		/*// 'Identifier' means the token of the node. In this case, the identifier of the 'ClassDeclarationNode' is the class name.
 		var classDeclarationIdentifier = classDeclarationNode.Identifier;

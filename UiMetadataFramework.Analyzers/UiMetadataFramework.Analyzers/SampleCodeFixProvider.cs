@@ -48,9 +48,9 @@ public class SampleCodeFixProvider : CodeFixProvider
 		// Register a code action that will invoke the fix.
 		context.RegisterCodeFix(
 			CodeAction.Create(
-				title: string.Format(Resources.IFB0001CodeFixTitle, SampleSyntaxAnalyzer.AnalyzerName, CommonName),
+				title: string.Format(Resources.IFB001CodeFixTitle, SampleSyntaxAnalyzer.AnalyzerName, CommonName),
 				createChangedSolution: c => SanitizeCompanyNameAsync(context.Document, declaration, c),
-				equivalenceKey: nameof(Resources.IFB0001CodeFixTitle)),
+				equivalenceKey: nameof(Resources.IFB001CodeFixTitle)),
 			diagnostic);
 	}
 

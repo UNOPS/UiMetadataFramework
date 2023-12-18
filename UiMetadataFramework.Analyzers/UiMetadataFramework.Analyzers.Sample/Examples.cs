@@ -9,6 +9,7 @@ public class Examples
 {
 	public class MyCompanyClass // Try to apply quick fix using the IDE.
 	{
+
 	}
 
 	public void ToStars()

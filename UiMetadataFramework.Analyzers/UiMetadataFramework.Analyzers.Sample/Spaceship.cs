@@ -1,4 +1,5 @@
 using System;
+using UiMetadataFramework.Core.Binding;
 
 namespace UiMetadataFramework.Analyzers.Sample;
 
@@ -8,5 +9,5 @@ public class Spaceship
 	{
 		if (speed > 299_792_458)
 			throw new ArgumentOutOfRangeException(nameof(speed));
-	}
+    }
 }
