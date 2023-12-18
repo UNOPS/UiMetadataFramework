@@ -7,6 +7,11 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace UiMetadataFramework.Analyzers;
 
+using System;
+using System.Reflection;
+using UiMetadataFramework.Analyzers.Domain;
+using UiMetadataFramework.Core.Binding;
+
 /// <summary>
 /// A sample analyzer that reports the company name being used in class declarations.
 /// Traverses through the Syntax Tree and checks the name (identifier) of each class node.
@@ -38,14 +43,11 @@ public class SampleSyntaxAnalyzer : DiagnosticAnalyzer
 			Resources.ResourceManager,
 			typeof(Resources));
 
-	// The category of the diagnostic (Design, Naming etc.).
-	private const string Category = "Usage";
-
 	private static readonly DiagnosticDescriptor Rule = new(
 		DiagnosticId,
 		Title,
 		MessageFormat,
-		Category,
+		Categories.Usage,
 		DiagnosticSeverity.Warning,
 		isEnabledByDefault: true,
 		description: Description);
@@ -63,8 +65,7 @@ public class SampleSyntaxAnalyzer : DiagnosticAnalyzer
 		context.EnableConcurrentExecution();
 
 		// Subscribe to the Syntax Node with the appropriate 'SyntaxKind' (ClassDeclaration) action.
-		// To figure out which Syntax Nodes you should choose, consider installing the Roslyn syntax tree viewer plugin Rossynt: https://plugins.jetbrains.com/plugin/16902-rossynt/
-		context.RegisterSyntaxNodeAction(AnalyzeSyntax, SyntaxKind.ObjectCreationExpression);
+		context.RegisterSyntaxNodeAction(AnalyzeSyntax, SyntaxKind.PropertyDeclaration);
 
 		// Check other 'context.Register...' methods that might be helpful for your purposes.
 	}
@@ -75,39 +76,50 @@ public class SampleSyntaxAnalyzer : DiagnosticAnalyzer
 	/// <param name="context">Operation context.</param>
 	private void AnalyzeSyntax(SyntaxNodeAnalysisContext context)
 	{
-		var objectCreation = (ObjectCreationExpressionSyntax)context.Node;
-		// The Roslyn architecture is based on inheritance.
-		// To get the required metadata, we should match the 'Node' object to the particular type: 'ClassDeclarationSyntax'.
-		var objectType = context.SemanticModel.GetTypeInfo(objectCreation).Type;
-		if (objectType?.Name == "InputFieldBinding") 
-		{
-			var constructor = context.SemanticModel.GetSymbolInfo(objectCreation).Symbol as IMethodSymbol;
-			if (constructor != null && constructor.Parameters.Length == 2 && !ContainsInputFieldTypeAttribute(constructor.Parameters[1]))
-			{
-                var diagnostic = Diagnostic.Create(Rule, objectCreation.GetLocation());
-                context.ReportDiagnostic(diagnostic);
-            }
-		}
-		/*// 'Identifier' means the token of the node. In this case, the identifier of the 'ClassDeclarationNode' is the class name.
-		var classDeclarationIdentifier = classDeclarationNode.Identifier;
-		var objectType = context.SemanticModel.GetTypeInfo(ObjectCreation).Type;
-		// Find class symbols whose name contains the company name.
-		if (classDeclarationIdentifier.Text.Contains(CompanyName))
-		{
-			var diagnostic = Diagnostic.Create(
-				Rule,
-				// The highlighted area in the analyzed source code. Keep it as specific as possible.
-				classDeclarationIdentifier.GetLocation(),
-				// The value is passed to 'MessageFormat' argument of your 'Rule'.
-				classDeclarationIdentifier.Text);
+		var propertyDeclaration = (PropertyDeclarationSyntax)context.Node;
 
-			// Reporting a diagnostic is the primary outcome of the analyzer.
-			context.ReportDiagnostic(diagnostic);
-		}*/
+		var propertyTypeName = propertyDeclaration.GetFullTypeName(); // "MyApp.TextField"
+		var propertyType = Type.GetType(propertyTypeName); // TextField : Type
+
+		Attribute inputFieldTypeAttribute = null;
+		
+		// propertyType?.Attributes
+		// 	.FirstOrDefault(t => t.AttributeType.Name == "InputFieldTypeAttribute");
+
+		if (inputFieldTypeAttribute != null)
+		{
+			// if (inputFieldTypeAttribute.MandatoryAttribute != null)
+			// {
+			// 	var mandatoryAttribute = propertyDeclaration.AttributeLists
+			// 		.FirstOrDefault(t => t.ToString() == inputFieldTypeAttribute.MandatoryAttribute.FullName);
+			//
+			// 	if (mandatoryAttribute == null)
+			// 	{
+			// 		var diagnostic = Diagnostic.Create(
+			// 			Rule,
+			// 			propertyDeclaration.GetLocation());
+			// 		context.ReportDiagnostic(diagnostic);
+			// 	}
+			// }
+		}
+
+		// if (objectType?.Name == "InputFieldBinding") 
+		// {
+		// 	var constructor = context.SemanticModel.GetSymbolInfo(propertyDeclaration).Symbol as IMethodSymbol;
+		// 	if (constructor != null && 
+		// 		constructor.Parameters.Length == 2 && 
+		// 		!ContainsInputFieldTypeAttribute(constructor.Parameters[1]))
+		// 	{
+		//               var diagnostic = Diagnostic.Create(
+		// 			Rule,
+		// 			propertyDeclaration.GetLocation());
+		//               context.ReportDiagnostic(diagnostic);
+		//           }
+		// }
 	}
-    private static bool ContainsInputFieldTypeAttribute(IParameterSymbol parameter)
-    {
-        return parameter.Type.AllInterfaces.Any(i => i.Name == "InputFieldTypeAttribute");
-    }
-    
+
+	private static bool ContainsInputFieldTypeAttribute(IParameterSymbol parameter)
+	{
+		return parameter.Type.AllInterfaces.Any(i => i.Name == "InputFieldTypeAttribute");
+	}
 }

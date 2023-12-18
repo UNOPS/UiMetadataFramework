@@ -134,15 +134,15 @@
     <comment>The title of the code fix.</comment>
   </data>
   <data name="AB0002Description" xml:space="preserve">
-    <value>The speed must be lower than the Speed of Light.</value>
+    <value>The mandatory attribute is missing.</value>
     <comment>An optional longer localizable description of the diagnostic.</comment>
   </data>
   <data name="AB0002MessageFormat" xml:space="preserve">
-    <value>The specified speed '{0}' must be lower than the Speed of Light</value>
+    <value>The mandatory attribute must be used.</value>
     <comment>The format-able message the diagnostic displays.</comment>
   </data>
   <data name="AB0002Title" xml:space="preserve">
-    <value>The impossible speed</value>
+    <value>Missing mandatory attribute</value>
     <comment>The title of the diagnostic.</comment>
   </data>
 </root>

@@ -37,4 +37,8 @@
         </Compile>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\UiMetadataFramework.Core\UiMetadataFramework.Core.csproj" />
+    </ItemGroup>
+
 </Project>
