@@ -1,22 +1,18 @@
-﻿using System.Collections.Immutable;
+﻿namespace UiMetadataFramework.Analyzers;
+
+using System;
+using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-
-namespace UiMetadataFramework.Analyzers;
-
-using System;
-using System.Reflection;
 using UiMetadataFramework.Analyzers.Domain;
-using UiMetadataFramework.Core.Binding;
 
 /// <summary>
 /// A sample analyzer that reports the company name being used in class declarations.
 /// Traverses through the Syntax Tree and checks the name (identifier) of each class node.
 /// </summary>
-
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class SampleSyntaxAnalyzer : DiagnosticAnalyzer
 {
@@ -56,6 +52,7 @@ public class SampleSyntaxAnalyzer : DiagnosticAnalyzer
 	// Keep in mind: you have to list your rules here.
 	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
 		ImmutableArray.Create(Rule);
+
 	public override void Initialize(AnalysisContext context)
 	{
 		// You must call this method to avoid analyzing generated code.
@@ -63,8 +60,14 @@ public class SampleSyntaxAnalyzer : DiagnosticAnalyzer
 		// You must call this method to enable the Concurrent Execution.
 		context.EnableConcurrentExecution();
 		// Subscribe to the Syntax Node with the appropriate 'SyntaxKind' (ClassDeclaration) action.
-		context.RegisterSyntaxNodeAction(AnalyzeSyntax, SyntaxKind.PropertyDeclaration);
+		context.RegisterSyntaxNodeAction(this.AnalyzeSyntax, SyntaxKind.PropertyDeclaration);
 	}
+
+	private static bool ContainsInputFieldTypeAttribute(IParameterSymbol parameter)
+	{
+		return parameter.Type.AllInterfaces.Any(i => i.Name == "InputFieldTypeAttribute");
+	}
+
 	/// <summary>
 	/// Executed for each Syntax Node with 'SyntaxKind' is 'ClassDeclaration'.
 	/// </summary>
@@ -79,18 +82,11 @@ public class SampleSyntaxAnalyzer : DiagnosticAnalyzer
 
 		Attribute inputFieldTypeAttribute = null;
 
-
-        //var namespaceName = GetNamespaceAtDeclaration(propertyDeclaration, semanticModel);
-        //Console.WriteLine(namespaceName);
-        //var typeName = propertyDeclaration.Type.ToString();
-	}
-
-	private static bool ContainsInputFieldTypeAttribute(IParameterSymbol parameter)
-	{
-		return parameter.Type.AllInterfaces.Any(i => i.Name == "InputFieldTypeAttribute");
+		//var namespaceName = GetNamespaceAtDeclaration(propertyDeclaration, semanticModel);
+		//Console.WriteLine(namespaceName);
+		//var typeName = propertyDeclaration.Type.ToString();
 	}
 }
-
 
 // Extra
 
@@ -98,19 +94,19 @@ public class SampleSyntaxAnalyzer : DiagnosticAnalyzer
 // 	.FirstOrDefault(t => t.AttributeType.Name == "InputFieldTypeAttribute");
 //if (inputFieldTypeAttribute != null)
 //{
-    // if (inputFieldTypeAttribute.MandatoryAttribute != null)
-    // {
-    // 	var mandatoryAttribute = propertyDeclaration.AttributeLists
-    // 		.FirstOrDefault(t => t.ToString() == inputFieldTypeAttribute.MandatoryAttribute.FullName);
-    //
-    // 	if (mandatoryAttribute == null)
-    // 	{
-    // 		var diagnostic = Diagnostic.Create(
-    // 			Rule,
-    // 			propertyDeclaration.GetLocation());
-    // 		context.ReportDiagnostic(diagnostic);
-    // 	}
-    // }
+// if (inputFieldTypeAttribute.MandatoryAttribute != null)
+// {
+// 	var mandatoryAttribute = propertyDeclaration.AttributeLists
+// 		.FirstOrDefault(t => t.ToString() == inputFieldTypeAttribute.MandatoryAttribute.FullName);
+//
+// 	if (mandatoryAttribute == null)
+// 	{
+// 		var diagnostic = Diagnostic.Create(
+// 			Rule,
+// 			propertyDeclaration.GetLocation());
+// 		context.ReportDiagnostic(diagnostic);
+// 	}
+// }
 //}
 
 // if (objectType?.Name == "InputFieldBinding") 
