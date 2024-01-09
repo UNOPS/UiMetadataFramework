@@ -34,9 +34,28 @@
 		}
 
 		/// <summary>
+		/// Initializes a new instance of the <see cref="OutputFieldBinding"/> class.
+		/// </summary>
+		/// <param name="serverType">Type which should be rendered on the client.</param>
+		/// <param name="attribute"><see cref="OutputFieldTypeAttribute"/> instance.</param>
+		public OutputFieldBinding(Type serverType, OutputFieldTypeAttribute attribute)
+			: this(serverType, attribute.ClientType)
+		{
+			this.MandatoryAttribute = attribute.MandatoryAttribute;
+		}
+
+		/// <summary>
 		/// Gets name of the client control which will render the output field.
 		/// </summary>
 		public string ClientType { get; }
+
+		/// <summary>
+		/// Indicates a specific subtype of <see cref="OutputFieldAttribute"/> that must be applied
+		/// on an output field. If null then any <see cref="OutputFieldAttribute"/> can be applied or
+		/// no attribute can be applied at all.
+		/// </summary>
+		/// <remarks>Attributes that derive from the specified type are also allowed.</remarks>
+		public Type? MandatoryAttribute { get; }
 
 		/// <summary>
 		/// Gets the server-side types being bound.

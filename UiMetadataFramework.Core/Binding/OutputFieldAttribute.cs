@@ -45,7 +45,10 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="binder">Metadata binder.</param>
 		/// <returns>Instance of <see cref="OutputFieldMetadata"/>.</returns>
 		/// <remarks>This method will be used internally by <see cref="MetadataBinder"/>.</remarks>
-		public virtual OutputFieldMetadata GetMetadata(PropertyInfo property, OutputFieldBinding? binding, MetadataBinder binder)
+		public virtual OutputFieldMetadata GetMetadata(
+			PropertyInfo property,
+			OutputFieldBinding? binding,
+			MetadataBinder binder)
 		{
 			var isEnumerable = property.IsEnumerable();
 
@@ -87,10 +90,9 @@ namespace UiMetadataFramework.Core.Binding
 
 					var itemBinding = binder.OutputFieldBindings[property.PropertyType.GenericTypeArguments[0]];
 
-					customProperties = new Dictionary<string, object?>
-					{
-						{ "Type", itemBinding.ClientType }
-					}.Merge(itemBinding.GetCustomProperties(property, this, binder));
+					customProperties =
+						new Dictionary<string, object?> { { "Type", itemBinding.ClientType } }.Merge(
+							itemBinding.GetCustomProperties(property, this, binder));
 				}
 			}
 

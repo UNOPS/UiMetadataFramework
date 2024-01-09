@@ -314,7 +314,7 @@ namespace UiMetadataFramework.Core.Binding
 
 				if (attribute != null)
 				{
-					this.AddBinding(new OutputFieldBinding(t, attribute.ClientType));
+					this.AddBinding(new OutputFieldBinding(t, attribute));
 				}
 			});
 
@@ -414,9 +414,17 @@ namespace UiMetadataFramework.Core.Binding
 					: property.PropertyType;
 
 				this.outputFieldMetadataMap.TryGetValue(propertyType, out OutputFieldBinding binding);
-
+				
+				if (binding?.MandatoryAttribute != null &&
+					attribute?.GetType().ImplementsClass(binding.MandatoryAttribute) != true)
+				{
+					throw new BindingException(
+						$"Property '{type.FullName}.{property.Name}' is missing a mandatory attribute " +
+						$"of type '{binding.MandatoryAttribute.FullName}'.");
+				}
+				
 				attribute ??= new OutputFieldAttribute();
-
+				
 				yield return attribute.GetMetadata(property, binding, this);
 			}
 		}
