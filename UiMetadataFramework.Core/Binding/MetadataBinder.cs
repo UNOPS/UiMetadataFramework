@@ -13,16 +13,6 @@ namespace UiMetadataFramework.Core.Binding
 	public class MetadataBinder
 	{
 		/// <summary>
-		/// Name of the client-side control which should be able to render tabular data.
-		/// </summary>
-		public const string ObjectListOutputControlName = "table";
-
-		/// <summary>
-		/// Name of the client-side control which should be able to render collection of items as a bullet-point list or similar.
-		/// </summary>
-		public const string ValueListOutputControlName = "list";
-
-		/// <summary>
 		/// <see cref="IServiceProvider"/> instance used when/if necessary.
 		/// </summary>
 		public readonly IServiceProvider Container;
@@ -102,14 +92,6 @@ namespace UiMetadataFramework.Core.Binding
 				throw new BindingException(
 					$"Multiple output field bindings are trying to use client type '{binding.ClientType}'. " +
 					"Each binding must have a unique client type.");
-			}
-
-			if (binding.ClientType == ObjectListOutputControlName ||
-				binding.ClientType == ValueListOutputControlName)
-			{
-				throw new BindingException(
-					$"Binding '{binding.GetType().FullName}' attempts to bind to built-in " +
-					$"client type '{binding.ClientType}', which is not allowed.");
 			}
 
 			foreach (var serverType in binding.ServerTypes)
@@ -217,7 +199,10 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="responseType">Type representing response of the form. 
 		/// <see cref="FormMetadata.OutputFields"/> will be deduced from this class.</param>
 		/// <returns><see cref="FormMetadata"/> instance.</returns>
-		public FormMetadata BindForm(Type formType, Type requestType, Type responseType)
+		public FormMetadata BindForm(
+			Type formType,
+			Type requestType,
+			Type responseType)
 		{
 			return new FormMetadata(this, formType, requestType, responseType);
 		}
@@ -293,13 +278,14 @@ namespace UiMetadataFramework.Core.Binding
 			}
 
 			var outputFieldBindings = assembly.ExportedTypes
-				.Where(t =>
-				{
-					var typeInfo = t.GetTypeInfo();
-					return typeInfo.IsClass &&
-						!typeInfo.IsAbstract &&
-						typeInfo.IsSubclassOf(typeof(OutputFieldBinding));
-				})
+				.Where(
+					t =>
+					{
+						var typeInfo = t.GetTypeInfo();
+						return typeInfo.IsClass &&
+							!typeInfo.IsAbstract &&
+							typeInfo.IsSubclassOf(typeof(OutputFieldBinding));
+					})
 				.Select(t => this.Container.GetService(t))
 				.Cast<OutputFieldBinding>();
 
@@ -308,24 +294,26 @@ namespace UiMetadataFramework.Core.Binding
 				this.AddBinding(binding);
 			}
 
-			assembly.ExportedTypes.ForEach(t =>
-			{
-				var attribute = t.GetTypeInfo().GetCustomAttributeSingleOrDefault<OutputFieldTypeAttribute>();
-
-				if (attribute != null)
+			assembly.ExportedTypes.ForEach(
+				t =>
 				{
-					this.AddBinding(new OutputFieldBinding(t, attribute));
-				}
-			});
+					var attribute = t.GetTypeInfo().GetCustomAttributeSingleOrDefault<OutputFieldTypeAttribute>();
+
+					if (attribute != null)
+					{
+						this.AddBinding(new OutputFieldBinding(t, attribute));
+					}
+				});
 
 			var inputFieldBindings = assembly.ExportedTypes
-				.Where(t =>
-				{
-					var typeInfo = t.GetTypeInfo();
-					return typeInfo.IsClass &&
-						!typeInfo.IsAbstract &&
-						typeInfo.IsSubclassOf(typeof(InputFieldBinding));
-				})
+				.Where(
+					t =>
+					{
+						var typeInfo = t.GetTypeInfo();
+						return typeInfo.IsClass &&
+							!typeInfo.IsAbstract &&
+							typeInfo.IsSubclassOf(typeof(InputFieldBinding));
+					})
 				.Select(t => this.Container.GetService(t))
 				.Cast<InputFieldBinding>();
 
@@ -334,15 +322,16 @@ namespace UiMetadataFramework.Core.Binding
 				this.AddBinding(binding);
 			}
 
-			assembly.ExportedTypes.ForEach(t =>
-			{
-				var attribute = t.GetTypeInfo().GetCustomAttributeSingleOrDefault<InputFieldTypeAttribute>();
-
-				if (attribute != null)
+			assembly.ExportedTypes.ForEach(
+				t =>
 				{
-					this.AddBinding(new InputFieldBinding(t, attribute));
-				}
-			});
+					var attribute = t.GetTypeInfo().GetCustomAttributeSingleOrDefault<InputFieldTypeAttribute>();
+
+					if (attribute != null)
+					{
+						this.AddBinding(new InputFieldBinding(t, attribute));
+					}
+				});
 		}
 
 		internal static string GetFormId(Type formType, FormAttribute formAttribute)
@@ -409,12 +398,14 @@ namespace UiMetadataFramework.Core.Binding
 					continue;
 				}
 
-				var propertyType = property.PropertyType.IsConstructedGenericType && !property.PropertyType.IsNullabble()
-					? property.PropertyType.GetGenericTypeDefinition()
-					: property.PropertyType;
+				var propertyType = property.PropertyType.IsArray
+					? typeof(Array)
+					: property.PropertyType.IsConstructedGenericType && !property.PropertyType.IsNullabble()
+						? property.PropertyType.GetGenericTypeDefinition()
+						: property.PropertyType;
 
 				this.outputFieldMetadataMap.TryGetValue(propertyType, out OutputFieldBinding binding);
-				
+
 				if (binding?.MandatoryAttribute != null &&
 					attribute?.GetType().ImplementsClass(binding.MandatoryAttribute) != true)
 				{
@@ -422,9 +413,9 @@ namespace UiMetadataFramework.Core.Binding
 						$"Property '{type.FullName}.{property.Name}' is missing a mandatory attribute " +
 						$"of type '{binding.MandatoryAttribute.FullName}'.");
 				}
-				
+
 				attribute ??= new OutputFieldAttribute();
-				
+
 				yield return attribute.GetMetadata(property, binding, this);
 			}
 		}

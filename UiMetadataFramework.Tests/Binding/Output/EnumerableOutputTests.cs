@@ -7,6 +7,7 @@ using UiMetadataFramework.Basic.Inputs.Text;
 using UiMetadataFramework.Basic.Output.DateTime;
 using UiMetadataFramework.Basic.Output.FormLink;
 using UiMetadataFramework.Basic.Output.Number;
+using UiMetadataFramework.Basic.Output.Table;
 using UiMetadataFramework.Basic.Output.Text;
 using UiMetadataFramework.Core;
 using UiMetadataFramework.Core.Binding;
@@ -21,19 +22,21 @@ public class EnumerableOutputTests
 	{
 		public IList<string>? Categories { get; set; }
 		public IList<FormLink>? Links { get; set; }
+		public int[]? Numbers { get; set; }
 		public IList<Person>? RandomObjects { get; set; }
 	}
 
 	[Theory]
 	[InlineData(nameof(Response.Links), "formlink")]
 	[InlineData(nameof(Response.Categories), StringInputFieldBinding.ControlName)]
+	[InlineData(nameof(Response.Numbers), NumberOutputFieldBinding.ControlName)]
 	public void EnumerableOfKnownOutputTypeIndicatesType(string property, string itemType)
 	{
 		var outputField = this.binder
 			.BindOutputFields<Response>()
 			.Single(t => t.Id == property);
 
-		outputField.HasCustomProperty<string>("Type", t => t == itemType);
+		outputField.HasCustomProperty<IEnumerable<OutputFieldMetadata>>("Columns", t => t.Single().Type == itemType);
 	}
 
 	[Theory]
@@ -45,7 +48,7 @@ public class EnumerableOutputTests
 			.BindOutputFields<Response>()
 			.Single(t => t.Id == property);
 
-		Assert.Equal(MetadataBinder.ValueListOutputControlName, outputField.Type);
+		Assert.Equal(TableOutputFieldBinding.ObjectListOutputControlName, outputField.Type);
 	}
 
 	public class Person
@@ -70,9 +73,7 @@ public class EnumerableOutputTests
 			.BindOutputFields<Response>()
 			.Single(t => t.Id == nameof(Response.RandomObjects));
 
-		Assert.Equal(MetadataBinder.ObjectListOutputControlName, outputField.Type);
-
-		Assert.True(outputField.CustomProperties?.ContainsKey("Customizations"));
+		Assert.Equal(TableOutputFieldBinding.ObjectListOutputControlName, outputField.Type);
 
 		var columns =
 			outputField.CustomProperties?["Columns"] as IList<OutputFieldMetadata> ??

@@ -50,50 +50,11 @@ namespace UiMetadataFramework.Core.Binding
 			OutputFieldBinding? binding,
 			MetadataBinder binder)
 		{
-			var isEnumerable = property.IsEnumerable();
-
-			if (!isEnumerable && binding == null)
+			if (binding == null)
 			{
 				throw new KeyNotFoundException(
 					$"Cannot retrieve metadata for '{property.DeclaringType}.{property.Name}', " +
 					$"because type '{property.PropertyType.FullName}' is not bound to any output field control.");
-			}
-
-			var clientControlName = isEnumerable
-				? binder.OutputFieldBindings.ContainsKey(property.PropertyType.GenericTypeArguments[0])
-					? MetadataBinder.ValueListOutputControlName
-					: MetadataBinder.ObjectListOutputControlName
-				: binding!.ClientType;
-
-			IDictionary<string, object?>? customProperties;
-
-			if (clientControlName == MetadataBinder.ObjectListOutputControlName)
-			{
-				var additionalCustomProperties = property.GetCustomProperties();
-				customProperties = new Dictionary<string, object?>
-				{
-					{ "Columns", binder.BindOutputFields(property.PropertyType.GenericTypeArguments[0]).ToList() },
-					{ "Customizations", this.GetCustomProperties(property, binder) }
-				}.Merge(additionalCustomProperties);
-			}
-			else
-			{
-				if (binding != null)
-				{
-					// All non-enumerable properties (i.e. - custom properties) will have binding.
-					customProperties = binding.GetCustomProperties(property, this, binder);
-				}
-				else
-				{
-					// Only for "ValueListOutputControlName" (i.e. - string[], int[], FormLink[], etc) will the code come here.
-					// Basically only the outputs of IEnumerable{T} where T is a known type with a binding.
-
-					var itemBinding = binder.OutputFieldBindings[property.PropertyType.GenericTypeArguments[0]];
-
-					customProperties =
-						new Dictionary<string, object?> { { "Type", itemBinding.ClientType } }.Merge(
-							itemBinding.GetCustomProperties(property, this, binder));
-				}
 			}
 
 			var eventHandlerAttributes = property.GetCustomAttributesImplementingInterface<IFieldEventHandlerAttribute>().ToList();
@@ -106,13 +67,13 @@ namespace UiMetadataFramework.Core.Binding
 					$"applicable for output fields.");
 			}
 
-			return new OutputFieldMetadata(clientControlName)
+			return new OutputFieldMetadata(binding.ClientType)
 			{
 				Id = property.Name,
 				Hidden = this.Hidden,
 				Label = this.Label ?? property.Name,
 				OrderIndex = this.OrderIndex,
-				CustomProperties = customProperties,
+				CustomProperties = binding.GetCustomProperties(property, this, binder),
 				EventHandlers = eventHandlerAttributes.Select(t => t.ToMetadata(property, binder)).ToList()
 			};
 		}
