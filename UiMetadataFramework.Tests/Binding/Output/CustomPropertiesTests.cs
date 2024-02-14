@@ -7,7 +7,7 @@ using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Utilities;
 using Xunit;
 
-public class OutputCustomPropertiesTests
+public class CustomPropertiesTests
 {
 	private readonly MetadataBinder binder = MetadataBinderFactory.CreateMetadataBinder();
 

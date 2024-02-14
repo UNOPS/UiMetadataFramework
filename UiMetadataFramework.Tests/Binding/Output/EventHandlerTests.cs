@@ -10,7 +10,7 @@ using UiMetadataFramework.Tests.Framework.EventHandlers.Outputs;
 using UiMetadataFramework.Tests.Utilities;
 using Xunit;
 
-public class OutputEventHandlerTests
+public class EventHandlerTests
 {
 	private readonly MetadataBinder binder = MetadataBinderFactory.CreateMetadataBinder();
 

@@ -7,7 +7,7 @@ using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Utilities;
 using Xunit;
 
-public class StrictModeOutputBindingTests
+public class StrictModeBindingTests
 {
 	private readonly MetadataBinder binder = MetadataBinderFactory.CreateMetadataBinder();
 

@@ -8,7 +8,7 @@ using UiMetadataFramework.Tests.Framework.Outputs.Flexbox;
 using UiMetadataFramework.Tests.Utilities;
 using Xunit;
 
-public class CustomOutputTypeTests
+public class FlexboxTests
 {
 	private readonly MetadataBinder binder = MetadataBinderFactory.CreateMetadataBinder();
 
