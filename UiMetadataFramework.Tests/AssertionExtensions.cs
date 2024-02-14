@@ -91,6 +91,15 @@
 			return field.HasCustomPropertyInternal(property, assertion, message);
 		}
 
+		public static OutputFieldMetadata HasCustomProperty(
+			this OutputFieldMetadata field,
+			string property,
+			Func<dynamic, bool> assertion,
+			string? message = null)
+		{
+			return field.HasCustomPropertyInternal(property, assertion, message);
+		}
+
 		public static OutputFieldMetadata HasCustomProperty<T>(
 			this OutputFieldMetadata field,
 			string property,

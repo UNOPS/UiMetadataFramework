@@ -416,6 +416,25 @@ namespace UiMetadataFramework.Core.Binding
 
 				attribute ??= new OutputFieldAttribute();
 
+				if (binding?.MandatoryCustomProperty != null)
+				{
+					var customProperty = property.GetCustomAttributes(binding.MandatoryCustomProperty).ToList();
+
+					if (customProperty.Count == 0)
+					{
+						throw new BindingException(
+							$"Property '{type.FullName}.{property.Name}' is missing a mandatory custom property " +
+							$"of type '{binding.MandatoryCustomProperty.FullName}'.");
+					}
+
+					if (customProperty.Count > 1)
+					{
+						throw new BindingException(
+							$"Property '{type.FullName}.{property.Name}' has multiple custom properties " +
+							$"of type '{binding.MandatoryCustomProperty.FullName}'. Only one instance of the attribute is allowed.");
+					}
+				}
+
 				yield return attribute.GetMetadata(property, binding, this);
 			}
 		}

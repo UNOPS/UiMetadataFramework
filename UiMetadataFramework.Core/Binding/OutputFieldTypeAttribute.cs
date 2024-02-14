@@ -17,10 +17,24 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="mandatoryAttribute">Subtype of <see cref="OutputFieldAttribute"/> that indicates the
 		/// attribute that must be applied to the output field. If null then any <see cref="OutputFieldAttribute"/>
 		/// attribute can be applied or no attribute can be applied at all.</param>
-		public OutputFieldTypeAttribute(string clientType, Type? mandatoryAttribute = null)
+		/// <param name="mandatoryCustomProperty">Indicates the <see cref="ICustomPropertyAttribute"/> that must
+		/// accompany this component.</param>
+		public OutputFieldTypeAttribute(
+			string clientType,
+			Type? mandatoryAttribute = null,
+			Type? mandatoryCustomProperty = null)
 		{
+			if (mandatoryCustomProperty != null &&
+				!typeof(ICustomPropertyAttribute).IsAssignableFrom(mandatoryCustomProperty))
+			{
+				throw new BindingException(
+					$"Invalid configuration of output component '{clientType}'. '{mandatoryCustomProperty.FullName}' " +
+					$"must implement '{typeof(ICustomPropertyAttribute).FullName}' in order to be used as a custom property.");
+			}
+
 			this.ClientType = clientType;
 			this.MandatoryAttribute = mandatoryAttribute;
+			this.MandatoryCustomProperty = mandatoryCustomProperty;
 		}
 
 		/// <summary>
@@ -35,5 +49,12 @@ namespace UiMetadataFramework.Core.Binding
 		/// </summary>
 		/// <remarks>Attributes that derive from the specified type are also allowed.</remarks>
 		public Type? MandatoryAttribute { get; }
+
+		/// <summary>
+		/// Indicates the <see cref="ICustomPropertyAttribute"/> that must accompany this component.
+		/// If null then this component does not require any custom properties.
+		/// </summary>
+		/// <remarks>Attributes that derive from the specified type are also allowed.</remarks>
+		public Type? MandatoryCustomProperty { get; }
 	}
 }

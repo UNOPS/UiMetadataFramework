@@ -42,12 +42,20 @@
 			: this(serverType, attribute.ClientType)
 		{
 			this.MandatoryAttribute = attribute.MandatoryAttribute;
+			this.MandatoryCustomProperty = attribute.MandatoryCustomProperty;
 		}
 
 		/// <summary>
 		/// Gets name of the client control which will render the output field.
 		/// </summary>
 		public string ClientType { get; }
+
+		/// <summary>
+		/// Indicates the <see cref="ICustomPropertyAttribute"/> that must accompany this component.
+		/// If null then this component does not require any custom properties.
+		/// </summary>
+		/// <remarks>Attributes that derive from the specified type are also allowed.</remarks>
+		public Type? MandatoryCustomProperty { get; }
 
 		/// <summary>
 		/// Indicates a specific subtype of <see cref="OutputFieldAttribute"/> that must be applied
