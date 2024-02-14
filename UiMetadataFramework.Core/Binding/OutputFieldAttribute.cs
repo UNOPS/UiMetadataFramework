@@ -52,7 +52,7 @@ namespace UiMetadataFramework.Core.Binding
 		{
 			if (binding == null)
 			{
-				throw new KeyNotFoundException(
+				throw new BindingException(
 					$"Cannot retrieve metadata for '{property.DeclaringType}.{property.Name}', " +
 					$"because type '{property.PropertyType.FullName}' is not bound to any output field control.");
 			}

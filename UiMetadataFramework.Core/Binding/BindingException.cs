@@ -10,9 +10,16 @@
 		/// <summary>
 		/// Initializes a new instance of the <see cref="BindingException"/> class.
 		/// </summary>
-		/// <param name="message"></param>
 		public BindingException(string message)
 			: base(message)
+		{
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="BindingException"/> class.
+		/// </summary>
+		public BindingException(string message, Exception innerException)
+			: base(message, innerException)
 		{
 		}
 	}
