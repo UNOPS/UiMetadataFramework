@@ -1,4 +1,4 @@
-﻿namespace UiMetadataFramework.Tests
+namespace UiMetadataFramework.Tests
 {
 	using System.Collections.Generic;
 	using System.Linq;

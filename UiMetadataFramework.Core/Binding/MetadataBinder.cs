@@ -406,14 +406,6 @@ namespace UiMetadataFramework.Core.Binding
 
 				this.outputFieldMetadataMap.TryGetValue(propertyType, out OutputFieldBinding binding);
 
-				if (binding?.MandatoryAttribute != null &&
-					attribute?.GetType().ImplementsClass(binding.MandatoryAttribute) != true)
-				{
-					throw new BindingException(
-						$"Property '{type.FullName}.{property.Name}' is missing a mandatory attribute " +
-						$"of type '{binding.MandatoryAttribute.FullName}'.");
-				}
-
 				attribute ??= new OutputFieldAttribute();
 
 				if (binding?.MandatoryCustomProperty != null)

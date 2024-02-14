@@ -14,7 +14,7 @@ public class CustomOutputTypeTests
 
 	private class ResponseWithMandatoryAttribute
 	{
-		[Flexbox]
+		[Flexbox(Style = "fancy")]
 		public Flexbox<string>? Values { get; set; }
 	}
 
@@ -30,9 +30,7 @@ public class CustomOutputTypeTests
 			.BindOutputFields<ResponseWithMandatoryAttribute>()
 			.Single(t => t.Id == nameof(ResponseWithMandatoryAttribute.Values));
 
-		var custom = outputField as FlexboxAttribute.Metadata;
-
-		Assert.NotNull(custom);
+		outputField.HasCustomProperty<dynamic>(FlexboxAttribute.PropertyName, t => t.Style == "fancy", "Style is not set correctly.");
 	}
 
 	[Fact]

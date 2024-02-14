@@ -14,14 +14,10 @@ namespace UiMetadataFramework.Core.Binding
 		/// Initializes a new instance of the <see cref="OutputFieldTypeAttribute"/> class.
 		/// </summary>
 		/// <param name="clientType">Name of the client control which will render the output field.</param>
-		/// <param name="mandatoryAttribute">Subtype of <see cref="OutputFieldAttribute"/> that indicates the
-		/// attribute that must be applied to the output field. If null then any <see cref="OutputFieldAttribute"/>
-		/// attribute can be applied or no attribute can be applied at all.</param>
 		/// <param name="mandatoryCustomProperty">Indicates the <see cref="ICustomPropertyAttribute"/> that must
 		/// accompany this component.</param>
 		public OutputFieldTypeAttribute(
 			string clientType,
-			Type? mandatoryAttribute = null,
 			Type? mandatoryCustomProperty = null)
 		{
 			if (mandatoryCustomProperty != null &&
@@ -33,7 +29,6 @@ namespace UiMetadataFramework.Core.Binding
 			}
 
 			this.ClientType = clientType;
-			this.MandatoryAttribute = mandatoryAttribute;
 			this.MandatoryCustomProperty = mandatoryCustomProperty;
 		}
 
@@ -41,14 +36,6 @@ namespace UiMetadataFramework.Core.Binding
 		/// Gets name of the client control which will render the output field.
 		/// </summary>
 		public string ClientType { get; set; }
-
-		/// <summary>
-		/// Indicates a specific subtype of <see cref="OutputFieldAttribute"/> that must be applied
-		/// on an output field. If null then any <see cref="OutputFieldAttribute"/> can be applied or
-		/// no attribute can be applied at all.
-		/// </summary>
-		/// <remarks>Attributes that derive from the specified type are also allowed.</remarks>
-		public Type? MandatoryAttribute { get; }
 
 		/// <summary>
 		/// Indicates the <see cref="ICustomPropertyAttribute"/> that must accompany this component.

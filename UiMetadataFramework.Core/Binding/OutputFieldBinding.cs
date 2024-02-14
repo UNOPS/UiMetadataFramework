@@ -41,7 +41,6 @@
 		public OutputFieldBinding(Type serverType, OutputFieldTypeAttribute attribute)
 			: this(serverType, attribute.ClientType)
 		{
-			this.MandatoryAttribute = attribute.MandatoryAttribute;
 			this.MandatoryCustomProperty = attribute.MandatoryCustomProperty;
 		}
 
@@ -56,14 +55,6 @@
 		/// </summary>
 		/// <remarks>Attributes that derive from the specified type are also allowed.</remarks>
 		public Type? MandatoryCustomProperty { get; }
-
-		/// <summary>
-		/// Indicates a specific subtype of <see cref="OutputFieldAttribute"/> that must be applied
-		/// on an output field. If null then any <see cref="OutputFieldAttribute"/> can be applied or
-		/// no attribute can be applied at all.
-		/// </summary>
-		/// <remarks>Attributes that derive from the specified type are also allowed.</remarks>
-		public Type? MandatoryAttribute { get; }
 
 		/// <summary>
 		/// Gets the server-side types being bound.
