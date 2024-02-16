@@ -21,9 +21,9 @@
 		/// were found.</returns>
 		public static IDictionary<string, object?>? GetCustomProperties(this Type type)
 		{
-			return GetCustomProperties(
-				type.GetCustomAttributesImplementingInterface<ICustomPropertyAttribute>(),
-				type.FullName ?? throw new BindingException($"Cannot get full name of type `{type}`."));
+			return type
+				.GetCustomAttributesImplementingInterface<ICustomPropertyAttribute>()
+				.GetCustomProperties(type.FullName ?? throw new BindingException($"Cannot get full name of type `{type}`."));
 		}
 
 		/// <summary>
@@ -35,9 +35,9 @@
 		/// were found.</returns>
 		public static IDictionary<string, object?>? GetCustomProperties(this PropertyInfo propertyInfo)
 		{
-			return GetCustomProperties(
-				propertyInfo.GetCustomAttributesImplementingInterface<ICustomPropertyAttribute>(),
-				propertyInfo.DeclaringType!.FullName + "." + propertyInfo.Name);
+			return propertyInfo
+				.GetCustomAttributesImplementingInterface<ICustomPropertyAttribute>()
+				.GetCustomProperties(propertyInfo.DeclaringType!.FullName + "." + propertyInfo.Name);
 		}
 
 		/// <summary>
@@ -61,7 +61,9 @@
 		{
 			return
 				propertyInfo.PropertyType.GetTypeInfo().IsGenericType &&
-				propertyInfo.PropertyType.GetGenericTypeDefinition().GetTypeInfo().GetInterfaces()
+				propertyInfo.PropertyType.GetGenericTypeDefinition()
+					.GetTypeInfo()
+					.GetInterfaces()
 					.Any(t => t == typeof(IEnumerable));
 		}
 
@@ -110,7 +112,10 @@
 		/// <param name="value">Value to set to.</param>
 		/// <returns>New dictionary containing items from <paramref name="dictionary"/> and the new item
 		/// added by this method.</returns>
-		public static IDictionary<string, T?> Set<T>(this IDictionary<string, T?>? dictionary, string key, T? value)
+		public static IDictionary<string, T?> Set<T>(
+			this IDictionary<string, T?>? dictionary,
+			string key,
+			T? value)
 		{
 			var result = dictionary.Copy() ?? new Dictionary<string, T?>();
 
@@ -177,37 +182,17 @@
 			}
 		}
 
-		internal static IEnumerable<PropertyInfo> GetPublicProperties(this Type type)
-		{
-			return type.GetRuntimeProperties()
-				.Where(t => t.CanRead && t.GetMethod.IsPublic)
-				.Where(t => t.GetCustomAttribute<NotFieldAttribute>() == null)
-				.ToList();
-		}
-
-		/// <summary>
-		/// Creates a copy of the dictionary.
-		/// </summary>
-		private static IDictionary<string, T?>? Copy<T>(this IDictionary<string, T?>? dictionary)
-		{
-			if (dictionary != null)
-			{
-				return new Dictionary<string, T?>(dictionary);
-			}
-
-			return null;
-		}
-
-		private static IDictionary<string, object?>? GetCustomProperties(
-			IEnumerable<ICustomPropertyAttribute> attributes,
+		internal static IDictionary<string, object?>? GetCustomProperties(
+			this IEnumerable<ICustomPropertyAttribute> attributes,
 			string nameOfTheDecoratedElement)
 		{
 			var customPropertyAttributes = attributes
-				.Select(t => new
-				{
-					Attribute = t,
-					Usage = t.GetType().GetTypeInfo().GetCustomAttribute<CustomPropertyConfigAttribute>()
-				})
+				.Select(
+					t => new
+					{
+						Attribute = t,
+						Usage = t.GetType().GetTypeInfo().GetCustomAttribute<CustomPropertyConfigAttribute>()
+					})
 				.ToList();
 
 			IDictionary<string, object?>? result = null;
@@ -243,6 +228,27 @@
 			}
 
 			return result;
+		}
+
+		internal static IEnumerable<PropertyInfo> GetPublicProperties(this Type type)
+		{
+			return type.GetRuntimeProperties()
+				.Where(t => t.CanRead && t.GetMethod.IsPublic)
+				.Where(t => t.GetCustomAttribute<NotFieldAttribute>() == null)
+				.ToList();
+		}
+
+		/// <summary>
+		/// Creates a copy of the dictionary.
+		/// </summary>
+		private static IDictionary<string, T?>? Copy<T>(this IDictionary<string, T?>? dictionary)
+		{
+			if (dictionary != null)
+			{
+				return new Dictionary<string, T?>(dictionary);
+			}
+
+			return null;
 		}
 	}
 }
