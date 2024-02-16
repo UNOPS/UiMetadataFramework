@@ -24,6 +24,21 @@ public class MoneyTest
 	}
 
 	[Fact]
+	public void CanBuildMetadataFromType()
+	{
+		var metadata = this.binder.BindOutputField(
+			typeof(Money),
+			new MoneyAttribute
+			{
+				DecimalPlaces = 10,
+				Locale = "en-UK"
+			});
+
+		metadata.HasCustomProperty(MoneyAttribute.PropertyName, t => t.DecimalPlaces == 10, "DecimalPlaces is not set correctly.");
+		metadata.HasCustomProperty(MoneyAttribute.PropertyName, t => t.Locale == "en-UK", "Locale is not set correctly.");
+	}
+
+	[Fact]
 	public void CustomPropertyIncludedInMetadata()
 	{
 		var field = this.binder.BindOutputFields<GoodResponse>().Single();
@@ -33,8 +48,9 @@ public class MoneyTest
 	}
 
 	[Fact]
-	public void ExceptionThrownIfCustomPropertiesIsMissing()
+	public void ExceptionThrownIfCustomPropertyIsMissing()
 	{
 		Assert.Throws<BindingException>(() => this.binder.BindOutputFields<BadResponse>().ToList());
+		Assert.Throws<BindingException>(() => this.binder.BindOutputField(typeof(Money)));
 	}
 }

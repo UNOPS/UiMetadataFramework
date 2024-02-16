@@ -47,16 +47,9 @@ namespace UiMetadataFramework.Core.Binding
 		/// <remarks>This method will be used internally by <see cref="MetadataBinder"/>.</remarks>
 		public virtual OutputFieldMetadata GetMetadata(
 			PropertyInfo property,
-			OutputFieldBinding? binding,
+			OutputFieldBinding binding,
 			MetadataBinder binder)
 		{
-			if (binding == null)
-			{
-				throw new BindingException(
-					$"Cannot retrieve metadata for '{property.DeclaringType}.{property.Name}', " +
-					$"because type '{property.PropertyType.FullName}' is not bound to any output field control.");
-			}
-
 			var eventHandlerAttributes = property.GetCustomAttributesImplementingInterface<IFieldEventHandlerAttribute>().ToList();
 			var illegalAttributes = eventHandlerAttributes.Where(t => !t.ApplicableToOutputField).ToList();
 			if (illegalAttributes.Any())

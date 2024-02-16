@@ -234,6 +234,44 @@ namespace UiMetadataFramework.Core.Binding
 		}
 
 		/// <summary>
+		/// Builds metadata for the given output component with the provided list of custom properties. 
+		/// </summary>
+		/// <param name="type">Type of output component.</param>
+		/// <param name="customProperties">List of custom properties to apply.</param>
+		/// <exception cref="BindingException">Thrown if a mandatory custom property is missing.</exception>
+		public OutputFieldMetadata BindOutputField(Type type, params ICustomPropertyAttribute[] customProperties)
+		{
+			var binding = this.GetOutputFieldBinding(type);
+
+			if (binding.MandatoryCustomProperty != null)
+			{
+				var matchingCustomProperties = customProperties
+					.Where(t => t.GetType().ImplementsClass(binding.MandatoryCustomProperty))
+					.ToList();
+
+				if (matchingCustomProperties.Count == 0)
+				{
+					throw new BindingException(
+						$"Type '{type.FullName}' requires mandatory custom property " +
+						$"of type '{binding.MandatoryCustomProperty.FullName}'.");
+				}
+
+				if (matchingCustomProperties.Count > 1)
+				{
+					throw new BindingException(
+						$"Multiple custom properties of type '{binding.MandatoryCustomProperty.FullName}' provided. " +
+						"Only one instance of the custom property is allowed.");
+				}
+			}
+
+			return new OutputFieldMetadata(binding.ClientType)
+			{
+				Id = null,
+				CustomProperties = customProperties.ToDictionary(t => t.Name, t => (object?)t.GetValue())
+			};
+		}
+
+		/// <summary>
 		/// Retrieves output field metadata for the given type.
 		/// </summary>
 		/// <param name="type">Type which should be rendered on the client as output field(s).</param>
@@ -398,17 +436,11 @@ namespace UiMetadataFramework.Core.Binding
 					continue;
 				}
 
-				var propertyType = property.PropertyType.IsArray
-					? typeof(Array)
-					: property.PropertyType.IsConstructedGenericType && !property.PropertyType.IsNullabble()
-						? property.PropertyType.GetGenericTypeDefinition()
-						: property.PropertyType;
+				var binding = this.GetOutputFieldBinding(
+					property.PropertyType,
+					$"{property.DeclaringType}.{property.Name}");
 
-				this.outputFieldMetadataMap.TryGetValue(propertyType, out OutputFieldBinding binding);
-
-				attribute ??= new OutputFieldAttribute();
-
-				if (binding?.MandatoryCustomProperty != null)
+				if (binding.MandatoryCustomProperty != null)
 				{
 					var customProperty = property.GetCustomAttributes(binding.MandatoryCustomProperty).ToList();
 
@@ -427,8 +459,30 @@ namespace UiMetadataFramework.Core.Binding
 					}
 				}
 
+				attribute ??= new OutputFieldAttribute();
+
 				yield return attribute.GetMetadata(property, binding, this);
 			}
+		}
+
+		private OutputFieldBinding GetOutputFieldBinding(Type type, string? location = null)
+		{
+			var componentType = type.IsArray
+				? typeof(Array)
+				: type.IsConstructedGenericType && !type.IsNullabble()
+					? type.GetGenericTypeDefinition()
+					: type;
+
+			if (!this.outputFieldMetadataMap.TryGetValue(componentType, out OutputFieldBinding binding))
+			{
+				var message = !string.IsNullOrWhiteSpace(location)
+					? $"Cannot retrieve metadata for '{location}', because type '{type.FullName}' is not bound to any output field control."
+					: $"Type '{type.FullName}' is not bound to any output field control.";
+
+				throw new BindingException(message);
+			}
+
+			return binding;
 		}
 	}
 }
