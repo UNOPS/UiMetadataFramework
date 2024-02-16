@@ -392,16 +392,9 @@ namespace UiMetadataFramework.Core.Binding
 					continue;
 				}
 
-				var propertyType = property.PropertyType.IsConstructedGenericType && !property.PropertyType.IsNullabble()
-					? property.PropertyType.GetGenericTypeDefinition()
-					: property.PropertyType;
-
-				if (!this.inputFieldMetadataMap.TryGetValue(propertyType, out InputFieldBinding binding))
-				{
-					throw new KeyNotFoundException(
-						$"Cannot retrieve metadata for '{type.FullName}.{property.Name}', " +
-						$"because type '{propertyType.FullName}' is not bound to any input field control.");
-				}
+				var binding = this.GetInputFieldBinding(
+					property.PropertyType,
+					$"{property.DeclaringType?.FullName}.{property.Name}");
 
 				if (binding.MandatoryAttribute != null &&
 					attribute?.GetType().ImplementsClass(binding.MandatoryAttribute) != true)
@@ -463,6 +456,24 @@ namespace UiMetadataFramework.Core.Binding
 
 				yield return attribute.GetMetadata(property, binding, this);
 			}
+		}
+
+		private InputFieldBinding GetInputFieldBinding(Type type, string? location = null)
+		{
+			var componentType = type.IsConstructedGenericType && !type.IsNullabble()
+				? type.GetGenericTypeDefinition()
+				: type;
+
+			if (!this.inputFieldMetadataMap.TryGetValue(componentType, out InputFieldBinding binding))
+			{
+				var message = !string.IsNullOrWhiteSpace(location)
+					? $"Cannot retrieve metadata for '{location}', because type '{type.FullName}' is not bound to any input field control."
+					: $"Type '{type.FullName}' is not bound to any input field control.";
+
+				throw new BindingException(message);
+			}
+
+			return binding;
 		}
 
 		private OutputFieldBinding GetOutputFieldBinding(Type type, string? location = null)
