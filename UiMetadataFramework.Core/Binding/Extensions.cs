@@ -17,13 +17,14 @@
 		/// dictionary from the collected data.
 		/// </summary>
 		/// <param name="type">Type to scan for <see cref="ICustomPropertyAttribute"/>.</param>
+		/// <param name="binder">Metadata binder instance.</param>
 		/// <returns>Dictionary with custom properties or null, if no <see cref="ICustomPropertyAttribute"/>
 		/// were found.</returns>
-		public static IDictionary<string, object?>? GetCustomProperties(this Type type)
+		public static IDictionary<string, object?>? GetCustomProperties(this Type type, MetadataBinder binder)
 		{
 			return type
 				.GetCustomAttributesImplementingInterface<ICustomPropertyAttribute>()
-				.GetCustomProperties(type.FullName ?? throw new BindingException($"Cannot get full name of type `{type}`."));
+				.GetCustomProperties(type, type.FullName ?? throw new BindingException($"Cannot get full name of type `{type}`."), binder);
 		}
 
 		/// <summary>
@@ -31,13 +32,14 @@
 		/// dictionary from the collected data.
 		/// </summary>
 		/// <param name="propertyInfo">Property to scan for <see cref="ICustomPropertyAttribute"/>.</param>
+		/// <param name="binder">Metadata binder instance.</param>
 		/// <returns>Dictionary with custom properties or null, if no <see cref="ICustomPropertyAttribute"/>
 		/// were found.</returns>
-		public static IDictionary<string, object?>? GetCustomProperties(this PropertyInfo propertyInfo)
+		public static IDictionary<string, object?>? GetCustomProperties(this PropertyInfo propertyInfo, MetadataBinder binder)
 		{
 			return propertyInfo
 				.GetCustomAttributesImplementingInterface<ICustomPropertyAttribute>()
-				.GetCustomProperties(propertyInfo.DeclaringType!.FullName + "." + propertyInfo.Name);
+				.GetCustomProperties(propertyInfo.PropertyType, propertyInfo.DeclaringType!.FullName + "." + propertyInfo.Name, binder);
 		}
 
 		/// <summary>
@@ -184,7 +186,9 @@
 
 		internal static IDictionary<string, object?>? GetCustomProperties(
 			this IEnumerable<ICustomPropertyAttribute> attributes,
-			string nameOfTheDecoratedElement)
+			Type type,
+			string location,
+			MetadataBinder binder)
 		{
 			var customPropertyAttributes = attributes
 				.Select(
@@ -207,13 +211,13 @@
 				{
 					throw new BindingException(
 						$"Invalid attempt to add multiple values for custom property '{customProperty.Attribute.Name}' " +
-						$"on '{nameOfTheDecoratedElement}'. To allow having multiple values for the custom property " +
+						$"on '{location}'. To allow having multiple values for the custom property " +
 						$"'{customProperty.Attribute.Name}', please decorate attribue '{customProperty.Attribute.GetType().FullName}' " +
 						$"with '{nameof(CustomPropertyConfigAttribute)}' and set " +
 						$"'{nameof(CustomPropertyConfigAttribute)}.{nameof(CustomPropertyConfigAttribute.IsArray)}' to true.");
 				}
 
-				result = result.Set(customProperty.Attribute.Name, customProperty.Attribute.GetValue());
+				result = result.Set(customProperty.Attribute.Name, customProperty.Attribute.GetValue(type, binder));
 			}
 
 			var multiValueCustomProperties = customPropertyAttributes
@@ -223,7 +227,7 @@
 
 			foreach (var customProperty in multiValueCustomProperties)
 			{
-				var values = customProperty.Select(t => t.Attribute.GetValue()).ToList();
+				var values = customProperty.Select(t => t.Attribute.GetValue(type, binder)).ToList();
 				result = result!.Set(customProperty.Key, values);
 			}
 

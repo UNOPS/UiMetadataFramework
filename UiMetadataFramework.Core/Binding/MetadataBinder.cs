@@ -267,7 +267,7 @@ namespace UiMetadataFramework.Core.Binding
 			return new OutputFieldMetadata(binding.ClientType)
 			{
 				Id = null,
-				CustomProperties = customProperties.ToDictionary(t => t.Name, t => (object?)t.GetValue())
+				CustomProperties = customProperties.ToDictionary(t => t.Name, t => (object?)t.GetValue(type, this))
 			};
 		}
 

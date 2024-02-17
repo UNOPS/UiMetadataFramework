@@ -29,7 +29,7 @@ namespace UiMetadataFramework.Core.Binding
 		public string Name { get; set; }
 
 		/// <inheritdoc />
-		public object GetValue()
+		public object GetValue(Type type, MetadataBinder binder)
         {
             return this.Value;
         }

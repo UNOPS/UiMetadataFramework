@@ -59,7 +59,7 @@ namespace UiMetadataFramework.Basic.Inputs.Typeahead
 					.Select(t => t.GetArgument())
 					.ToList();
 
-				return property.GetCustomProperties()
+				return property.GetCustomProperties(binder)
 					.Set("Source", this.Source.GetFormId())
 					.Set("Parameters", parameters);
 			}
@@ -76,7 +76,7 @@ namespace UiMetadataFramework.Basic.Inputs.Typeahead
 					.GetMethod(nameof(ITypeaheadInlineSource<int>.GetItems))
 					!.Invoke(source, null);
 
-				return property.GetCustomProperties()
+				return property.GetCustomProperties(binder)
 					.Set("Source", items);
 			}
 

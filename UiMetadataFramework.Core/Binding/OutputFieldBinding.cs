@@ -87,7 +87,7 @@
 			MetadataBinder binder)
 		{
 			return property
-				.GetCustomProperties()
+				.GetCustomProperties(binder)
 				.Merge(attribute?.GetCustomProperties(property, binder));
 		}
 

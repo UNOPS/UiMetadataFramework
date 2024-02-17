@@ -45,7 +45,7 @@ public class TableOutputFieldBinding : OutputFieldBinding
 			? typeof(Wrapper<>).MakeGenericType(innerType)
 			: innerType;
 
-		return property.GetCustomProperties()
+		return property.GetCustomProperties(binder)
 			.Set("Columns", binder.BindOutputFields(containerType).ToList());
 	}
 

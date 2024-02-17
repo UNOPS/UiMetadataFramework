@@ -32,7 +32,7 @@ namespace UiMetadataFramework.Basic.Output.PaginatedData
 					$"for '{typeof(PaginatedData<>).Name}' output fields.");
 			}
 
-			return property.GetCustomProperties()
+			return property.GetCustomProperties(binder)
 				.Set("Columns", binder.BindOutputFields(paginatedItemType).ToList())
 				.Set("Customizations", attribute.GetCustomProperties(property, binder));
 		}

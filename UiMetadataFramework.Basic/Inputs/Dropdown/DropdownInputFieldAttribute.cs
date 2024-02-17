@@ -52,7 +52,7 @@
 					.GetMethod(nameof(IDropdownInlineSource.GetItems))!
 					.Invoke(source, null);
 
-				return property.GetCustomProperties()
+				return property.GetCustomProperties(binder)
 					.Set("Items", items);
 			}
 
@@ -62,7 +62,7 @@
 					.Select(t => t.GetArgument())
 					.ToList();
 
-				return property.GetCustomProperties()
+				return property.GetCustomProperties(binder)
 					.Set("Source", this.Source.GetFormId())
 					.Set("Parameters", parameters);
 			}

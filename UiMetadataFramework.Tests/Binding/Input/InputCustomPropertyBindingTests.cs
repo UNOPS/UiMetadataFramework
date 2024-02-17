@@ -25,7 +25,7 @@ public class InputCustomPropertyBindingTests
 
 		public string Name => "documentation";
 
-		public object GetValue()
+		public object GetValue(Type type, MetadataBinder binder)
 		{
 			return this.Text;
 		}

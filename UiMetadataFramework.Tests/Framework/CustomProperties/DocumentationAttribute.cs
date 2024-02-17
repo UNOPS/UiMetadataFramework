@@ -16,7 +16,7 @@ public sealed class DocumentationAttribute : Attribute, ICustomPropertyAttribute
 
 	public string Name => "documentation";
 
-	public object GetValue()
+	public object GetValue(Type type, MetadataBinder binder)
 	{
 		return this.Text;
 	}

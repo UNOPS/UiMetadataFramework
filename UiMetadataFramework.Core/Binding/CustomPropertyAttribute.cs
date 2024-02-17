@@ -19,7 +19,7 @@ public abstract class CustomPropertyAttribute : Attribute, ICustomPropertyAttrib
 	}
 
 	/// <inheritdoc />
-	public abstract object GetValue();
+	public abstract object GetValue(Type type, MetadataBinder binder);
 
 	/// <inheritdoc />
 	public string Name { get; }

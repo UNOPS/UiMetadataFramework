@@ -1,5 +1,6 @@
 namespace UiMetadataFramework.Tests.Framework.Outputs.Flexbox;
 
+using System;
 using UiMetadataFramework.Core.Binding;
 
 public class FlexboxAttribute() : CustomPropertyAttribute(PropertyName)
@@ -8,7 +9,7 @@ public class FlexboxAttribute() : CustomPropertyAttribute(PropertyName)
 
 	public string? Style { get; set; }
 
-	public override object GetValue()
+	public override object GetValue(Type type, MetadataBinder binder)
 	{
 		return new { this.Style };
 	}

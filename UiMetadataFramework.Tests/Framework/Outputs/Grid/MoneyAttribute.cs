@@ -1,5 +1,6 @@
 namespace UiMetadataFramework.Tests.Framework.Outputs.Grid;
 
+using System;
 using UiMetadataFramework.Core.Binding;
 
 public class MoneyAttribute() : CustomPropertyAttribute(PropertyName)
@@ -9,7 +10,7 @@ public class MoneyAttribute() : CustomPropertyAttribute(PropertyName)
 	public int DecimalPlaces { get; set; } = 2;
 	public string? Locale { get; set; }
 
-	public override object GetValue()
+	public override object GetValue(Type type, MetadataBinder binder)
 	{
 		return new
 		{
