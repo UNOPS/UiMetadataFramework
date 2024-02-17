@@ -9,13 +9,14 @@
 
 		/// <inheritdoc />
 		public StringOutputFieldBinding() : base(
-			new[]
+			serverTypes: new[]
 			{
 				typeof(string),
 				typeof(bool)
 			},
-			ControlName,
-			null)
+			clientType: ControlName,
+			mandatoryCustomProperty: null,
+			metadataFactory: null)
 		{
 		}
 	}

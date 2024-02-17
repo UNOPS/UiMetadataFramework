@@ -54,9 +54,28 @@ namespace UiMetadataFramework.Core.Binding
 				Hidden = this.Hidden,
 				Label = this.Label ?? property.Name,
 				OrderIndex = this.OrderIndex,
+				ComponentConfiguration = GetComponentConfiguration(property, binding, binder),
 				CustomProperties = property.GetCustomProperties(binder),
 				EventHandlers = eventHandlerAttributes.Select(t => t.ToMetadata(property, binder)).ToList()
 			};
+		}
+
+		private static object? GetComponentConfiguration(
+			PropertyInfo property,
+			OutputFieldBinding binding,
+			MetadataBinder binder)
+		{
+			if (binding.MetadataFactory == null)
+			{
+				return null;
+			}
+
+			var factory = (IMetadataFactory)Activator.CreateInstance(binding.MetadataFactory);
+
+			return factory.CreateMetadata(
+				property.PropertyType,
+				binder,
+				property.GetCustomAttributesImplementingInterface<ICustomPropertyAttribute>().ToArray());
 		}
 	}
 }

@@ -7,18 +7,16 @@ using UiMetadataFramework.Core;
 using UiMetadataFramework.Core.Binding;
 
 /// <summary>
-/// Builds custom properties for a generic component such as <see cref="IEnumerable{T}"/>
+/// Builds metadata for a generic component such as <see cref="IEnumerable{T}"/>
 /// which can later be used to render a table.  
 /// </summary>
-public class TableCustomProperty : CustomPropertyAttribute
+public class TableMetadataFactory : IMetadataFactory
 {
 	/// <inheritdoc />
-	public TableCustomProperty() : base("table")
-	{
-	}
-
-	/// <inheritdoc />
-	public override object GetValue(Type type, MetadataBinder binder)
+	public object CreateMetadata(
+		Type type,
+		MetadataBinder binder,
+		params ICustomPropertyAttribute[] customProperties)
 	{
 		var innerType = type.IsArray
 			? type.GetElementType() ??

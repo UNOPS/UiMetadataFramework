@@ -3,6 +3,7 @@
 	using System.Collections.Generic;
 	using System.Linq;
 	using Newtonsoft.Json;
+	using UiMetadataFramework.Core.Binding;
 
 	/// <summary>
 	/// Represents metadata for a single output field.
@@ -35,6 +36,11 @@
 				? new Dictionary<string, object?>(metadata.CustomProperties)
 				: null;
 		}
+
+		/// <summary>
+		/// Gets or sets metadata for the component to be displayed by this field. 
+		/// </summary>
+		public object? ComponentConfiguration { get; set; }
 
 		/// <summary>
 		/// Gets or sets additional parameters for the client control.
@@ -74,5 +80,20 @@
 		/// </summary>
 		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
 		public IList<EventHandlerMetadata>? EventHandlers { get; set; }
+
+		/// <summary>
+		/// Gets <see cref="ComponentConfiguration"/> making sure it is of type <typeparamref name="T"/>.
+		/// If the <see cref="ComponentConfiguration"/> is null or is not of type <typeparamref name="T"/>,
+		/// then an exception is thrown. 
+		/// </summary>
+		public T GetComponentConfigurationOrException<T>() where T : class
+		{
+			if (this.ComponentConfiguration is not T result)
+			{
+				throw new BindingException($"Component metadata for '{this.Id}' is not of type '{typeof(T).FullName}'.");
+			}
+
+			return result;
+		}
 	}
 }

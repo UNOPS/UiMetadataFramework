@@ -16,9 +16,13 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="clientType">Name of the client control which will render the output field.</param>
 		/// <param name="mandatoryCustomProperty">Indicates the <see cref="ICustomPropertyAttribute"/> that must
 		/// accompany this component.</param>
+		/// <param name="metadataFactory">Type that implements <see cref="IMetadataFactory"/> and which will
+		/// be used to construct custom metadata. If null, then no custom metadata will be constructed for
+		/// this component.</param>
 		public OutputFieldTypeAttribute(
 			string clientType,
-			Type? mandatoryCustomProperty = null)
+			Type? mandatoryCustomProperty = null,
+			Type? metadataFactory = null)
 		{
 			if (mandatoryCustomProperty != null &&
 				!typeof(ICustomPropertyAttribute).IsAssignableFrom(mandatoryCustomProperty))
@@ -28,8 +32,17 @@ namespace UiMetadataFramework.Core.Binding
 					$"must implement '{typeof(ICustomPropertyAttribute).FullName}' in order to be used as a custom property.");
 			}
 
+			if (metadataFactory != null &&
+				!typeof(IMetadataFactory).IsAssignableFrom(metadataFactory))
+			{
+				throw new BindingException(
+					$"Invalid configuration of output component '{clientType}'. '{metadataFactory.FullName}' " +
+					$"must implement '{typeof(IMetadataFactory).FullName}' in order to be used as a metadata factory.");
+			}
+
 			this.ClientType = clientType;
 			this.MandatoryCustomProperty = mandatoryCustomProperty;
+			this.MetadataFactory = metadataFactory;
 		}
 
 		/// <summary>
@@ -43,5 +56,11 @@ namespace UiMetadataFramework.Core.Binding
 		/// </summary>
 		/// <remarks>Attributes that derive from the specified type are also allowed.</remarks>
 		public Type? MandatoryCustomProperty { get; }
+
+		/// <summary>
+		/// Represents <see cref="IMetadataFactory"/> that should be used to construct metadata.
+		/// If null then no custom metadata will be constructed.
+		/// </summary>
+		public Type? MetadataFactory { get; }
 	}
 }

@@ -9,7 +9,11 @@ namespace UiMetadataFramework.Basic.Output.DateTime
 		internal const string ControlName = "datetime";
 
 		/// <inheritdoc />
-		public DateTimeOutputFieldBinding() : base(typeof(DateTime), ControlName, null)
+		public DateTimeOutputFieldBinding() : base(
+			serverType: typeof(DateTime),
+			clientType: ControlName,
+			mandatoryCustomProperty: null,
+			metadataFactory: null)
 		{
 		}
 	}

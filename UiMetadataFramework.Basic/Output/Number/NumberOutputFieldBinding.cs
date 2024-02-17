@@ -9,7 +9,7 @@
 
 		/// <inheritdoc />
 		public NumberOutputFieldBinding() : base(
-			new[]
+			serverTypes: new[]
 			{
 				typeof(int),
 				typeof(decimal),
@@ -18,8 +18,9 @@
 				typeof(long),
 				typeof(byte)
 			},
-			ControlName,
-			null)
+			clientType: ControlName,
+			mandatoryCustomProperty: null,
+			metadataFactory: null)
 		{
 		}
 	}

@@ -9,7 +9,6 @@ using UiMetadataFramework.Basic.Output.FormLink;
 using UiMetadataFramework.Basic.Output.Number;
 using UiMetadataFramework.Basic.Output.Table;
 using UiMetadataFramework.Basic.Output.Text;
-using UiMetadataFramework.Core;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Utilities;
 using Xunit;
@@ -24,31 +23,6 @@ public class TableTests
 		public IList<FormLink>? Links { get; set; }
 		public int[]? Numbers { get; set; }
 		public IList<Person>? RandomObjects { get; set; }
-	}
-
-	[Theory]
-	[InlineData(nameof(Response.Links), "formlink")]
-	[InlineData(nameof(Response.Categories), StringInputFieldBinding.ControlName)]
-	[InlineData(nameof(Response.Numbers), NumberOutputFieldBinding.ControlName)]
-	public void EnumerableOfKnownOutputTypeIndicatesType(string property, string itemType)
-	{
-		var outputField = this.binder
-			.BindOutputFields<Response>()
-			.Single(t => t.Id == property);
-
-		outputField.HasCustomProperty<IEnumerable<OutputFieldMetadata>>("Columns", t => t.Single().Type == itemType);
-	}
-
-	[Theory]
-	[InlineData(nameof(Response.Links))]
-	[InlineData(nameof(Response.Categories))]
-	public void EnumerableOfKnownOutputTypeIsBoundToList(string property)
-	{
-		var outputField = this.binder
-			.BindOutputFields<Response>()
-			.Single(t => t.Id == property);
-
-		Assert.Equal(TableOutputFieldBinding.ObjectListOutputControlName, outputField.Type);
 	}
 
 	public class Person
@@ -66,39 +40,55 @@ public class TableTests
 		public decimal Weight { get; set; }
 	}
 
+	[Theory]
+	[InlineData(nameof(Response.Links), "formlink")]
+	[InlineData(nameof(Response.Categories), StringInputFieldBinding.ControlName)]
+	[InlineData(nameof(Response.Numbers), NumberOutputFieldBinding.ControlName)]
+	public void EnumerableOfComponentHasOneColumn(string property, string itemType)
+	{
+		var outputField = this.binder
+			.BindOutputFields<Response>()
+			.Single(t => t.Id == property);
+
+		var component = outputField.GetComponentConfigurationOrException<TableMetadataFactory.Properties>();
+
+		Assert.Equal(TableOutputFieldBinding.ObjectListOutputControlName, outputField.Type);
+		Assert.Equal(1, component.Columns.Count);
+		Assert.Equal(itemType, component.Columns.Single().Type);
+	}
+
 	[Fact]
-	public void EnumerableOfUnknownTypeIsBoundToTable()
+	public void EnumerableOfNonComponentHasMultipleColumns()
 	{
 		var outputField = this.binder
 			.BindOutputFields<Response>()
 			.Single(t => t.Id == nameof(Response.RandomObjects));
 
+		var config = outputField.GetComponentConfigurationOrException<TableMetadataFactory.Properties>();
+
 		Assert.Equal(TableOutputFieldBinding.ObjectListOutputControlName, outputField.Type);
 
-		var columns =
-			outputField.CustomProperties?["Columns"] as IList<OutputFieldMetadata> ??
-			new List<OutputFieldMetadata>();
-
-		columns.AssertHasOutputField(
+		config.Columns.AssertHasOutputField(
 			nameof(Person.FirstName),
 			StringOutputFieldBinding.ControlName,
 			"First name",
 			false,
 			1);
 
-		columns.AssertHasOutputField(
+		config.Columns.AssertHasOutputField(
 			nameof(Person.DateOfBirth),
 			DateTimeOutputFieldBinding.ControlName,
 			"DoB",
 			false,
 			2);
 
-		columns.AssertHasOutputField(
+		config.Columns.AssertHasOutputField(
 			nameof(Person.Height),
 			NumberOutputFieldBinding.ControlName,
 			nameof(Person.Height),
 			true);
-		columns.AssertHasOutputField(
+		
+		config.Columns.AssertHasOutputField(
 			nameof(Person.Weight),
 			NumberOutputFieldBinding.ControlName,
 			nameof(Person.Weight),

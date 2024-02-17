@@ -171,10 +171,19 @@ namespace UiMetadataFramework.Core.Binding
 		/// </summary>
 		/// <param name="clientType">Name of the client control which will render the output field.</param>
 		/// <param name="mandatoryCustomProperty">Mandatory custom property for the component.</param>
+		/// <param name="metadataFactory">Type that implements <see cref="IMetadataFactory"/> and which will
+		/// be used to construct custom metadata. If null, then no custom metadata will be constructed for
+		/// this component.</param>
 		/// <typeparam name="TServerType">Type to bind to a specific client control.</typeparam>
-		public void AddOutputFieldBinding<TServerType>(string clientType, Type? mandatoryCustomProperty)
+		public void AddOutputFieldBinding<TServerType>(string clientType, Type? mandatoryCustomProperty, Type? metadataFactory)
 		{
-			this.AddBinding(new OutputFieldBinding(typeof(TServerType), clientType, mandatoryCustomProperty));
+			var binding = new OutputFieldBinding(
+				typeof(TServerType),
+				clientType,
+				mandatoryCustomProperty,
+				metadataFactory);
+
+			this.AddBinding(binding);
 		}
 
 		/// <summary>
@@ -452,7 +461,7 @@ namespace UiMetadataFramework.Core.Binding
 							$"of type '{binding.MandatoryCustomProperty.FullName}'. Only one instance of the attribute is allowed.");
 					}
 				}
-
+				
 				attribute ??= new OutputFieldAttribute();
 
 				yield return attribute.GetMetadata(property, binding, this);
