@@ -2,8 +2,8 @@
 
 using System;
 using System.Linq;
+using UiMetadataFramework.Basic.Output.PaginatedData;
 using UiMetadataFramework.Core.Binding;
-using UiMetadataFramework.Tests.Framework.Outputs.PaginatedData;
 using UiMetadataFramework.Tests.Utilities;
 using Xunit;
 
@@ -28,7 +28,7 @@ public class PaginatedDataTests
 	{
 		var metadata = this.binder.BindOutputFields<Response>().Single();
 
-		metadata.HasCustomProperty<PaginatedDataAttribute.Data>(
+		metadata.HasCustomProperty<PaginatedDataAttribute.Properties>(
 			PaginatedDataAttribute.PropertyName,
 			t =>
 			{

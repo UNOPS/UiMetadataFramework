@@ -14,7 +14,8 @@
 				typeof(string),
 				typeof(bool)
 			},
-			ControlName)
+			ControlName,
+			null)
 		{
 		}
 	}

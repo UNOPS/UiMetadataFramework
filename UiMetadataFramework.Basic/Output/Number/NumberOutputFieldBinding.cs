@@ -18,7 +18,8 @@
 				typeof(long),
 				typeof(byte)
 			},
-			ControlName)
+			ControlName,
+			null)
 		{
 		}
 	}

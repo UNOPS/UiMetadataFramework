@@ -2,8 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using UiMetadataFramework.Core.Binding;
 
 /// <summary>
@@ -24,42 +22,8 @@ public class TableOutputFieldBinding : OutputFieldBinding
 			typeof(IList<>),
 			typeof(Array)
 		},
-		ObjectListOutputControlName)
+		ObjectListOutputControlName,
+		typeof(TableCustomProperty))
 	{
-	}
-
-	/// <inheritdoc />
-	public override IDictionary<string, object?> GetCustomProperties(
-		PropertyInfo property,
-		OutputFieldAttribute? attribute,
-		MetadataBinder binder)
-	{
-		var innerType = property.PropertyType.IsArray
-			? property.PropertyType.GetElementType() ??
-			throw new BindingException($"Cannot get element type from array '{property.PropertyType.FullName}'.")
-			: property.PropertyType.GenericTypeArguments[0];
-
-		var isKnownOutputType = binder.OutputFieldBindings.Any(t => t.Key.ImplementsClass(innerType));
-
-		var containerType = isKnownOutputType
-			? typeof(Wrapper<>).MakeGenericType(innerType)
-			: innerType;
-
-		return property.GetCustomProperties(binder)
-			.Set("Columns", binder.BindOutputFields(containerType).ToList());
-	}
-
-	private sealed class Wrapper<T>
-	{
-		public Wrapper(T value)
-		{
-			this.Value = value;
-		}
-
-		// ReSharper disable once MemberCanBePrivate.Local
-		// ReSharper disable once UnusedAutoPropertyAccessor.Local
-		// ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
-		[InputField]
-		public T Value { get; set; }
 	}
 }
