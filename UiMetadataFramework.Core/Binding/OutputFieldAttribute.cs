@@ -1,7 +1,6 @@
 namespace UiMetadataFramework.Core.Binding
 {
 	using System;
-	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
 
@@ -25,17 +24,6 @@ namespace UiMetadataFramework.Core.Binding
 		/// in relationship to other output fields in <see cref="FormMetadata.OutputFields"/>.
 		/// </summary>
 		public int OrderIndex { get; set; }
-
-		/// <summary>
-		/// Gets custom properties of the output field.
-		/// </summary>
-		/// <param name="property">Property representing the output field for which to get metadata.</param>
-		/// <param name="binder">Metadata binder being used.</param>
-		/// <returns>Object representing custom properties for the output field or null if there are none.</returns>
-		public virtual IDictionary<string, object?>? GetCustomProperties(PropertyInfo property, MetadataBinder binder)
-		{
-			return null;
-		}
 
 		/// <summary>
 		/// Gets metadata for the output field decorated with this attribute.
@@ -66,7 +54,7 @@ namespace UiMetadataFramework.Core.Binding
 				Hidden = this.Hidden,
 				Label = this.Label ?? property.Name,
 				OrderIndex = this.OrderIndex,
-				CustomProperties = binding.GetCustomProperties(property, this, binder),
+				CustomProperties = property.GetCustomProperties(binder),
 				EventHandlers = eventHandlerAttributes.Select(t => t.ToMetadata(property, binder)).ToList()
 			};
 		}

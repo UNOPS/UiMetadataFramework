@@ -3,7 +3,6 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using System.Reflection;
 
 	/// <summary>
 	/// Represents a binding between a <see cref="Type"/> of an output field and the client-side
@@ -82,23 +81,6 @@
 			return this.ClientType == binding.ClientType &&
 				this.ServerTypes.All(t => binding.ServerTypes.Contains(t)) &&
 				binding.ServerTypes.All(t => this.ServerTypes.Contains(t));
-		}
-
-		/// <summary>
-		/// Gets custom properties of the output field.
-		/// </summary>
-		/// <param name="property">Property representing the output field for which to get metadata.</param>
-		/// <param name="attribute"><see cref="OutputFieldAttribute"/> which was applied to the output field.</param>
-		/// <param name="binder">Metadata binder being used.</param>
-		/// <returns>Object representing custom properties for the output field or null if there are none.</returns>
-		public virtual IDictionary<string, object?>? GetCustomProperties(
-			PropertyInfo property,
-			OutputFieldAttribute? attribute,
-			MetadataBinder binder)
-		{
-			return property
-				.GetCustomProperties(binder)
-				.Merge(attribute?.GetCustomProperties(property, binder));
 		}
 
 		/// <inheritdoc />
