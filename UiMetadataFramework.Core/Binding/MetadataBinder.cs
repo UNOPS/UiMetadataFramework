@@ -170,10 +170,11 @@ namespace UiMetadataFramework.Core.Binding
 		/// Binds specified "server-side" type to the specified "client-side" output control type.
 		/// </summary>
 		/// <param name="clientType">Name of the client control which will render the output field.</param>
+		/// <param name="mandatoryCustomProperty">Mandatory custom property for the component.</param>
 		/// <typeparam name="TServerType">Type to bind to a specific client control.</typeparam>
-		public void AddOutputFieldBinding<TServerType>(string clientType)
+		public void AddOutputFieldBinding<TServerType>(string clientType, Type? mandatoryCustomProperty)
 		{
-			this.AddBinding(new OutputFieldBinding(typeof(TServerType), clientType));
+			this.AddBinding(new OutputFieldBinding(typeof(TServerType), clientType, mandatoryCustomProperty));
 		}
 
 		/// <summary>

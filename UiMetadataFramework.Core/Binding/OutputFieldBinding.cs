@@ -17,8 +17,13 @@
 		/// </summary>
 		/// <param name="serverType">Type which should be rendered on the client.</param>
 		/// <param name="clientType">Name of the client control which will render the specified type.</param>
-		public OutputFieldBinding(Type serverType, string clientType)
-			: this(new[] { serverType }, clientType)
+		/// <param name="mandatoryCustomProperty">Indicates the <see cref="ICustomPropertyAttribute"/> that must
+		/// accompany this component.</param>
+		public OutputFieldBinding(
+			Type serverType,
+			string clientType,
+			Type? mandatoryCustomProperty)
+			: this(new[] { serverType }, clientType, mandatoryCustomProperty)
 		{
 		}
 
@@ -27,10 +32,16 @@
 		/// </summary>
 		/// <param name="serverTypes">Types which should be rendered on the client.</param>
 		/// <param name="clientType">Name of the client control which will render the specified types.</param>
-		public OutputFieldBinding(IEnumerable<Type> serverTypes, string clientType)
+		/// <param name="mandatoryCustomProperty">Indicates the <see cref="ICustomPropertyAttribute"/> that must
+		/// accompany this component.</param>
+		public OutputFieldBinding(
+			IEnumerable<Type> serverTypes,
+			string clientType,
+			Type? mandatoryCustomProperty)
 		{
 			this.ServerTypes = serverTypes;
 			this.ClientType = clientType;
+			this.MandatoryCustomProperty = mandatoryCustomProperty;
 		}
 
 		/// <summary>
@@ -39,9 +50,8 @@
 		/// <param name="serverType">Type which should be rendered on the client.</param>
 		/// <param name="attribute"><see cref="OutputFieldTypeAttribute"/> instance.</param>
 		public OutputFieldBinding(Type serverType, OutputFieldTypeAttribute attribute)
-			: this(serverType, attribute.ClientType)
+			: this(serverType, attribute.ClientType, attribute.MandatoryCustomProperty)
 		{
-			this.MandatoryCustomProperty = attribute.MandatoryCustomProperty;
 		}
 
 		/// <summary>
