@@ -252,7 +252,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="configuration"><see cref="ComponentConfigurationAttribute"/> representing the configuration
 		/// to be applied to this component instance. Can be null if component does not have any configuration.</param>
 		/// <exception cref="BindingException">Thrown if a mandatory custom property is missing.</exception>
-		public OutputFieldMetadata BindOutputField(Type type, ComponentConfigurationAttribute? configuration = null)
+		public Component BindOutputField(Type type, ComponentConfigurationAttribute? configuration = null)
 		{
 			var binding = this.GetOutputFieldBinding(type);
 
@@ -282,15 +282,13 @@ namespace UiMetadataFramework.Core.Binding
 
 			var metadataFactory = configuration ?? (
 				binding.MetadataFactory != null
-					? (IMetadataFactory)Activator.CreateInstance(binding.MetadataFactory)
+					? (IMetadataFactory)this.Container.GetService(binding.MetadataFactory)
 					: null
 			);
 
-			return new OutputFieldMetadata(binding.ClientType)
-			{
-				Id = null,
-				ComponentConfiguration = metadataFactory?.CreateMetadata(type, this)
-			};
+			return new Component(
+				binding.ClientType,
+				metadataFactory?.CreateMetadata(type, this));
 		}
 
 		/// <summary>

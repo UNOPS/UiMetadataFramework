@@ -27,9 +27,11 @@ public class ConfigurationBinding
 				Locale = "en-UK"
 			});
 
-		dynamic component = field.GetComponentConfigurationOrException();
+		Assert.NotNull(field.Configuration);
 
-		Assert.Equal(10, component.DecimalPlaces);
+		dynamic component = field.Configuration!;
+
+		Assert.Equal(10, component!.DecimalPlaces);
 		Assert.Equal("en-UK", component.Locale);
 	}
 

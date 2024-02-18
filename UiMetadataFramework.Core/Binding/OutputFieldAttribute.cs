@@ -54,13 +54,13 @@ namespace UiMetadataFramework.Core.Binding
 				Hidden = this.Hidden,
 				Label = this.Label ?? property.Name,
 				OrderIndex = this.OrderIndex,
-				ComponentConfiguration = GetComponentConfiguration(property, binder),
+				ComponentConfiguration = GetComponentConfiguration(property, binder).Configuration,
 				CustomProperties = property.GetCustomProperties(binder),
 				EventHandlers = eventHandlerAttributes.Select(t => t.ToMetadata(property, binder)).ToList()
 			};
 		}
 
-		private static object? GetComponentConfiguration(
+		private static Component GetComponentConfiguration(
 			PropertyInfo property,
 			MetadataBinder binder)
 		{
@@ -76,11 +76,9 @@ namespace UiMetadataFramework.Core.Binding
 					$"There should never be more than 1.");
 			}
 
-			var field = binder.BindOutputField(
+			return binder.BindOutputField(
 				property.PropertyType,
 				factories.FirstOrDefault());
-
-			return field.ComponentConfiguration;
 		}
 	}
 }
