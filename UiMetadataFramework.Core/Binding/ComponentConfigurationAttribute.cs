@@ -12,5 +12,6 @@ public abstract class ComponentConfigurationAttribute : Attribute, IMetadataFact
 	/// <inheritdoc />
 	public abstract object? CreateMetadata(
 		Type type,
-		MetadataBinder binder);
+		MetadataBinder binder,
+		params object[] additionalConfigurations);
 }

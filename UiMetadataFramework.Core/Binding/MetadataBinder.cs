@@ -251,8 +251,13 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="type">Type of output component.</param>
 		/// <param name="configuration"><see cref="ComponentConfigurationAttribute"/> representing the configuration
 		/// to be applied to this component instance. Can be null if component does not have any configuration.</param>
+		/// <param name="additionalConfigurations">Additional configurations to use when constructing the metadata.</param>
+		/// <returns>Metadata for component of type <paramref name="type"/>.</returns>
 		/// <exception cref="BindingException">Thrown if a mandatory custom property is missing.</exception>
-		public Component BindOutputField(Type type, ComponentConfigurationAttribute? configuration = null)
+		public Component BindOutputField(
+			Type type,
+			ComponentConfigurationAttribute? configuration = null,
+			params object[] additionalConfigurations)
 		{
 			var binding = this.GetOutputFieldBinding(type);
 
@@ -286,9 +291,14 @@ namespace UiMetadataFramework.Core.Binding
 					: null
 			);
 
+			var metadata = metadataFactory?.CreateMetadata(
+				type,
+				this,
+				additionalConfigurations);
+
 			return new Component(
 				binding.ClientType,
-				metadataFactory?.CreateMetadata(type, this));
+				metadata);
 		}
 
 		/// <summary>

@@ -12,7 +12,8 @@ public class MoneyAttribute : ComponentConfigurationAttribute
 
 	public override object CreateMetadata(
 		Type type,
-		MetadataBinder binder)
+		MetadataBinder binder,
+		params object[] additionalConfigurations)
 	{
 		return new
 		{

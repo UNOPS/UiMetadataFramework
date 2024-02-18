@@ -12,6 +12,10 @@ public interface IMetadataFactory
 	/// </summary>
 	/// <param name="type">Component's type.</param>
 	/// <param name="binder"><see cref="MetadataBinder"/> instance.</param>
+	/// <param name="additionalConfigurations">Additional configurations to use when constructing the metadata.</param>
 	/// <returns>Metadata for component of type <paramref name="type"/>.</returns>
-	public object? CreateMetadata(Type type, MetadataBinder binder);
+	public object? CreateMetadata(
+		Type type,
+		MetadataBinder binder,
+		params object[] additionalConfigurations);
 }

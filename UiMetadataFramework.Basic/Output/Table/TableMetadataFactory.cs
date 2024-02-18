@@ -15,7 +15,8 @@ public class TableMetadataFactory : IMetadataFactory
 	/// <inheritdoc />
 	public object CreateMetadata(
 		Type type,
-		MetadataBinder binder)
+		MetadataBinder binder,
+		params object[] additionalConfigurations)
 	{
 		var innerType = type.IsArray
 			? type.GetElementType() ??
