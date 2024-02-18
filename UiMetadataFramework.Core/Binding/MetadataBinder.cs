@@ -160,24 +160,30 @@ namespace UiMetadataFramework.Core.Binding
 		/// Binds specified "server-side" type to the specified "client-side" input control type.
 		/// </summary>
 		/// <param name="clientType">Name of the client control which will render the output field.</param>
+		/// <param name="metadataFactory">Type that implements <see cref="IMetadataFactory"/> and which will
+		/// be used to construct custom metadata. If null, then no custom metadata will be constructed for
+		/// this component.</param>
 		/// <typeparam name="TServerType">Type to bind to a specific client control.</typeparam>
-		public void AddInputFieldBinding<TServerType>(string clientType)
+		public void AddInputFieldBinding<TServerType>(string clientType, Type? metadataFactory)
 		{
-			this.AddBinding(new InputFieldBinding(typeof(TServerType), clientType));
+			var binding = new InputFieldBinding(
+				typeof(TServerType),
+				clientType,
+				metadataFactory);
+
+			this.AddBinding(binding);
 		}
 
 		/// <summary>
 		/// Binds specified "server-side" type to the specified "client-side" output control type.
 		/// </summary>
 		/// <param name="clientType">Name of the client control which will render the output field.</param>
-		/// <param name="mandatoryCustomProperty">Mandatory custom property for the component.</param>
 		/// <param name="metadataFactory">Type that implements <see cref="IMetadataFactory"/> and which will
 		/// be used to construct custom metadata. If null, then no custom metadata will be constructed for
 		/// this component.</param>
 		/// <typeparam name="TServerType">Type to bind to a specific client control.</typeparam>
 		public void AddOutputFieldBinding<TServerType>(
 			string clientType,
-			Type? mandatoryCustomProperty,
 			Type? metadataFactory)
 		{
 			var binding = new OutputFieldBinding(
@@ -220,6 +226,29 @@ namespace UiMetadataFramework.Core.Binding
 		}
 
 		/// <summary>
+		/// Builds metadata for the given input component with the provided list of custom properties. 
+		/// </summary>
+		/// <param name="type">Type of input component.</param>
+		/// <param name="configuration"><see cref="ComponentConfigurationAttribute"/> representing the configuration
+		/// to be applied to this component instance. Can be null if component does not have any configuration.</param>
+		/// <param name="additionalConfigurations">Additional configurations to use when constructing the metadata.</param>
+		/// <returns>Metadata for component of type <paramref name="type"/>.</returns>
+		/// <exception cref="BindingException">Thrown if a mandatory custom property is missing.</exception>
+		public Component BindInputField(
+			Type type,
+			ComponentConfigurationAttribute? configuration = null,
+			params ComponentConfigurationItemAttribute[] additionalConfigurations)
+		{
+			var binding = this.GetInputFieldBinding(type);
+
+			return this.BuildComponent(
+				type,
+				configuration,
+				additionalConfigurations,
+				binding);
+		}
+
+		/// <summary>
 		/// Retrieves input field metadata for the given type.
 		/// </summary>
 		/// <typeparam name="T">Type which should be rendered on the client as input field(s).</typeparam>
@@ -257,48 +286,15 @@ namespace UiMetadataFramework.Core.Binding
 		public Component BindOutputField(
 			Type type,
 			ComponentConfigurationAttribute? configuration = null,
-			params object[] additionalConfigurations)
+			params ComponentConfigurationItemAttribute[] additionalConfigurations)
 		{
 			var binding = this.GetOutputFieldBinding(type);
 
-			var requiresConfiguration = binding.MetadataFactory?.ImplementsClass(typeof(ComponentConfigurationAttribute)) == true;
-
-			if (requiresConfiguration)
-			{
-				if (configuration == null)
-				{
-					throw new BindingException(
-						$"Cannot construct metadata for '{type.FullName}', because a configuration " +
-						$"of type '{binding.MetadataFactory!.FullName}' is expected.");
-				}
-
-				if (!configuration.GetType().ImplementsClass(binding.MetadataFactory!))
-				{
-					throw new BindingException(
-						$"Cannot construct metadata for '{type.FullName}', because configuration " +
-						$"of type '{binding.MetadataFactory!.FullName}' is expected, but configuration " +
-						$"of type '{configuration.GetType().FullName}' was provided instead.");
-				}
-			}
-			else if (configuration != null)
-			{
-				throw new BindingException($"Component '{type.FullName}' does not have configuration, but one was provided.");
-			}
-
-			var metadataFactory = configuration ?? (
-				binding.MetadataFactory != null
-					? (IMetadataFactory)this.Container.GetService(binding.MetadataFactory)
-					: null
-			);
-
-			var metadata = metadataFactory?.CreateMetadata(
+			return this.BuildComponent(
 				type,
-				this,
-				additionalConfigurations);
-
-			return new Component(
-				binding.ClientType,
-				metadata);
+				configuration,
+				additionalConfigurations,
+				binding);
 		}
 
 		/// <summary>
@@ -426,14 +422,6 @@ namespace UiMetadataFramework.Core.Binding
 					property.PropertyType,
 					$"{property.DeclaringType?.FullName}.{property.Name}");
 
-				if (binding.MandatoryAttribute != null &&
-					attribute?.GetType().ImplementsClass(binding.MandatoryAttribute) != true)
-				{
-					throw new BindingException(
-						$"Property '{type.FullName}.{property.Name}' is missing a mandatory attribute " +
-						$"of type '{binding.MandatoryAttribute.FullName}'.");
-				}
-
 				attribute ??= new InputFieldAttribute
 				{
 					Required = false,
@@ -467,6 +455,52 @@ namespace UiMetadataFramework.Core.Binding
 
 				yield return attribute.GetMetadata(property, binding, this);
 			}
+		}
+
+		private Component BuildComponent(
+			Type type,
+			ComponentConfigurationAttribute? configuration,
+			ComponentConfigurationItemAttribute[] additionalConfigurations,
+			IFieldBinding binding)
+		{
+			var requiresConfiguration = binding.MetadataFactory?.ImplementsClass(typeof(ComponentConfigurationAttribute)) == true;
+
+			if (requiresConfiguration)
+			{
+				if (configuration == null)
+				{
+					throw new BindingException(
+						$"Cannot construct metadata for '{type.FullName}', because a configuration " +
+						$"of type '{binding.MetadataFactory!.FullName}' is expected.");
+				}
+
+				if (!configuration.GetType().ImplementsClass(binding.MetadataFactory!))
+				{
+					throw new BindingException(
+						$"Cannot construct metadata for '{type.FullName}', because configuration " +
+						$"of type '{binding.MetadataFactory!.FullName}' is expected, but configuration " +
+						$"of type '{configuration.GetType().FullName}' was provided instead.");
+				}
+			}
+			else if (configuration != null)
+			{
+				throw new BindingException($"Component '{type.FullName}' does not have configuration, but one was provided.");
+			}
+
+			var metadataFactory = configuration ?? (
+				binding.MetadataFactory != null
+					? (IMetadataFactory)this.Container.GetService(binding.MetadataFactory)
+					: null
+			);
+
+			var metadata = metadataFactory?.CreateMetadata(
+				type,
+				this,
+				additionalConfigurations);
+
+			return new Component(
+				binding.ClientType,
+				metadata);
 		}
 
 		private InputFieldBinding GetInputFieldBinding(Type type, string? location = null)

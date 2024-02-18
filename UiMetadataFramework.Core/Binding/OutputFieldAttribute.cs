@@ -60,25 +60,18 @@ namespace UiMetadataFramework.Core.Binding
 			};
 		}
 
-		private static Component GetComponentConfiguration(
+		internal static Component GetComponentConfiguration(
 			PropertyInfo property,
 			MetadataBinder binder)
 		{
-			var factories = property
-				.GetCustomAttributes<ComponentConfigurationAttribute>(inherit: true)
-				.ToList();
-
-			if (factories.Count > 1)
-			{
-				throw new BindingException(
-					$"Property '{property.DeclaringType!.FullName}.{property.Name}' has " +
-					$"{factories.Count} '{nameof(ComponentConfigurationAttribute)}' applied to it. " +
-					$"There should never be more than 1.");
-			}
+			var optionalConfigurations = property
+				.GetCustomAttributes<ComponentConfigurationItemAttribute>(true)
+				.ToArray();
 
 			return binder.BindOutputField(
 				property.PropertyType,
-				factories.FirstOrDefault());
+				property.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>(inherit: true),
+				optionalConfigurations);
 		}
 	}
 }

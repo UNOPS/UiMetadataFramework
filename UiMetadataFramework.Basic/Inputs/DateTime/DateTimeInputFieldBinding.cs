@@ -9,7 +9,10 @@ namespace UiMetadataFramework.Basic.Inputs.DateTime
 		internal const string ControlName = "datetime";
 
 		/// <inheritdoc />
-		public DateTimeInputFieldBinding() : base(typeof(DateTime), ControlName)
+		public DateTimeInputFieldBinding() : base(
+			serverType: typeof(DateTime),
+			clientType: ControlName,
+			metadataFactory: null)
 		{
 		}
 	}

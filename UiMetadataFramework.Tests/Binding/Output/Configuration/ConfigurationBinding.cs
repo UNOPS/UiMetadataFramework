@@ -10,10 +10,14 @@ public class ConfigurationBinding
 {
 	private readonly MetadataBinder binder = MetadataBinderFactory.CreateMetadataBinder();
 
-	private class GoodResponse
+	private class Response
 	{
 		[Money(DecimalPlaces = 4, Locale = "en-US")]
 		public Money? Money { get; set; }
+
+		[Money(DecimalPlaces = 4, Locale = "en-US")]
+		[MoneyStyleItem(Style = "fancy")]
+		public Money? StyledMoney { get; set; }
 	}
 
 	[Fact]
@@ -31,18 +35,30 @@ public class ConfigurationBinding
 
 		dynamic component = field.Configuration!;
 
-		Assert.Equal(10, component!.DecimalPlaces);
+		Assert.Equal(10, component.DecimalPlaces);
 		Assert.Equal("en-UK", component.Locale);
 	}
 
 	[Fact]
 	public void ConfigurationAttributeWorks()
 	{
-		var field = this.binder.BindOutputFields<GoodResponse>().Single();
+		var field = this.binder.BindOutputFields<Response>().Single(t => t.Id == nameof(Response.Money));
 
 		dynamic component = field.GetComponentConfigurationOrException();
 
 		Assert.Equal(4, component.DecimalPlaces);
 		Assert.Equal("en-US", component.Locale);
+	}
+
+	[Fact]
+	public void OptionalConfigurationAttributeWorks()
+	{
+		var field = this.binder.BindOutputFields<Response>().Single(t => t.Id == nameof(Response.StyledMoney));
+
+		dynamic component = field.GetComponentConfigurationOrException();
+
+		Assert.Equal(4, component.DecimalPlaces);
+		Assert.Equal("en-US", component.Locale);
+		Assert.Equal("fancy", component.Style);
 	}
 }

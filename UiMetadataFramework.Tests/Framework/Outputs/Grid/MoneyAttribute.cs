@@ -1,6 +1,7 @@
 namespace UiMetadataFramework.Tests.Framework.Outputs.Grid;
 
 using System;
+using System.Linq;
 using UiMetadataFramework.Core.Binding;
 
 public class MoneyAttribute : ComponentConfigurationAttribute
@@ -10,15 +11,18 @@ public class MoneyAttribute : ComponentConfigurationAttribute
 	public int DecimalPlaces { get; set; } = 2;
 	public string? Locale { get; set; }
 
-	public override object CreateMetadata(
+	public override object? CreateMetadata(
 		Type type,
 		MetadataBinder binder,
-		params object[] additionalConfigurations)
+		params ComponentConfigurationItemAttribute[] additionalConfigurations)
 	{
+		var style = additionalConfigurations.OfType<MoneyStyleItemAttribute>().SingleOrDefault()?.Style;
+
 		return new
 		{
 			this.DecimalPlaces,
-			this.Locale
+			this.Locale,
+			Style = style
 		};
 	}
 }

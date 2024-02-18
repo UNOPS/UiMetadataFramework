@@ -18,10 +18,10 @@ public class PaginatedDataAttribute(string paginator) : ComponentConfigurationAt
 	public string Paginator { get; } = paginator;
 
 	/// <inheritdoc />
-	public override object CreateMetadata(
+	public override object? CreateMetadata(
 		Type type,
 		MetadataBinder binder,
-		params object[] additionalConfigurations)
+		params ComponentConfigurationItemAttribute[] additionalConfigurations)
 	{
 		var paginatedItemType = type.GenericTypeArguments[0];
 

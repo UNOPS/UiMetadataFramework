@@ -1,13 +1,12 @@
 ﻿namespace UiMetadataFramework.Basic.Inputs.Typeahead
 {
-	using System;
+	using UiMetadataFramework.Core.Binding;
 
 	/// <summary>
 	/// Identifies a request parameter of a remote source and instructs client how to set the value
 	/// for this parameter. Each request to the remote source will have this parameter value set accordingly.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = true)]
-	public class RemoteSourceArgumentAttribute : Attribute
+	public class RemoteSourceArgumentAttribute : ComponentConfigurationItemAttribute
 	{
 		/// <summary>
 		/// Creates a new instance of <see cref="RemoteSourceArgumentAttribute"/>.
@@ -15,7 +14,10 @@
 		/// <param name="parameter">Name of the request parameter on the remote source.</param>
 		/// <param name="source">Name of the source from which to take the value for the <paramref name="parameter"/>.</param>
 		/// <param name="sourceType">Type of source specified by <paramref name="source"/>.</param>
-		public RemoteSourceArgumentAttribute(string parameter, string source, string sourceType)
+		public RemoteSourceArgumentAttribute(
+			string parameter,
+			string source,
+			string sourceType)
 		{
 			this.Parameter = parameter;
 			this.Source = source;

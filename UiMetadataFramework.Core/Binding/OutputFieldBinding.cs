@@ -5,11 +5,9 @@
 	using System.Linq;
 
 	/// <summary>
-	/// Represents a binding between a <see cref="Type"/> of an output field and the client-side
-	/// control which will render that output field. The binding can involve multiple server-side
-	/// types being bound to the same client-side control.
+	/// <see cref="IFieldBinding"/> for an output field.
 	/// </summary>
-	public class OutputFieldBinding
+	public class OutputFieldBinding : IFieldBinding
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="OutputFieldBinding"/> class.
@@ -62,8 +60,11 @@
 		}
 
 		/// <summary>
-		/// Gets name of the client control which will render the output field.
+		/// Gets the server-side types being bound.
 		/// </summary>
+		public IEnumerable<Type> ServerTypes { get; }
+
+		/// <inheritdoc />
 		public string ClientType { get; }
 
 		/// <summary>
@@ -73,11 +74,6 @@
 		/// <remarks>If the type implements <see cref="ComponentConfigurationAttribute"/> then it will indicate
 		/// that this component has configuration that must be provided whenever constructing its metadata.</remarks>
 		public Type? MetadataFactory { get; }
-
-		/// <summary>
-		/// Gets the server-side types being bound.
-		/// </summary>
-		public IEnumerable<Type> ServerTypes { get; }
 
 		/// <inheritdoc />
 		public override bool Equals(object? obj)

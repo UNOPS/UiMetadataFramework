@@ -8,6 +8,11 @@
 	public interface IFieldMetadata
 	{
 		/// <summary>
+		/// Gets for the component to be displayed by this field. 
+		/// </summary>
+		object? ComponentConfiguration { get; }
+
+		/// <summary>
 		/// Gets or sets additional parameters for the client control.
 		/// </summary>
 		IDictionary<string, object?>? CustomProperties { get; set; }

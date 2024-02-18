@@ -8,7 +8,10 @@
 		internal const string ControlName = "text";
 
 		/// <inheritdoc />
-		public StringInputFieldBinding() : base(typeof(string), ControlName)
+		public StringInputFieldBinding() : base(
+			serverType: typeof(string),
+			clientType: ControlName,
+			metadataFactory: null)
 		{
 		}
 	}

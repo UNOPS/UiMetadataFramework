@@ -170,11 +170,11 @@
 			}
 		}
 
-		internal static T? GetCustomAttributeSingleOrDefault<T>(this PropertyInfo propertyInfo) where T : Attribute
+		internal static T? GetCustomAttributeSingleOrDefault<T>(this PropertyInfo propertyInfo, bool inherit = true) where T : Attribute
 		{
 			try
 			{
-				return propertyInfo.GetCustomAttribute<T>();
+				return propertyInfo.GetCustomAttribute<T>(inherit);
 			}
 			catch (AmbiguousMatchException)
 			{

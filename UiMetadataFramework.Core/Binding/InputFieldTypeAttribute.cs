@@ -14,13 +14,21 @@ namespace UiMetadataFramework.Core.Binding
 		/// Initializes a new instance of the <see cref="InputFieldTypeAttribute"/> class.
 		/// </summary>
 		/// <param name="clientType">Name of the client control which will render the input field.</param>
-		/// <param name="mandatoryAttribute">Subtype of <see cref="InputFieldAttribute"/> that indicates the
-		/// attribute that must be applied to the input field. If null then any <see cref="InputFieldAttribute"/>
-		/// attribute can be applied or no attribute can be applied at all.</param>
-		public InputFieldTypeAttribute(string clientType, Type? mandatoryAttribute = null)
+		/// <param name="metadataFactory">Type that implements <see cref="IMetadataFactory"/> and which will
+		/// be used to construct custom metadata. If null, then no custom metadata will be constructed for
+		/// this component.</param>
+		public InputFieldTypeAttribute(string clientType, Type? metadataFactory = null)
 		{
+			if (metadataFactory != null &&
+				!typeof(IMetadataFactory).IsAssignableFrom(metadataFactory))
+			{
+				throw new BindingException(
+					$"Invalid configuration of output component '{clientType}'. '{metadataFactory.FullName}' " +
+					$"must implement '{typeof(IMetadataFactory).FullName}' in order to be used as a metadata factory.");
+			}
+			
 			this.ClientType = clientType;
-			this.MandatoryAttribute = mandatoryAttribute;
+			this.MetadataFactory = metadataFactory;
 		}
 
 		/// <summary>
@@ -29,11 +37,9 @@ namespace UiMetadataFramework.Core.Binding
 		public string ClientType { get; }
 
 		/// <summary>
-		/// Indicates a specific subtype of <see cref="InputFieldAttribute"/> that must be applied
-		/// on an input field. If null then any <see cref="InputFieldAttribute"/> can be applied or
-		/// no attribute can be applied at all.
+		/// Represents <see cref="IMetadataFactory"/> that should be used to construct metadata.
+		/// If null then no custom metadata will be constructed.
 		/// </summary>
-		/// <remarks>Attributes that derive from the specified type are also allowed.</remarks>
-		public Type? MandatoryAttribute { get; }
+		public Type? MetadataFactory { get; }
 	}
 }

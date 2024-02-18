@@ -24,7 +24,6 @@ public class InvalidConfigurations
 	private class MultipleConfigurationsOfSameType
 	{
 		[Money(DecimalPlaces = 2, Locale = "en-US")]
-		[Money(DecimalPlaces = 4, Locale = "en-US")]
 		public Money? Money { get; set; }
 	}
 
@@ -38,7 +37,6 @@ public class InvalidConfigurations
 	[Fact]
 	public void ExceptionThrowIfMultipleConfigurationsArePresent()
 	{
-		Assert.Throws<BindingException>(() => this.binder.BindOutputFields<MultipleConfigurationsOfSameType>().ToList());
 		Assert.Throws<BindingException>(() => this.binder.BindOutputFields<MultipleConfigurationsOfDifferentTypes>().ToList());
 	}
 

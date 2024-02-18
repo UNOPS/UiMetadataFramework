@@ -4,6 +4,7 @@
 	using System.Collections.Generic;
 	using System.Linq;
 	using Newtonsoft.Json;
+	using UiMetadataFramework.Core.Binding;
 
 	/// <summary>
 	/// Represents metadata for a single input field.
@@ -87,5 +88,37 @@
 		/// in relationship to output fields within the same <see cref="FormResponse"/>.
 		/// </summary>
 		public int OrderIndex { get; set; }
+
+		/// <inheritdoc />
+		public object? ComponentConfiguration { get; set; }
+
+		/// <summary>
+		/// Gets <see cref="ComponentConfiguration"/> making sure it is of type <typeparamref name="T"/>.
+		/// If the <see cref="ComponentConfiguration"/> is null or is not of type <typeparamref name="T"/>,
+		/// then an exception is thrown. 
+		/// </summary>
+		public T GetComponentConfigurationOrException<T>() where T : class
+		{
+			if (this.ComponentConfiguration is not T result)
+			{
+				throw new BindingException($"Component metadata for '{this.Id}' is not of type '{typeof(T).FullName}'.");
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Gets <see cref="ComponentConfiguration"/> making sure it is not null.
+		/// </summary>
+		/// <exception cref="BindingException">Throw if <see cref="ComponentConfiguration"/> is null.</exception>
+		public object GetComponentConfigurationOrException()
+		{
+			if (this.ComponentConfiguration == null)
+			{
+				throw new BindingException($"Field '{this.Id}' does not have any component configuration.");
+			}
+
+			return this.ComponentConfiguration;
+		}
 	}
 }

@@ -13,10 +13,10 @@ using UiMetadataFramework.Core.Binding;
 public class TableMetadataFactory : IMetadataFactory
 {
 	/// <inheritdoc />
-	public object CreateMetadata(
+	public object? CreateMetadata(
 		Type type,
 		MetadataBinder binder,
-		params object[] additionalConfigurations)
+		params ComponentConfigurationItemAttribute[] additionalConfigurations)
 	{
 		var innerType = type.IsArray
 			? type.GetElementType() ??

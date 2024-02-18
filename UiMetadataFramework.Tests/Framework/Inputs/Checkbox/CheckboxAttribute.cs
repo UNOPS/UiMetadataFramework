@@ -1,34 +1,22 @@
 ﻿namespace UiMetadataFramework.Tests.Framework.Inputs.Checkbox;
 
-using System.Reflection;
-using UiMetadataFramework.Core;
+using System;
 using UiMetadataFramework.Core.Binding;
 
-public class CheckboxAttribute : InputFieldAttribute
+public class CheckboxAttribute : ComponentConfigurationAttribute
 {
 	public string? Style { get; set; }
 
-	public override InputFieldMetadata GetMetadata(
-		PropertyInfo property,
-		InputFieldBinding binding,
-		MetadataBinder binder)
+	public override object? CreateMetadata(
+		Type type,
+		MetadataBinder binder,
+		params ComponentConfigurationItemAttribute[] additionalConfigurations)
 	{
-		var basic = base.GetMetadata(property, binding, binder);
-
-		return new Metadata(basic) { Style = this.Style };
+		return new Configuration { Style = this.Style };
 	}
 
-	public class Metadata : InputFieldMetadata
+	public class Configuration
 	{
-		public Metadata(InputFieldMetadata basic)
-			: base(basic)
-		{
-		}
-
-		public Metadata(string type) : base(type)
-		{
-		}
-
 		public string? Style { get; set; }
 	}
 }

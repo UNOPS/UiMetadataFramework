@@ -9,7 +9,7 @@
 
 		/// <inheritdoc />
 		public NumberInputFieldBinding() : base(
-			new[]
+			serverTypes: new[]
 			{
 				typeof(int),
 				typeof(decimal),
@@ -18,7 +18,8 @@
 				typeof(long),
 				typeof(byte)
 			},
-			ControlName)
+			clientType: ControlName,
+			metadataFactory: null)
 		{
 		}
 	}

@@ -17,5 +17,5 @@ public interface IMetadataFactory
 	public object? CreateMetadata(
 		Type type,
 		MetadataBinder binder,
-		params object[] additionalConfigurations);
+		params ComponentConfigurationItemAttribute[] additionalConfigurations);
 }

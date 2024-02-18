@@ -21,10 +21,10 @@ public class DerivedConfiguration
 	{
 		public string Format { get; set; }
 
-		public override object CreateMetadata(
+		public override object? CreateMetadata(
 			Type type,
 			MetadataBinder binder,
-			params object[] additionalConfigurations)
+			params ComponentConfigurationItemAttribute[] additionalConfigurations)
 		{
 			return new
 			{

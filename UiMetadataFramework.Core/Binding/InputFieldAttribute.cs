@@ -39,7 +39,10 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="binder">Metadata binder.</param>
 		/// <returns>Instance of <see cref="InputFieldMetadata"/>.</returns>
 		/// <remarks>This method will be used internally by <see cref="MetadataBinder"/>.</remarks>
-		public virtual InputFieldMetadata GetMetadata(PropertyInfo property, InputFieldBinding binding, MetadataBinder binder)
+		public virtual InputFieldMetadata GetMetadata(
+			PropertyInfo property,
+			InputFieldBinding binding,
+			MetadataBinder binder)
 		{
 			var propertyType = property.PropertyType.IsConstructedGenericType && !property.PropertyType.IsNullabble()
 				? property.PropertyType.GetGenericTypeDefinition()
@@ -68,9 +71,24 @@ namespace UiMetadataFramework.Core.Binding
 				Label = this.Label ?? property.Name,
 				OrderIndex = this.OrderIndex,
 				Required = required,
+				ComponentConfiguration = GetComponentConfiguration(property, binder).Configuration,
 				EventHandlers = eventHandlerAttributes.Select(t => t.ToMetadata(property, binder)).ToList(),
 				CustomProperties = property.GetCustomProperties(binder)
 			};
+		}
+
+		internal static Component GetComponentConfiguration(
+			PropertyInfo property,
+			MetadataBinder binder)
+		{
+			var optionalConfigurations = property
+				.GetCustomAttributes<ComponentConfigurationItemAttribute>(true)
+				.ToArray();
+
+			return binder.BindInputField(
+				property.PropertyType,
+				property.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>(inherit: true),
+				optionalConfigurations);
 		}
 	}
 }

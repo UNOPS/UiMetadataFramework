@@ -6,7 +6,10 @@
 	public class PaginatorInputFieldBinding : InputFieldBinding
 	{
 		/// <inheritdoc />
-		public PaginatorInputFieldBinding() : base(typeof(Paginator), "paginator")
+		public PaginatorInputFieldBinding() : base(
+			serverType: typeof(Paginator),
+			clientType: "paginator",
+			metadataFactory: null)
 		{
 			this.IsInputAlwaysHidden = true;
 		}

@@ -8,7 +8,10 @@
 		internal const string ControlName = "boolean";
 
 		/// <inheritdoc />
-		public BooleanInputFieldBinding() : base(typeof(bool), ControlName)
+		public BooleanInputFieldBinding() : base(
+			serverType: typeof(bool),
+			clientType: ControlName,
+			metadataFactory: null)
 		{
 		}
 	}
