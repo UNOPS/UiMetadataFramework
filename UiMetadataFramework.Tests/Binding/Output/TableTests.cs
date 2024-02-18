@@ -60,8 +60,11 @@ public class TableTests
 	[Fact]
 	public void EnumerableOfNonComponentHasMultipleColumns()
 	{
-		var outputField = this.binder
+		var outputFieldMetadatas = this.binder
 			.BindOutputFields<Response>()
+			.ToList();
+		
+		var outputField = outputFieldMetadatas
 			.Single(t => t.Id == nameof(Response.RandomObjects));
 
 		var config = outputField.GetComponentConfigurationOrException<TableMetadataFactory.Properties>();

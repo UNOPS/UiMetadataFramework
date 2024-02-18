@@ -12,10 +12,6 @@ public interface IMetadataFactory
 	/// </summary>
 	/// <param name="type">Component's type.</param>
 	/// <param name="binder"><see cref="MetadataBinder"/> instance.</param>
-	/// <param name="customProperties">List of custom properties to consider when building the metadata.</param>
 	/// <returns>Metadata for component of type <paramref name="type"/>.</returns>
-	public object? CreateMetadata(
-		Type type,
-		MetadataBinder binder,
-		params ICustomPropertyAttribute[] customProperties);
+	public object? CreateMetadata(Type type, MetadataBinder binder);
 }

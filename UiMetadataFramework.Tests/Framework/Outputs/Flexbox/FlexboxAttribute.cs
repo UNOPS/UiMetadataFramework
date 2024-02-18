@@ -3,13 +3,11 @@ namespace UiMetadataFramework.Tests.Framework.Outputs.Flexbox;
 using System;
 using UiMetadataFramework.Core.Binding;
 
-public class FlexboxAttribute() : CustomPropertyAttribute(PropertyName)
+public class FlexboxAttribute : ComponentConfigurationAttribute
 {
-	public const string PropertyName = "flexbox";
-
 	public string? Style { get; set; }
 
-	public override object GetValue(Type type, MetadataBinder binder)
+	public override object CreateMetadata(Type type, MetadataBinder binder)
 	{
 		return new { this.Style };
 	}

@@ -16,20 +16,16 @@
 		/// </summary>
 		/// <param name="serverType">Type which should be rendered on the client.</param>
 		/// <param name="clientType">Name of the client control which will render the specified type.</param>
-		/// <param name="mandatoryCustomProperty">Indicates the <see cref="ICustomPropertyAttribute"/> that must
-		/// accompany this component.</param>
 		/// <param name="metadataFactory">Type that implements <see cref="IMetadataFactory"/> and which will
 		/// be used to construct custom metadata. If null, then no custom metadata will be constructed for
 		/// this component.</param>
 		public OutputFieldBinding(
 			Type serverType,
 			string clientType,
-			Type? mandatoryCustomProperty,
 			Type? metadataFactory)
 			: this(
 				new[] { serverType },
 				clientType,
-				mandatoryCustomProperty,
 				metadataFactory)
 		{
 		}
@@ -39,18 +35,16 @@
 		/// </summary>
 		/// <param name="serverTypes">Types which should be rendered on the client.</param>
 		/// <param name="clientType">Name of the client control which will render the specified types.</param>
-		/// <param name="mandatoryCustomProperty">Indicates the <see cref="ICustomPropertyAttribute"/> that must
-		/// accompany this component.</param>
-		/// <param name="metadataFactory"></param>
+		/// <param name="metadataFactory"><see cref="IMetadataFactory"/> to use for constructing component's metadata.
+		/// If the component requires configuration, then a type implementing <see cref="ComponentConfigurationAttribute"/>
+		/// can be provided.</param>
 		public OutputFieldBinding(
 			IEnumerable<Type> serverTypes,
 			string clientType,
-			Type? mandatoryCustomProperty,
 			Type? metadataFactory)
 		{
 			this.ServerTypes = serverTypes;
 			this.ClientType = clientType;
-			this.MandatoryCustomProperty = mandatoryCustomProperty;
 			this.MetadataFactory = metadataFactory;
 		}
 
@@ -63,7 +57,6 @@
 			: this(
 				serverType,
 				attribute.ClientType,
-				attribute.MandatoryCustomProperty,
 				attribute.MetadataFactory)
 		{
 		}
@@ -74,16 +67,11 @@
 		public string ClientType { get; }
 
 		/// <summary>
-		/// Indicates the <see cref="ICustomPropertyAttribute"/> that must accompany this component.
-		/// If null then this component does not require any custom properties.
-		/// </summary>
-		/// <remarks>Attributes that derive from the specified type are also allowed.</remarks>
-		public Type? MandatoryCustomProperty { get; }
-
-		/// <summary>
 		/// Represents <see cref="IMetadataFactory"/> that should be used to construct metadata.
 		/// If null then no custom metadata will be constructed.
 		/// </summary>
+		/// <remarks>If the type implements <see cref="ComponentConfigurationAttribute"/> then it will indicate
+		/// that this component has configuration that must be provided whenever constructing its metadata.</remarks>
 		public Type? MetadataFactory { get; }
 
 		/// <summary>

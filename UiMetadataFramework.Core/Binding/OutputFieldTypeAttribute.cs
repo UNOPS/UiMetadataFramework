@@ -14,24 +14,13 @@ namespace UiMetadataFramework.Core.Binding
 		/// Initializes a new instance of the <see cref="OutputFieldTypeAttribute"/> class.
 		/// </summary>
 		/// <param name="clientType">Name of the client control which will render the output field.</param>
-		/// <param name="mandatoryCustomProperty">Indicates the <see cref="ICustomPropertyAttribute"/> that must
-		/// accompany this component.</param>
 		/// <param name="metadataFactory">Type that implements <see cref="IMetadataFactory"/> and which will
 		/// be used to construct custom metadata. If null, then no custom metadata will be constructed for
 		/// this component.</param>
 		public OutputFieldTypeAttribute(
 			string clientType,
-			Type? mandatoryCustomProperty = null,
 			Type? metadataFactory = null)
 		{
-			if (mandatoryCustomProperty != null &&
-				!typeof(ICustomPropertyAttribute).IsAssignableFrom(mandatoryCustomProperty))
-			{
-				throw new BindingException(
-					$"Invalid configuration of output component '{clientType}'. '{mandatoryCustomProperty.FullName}' " +
-					$"must implement '{typeof(ICustomPropertyAttribute).FullName}' in order to be used as a custom property.");
-			}
-
 			if (metadataFactory != null &&
 				!typeof(IMetadataFactory).IsAssignableFrom(metadataFactory))
 			{
@@ -41,7 +30,6 @@ namespace UiMetadataFramework.Core.Binding
 			}
 
 			this.ClientType = clientType;
-			this.MandatoryCustomProperty = mandatoryCustomProperty;
 			this.MetadataFactory = metadataFactory;
 		}
 
@@ -49,13 +37,6 @@ namespace UiMetadataFramework.Core.Binding
 		/// Gets name of the client control which will render the output field.
 		/// </summary>
 		public string ClientType { get; set; }
-
-		/// <summary>
-		/// Indicates the <see cref="ICustomPropertyAttribute"/> that must accompany this component.
-		/// If null then this component does not require any custom properties.
-		/// </summary>
-		/// <remarks>Attributes that derive from the specified type are also allowed.</remarks>
-		public Type? MandatoryCustomProperty { get; }
 
 		/// <summary>
 		/// Represents <see cref="IMetadataFactory"/> that should be used to construct metadata.

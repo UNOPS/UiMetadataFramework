@@ -23,7 +23,6 @@ public class TableOutputFieldBinding : OutputFieldBinding
 			typeof(Array)
 		},
 		ObjectListOutputControlName,
-		null,
 		typeof(TableMetadataFactory))
 	{
 	}

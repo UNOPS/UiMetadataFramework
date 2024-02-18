@@ -1,14 +1,13 @@
-﻿namespace UiMetadataFramework.Tests.Binding.Output;
+﻿namespace UiMetadataFramework.Tests.Binding.Output.General;
 
 using System.Linq;
 using UiMetadataFramework.Basic.Output.Number;
-using UiMetadataFramework.Basic.Output.PaginatedData;
 using UiMetadataFramework.Basic.Output.Text;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Utilities;
 using Xunit;
 
-public class GeneralOutputBindingTests
+public class ComponentsForPrimitiveTypes
 {
 	private readonly MetadataBinder binder = MetadataBinderFactory.CreateMetadataBinder();
 
@@ -20,14 +19,7 @@ public class GeneralOutputBindingTests
 		[OutputField(Hidden = true)]
 		public int Height { get; set; }
 
-		[PaginatedData("MainPeoplePaginator")]
-		public PaginatedData<Item>? Items { get; set; }
-
 		public string? LastName { get; set; }
-	}
-
-	private sealed class Item
-	{
 	}
 
 	[Fact]
@@ -38,7 +30,7 @@ public class GeneralOutputBindingTests
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 
-		Assert.Equal(4, outputFields.Count);
+		Assert.Equal(3, outputFields.Count);
 
 		outputFields
 			.AssertHasOutputField(
@@ -50,26 +42,15 @@ public class GeneralOutputBindingTests
 
 		outputFields
 			.AssertHasOutputField(
+				id: nameof(Response.LastName),
+				type: StringOutputFieldBinding.ControlName,
+				label: "LastName");
+
+		outputFields
+			.AssertHasOutputField(
 				nameof(Response.Height),
 				NumberOutputFieldBinding.ControlName,
 				nameof(Response.Height),
 				true);
-
-		outputFields
-			.AssertHasOutputField(
-				nameof(Response.Items),
-				"paginated-data",
-				nameof(Response.Items));
-	}
-
-	[Fact]
-	public void OutputFieldAttributeIsOptional()
-	{
-		var outputFields = this.binder
-			.BindOutputFields<Response>()
-			.OrderBy(t => t.OrderIndex)
-			.ToList();
-
-		outputFields.AssertHasOutputField(nameof(Response.LastName));
 	}
 }

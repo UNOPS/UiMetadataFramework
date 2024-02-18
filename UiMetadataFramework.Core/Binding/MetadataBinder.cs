@@ -175,12 +175,14 @@ namespace UiMetadataFramework.Core.Binding
 		/// be used to construct custom metadata. If null, then no custom metadata will be constructed for
 		/// this component.</param>
 		/// <typeparam name="TServerType">Type to bind to a specific client control.</typeparam>
-		public void AddOutputFieldBinding<TServerType>(string clientType, Type? mandatoryCustomProperty, Type? metadataFactory)
+		public void AddOutputFieldBinding<TServerType>(
+			string clientType,
+			Type? mandatoryCustomProperty,
+			Type? metadataFactory)
 		{
 			var binding = new OutputFieldBinding(
 				typeof(TServerType),
 				clientType,
-				mandatoryCustomProperty,
 				metadataFactory);
 
 			this.AddBinding(binding);
@@ -247,37 +249,47 @@ namespace UiMetadataFramework.Core.Binding
 		/// Builds metadata for the given output component with the provided list of custom properties. 
 		/// </summary>
 		/// <param name="type">Type of output component.</param>
-		/// <param name="customProperties">List of custom properties to apply.</param>
+		/// <param name="configuration"><see cref="ComponentConfigurationAttribute"/> representing the configuration
+		/// to be applied to this component instance. Can be null if component does not have any configuration.</param>
 		/// <exception cref="BindingException">Thrown if a mandatory custom property is missing.</exception>
-		public OutputFieldMetadata BindOutputField(Type type, params ICustomPropertyAttribute[] customProperties)
+		public OutputFieldMetadata BindOutputField(Type type, ComponentConfigurationAttribute? configuration = null)
 		{
 			var binding = this.GetOutputFieldBinding(type);
 
-			if (binding.MandatoryCustomProperty != null)
-			{
-				var matchingCustomProperties = customProperties
-					.Where(t => t.GetType().ImplementsClass(binding.MandatoryCustomProperty))
-					.ToList();
+			var requiresConfiguration = binding.MetadataFactory?.ImplementsClass(typeof(ComponentConfigurationAttribute)) == true;
 
-				if (matchingCustomProperties.Count == 0)
+			if (requiresConfiguration)
+			{
+				if (configuration == null)
 				{
 					throw new BindingException(
-						$"Type '{type.FullName}' requires mandatory custom property " +
-						$"of type '{binding.MandatoryCustomProperty.FullName}'.");
+						$"Cannot construct metadata for '{type.FullName}', because a configuration " +
+						$"of type '{binding.MetadataFactory!.FullName}' is expected.");
 				}
 
-				if (matchingCustomProperties.Count > 1)
+				if (!configuration.GetType().ImplementsClass(binding.MetadataFactory!))
 				{
 					throw new BindingException(
-						$"Multiple custom properties of type '{binding.MandatoryCustomProperty.FullName}' provided. " +
-						"Only one instance of the custom property is allowed.");
+						$"Cannot construct metadata for '{type.FullName}', because configuration " +
+						$"of type '{binding.MetadataFactory!.FullName}' is expected, but configuration " +
+						$"of type '{configuration.GetType().FullName}' was provided instead.");
 				}
 			}
+			else if (configuration != null)
+			{
+				throw new BindingException($"Component '{type.FullName}' does not have configuration, but one was provided.");
+			}
+
+			var metadataFactory = configuration ?? (
+				binding.MetadataFactory != null
+					? (IMetadataFactory)Activator.CreateInstance(binding.MetadataFactory)
+					: null
+			);
 
 			return new OutputFieldMetadata(binding.ClientType)
 			{
 				Id = null,
-				CustomProperties = customProperties.ToDictionary(t => t.Name, t => (object?)t.GetValue(type, this))
+				ComponentConfiguration = metadataFactory?.CreateMetadata(type, this)
 			};
 		}
 
@@ -443,25 +455,6 @@ namespace UiMetadataFramework.Core.Binding
 					property.PropertyType,
 					$"{property.DeclaringType}.{property.Name}");
 
-				if (binding.MandatoryCustomProperty != null)
-				{
-					var customProperty = property.GetCustomAttributes(binding.MandatoryCustomProperty).ToList();
-
-					if (customProperty.Count == 0)
-					{
-						throw new BindingException(
-							$"Property '{type.FullName}.{property.Name}' is missing a mandatory custom property " +
-							$"of type '{binding.MandatoryCustomProperty.FullName}'.");
-					}
-
-					if (customProperty.Count > 1)
-					{
-						throw new BindingException(
-							$"Property '{type.FullName}.{property.Name}' has multiple custom properties " +
-							$"of type '{binding.MandatoryCustomProperty.FullName}'. Only one instance of the attribute is allowed.");
-					}
-				}
-				
 				attribute ??= new OutputFieldAttribute();
 
 				yield return attribute.GetMetadata(property, binding, this);

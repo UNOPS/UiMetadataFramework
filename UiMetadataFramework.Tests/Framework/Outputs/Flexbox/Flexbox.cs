@@ -2,7 +2,7 @@
 
 using UiMetadataFramework.Core.Binding;
 
-[OutputFieldType("flexbox", mandatoryCustomProperty: typeof(FlexboxAttribute))]
+[OutputFieldType("flexbox", metadataFactory: typeof(FlexboxAttribute))]
 public class Flexbox<T>
 {
 	public T? Value { get; set; }

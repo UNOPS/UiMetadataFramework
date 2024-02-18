@@ -3,14 +3,16 @@ namespace UiMetadataFramework.Tests.Framework.Outputs.Grid;
 using System;
 using UiMetadataFramework.Core.Binding;
 
-public class MoneyAttribute() : CustomPropertyAttribute(PropertyName)
+public class MoneyAttribute : ComponentConfigurationAttribute
 {
 	public const string PropertyName = "money";
 
 	public int DecimalPlaces { get; set; } = 2;
 	public string? Locale { get; set; }
 
-	public override object GetValue(Type type, MetadataBinder binder)
+	public override object CreateMetadata(
+		Type type,
+		MetadataBinder binder)
 	{
 		return new
 		{

@@ -15,7 +15,6 @@
 				typeof(bool)
 			},
 			clientType: ControlName,
-			mandatoryCustomProperty: null,
 			metadataFactory: null)
 		{
 		}

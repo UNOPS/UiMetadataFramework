@@ -12,7 +12,6 @@ namespace UiMetadataFramework.Basic.Output.DateTime
 		public DateTimeOutputFieldBinding() : base(
 			serverType: typeof(DateTime),
 			clientType: ControlName,
-			mandatoryCustomProperty: null,
 			metadataFactory: null)
 		{
 		}

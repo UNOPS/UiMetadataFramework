@@ -1,4 +1,4 @@
-﻿namespace UiMetadataFramework.Tests.Binding
+﻿namespace UiMetadataFramework.Tests.Binding.Form
 {
 	using System;
 	using System.Collections.Generic;

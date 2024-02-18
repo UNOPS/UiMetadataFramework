@@ -95,5 +95,19 @@
 
 			return result;
 		}
+
+		/// <summary>
+		/// Gets <see cref="ComponentConfiguration"/> making sure it is not null.
+		/// </summary>
+		/// <exception cref="BindingException">Throw if <see cref="ComponentConfiguration"/> is null.</exception>
+		public object GetComponentConfigurationOrException()
+		{
+			if (this.ComponentConfiguration == null)
+			{
+				throw new BindingException($"Field '{this.Id}' does not have any component configuration.");
+			}
+
+			return this.ComponentConfiguration;
+		}
 	}
 }

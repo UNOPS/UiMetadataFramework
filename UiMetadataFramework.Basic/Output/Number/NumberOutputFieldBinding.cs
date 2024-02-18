@@ -19,7 +19,6 @@
 				typeof(byte)
 			},
 			clientType: ControlName,
-			mandatoryCustomProperty: null,
 			metadataFactory: null)
 		{
 		}

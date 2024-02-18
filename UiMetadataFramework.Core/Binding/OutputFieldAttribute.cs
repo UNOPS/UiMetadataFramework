@@ -54,7 +54,7 @@ namespace UiMetadataFramework.Core.Binding
 				Hidden = this.Hidden,
 				Label = this.Label ?? property.Name,
 				OrderIndex = this.OrderIndex,
-				ComponentConfiguration = GetComponentConfiguration(property, binding, binder),
+				ComponentConfiguration = GetComponentConfiguration(property, binder),
 				CustomProperties = property.GetCustomProperties(binder),
 				EventHandlers = eventHandlerAttributes.Select(t => t.ToMetadata(property, binder)).ToList()
 			};
@@ -62,20 +62,25 @@ namespace UiMetadataFramework.Core.Binding
 
 		private static object? GetComponentConfiguration(
 			PropertyInfo property,
-			OutputFieldBinding binding,
 			MetadataBinder binder)
 		{
-			if (binding.MetadataFactory == null)
+			var factories = property
+				.GetCustomAttributes<ComponentConfigurationAttribute>(inherit: true)
+				.ToList();
+
+			if (factories.Count > 1)
 			{
-				return null;
+				throw new BindingException(
+					$"Property '{property.DeclaringType!.FullName}.{property.Name}' has " +
+					$"{factories.Count} '{nameof(ComponentConfigurationAttribute)}' applied to it. " +
+					$"There should never be more than 1.");
 			}
 
-			var factory = (IMetadataFactory)Activator.CreateInstance(binding.MetadataFactory);
-
-			return factory.CreateMetadata(
+			var field = binder.BindOutputField(
 				property.PropertyType,
-				binder,
-				property.GetCustomAttributesImplementingInterface<ICustomPropertyAttribute>().ToArray());
+				factories.FirstOrDefault());
+
+			return field.ComponentConfiguration;
 		}
 	}
 }

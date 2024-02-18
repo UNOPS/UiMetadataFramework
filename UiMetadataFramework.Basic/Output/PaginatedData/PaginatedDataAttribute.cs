@@ -10,20 +10,15 @@ using UiMetadataFramework.Core.Binding;
 /// Used for decorating <see cref="PaginatedData{T}"/> output fields, to specify which paginator
 /// to use.
 /// </summary>
-public class PaginatedDataAttribute(string paginator) : CustomPropertyAttribute(PropertyName)
+public class PaginatedDataAttribute(string paginator) : ComponentConfigurationAttribute
 {
-	/// <summary>
-	/// Name of the custom property.
-	/// </summary>
-	public const string PropertyName = "paginated-data";
-
 	/// <summary>
 	/// Name of the input field which will control the pagination parameters.
 	/// </summary>
 	public string Paginator { get; } = paginator;
 
 	/// <inheritdoc />
-	public override object GetValue(Type type, MetadataBinder binder)
+	public override object CreateMetadata(Type type, MetadataBinder binder)
 	{
 		var paginatedItemType = type.GenericTypeArguments[0];
 
