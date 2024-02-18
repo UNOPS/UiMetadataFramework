@@ -25,7 +25,7 @@
 		public Type Source { get; set; }
 
 		/// <inheritdoc />
-		public override object? CreateMetadata(
+		public override object CreateMetadata(
 			Type type,
 			MetadataBinder binder,
 			params ComponentConfigurationItemAttribute[] additionalConfigurations)

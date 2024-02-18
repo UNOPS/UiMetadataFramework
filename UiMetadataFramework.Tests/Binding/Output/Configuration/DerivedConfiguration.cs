@@ -19,7 +19,7 @@ public class DerivedConfiguration
 
 	private class BetterMoney : MoneyAttribute
 	{
-		public string Format { get; set; }
+		public string? Format { get; set; }
 
 		public override object? CreateMetadata(
 			Type type,

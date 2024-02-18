@@ -17,7 +17,7 @@ namespace UiMetadataFramework.Tests
 				.GetProperties()
 				.Where(t => t is { CanRead: true, MemberType: MemberTypes.Property })
 				.Where(t => t.GetMethod!.IsPublic)
-				.ToDictionary(t => t.Name, t => t.GetValue(request));
+				.ToDictionary(t => t.Name, t => (object?)t.GetValue(request));
 		}
 	}
 }
