@@ -1,11 +1,11 @@
-﻿// ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedMember.Local
 
 namespace UiMetadataFramework.Tests.Binding.Output.Configuration;
 
 using System.Linq;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Framework.Outputs.Flexbox;
-using UiMetadataFramework.Tests.Framework.Outputs.Grid;
+using UiMetadataFramework.Tests.Framework.Outputs.Money;
 using UiMetadataFramework.Tests.Utilities;
 using Xunit;
 

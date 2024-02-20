@@ -1,4 +1,4 @@
-namespace UiMetadataFramework.Tests.Framework.Outputs.Grid;
+namespace UiMetadataFramework.Tests.Framework.Outputs.Money;
 
 using UiMetadataFramework.Core.Binding;
 
