@@ -1,4 +1,4 @@
-// ReSharper disable UnusedMember.Local
+﻿// ReSharper disable UnusedMember.Local
 
 namespace UiMetadataFramework.Tests.Binding.Output.Configuration;
 
@@ -44,12 +44,12 @@ public class InvalidConfigurations
 	public void ExceptionThrownIfConfigurationIsMissing()
 	{
 		Assert.Throws<BindingException>(() => this.binder.BindOutputFields<BadResponse>().ToList());
-		Assert.Throws<BindingException>(() => this.binder.BindOutputField(typeof(Money)));
+		Assert.Throws<BindingException>(() => this.binder.BindOutputComponent(typeof(Money)));
 	}
 
 	[Fact]
 	public void ExceptionThrownIfConfigurationIsOfWrongType()
 	{
-		Assert.Throws<BindingException>(() => this.binder.BindOutputField(typeof(Money), new FlexboxAttribute()));
+		Assert.Throws<BindingException>(() => this.binder.BindOutputComponent(typeof(Money), new FlexboxAttribute()));
 	}
 }

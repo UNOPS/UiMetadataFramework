@@ -1,4 +1,4 @@
-namespace UiMetadataFramework.Tests.Binding.Output.Configuration;
+﻿namespace UiMetadataFramework.Tests.Binding.Output.Configuration;
 
 using System.Linq;
 using UiMetadataFramework.Core.Binding;
@@ -23,7 +23,7 @@ public class ConfigurationBinding
 	[Fact]
 	public void BindingByMethodCallWorks()
 	{
-		var field = this.binder.BindOutputField(
+		var field = this.binder.BindOutputComponent(
 			typeof(Money),
 			new MoneyAttribute
 			{

@@ -68,7 +68,7 @@ namespace UiMetadataFramework.Core.Binding
 				.GetCustomAttributes<ComponentConfigurationItemAttribute>(true)
 				.ToArray();
 
-			return binder.BindOutputField(
+			return binder.BindOutputComponent(
 				property.PropertyType,
 				property.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>(inherit: true),
 				optionalConfigurations);

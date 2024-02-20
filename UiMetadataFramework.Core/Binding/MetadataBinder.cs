@@ -234,7 +234,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="additionalConfigurations">Additional configurations to use when constructing the metadata.</param>
 		/// <returns>Metadata for component of type <paramref name="type"/>.</returns>
 		/// <exception cref="BindingException">Thrown if a mandatory custom property is missing.</exception>
-		public Component BindInputField(
+		public Component BindInputComponent(
 			Type type,
 			ComponentConfigurationAttribute? configuration = null,
 			params ComponentConfigurationItemAttribute[] additionalConfigurations)
@@ -283,7 +283,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="additionalConfigurations">Additional configurations to use when constructing the metadata.</param>
 		/// <returns>Metadata for component of type <paramref name="type"/>.</returns>
 		/// <exception cref="BindingException">Thrown if a mandatory custom property is missing.</exception>
-		public Component BindOutputField(
+		public Component BindOutputComponent(
 			Type type,
 			ComponentConfigurationAttribute? configuration = null,
 			params ComponentConfigurationItemAttribute[] additionalConfigurations)
