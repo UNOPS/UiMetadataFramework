@@ -50,11 +50,11 @@
 		/// Initializes a new instance of the <see cref="OutputFieldBinding"/> class.
 		/// </summary>
 		/// <param name="serverType">Type which should be rendered on the client.</param>
-		/// <param name="attribute"><see cref="OutputFieldTypeAttribute"/> instance.</param>
-		public OutputFieldBinding(Type serverType, OutputFieldTypeAttribute attribute)
+		/// <param name="attribute"><see cref="OutputComponentAttribute"/> instance.</param>
+		public OutputFieldBinding(Type serverType, OutputComponentAttribute attribute)
 			: this(
 				serverType,
-				attribute.ClientType,
+				attribute.Name,
 				attribute.MetadataFactory)
 		{
 		}

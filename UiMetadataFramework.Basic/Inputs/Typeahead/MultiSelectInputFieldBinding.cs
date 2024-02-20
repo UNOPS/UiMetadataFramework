@@ -10,7 +10,7 @@ namespace UiMetadataFramework.Basic.Inputs.Typeahead
 	/// Represents an input field where multiple values can be selected.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	[InputFieldType("multiselect")]
+	[InputComponent("multiselect")]
 	public class MultiSelect<T>
 	{
 		/// <summary>

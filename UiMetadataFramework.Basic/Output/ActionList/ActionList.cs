@@ -8,7 +8,7 @@
 	/// <summary>
 	/// Represents a list of actions that user can perform.
 	/// </summary>
-	[OutputFieldType("action-list")]
+	[OutputComponent("action-list")]
 	public class ActionList
 	{
 		/// <summary>

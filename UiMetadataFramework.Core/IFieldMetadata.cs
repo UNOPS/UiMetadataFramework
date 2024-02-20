@@ -1,19 +1,22 @@
-﻿namespace UiMetadataFramework.Core
+﻿// ReSharper disable UnusedMemberInSuper.Global
+
+namespace UiMetadataFramework.Core
 {
 	using System.Collections.Generic;
 
 	/// <summary>
-	/// Represents metadata for single field within a form.
+	/// Represents a wrapper around a component that can be used to indicate
+	/// how a component should be rendered in a broader context of a form/etc.
 	/// </summary>
 	public interface IFieldMetadata
 	{
 		/// <summary>
-		/// Gets for the component to be displayed by this field. 
+		/// Gets configuration for the component to be displayed by this field. 
 		/// </summary>
 		object? ComponentConfiguration { get; }
 
 		/// <summary>
-		/// Gets or sets additional parameters for the client control.
+		/// Gets or sets additional parameters for this field.
 		/// </summary>
 		IDictionary<string, object?>? CustomProperties { get; set; }
 
@@ -33,18 +36,18 @@
 		string? Id { get; }
 
 		/// <summary>
-		/// Gets or sets label for the output field.
+		/// Gets or sets label for the field.
 		/// </summary>
 		string? Label { get; }
 
 		/// <summary>
 		/// Gets or sets value which will dictate rendering position of this field
-		/// in relationship to output fields within the same <see cref="FormResponse"/>.
+		/// in relationship to other fields.
 		/// </summary>
 		int OrderIndex { get; }
 
 		/// <summary>
-		/// Gets name of the client control which will render this output field.
+		/// Gets name of the component to be used.
 		/// </summary>
 		string Type { get; }
 	}

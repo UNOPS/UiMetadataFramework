@@ -361,7 +361,7 @@ namespace UiMetadataFramework.Core.Binding
 			assembly.ExportedTypes.ForEach(
 				t =>
 				{
-					var attribute = t.GetTypeInfo().GetCustomAttributeSingleOrDefault<OutputFieldTypeAttribute>();
+					var attribute = t.GetTypeInfo().GetCustomAttributeSingleOrDefault<OutputComponentAttribute>();
 
 					if (attribute != null)
 					{
@@ -389,7 +389,7 @@ namespace UiMetadataFramework.Core.Binding
 			assembly.ExportedTypes.ForEach(
 				t =>
 				{
-					var attribute = t.GetTypeInfo().GetCustomAttributeSingleOrDefault<InputFieldTypeAttribute>();
+					var attribute = t.GetTypeInfo().GetCustomAttributeSingleOrDefault<InputComponentAttribute>();
 
 					if (attribute != null)
 					{

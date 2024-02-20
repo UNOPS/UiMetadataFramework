@@ -7,7 +7,7 @@
 	/// <summary>
 	/// Represents a reference to a form.
 	/// </summary>
-	[OutputFieldType("formlink")]
+	[OutputComponent("formlink")]
 	public class FormLink
 	{
 		/// <summary>

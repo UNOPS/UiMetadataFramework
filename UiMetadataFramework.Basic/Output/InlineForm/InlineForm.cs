@@ -7,7 +7,7 @@
 	/// <summary>
 	/// Represents a form which will be rendered as part of response.
 	/// </summary>
-	[OutputFieldType("inline-form")]
+	[OutputComponent("inline-form")]
 	public class InlineForm
 	{
 		/// <summary>

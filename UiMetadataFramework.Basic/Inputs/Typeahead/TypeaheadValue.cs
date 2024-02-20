@@ -6,7 +6,7 @@
 	/// Input field type for typeahead client control.
 	/// </summary>
 	/// <typeparam name="T">Type of values retrieved by the typeahead.</typeparam>
-	[InputFieldType("typeahead")]
+	[InputComponent("typeahead")]
 	public class TypeaheadValue<T>
 	{
 		/// <summary>

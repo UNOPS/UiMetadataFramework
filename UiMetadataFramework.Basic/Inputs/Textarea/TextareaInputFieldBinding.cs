@@ -5,7 +5,7 @@
 	/// <summary>
 	/// Represents an input field for multiline text.
 	/// </summary>
-	[InputFieldType(ControlName)]
+	[InputComponent(ControlName)]
 	public class TextareaValue
 	{
 		internal const string ControlName = "textarea";

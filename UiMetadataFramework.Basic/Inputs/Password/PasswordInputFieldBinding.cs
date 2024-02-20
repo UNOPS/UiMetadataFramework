@@ -5,7 +5,7 @@
     /// <summary>
     /// Represents a password input field.
     /// </summary>
-    [InputFieldType("password")]
+    [InputComponent("password")]
     public class Password
     {
         /// <summary>

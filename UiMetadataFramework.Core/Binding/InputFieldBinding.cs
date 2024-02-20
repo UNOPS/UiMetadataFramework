@@ -29,9 +29,9 @@ namespace UiMetadataFramework.Core.Binding
 		/// Initializes a new instance of the <see cref="InputFieldBinding"/> class.
 		/// </summary>
 		/// <param name="serverType">Type which should be rendered on the client.</param>
-		/// <param name="attribute"><see cref="InputFieldTypeAttribute"/> instance.</param>
-		public InputFieldBinding(Type serverType, InputFieldTypeAttribute attribute)
-			: this(new[] { serverType }, attribute.ClientType, attribute.MetadataFactory)
+		/// <param name="attribute"><see cref="InputComponentAttribute"/> instance.</param>
+		public InputFieldBinding(Type serverType, InputComponentAttribute attribute)
+			: this(new[] { serverType }, attribute.Name, attribute.MetadataFactory)
 		{
 			this.MetadataFactory = attribute.MetadataFactory;
 		}

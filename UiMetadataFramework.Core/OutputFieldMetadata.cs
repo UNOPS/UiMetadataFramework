@@ -6,7 +6,7 @@
 	using UiMetadataFramework.Core.Binding;
 
 	/// <summary>
-	/// Represents metadata for a single output field.
+	/// <see cref="IFieldMetadata"/> for an output component.
 	/// </summary>
 	public class OutputFieldMetadata : IFieldMetadata
 	{
@@ -37,47 +37,30 @@
 				: null;
 		}
 
-		/// <summary>
-		/// Gets or sets metadata for the component to be displayed by this field. 
-		/// </summary>
+		/// <inheritdoc />
 		public object? ComponentConfiguration { get; set; }
 
-		/// <summary>
-		/// Gets or sets additional parameters for the client control.
-		/// </summary>
+		/// <inheritdoc />
 		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
 		public IDictionary<string, object?>? CustomProperties { get; set; }
 
-		/// <summary>
-		/// Gets or sets id of the field to which this metadata belongs.
-		/// </summary>
+		/// <inheritdoc />
 		public string? Id { get; set; }
 
-		/// <summary>
-		/// Gets or sets label for the output field.
-		/// </summary>
+		/// <inheritdoc />
 		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
 		public string? Label { get; set; }
 
-		/// <summary>
-		/// Gets name of the client control which will render this output field.
-		/// </summary>
+		/// <inheritdoc />
 		public string Type { get; protected set; }
 
-		/// <summary>
-		/// Gets or sets value indicating whether this field should be visible or not.
-		/// </summary>
+		/// <inheritdoc />
 		public bool Hidden { get; set; }
 
-		/// <summary>
-		/// Gets or sets value which will dictate rendering position of this field
-		/// in relationship to output fields within the same <see cref="FormResponse"/>.
-		/// </summary>
+		/// <inheritdoc />
 		public int OrderIndex { get; set; }
 
-		/// <summary>
-		/// Gets or sets event handlers for this field.
-		/// </summary>
+		/// <inheritdoc />
 		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
 		public IList<EventHandlerMetadata>? EventHandlers { get; set; }
 
