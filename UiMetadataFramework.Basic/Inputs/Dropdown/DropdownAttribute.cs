@@ -10,10 +10,10 @@
 	/// <summary>
 	/// Used to decorate input fields of type <see cref="DropdownValue{T}"/>.
 	/// </summary>
-	public class DropdownInputFieldAttribute : ComponentConfigurationAttribute
+	public class DropdownAttribute : ComponentConfigurationAttribute
 	{
 		/// <inheritdoc />
-		public DropdownInputFieldAttribute(Type source)
+		public DropdownAttribute(Type source)
 		{
 			this.Source = source;
 		}

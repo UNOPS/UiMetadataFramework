@@ -12,14 +12,14 @@ namespace UiMetadataFramework.Basic.Inputs.Typeahead
 	/// <summary>
 	/// Used to decorate input fields of type <see cref="TypeaheadValue{T}"/>.
 	/// </summary>
-	public class TypeaheadInputFieldAttribute : InputFieldAttribute
+	public class TypeaheadAttribute : InputFieldAttribute
 	{
 		/// <summary>
-		/// Initialises a new instance of the <see cref="TypeaheadInputFieldAttribute"/> class.
+		/// Initialises a new instance of the <see cref="TypeaheadAttribute"/> class.
 		/// </summary>
 		/// <param name="source">Type which acts as datasource for the items. It must implement
 		/// <see cref="ITypeaheadRemoteSource"/> or <see cref="ITypeaheadInlineSource{T}"/>.</param>
-		public TypeaheadInputFieldAttribute(Type source)
+		public TypeaheadAttribute(Type source)
 		{
 			this.Source = source;
 		}

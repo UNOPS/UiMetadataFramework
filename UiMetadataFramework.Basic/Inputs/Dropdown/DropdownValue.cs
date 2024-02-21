@@ -8,7 +8,7 @@ namespace UiMetadataFramework.Basic.Inputs.Dropdown
 	/// Represents the value of a dropdown field.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	[InputComponent(ControlName, typeof(DropdownInputFieldAttribute))]
+	[InputComponent(ControlName, typeof(DropdownAttribute))]
 	public class DropdownValue<T>
 	{
 		internal const string ControlName = "dropdown";
