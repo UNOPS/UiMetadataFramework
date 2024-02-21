@@ -15,14 +15,14 @@ public class DropdownTests
 
 	private class Request
 	{
-		[DropdownInputField(typeof(CountryRemoteSource))]
+		[Dropdown(typeof(CountryRemoteSource))]
 		[RemoteSourceArgument("A", "B", "C")]
 		public DropdownValue<string>? Countries { get; set; }
 
-		[DropdownInputField(typeof(EnumSource<DayOfWeek>))]
+		[Dropdown(typeof(EnumSource<DayOfWeek>))]
 		public DropdownValue<DayOfWeek>? Day { get; set; }
 
-		[DropdownInputField(typeof(GenderInlineSource))]
+		[Dropdown(typeof(GenderInlineSource))]
 		public DropdownValue<int>? Gender { get; set; }
 	}
 
@@ -47,7 +47,7 @@ public class DropdownTests
 		var field = this.binder.BindInputFields<Request>()
 			.Single(t => t.Id == nameof(Request.Countries));
 
-		var component = field.GetComponentConfigurationOrException<DropdownInputFieldAttribute.Configuration>();
+		var component = field.GetComponentConfigurationOrException<DropdownAttribute.Configuration>();
 
 		Assert.Null(component.Items);
 		Assert.Equal("A", component.Parameters?.Single().Parameter);
@@ -61,7 +61,7 @@ public class DropdownTests
 		var field = this.binder.BindInputFields<Request>()
 			.Single(t => t.Id == nameof(Request.Gender));
 
-		var component = field.GetComponentConfigurationOrException<DropdownInputFieldAttribute.Configuration>();
+		var component = field.GetComponentConfigurationOrException<DropdownAttribute.Configuration>();
 
 		Assert.Equal(2, component.Items?.Count);
 	}
@@ -72,7 +72,7 @@ public class DropdownTests
 		var inputFields = this.binder.BindInputFields<Request>()
 			.Single(t => t.Id == nameof(Request.Day));
 
-		var component = inputFields.GetComponentConfigurationOrException<DropdownInputFieldAttribute.Configuration>();
+		var component = inputFields.GetComponentConfigurationOrException<DropdownAttribute.Configuration>();
 
 		Assert.Equal(7, component.Items?.Count);
 	}

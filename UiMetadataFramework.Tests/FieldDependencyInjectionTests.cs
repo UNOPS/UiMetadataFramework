@@ -13,7 +13,7 @@ namespace UiMetadataFramework.Tests
 	{
 		public class Request
 		{
-			[TypeaheadInputField(typeof(CategorySource))]
+			[Typeahead(typeof(CategorySource))]
 			public TypeaheadValue<int>? CategoryId { get; set; }
 		}
 
