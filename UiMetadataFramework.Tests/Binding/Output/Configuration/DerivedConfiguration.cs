@@ -19,6 +19,7 @@ public class DerivedConfiguration
 
 	private class BetterMoney : MoneyAttribute
 	{
+		// ReSharper disable once UnusedMember.Local
 		public BetterMoney()
 		{
 		}
@@ -54,7 +55,7 @@ public class DerivedConfiguration
 	{
 		var field = this.binder.BindOutputFields<Response>().Single(t => t.Id == nameof(Response.Money));
 
-		dynamic component = field.GetComponentConfigurationOrException();
+		dynamic component = field.Component.GetConfigurationOrException();
 
 		Assert.Equal(2, component.DecimalPlaces);
 		Assert.Equal("en-US", component.Locale);

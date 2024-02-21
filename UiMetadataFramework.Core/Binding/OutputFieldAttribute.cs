@@ -48,13 +48,14 @@ namespace UiMetadataFramework.Core.Binding
 					$"applicable for output fields.");
 			}
 
-			return new OutputFieldMetadata(binding.ClientType)
+			var component = binder.BindOutputComponent(property);
+			
+			return new OutputFieldMetadata(component)
 			{
 				Id = property.Name,
 				Hidden = this.Hidden,
 				Label = this.Label ?? property.Name,
-				OrderIndex = this.OrderIndex,
-				ComponentConfiguration = binder.BindOutputComponent(property).Configuration,
+				OrderIndex = this.OrderIndex, 
 				CustomProperties = property.GetCustomProperties(binder),
 				EventHandlers = eventHandlerAttributes.Select(t => t.ToMetadata(property, binder)).ToList()
 			};

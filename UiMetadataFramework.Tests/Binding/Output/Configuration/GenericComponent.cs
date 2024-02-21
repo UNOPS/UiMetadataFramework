@@ -31,7 +31,7 @@ public class GenericComponent
 	{
 		var field = this.binder.BindOutputFields<Response>().Single();
 
-		var component = field.GetComponentConfigurationOrException<PaginatedDataAttribute.Properties>();
+		var component = field.Component.GetConfigurationOrException<PaginatedDataAttribute.Properties>();
 
 		Assert.Equal("paginator-for-items", component.Paginator);
 

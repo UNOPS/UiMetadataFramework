@@ -35,8 +35,7 @@ public class GenericComponent
 	public void NestedPreConfiguredComponentBound()
 	{
 		var money = this.binder.BindOutputFields<Outputs>()
-			.Single(t => t.Id == nameof(Outputs.Amounts))
-			.GetComponentConfigurationOrException<ObjectListAttribute.Configuration>()
+			.Single(t => t.Id == nameof(Outputs.Amounts)).Component.GetConfigurationOrException<ObjectListAttribute.Configuration>()
 			.InnerComponent;
 
 		Assert.Equal("money", money.Type);
@@ -52,8 +51,7 @@ public class GenericComponent
 	public void NestedUnconfiguredComponentBound()
 	{
 		var text = this.binder.BindOutputFields<Outputs>()
-			.Single(t => t.Id == nameof(Outputs.Names))
-			.GetComponentConfigurationOrException<ObjectListAttribute.Configuration>()
+			.Single(t => t.Id == nameof(Outputs.Names)).Component.GetConfigurationOrException<ObjectListAttribute.Configuration>()
 			.InnerComponent;
 
 		Assert.Equal("text", text.Type);
@@ -66,9 +64,9 @@ public class GenericComponent
 		var objectList = this.binder.BindOutputFields<Outputs>()
 			.Single(t => t.Id == nameof(Outputs.Amounts));
 
-		var objectListConfig = objectList.GetComponentConfigurationOrException<ObjectListAttribute.Configuration>();
+		var objectListConfig = objectList.Component.GetConfigurationOrException<ObjectListAttribute.Configuration>();
 
-		Assert.Equal("object-list", objectList.Type);
+		Assert.Equal("object-list", objectList.Component.Type);
 		Assert.Equal("bullet-point-list", objectListConfig.Style);
 		Assert.Equal("*", objectListConfig.ListItem);
 	}

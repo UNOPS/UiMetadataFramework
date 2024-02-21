@@ -28,8 +28,7 @@ public class InsideGenericComponent
 	public void NestedPreConfiguredComponentBound()
 	{
 		var money = this.binder.BindOutputFields<Outputs>()
-			.Single(t => t.Id == nameof(Outputs.Amounts))
-			.GetComponentConfigurationOrException<ObjectListAttribute.Configuration>()
+			.Single(t => t.Id == nameof(Outputs.Amounts)).Component.GetConfigurationOrException<ObjectListAttribute.Configuration>()
 			.InnerComponent;
 
 		Assert.Equal("money", money.Type);
@@ -47,9 +46,9 @@ public class InsideGenericComponent
 		var objectList = this.binder.BindOutputFields<Outputs>()
 			.Single(t => t.Id == nameof(Outputs.Amounts));
 
-		var objectListConfig = objectList.GetComponentConfigurationOrException<ObjectListAttribute.Configuration>();
+		var objectListConfig = objectList.Component.GetConfigurationOrException<ObjectListAttribute.Configuration>();
 
-		Assert.Equal("object-list", objectList.Type);
+		Assert.Equal("object-list", objectList.Component.Type);
 		Assert.Equal("bullet-point-list", objectListConfig.Style);
 	}
 }

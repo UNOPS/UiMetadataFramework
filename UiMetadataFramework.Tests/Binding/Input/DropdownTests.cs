@@ -47,7 +47,7 @@ public class DropdownTests
 		var field = this.binder.BindInputFields<Request>()
 			.Single(t => t.Id == nameof(Request.Countries));
 
-		var component = field.GetComponentConfigurationOrException<DropdownAttribute.Configuration>();
+		var component = field.Component.GetConfigurationOrException<DropdownAttribute.Configuration>();
 
 		Assert.Null(component.Items);
 		Assert.Equal("A", component.Parameters?.Single().Parameter);
@@ -61,7 +61,7 @@ public class DropdownTests
 		var field = this.binder.BindInputFields<Request>()
 			.Single(t => t.Id == nameof(Request.Gender));
 
-		var component = field.GetComponentConfigurationOrException<DropdownAttribute.Configuration>();
+		var component = field.Component.GetConfigurationOrException<DropdownAttribute.Configuration>();
 
 		Assert.Equal(2, component.Items?.Count);
 	}
@@ -72,7 +72,7 @@ public class DropdownTests
 		var inputFields = this.binder.BindInputFields<Request>()
 			.Single(t => t.Id == nameof(Request.Day));
 
-		var component = inputFields.GetComponentConfigurationOrException<DropdownAttribute.Configuration>();
+		var component = inputFields.Component.GetConfigurationOrException<DropdownAttribute.Configuration>();
 
 		Assert.Equal(7, component.Items?.Count);
 	}

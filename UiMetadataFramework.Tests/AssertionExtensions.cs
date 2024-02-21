@@ -35,7 +35,7 @@
 			var field = fields
 				.Where(t => t.Id == id)
 				.Where(t => t.Hidden == hidden)
-				.Where(t => t.Type == type)
+				.Where(t => t.Component.Type == type)
 				.Where(t => t.OrderIndex == orderIndex)
 				.Where(t => t.Label == label)
 				.Where(t => t.Required == required)
@@ -71,7 +71,7 @@
 			var field = fields
 				.Where(t => t.Id == id)
 				.Where(t => t.Hidden == hidden)
-				.Where(t => t.Type == type)
+				.Where(t => t.Component.Type == type)
 				.Where(t => t.OrderIndex == orderIndex)
 				.Where(t => t.Label == label)
 				.FirstOrDefault(t => eventHandlers == null || eventHandlers.All(p => t.EventHandlers?.Any(x => x.Id == p) == true));

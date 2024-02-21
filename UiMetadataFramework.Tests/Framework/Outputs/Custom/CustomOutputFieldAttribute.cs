@@ -18,17 +18,8 @@ public class CustomOutputFieldAttribute : OutputFieldAttribute
 		return new Metadata(basic) { Style = this.Style };
 	}
 
-	public class Metadata : OutputFieldMetadata
+	public class Metadata(OutputFieldMetadata basic) : OutputFieldMetadata(basic)
 	{
-		public Metadata(OutputFieldMetadata basic)
-			: base(basic)
-		{
-		}
-
-		public Metadata(string type) : base(type)
-		{
-		}
-
 		public string? Style { get; set; }
 	}
 }

@@ -50,11 +50,11 @@ public class TableTests
 			.BindOutputFields<Response>()
 			.Single(t => t.Id == property);
 
-		var component = outputField.GetComponentConfigurationOrException<TableMetadataFactory.Properties>();
+		var component = outputField.Component.GetConfigurationOrException<TableMetadataFactory.Properties>();
 
-		Assert.Equal(TableOutputFieldBinding.ObjectListOutputControlName, outputField.Type);
+		Assert.Equal(TableOutputFieldBinding.ObjectListOutputControlName, outputField.Component.Type);
 		Assert.Equal(1, component.Columns.Count);
-		Assert.Equal(itemType, component.Columns.Single().Type);
+		Assert.Equal(itemType, component.Columns.Single().Component.Type);
 	}
 
 	[Fact]
@@ -67,9 +67,9 @@ public class TableTests
 		var outputField = outputFieldMetadatas
 			.Single(t => t.Id == nameof(Response.RandomObjects));
 
-		var config = outputField.GetComponentConfigurationOrException<TableMetadataFactory.Properties>();
+		var config = outputField.Component.GetConfigurationOrException<TableMetadataFactory.Properties>();
 
-		Assert.Equal(TableOutputFieldBinding.ObjectListOutputControlName, outputField.Type);
+		Assert.Equal(TableOutputFieldBinding.ObjectListOutputControlName, outputField.Component.Type);
 
 		config.Columns.AssertHasOutputField(
 			nameof(Person.FirstName),

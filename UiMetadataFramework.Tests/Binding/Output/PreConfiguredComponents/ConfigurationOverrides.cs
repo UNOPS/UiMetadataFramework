@@ -28,8 +28,7 @@ public class ConfigurationOverrides
 	public void OuterConfigurationOverridesInner()
 	{
 		var moneyConfig = this.binder.BindOutputFields<Outputs>()
-			.Single(t => t.Id == nameof(Outputs.Amounts))
-			.GetComponentConfigurationOrException<MoneyAttribute.Configuration>();
+			.Single(t => t.Id == nameof(Outputs.Amounts)).Component.GetConfigurationOrException<MoneyAttribute.Configuration>();
 
 		Assert.Equal(8, moneyConfig.DecimalPlaces);
 		Assert.Equal("en-EN", moneyConfig.Locale);

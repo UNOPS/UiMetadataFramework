@@ -4,7 +4,6 @@
 	using System.Collections.Generic;
 	using System.Linq;
 	using Newtonsoft.Json;
-	using UiMetadataFramework.Core.Binding;
 
 	/// <summary>
 	/// <see cref="IFieldMetadata"/> for an input component.
@@ -14,17 +13,16 @@
 		/// <summary>
 		/// Initializes a new instance of the <see cref="InputFieldMetadata"/> class.
 		/// </summary>
-		/// <param name="type">Name of the component to be used.</param>
-		public InputFieldMetadata(string type)
+		public InputFieldMetadata(Component component)
 		{
-			this.Type = type;
+			this.Component = component;
 		}
 
 		/// <summary>
 		/// Creates a deep copy of the specified <see cref="InputFieldMetadata"/>.
 		/// </summary>
 		/// <param name="metadata">Instance to copy.</param>
-		protected InputFieldMetadata(InputFieldMetadata metadata) : this(metadata.Type)
+		protected InputFieldMetadata(InputFieldMetadata metadata) : this(metadata.Component)
 		{
 			if (metadata == null)
 			{
@@ -64,44 +62,12 @@
 		public string? Label { get; set; }
 
 		/// <inheritdoc />
-		public string Type { get; protected set; }
-
-		/// <inheritdoc />
 		public bool Hidden { get; set; }
 
 		/// <inheritdoc />
 		public int OrderIndex { get; set; }
 
 		/// <inheritdoc />
-		public object? ComponentConfiguration { get; set; }
-
-		/// <summary>
-		/// Gets <see cref="ComponentConfiguration"/> making sure it is of type <typeparamref name="T"/>.
-		/// If the <see cref="ComponentConfiguration"/> is null or is not of type <typeparamref name="T"/>,
-		/// then an exception is thrown. 
-		/// </summary>
-		public T GetComponentConfigurationOrException<T>() where T : class
-		{
-			if (this.ComponentConfiguration is not T result)
-			{
-				throw new BindingException($"Component metadata for '{this.Id}' is not of type '{typeof(T).FullName}'.");
-			}
-
-			return result;
-		}
-
-		/// <summary>
-		/// Gets <see cref="ComponentConfiguration"/> making sure it is not null.
-		/// </summary>
-		/// <exception cref="BindingException">Throw if <see cref="ComponentConfiguration"/> is null.</exception>
-		public object GetComponentConfigurationOrException()
-		{
-			if (this.ComponentConfiguration == null)
-			{
-				throw new BindingException($"Field '{this.Id}' does not have any component configuration.");
-			}
-
-			return this.ComponentConfiguration;
-		}
+		public Component Component { get; }
 	}
 }

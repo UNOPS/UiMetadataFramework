@@ -11,9 +11,9 @@ namespace UiMetadataFramework.Core
 	public interface IFieldMetadata
 	{
 		/// <summary>
-		/// Gets configuration for the component to be displayed by this field. 
+		/// Gets or sets the component to be used.
 		/// </summary>
-		object? ComponentConfiguration { get; }
+		public Component Component { get; }
 
 		/// <summary>
 		/// Gets or sets additional parameters for this field.
@@ -45,10 +45,5 @@ namespace UiMetadataFramework.Core
 		/// in relationship to other fields.
 		/// </summary>
 		int OrderIndex { get; }
-
-		/// <summary>
-		/// Gets name of the component to be used.
-		/// </summary>
-		string Type { get; }
 	}
 }

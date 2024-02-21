@@ -30,7 +30,7 @@ public class CustomInputTypeTests
 			.BindInputFields<Request>()
 			.Single(t => t.Id == nameof(Request.AcceptTerms));
 
-		var custom = inputField.GetComponentConfigurationOrException<CheckboxAttribute.Configuration>();
+		var custom = inputField.Component.GetConfigurationOrException<CheckboxAttribute.Configuration>();
 
 		Assert.Equal("fancy", custom.Style);
 	}

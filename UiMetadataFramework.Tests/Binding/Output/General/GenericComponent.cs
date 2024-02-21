@@ -25,6 +25,6 @@ public class GenericComponent
 			.BindOutputFields<Response>()
 			.Single(t => t.Id == nameof(Response.Values));
 
-		Assert.Equal("flexbox", outputField.Type);
+		Assert.Equal("flexbox", outputField.Component.Type);
 	}
 }

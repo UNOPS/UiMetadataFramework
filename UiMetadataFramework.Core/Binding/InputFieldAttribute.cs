@@ -64,14 +64,15 @@ namespace UiMetadataFramework.Core.Binding
 					$"'{illegalAttributes[0].GetType().FullName}', because the attribute is not applicable for input fields.");
 			}
 
-			return new InputFieldMetadata(binding.ClientType)
+			var component = binder.BindInputComponent(property);
+			
+			return new InputFieldMetadata(component)
 			{
 				Id = property.Name,
 				Hidden = binding.IsInputAlwaysHidden || this.Hidden,
 				Label = this.Label ?? property.Name,
 				OrderIndex = this.OrderIndex,
 				Required = required,
-				ComponentConfiguration = binder.BindInputComponent(property).Configuration,
 				EventHandlers = eventHandlerAttributes.Select(t => t.ToMetadata(property, binder)).ToList(),
 				CustomProperties = property.GetCustomProperties(binder)
 			};
