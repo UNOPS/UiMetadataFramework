@@ -32,7 +32,7 @@ public class GeneralInputBindingTests
 	[Fact]
 	public void CanGetInputFieldsMetadata()
 	{
-		var inputFields = this.binder.BindInputFields<Request>()
+		var inputFields = this.binder.BuildInputFields<Request>()
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 
@@ -41,7 +41,7 @@ public class GeneralInputBindingTests
 		inputFields
 			.AssertHasInputField(
 				nameof(Request.FirstName),
-				StringInputFieldBinding.ControlName,
+				StringInputComponentBinding.ControlName,
 				"First name",
 				orderIndex: 1,
 				required: true);
@@ -49,13 +49,13 @@ public class GeneralInputBindingTests
 		inputFields
 			.AssertHasInputField(
 				nameof(Request.SubmissionDate),
-				DateTimeInputFieldBinding.ControlName,
+				DateTimeInputComponentBinding.ControlName,
 				nameof(Request.SubmissionDate));
 
 		inputFields
 			.AssertHasInputField(
 				nameof(Request.Height),
-				NumberInputFieldBinding.ControlName,
+				NumberInputComponentBinding.ControlName,
 				nameof(Request.Height),
 				hidden: true);
 

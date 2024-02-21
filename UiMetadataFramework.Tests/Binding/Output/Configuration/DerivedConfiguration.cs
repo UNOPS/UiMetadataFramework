@@ -53,7 +53,7 @@ public class DerivedConfiguration
 	[Fact]
 	public void DerivedConfigurationIsAllowed()
 	{
-		var field = this.binder.BindOutputFields<Response>().Single(t => t.Id == nameof(Response.Money));
+		var field = this.binder.BuildOutputFields<Response>().Single(t => t.Id == nameof(Response.Money));
 
 		dynamic component = field.Component.GetConfigurationOrException();
 

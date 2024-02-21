@@ -13,7 +13,7 @@ public static class MetadataBinderFactory
 	{
 		var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
 
-		binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+		binder.RegisterAssembly(typeof(StringOutputComponentBinding).GetTypeInfo().Assembly);
 		binder.RegisterAssembly(typeof(FormBindingTests).GetTypeInfo().Assembly);
 
 		return binder;

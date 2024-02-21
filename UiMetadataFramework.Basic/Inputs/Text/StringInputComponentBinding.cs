@@ -3,12 +3,12 @@
 	using UiMetadataFramework.Core.Binding;
 
 	/// <inheritdoc />
-	public class StringInputFieldBinding : InputFieldBinding
+	public class StringInputComponentBinding : InputComponentBinding
 	{
 		internal const string ControlName = "text";
 
 		/// <inheritdoc />
-		public StringInputFieldBinding() : base(
+		public StringInputComponentBinding() : base(
 			serverType: typeof(string),
 			clientType: ControlName,
 			metadataFactory: null)

@@ -26,7 +26,7 @@ public class ComponentsForPrimitiveTypes
 	public void CanGetBasicMetadata()
 	{
 		var outputFields = this.binder
-			.BindOutputFields<Response>()
+			.BuildOutputFields<Response>()
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 
@@ -35,7 +35,7 @@ public class ComponentsForPrimitiveTypes
 		outputFields
 			.AssertHasOutputField(
 				id: nameof(Response.FirstName),
-				type: StringOutputFieldBinding.ControlName,
+				type: StringOutputComponentBinding.ControlName,
 				label: "First name",
 				hidden: false,
 				orderIndex: 1);
@@ -43,13 +43,13 @@ public class ComponentsForPrimitiveTypes
 		outputFields
 			.AssertHasOutputField(
 				id: nameof(Response.LastName),
-				type: StringOutputFieldBinding.ControlName,
+				type: StringOutputComponentBinding.ControlName,
 				label: "LastName");
 
 		outputFields
 			.AssertHasOutputField(
 				nameof(Response.Height),
-				NumberOutputFieldBinding.ControlName,
+				NumberOutputComponentBinding.ControlName,
 				nameof(Response.Height),
 				true);
 	}

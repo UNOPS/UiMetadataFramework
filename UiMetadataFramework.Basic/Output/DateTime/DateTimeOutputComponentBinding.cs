@@ -1,15 +1,15 @@
-namespace UiMetadataFramework.Basic.Inputs.DateTime
+namespace UiMetadataFramework.Basic.Output.DateTime
 {
 	using System;
 	using UiMetadataFramework.Core.Binding;
 
 	/// <inheritdoc />
-	public class DateTimeInputFieldBinding : InputFieldBinding
+	public class DateTimeOutputComponentBinding : OutputComponentBinding
 	{
 		internal const string ControlName = "datetime";
 
 		/// <inheritdoc />
-		public DateTimeInputFieldBinding() : base(
+		public DateTimeOutputComponentBinding() : base(
 			serverType: typeof(DateTime),
 			clientType: ControlName,
 			metadataFactory: null)

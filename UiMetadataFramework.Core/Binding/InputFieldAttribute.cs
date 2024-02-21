@@ -41,7 +41,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <remarks>This method will be used internally by <see cref="MetadataBinder"/>.</remarks>
 		public virtual InputFieldMetadata GetMetadata(
 			PropertyInfo property,
-			InputFieldBinding binding,
+			InputComponentBinding binding,
 			MetadataBinder binder)
 		{
 			var propertyType = property.PropertyType.IsConstructedGenericType && !property.PropertyType.IsNullabble()
@@ -64,7 +64,7 @@ namespace UiMetadataFramework.Core.Binding
 					$"'{illegalAttributes[0].GetType().FullName}', because the attribute is not applicable for input fields.");
 			}
 
-			var component = binder.BindInputComponent(property);
+			var component = binder.BuildInputComponent(property);
 			
 			return new InputFieldMetadata(component)
 			{

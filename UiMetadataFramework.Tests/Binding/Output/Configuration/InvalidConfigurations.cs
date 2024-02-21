@@ -31,19 +31,19 @@ public class InvalidConfigurations
 	[Fact]
 	public void ExceptionThrowIfMultipleConfigurationsArePresent()
 	{
-		Assert.Throws<BindingException>(() => this.binder.BindOutputFields<MultipleConfigurationsOfDifferentTypes>().ToList());
+		Assert.Throws<BindingException>(() => this.binder.BuildOutputFields<MultipleConfigurationsOfDifferentTypes>().ToList());
 	}
 
 	[Fact]
 	public void ExceptionThrownIfConfigurationIsMissing()
 	{
-		Assert.Throws<BindingException>(() => this.binder.BindOutputFields<BadResponse>().ToList());
-		Assert.Throws<BindingException>(() => this.binder.BindOutputComponent(typeof(Money)));
+		Assert.Throws<BindingException>(() => this.binder.BuildOutputFields<BadResponse>().ToList());
+		Assert.Throws<BindingException>(() => this.binder.BuildOutputComponent(typeof(Money)));
 	}
 
 	[Fact]
 	public void ExceptionThrownIfConfigurationIsOfWrongType()
 	{
-		Assert.Throws<BindingException>(() => this.binder.BindOutputComponent(typeof(Money), new FlexboxAttribute()));
+		Assert.Throws<BindingException>(() => this.binder.BuildOutputComponent(typeof(Money), new FlexboxAttribute()));
 	}
 }

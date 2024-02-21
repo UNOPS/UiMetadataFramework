@@ -123,7 +123,7 @@
 		{
 			var di = new DefaultDependencyInjectionContainer();
 			var binder = new MetadataBinder(di);
-			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+			binder.RegisterAssembly(typeof(StringOutputComponentBinding).GetTypeInfo().Assembly);
 
 			var formRegister = new FormRegister(binder);
 			formRegister.RegisterForm(typeof(Magic));
@@ -137,7 +137,7 @@
 			services.AddMediatR(
 				typeof(MediatrTests).Assembly,
 				typeof(InvokeForm).Assembly,
-				typeof(StringOutputFieldBinding).Assembly);
+				typeof(StringOutputComponentBinding).Assembly);
 
 			var provider = new DefaultServiceProviderFactory().CreateServiceProvider(services);
 			return provider;
@@ -147,7 +147,7 @@
 		public void CanGetFormsFromRegistry()
 		{
 			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
-			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+			binder.RegisterAssembly(typeof(StringOutputComponentBinding).GetTypeInfo().Assembly);
 
 			var formRegister = new FormRegister(binder);
 			formRegister.RegisterForm(typeof(Magic));
@@ -219,7 +219,7 @@
 		public void DuplicateCallsToRegisterSameFormAreIgnored()
 		{
 			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
-			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+			binder.RegisterAssembly(typeof(StringOutputComponentBinding).GetTypeInfo().Assembly);
 
 			var formRegister = new FormRegister(binder);
 			formRegister.RegisterForm(typeof(Magic));
@@ -230,7 +230,7 @@
 		public void DuplicateFormIdsAreNotAllowed()
 		{
 			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
-			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+			binder.RegisterAssembly(typeof(StringOutputComponentBinding).GetTypeInfo().Assembly);
 
 			var formRegister = new FormRegister(binder);
 			formRegister.RegisterForm(typeof(Magic));
@@ -241,7 +241,7 @@
 		public void TypeNameIsUsedAsDefaultFormId()
 		{
 			var binder = new MetadataBinder(new DefaultDependencyInjectionContainer());
-			binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+			binder.RegisterAssembly(typeof(StringOutputComponentBinding).GetTypeInfo().Assembly);
 
 			var formRegister = new FormRegister(binder);
 			formRegister.RegisterForm(typeof(FormWithoutId));

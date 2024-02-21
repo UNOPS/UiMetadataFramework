@@ -42,17 +42,17 @@ public class TableTests
 
 	[Theory]
 	[InlineData(nameof(Response.Links), "formlink")]
-	[InlineData(nameof(Response.Categories), StringInputFieldBinding.ControlName)]
-	[InlineData(nameof(Response.Numbers), NumberOutputFieldBinding.ControlName)]
+	[InlineData(nameof(Response.Categories), StringInputComponentBinding.ControlName)]
+	[InlineData(nameof(Response.Numbers), NumberOutputComponentBinding.ControlName)]
 	public void EnumerableOfComponentHasOneColumn(string property, string itemType)
 	{
 		var outputField = this.binder
-			.BindOutputFields<Response>()
+			.BuildOutputFields<Response>()
 			.Single(t => t.Id == property);
 
 		var component = outputField.Component.GetConfigurationOrException<TableMetadataFactory.Properties>();
 
-		Assert.Equal(TableOutputFieldBinding.ObjectListOutputControlName, outputField.Component.Type);
+		Assert.Equal(TableOutputComponentBinding.ObjectListOutputControlName, outputField.Component.Type);
 		Assert.Equal(1, component.Columns.Count);
 		Assert.Equal(itemType, component.Columns.Single().Component.Type);
 	}
@@ -61,7 +61,7 @@ public class TableTests
 	public void EnumerableOfNonComponentHasMultipleColumns()
 	{
 		var outputFieldMetadatas = this.binder
-			.BindOutputFields<Response>()
+			.BuildOutputFields<Response>()
 			.ToList();
 		
 		var outputField = outputFieldMetadatas
@@ -69,31 +69,31 @@ public class TableTests
 
 		var config = outputField.Component.GetConfigurationOrException<TableMetadataFactory.Properties>();
 
-		Assert.Equal(TableOutputFieldBinding.ObjectListOutputControlName, outputField.Component.Type);
+		Assert.Equal(TableOutputComponentBinding.ObjectListOutputControlName, outputField.Component.Type);
 
 		config.Columns.AssertHasOutputField(
 			nameof(Person.FirstName),
-			StringOutputFieldBinding.ControlName,
+			StringOutputComponentBinding.ControlName,
 			"First name",
 			false,
 			1);
 
 		config.Columns.AssertHasOutputField(
 			nameof(Person.DateOfBirth),
-			DateTimeOutputFieldBinding.ControlName,
+			DateTimeOutputComponentBinding.ControlName,
 			"DoB",
 			false,
 			2);
 
 		config.Columns.AssertHasOutputField(
 			nameof(Person.Height),
-			NumberOutputFieldBinding.ControlName,
+			NumberOutputComponentBinding.ControlName,
 			nameof(Person.Height),
 			true);
 		
 		config.Columns.AssertHasOutputField(
 			nameof(Person.Weight),
-			NumberOutputFieldBinding.ControlName,
+			NumberOutputComponentBinding.ControlName,
 			nameof(Person.Weight),
 			true);
 	}

@@ -22,7 +22,7 @@ public class GenericComponent
 	public void ComponentBindingFound()
 	{
 		var outputField = this.binder
-			.BindOutputFields<Response>()
+			.BuildOutputFields<Response>()
 			.Single(t => t.Id == nameof(Response.Values));
 
 		Assert.Equal("flexbox", outputField.Component.Type);

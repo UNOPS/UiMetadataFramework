@@ -126,7 +126,7 @@
 			var requestType = iRequestHandlerInterface.GenericTypeArguments[0];
 			var responseType = iRequestHandlerInterface.GenericTypeArguments[1];
 
-			var form = this.binder.BindForm(formType, requestType, responseType);
+			var form = this.binder.BuildForm(formType, requestType, responseType);
 
 			return new FormInfo
 			{

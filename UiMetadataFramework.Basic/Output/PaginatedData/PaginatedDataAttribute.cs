@@ -27,7 +27,7 @@ public class PaginatedDataAttribute(string paginator) : ComponentConfigurationAt
 
 		try
 		{
-			var columns = binder.BindOutputFields(paginatedItemType).ToList();
+			var columns = binder.BuildOutputFields(paginatedItemType).ToList();
 
 			return new Properties
 			{

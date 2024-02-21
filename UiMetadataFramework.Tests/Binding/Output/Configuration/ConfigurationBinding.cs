@@ -23,7 +23,7 @@ public class ConfigurationBinding
 	[Fact]
 	public void BindingByMethodCallWorks()
 	{
-		var field = this.binder.BindOutputComponent(
+		var field = this.binder.BuildOutputComponent(
 			typeof(Money),
 			new MoneyAttribute
 			{
@@ -42,7 +42,7 @@ public class ConfigurationBinding
 	[Fact]
 	public void ConfigurationAttributeWorks()
 	{
-		var field = this.binder.BindOutputFields<Response>().Single(t => t.Id == nameof(Response.Money));
+		var field = this.binder.BuildOutputFields<Response>().Single(t => t.Id == nameof(Response.Money));
 
 		dynamic component = field.Component.GetConfigurationOrException();
 
@@ -53,7 +53,7 @@ public class ConfigurationBinding
 	[Fact]
 	public void OptionalConfigurationAttributeWorks()
 	{
-		var field = this.binder.BindOutputFields<Response>().Single(t => t.Id == nameof(Response.StyledMoney));
+		var field = this.binder.BuildOutputFields<Response>().Single(t => t.Id == nameof(Response.StyledMoney));
 
 		dynamic component = field.Component.GetConfigurationOrException();
 

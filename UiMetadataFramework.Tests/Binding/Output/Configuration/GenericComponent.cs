@@ -29,7 +29,7 @@ public class GenericComponent
 	[Fact]
 	public void MetadataBoundCorrectly()
 	{
-		var field = this.binder.BindOutputFields<Response>().Single();
+		var field = this.binder.BuildOutputFields<Response>().Single();
 
 		var component = field.Component.GetConfigurationOrException<PaginatedDataAttribute.Properties>();
 

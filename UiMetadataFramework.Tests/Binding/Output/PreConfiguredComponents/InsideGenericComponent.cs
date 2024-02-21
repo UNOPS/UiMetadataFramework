@@ -27,7 +27,7 @@ public class InsideGenericComponent
 	[Fact]
 	public void NestedPreConfiguredComponentBound()
 	{
-		var money = this.binder.BindOutputFields<Outputs>()
+		var money = this.binder.BuildOutputFields<Outputs>()
 			.Single(t => t.Id == nameof(Outputs.Amounts)).Component.GetConfigurationOrException<ObjectListAttribute.Configuration>()
 			.InnerComponent;
 
@@ -43,7 +43,7 @@ public class InsideGenericComponent
 	[Fact]
 	public void OuterGenericComponentBound()
 	{
-		var objectList = this.binder.BindOutputFields<Outputs>()
+		var objectList = this.binder.BuildOutputFields<Outputs>()
 			.Single(t => t.Id == nameof(Outputs.Amounts));
 
 		var objectListConfig = objectList.Component.GetConfigurationOrException<ObjectListAttribute.Configuration>();

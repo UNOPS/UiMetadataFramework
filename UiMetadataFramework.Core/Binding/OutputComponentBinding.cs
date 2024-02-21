@@ -1,50 +1,42 @@
-namespace UiMetadataFramework.Core.Binding
+﻿namespace UiMetadataFramework.Core.Binding
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 
 	/// <summary>
-	/// <see cref="IFieldBinding"/> for an input field.
+	/// <see cref="IFieldBinding"/> for an output field.
 	/// </summary>
-	public class InputFieldBinding : IFieldBinding
+	public class OutputComponentBinding : IFieldBinding
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="InputFieldBinding"/> class.
+		/// Initializes a new instance of the <see cref="OutputComponentBinding"/> class.
 		/// </summary>
 		/// <param name="serverType">Type which should be rendered on the client.</param>
 		/// <param name="clientType">Name of the client control which will render the specified type.</param>
 		/// <param name="metadataFactory">Type that implements <see cref="IMetadataFactory"/> and which will
 		/// be used to construct custom metadata. If null, then no custom metadata will be constructed for
 		/// this component.</param>
-		public InputFieldBinding(
+		public OutputComponentBinding(
 			Type serverType,
 			string clientType,
 			Type? metadataFactory)
-			: this(new[] { serverType }, clientType, metadataFactory)
+			: this(
+				new[] { serverType },
+				clientType,
+				metadataFactory)
 		{
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="InputFieldBinding"/> class.
-		/// </summary>
-		/// <param name="serverType">Type which should be rendered on the client.</param>
-		/// <param name="attribute"><see cref="InputComponentAttribute"/> instance.</param>
-		public InputFieldBinding(Type serverType, InputComponentAttribute attribute)
-			: this(new[] { serverType }, attribute.Name, attribute.MetadataFactory)
-		{
-			this.MetadataFactory = attribute.MetadataFactory;
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="InputFieldBinding"/> class.
+		/// Initializes a new instance of the <see cref="OutputComponentBinding"/> class.
 		/// </summary>
 		/// <param name="serverTypes">Types which should be rendered on the client.</param>
 		/// <param name="clientType">Name of the client control which will render the specified types.</param>
-		/// <param name="metadataFactory">Type that implements <see cref="IMetadataFactory"/> and which will
-		/// be used to construct custom metadata. If null, then no custom metadata will be constructed for
-		/// this component.</param>
-		public InputFieldBinding(
+		/// <param name="metadataFactory"><see cref="IMetadataFactory"/> to use for constructing component's metadata.
+		/// If the component requires configuration, then a type implementing <see cref="ComponentConfigurationAttribute"/>
+		/// can be provided.</param>
+		public OutputComponentBinding(
 			IEnumerable<Type> serverTypes,
 			string clientType,
 			Type? metadataFactory)
@@ -55,11 +47,17 @@ namespace UiMetadataFramework.Core.Binding
 		}
 
 		/// <summary>
-		/// Gets or sets value indicating whether input should never be explicitly rendered on the client.
-		/// If this value is set to true, then <see cref="InputFieldMetadata.Hidden"/> will always
-		/// be true.
+		/// Initializes a new instance of the <see cref="OutputComponentBinding"/> class.
 		/// </summary>
-		public bool IsInputAlwaysHidden { get; set; }
+		/// <param name="serverType">Type which should be rendered on the client.</param>
+		/// <param name="attribute"><see cref="OutputComponentAttribute"/> instance.</param>
+		public OutputComponentBinding(Type serverType, OutputComponentAttribute attribute)
+			: this(
+				serverType,
+				attribute.Name,
+				attribute.MetadataFactory)
+		{
+		}
 
 		/// <summary>
 		/// Gets the server-side types being bound.
@@ -80,7 +78,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <inheritdoc />
 		public override bool Equals(object? obj)
 		{
-			if (!(obj is InputFieldBinding binding))
+			if (obj is not OutputComponentBinding binding)
 			{
 				return false;
 			}
@@ -95,9 +93,7 @@ namespace UiMetadataFramework.Core.Binding
 		{
 			unchecked
 			{
-				var hashCode = this.ClientType.GetHashCode();
-				hashCode = (hashCode * 397) ^ this.ServerTypes.GetHashCode();
-				return hashCode;
+				return (this.ClientType.GetHashCode() * 397) ^ this.ServerTypes.GetHashCode();
 			}
 		}
 	}

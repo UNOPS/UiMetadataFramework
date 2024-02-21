@@ -42,14 +42,14 @@ public class InputCustomPropertyBindingTests
 	[Fact]
 	public void CanBindCustomProperty()
 	{
-		var inputFields = this.binder.BindInputFields<Request>()
+		var inputFields = this.binder.BuildInputFields<Request>()
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 
 		inputFields
 			.AssertHasInputField(
 				nameof(Request.DateOfBirth),
-				DateTimeInputFieldBinding.ControlName,
+				DateTimeInputComponentBinding.ControlName,
 				"DoB",
 				orderIndex: 2,
 				required: true)

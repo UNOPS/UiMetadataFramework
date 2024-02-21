@@ -27,7 +27,7 @@ public class CustomInputTypeTests
 	public void BindsCustomInputType()
 	{
 		var inputField = this.binder
-			.BindInputFields<Request>()
+			.BuildInputFields<Request>()
 			.Single(t => t.Id == nameof(Request.AcceptTerms));
 
 		var custom = inputField.Component.GetConfigurationOrException<CheckboxAttribute.Configuration>();
@@ -38,6 +38,6 @@ public class CustomInputTypeTests
 	[Fact]
 	public void ThrowsExceptionWhenMandatoryAttributeIsMissing()
 	{
-		Assert.Throws<BindingException>(() => this.binder.BindInputFields<RequestWithMissingMandatoryAttribute>().ToList());
+		Assert.Throws<BindingException>(() => this.binder.BuildInputFields<RequestWithMissingMandatoryAttribute>().ToList());
 	}
 }

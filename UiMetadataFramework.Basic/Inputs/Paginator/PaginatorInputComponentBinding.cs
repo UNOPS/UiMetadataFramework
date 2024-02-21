@@ -3,10 +3,10 @@
 	using UiMetadataFramework.Core.Binding;
 
 	/// <inheritdoc />
-	public class PaginatorInputFieldBinding : InputFieldBinding
+	public class PaginatorInputComponentBinding : InputComponentBinding
 	{
 		/// <inheritdoc />
-		public PaginatorInputFieldBinding() : base(
+		public PaginatorInputComponentBinding() : base(
 			serverType: typeof(Paginator),
 			clientType: "paginator",
 			metadataFactory: null)

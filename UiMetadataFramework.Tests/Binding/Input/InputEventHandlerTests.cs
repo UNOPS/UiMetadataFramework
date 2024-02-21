@@ -28,14 +28,14 @@ public class InputEventHandlerTests
 	[Fact]
 	public void CanBindEventHandlers()
 	{
-		var inputFields = this.binder.BindInputFields<ValidRequest>()
+		var inputFields = this.binder.BuildInputFields<ValidRequest>()
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 
 		inputFields
 			.AssertHasInputField(
 				nameof(ValidRequest.Weight),
-				NumberInputFieldBinding.ControlName,
+				NumberInputComponentBinding.ControlName,
 				nameof(ValidRequest.Weight),
 				hidden: true,
 				required: true,
@@ -45,6 +45,6 @@ public class InputEventHandlerTests
 	[Fact]
 	public void EventHandlerCanOnlyBeAppliedToIntendedElements()
 	{
-		Assert.Throws<BindingException>(() => this.binder.BindInputFields<InvalidRequest>().ToList());
+		Assert.Throws<BindingException>(() => this.binder.BuildInputFields<InvalidRequest>().ToList());
 	}
 }

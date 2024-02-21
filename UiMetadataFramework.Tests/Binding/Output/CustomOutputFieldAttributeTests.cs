@@ -20,7 +20,7 @@ public class CustomOutputFieldAttributeTests
 	public void CanBindDerivedOutputFieldAttribute()
 	{
 		var outputField = this.binder
-			.BindOutputFields<Response>()
+			.BuildOutputFields<Response>()
 			.Single(t => t.Id == nameof(Response.Weight));
 
 		var custom = outputField as CustomOutputFieldAttribute.Metadata;

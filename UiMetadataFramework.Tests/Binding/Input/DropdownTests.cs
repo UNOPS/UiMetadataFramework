@@ -44,7 +44,7 @@ public class DropdownTests
 	[Fact]
 	public void CanBindRemoteSource()
 	{
-		var field = this.binder.BindInputFields<Request>()
+		var field = this.binder.BuildInputFields<Request>()
 			.Single(t => t.Id == nameof(Request.Countries));
 
 		var component = field.Component.GetConfigurationOrException<DropdownAttribute.Configuration>();
@@ -58,7 +58,7 @@ public class DropdownTests
 	[Fact]
 	public void CanBindToCustomInlineSource()
 	{
-		var field = this.binder.BindInputFields<Request>()
+		var field = this.binder.BuildInputFields<Request>()
 			.Single(t => t.Id == nameof(Request.Gender));
 
 		var component = field.Component.GetConfigurationOrException<DropdownAttribute.Configuration>();
@@ -69,7 +69,7 @@ public class DropdownTests
 	[Fact]
 	public void CanBindToEnum()
 	{
-		var inputFields = this.binder.BindInputFields<Request>()
+		var inputFields = this.binder.BuildInputFields<Request>()
 			.Single(t => t.Id == nameof(Request.Day));
 
 		var component = inputFields.Component.GetConfigurationOrException<DropdownAttribute.Configuration>();

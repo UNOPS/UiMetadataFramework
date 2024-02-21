@@ -30,7 +30,7 @@ public class EventHandlerTests
 	public void CanBindEventHandlers()
 	{
 		var outputFields = this.binder
-			.BindOutputFields<ValidResponse>()
+			.BuildOutputFields<ValidResponse>()
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 
@@ -44,6 +44,6 @@ public class EventHandlerTests
 	[Fact]
 	public void EventHandlerCanOnlyBeAppliedToIntendedElements()
 	{
-		Assert.Throws<BindingException>(() => this.binder.BindOutputFields<InvalidResponse>().ToList());
+		Assert.Throws<BindingException>(() => this.binder.BuildOutputFields<InvalidResponse>().ToList());
 	}
 }

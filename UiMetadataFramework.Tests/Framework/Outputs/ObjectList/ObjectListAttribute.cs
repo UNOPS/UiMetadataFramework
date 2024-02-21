@@ -17,7 +17,7 @@ public class ObjectListAttribute : ComponentConfigurationAttribute
 	{
 		var innerType = type.GenericTypeArguments[0];
 
-		var component = binder.BindOutputComponent(innerType);
+		var component = binder.BuildOutputComponent(innerType);
 
 		return new Configuration(component, this.Style, this.ListItem, this.Gap);
 	}

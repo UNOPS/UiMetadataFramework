@@ -23,13 +23,13 @@ public class TableMetadataFactory : IMetadataFactory
 			throw new BindingException($"Cannot get element type from array '{type.FullName}'.")
 			: type.GenericTypeArguments[0];
 
-		var isKnownOutputType = binder.OutputFieldBindings.Any(t => t.Key.ImplementsClass(innerType));
+		var isKnownOutputType = binder.OutputBindings.Any(t => t.Key.ImplementsClass(innerType));
 
 		var containerType = isKnownOutputType
 			? typeof(Wrapper<>).MakeGenericType(innerType)
 			: innerType;
 
-		return new Properties(binder.BindOutputFields(containerType).ToList());
+		return new Properties(binder.BuildOutputFields(containerType).ToList());
 	}
 
 	/// <summary>

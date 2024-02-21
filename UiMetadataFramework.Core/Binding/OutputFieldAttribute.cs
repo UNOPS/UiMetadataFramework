@@ -35,7 +35,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <remarks>This method will be used internally by <see cref="MetadataBinder"/>.</remarks>
 		public virtual OutputFieldMetadata GetMetadata(
 			PropertyInfo property,
-			OutputFieldBinding binding,
+			OutputComponentBinding binding,
 			MetadataBinder binder)
 		{
 			var eventHandlerAttributes = property.GetCustomAttributesImplementingInterface<IFieldEventHandlerAttribute>().ToList();
@@ -48,7 +48,7 @@ namespace UiMetadataFramework.Core.Binding
 					$"applicable for output fields.");
 			}
 
-			var component = binder.BindOutputComponent(property);
+			var component = binder.BuildOutputComponent(property);
 			
 			return new OutputFieldMetadata(component)
 			{

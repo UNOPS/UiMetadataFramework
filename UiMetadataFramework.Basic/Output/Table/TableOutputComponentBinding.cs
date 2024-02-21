@@ -7,7 +7,7 @@ using UiMetadataFramework.Core.Binding;
 /// <summary>
 /// Provides binding for all <see cref="IEnumerable{T}"/> properties.
 /// </summary>
-public class TableOutputFieldBinding : OutputFieldBinding
+public class TableOutputComponentBinding : OutputComponentBinding
 {
 	/// <summary>
 	/// Name of the client-side control which should be able to render tabular data.
@@ -15,7 +15,7 @@ public class TableOutputFieldBinding : OutputFieldBinding
 	public const string ObjectListOutputControlName = "table";
 
 	/// <inheritdoc />
-	public TableOutputFieldBinding() : base(
+	public TableOutputComponentBinding() : base(
 		new[]
 		{
 			typeof(IEnumerable<>),

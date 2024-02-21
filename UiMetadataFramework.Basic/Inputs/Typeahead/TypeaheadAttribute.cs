@@ -33,7 +33,7 @@ namespace UiMetadataFramework.Basic.Inputs.Typeahead
 		/// <inheritdoc />
 		public override InputFieldMetadata GetMetadata(
 			PropertyInfo property,
-			InputFieldBinding binding,
+			InputComponentBinding binding,
 			MetadataBinder binder)
 		{
 			var result = base.GetMetadata(property, binding, binder);

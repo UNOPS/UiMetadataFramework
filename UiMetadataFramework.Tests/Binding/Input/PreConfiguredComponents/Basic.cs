@@ -26,7 +26,7 @@ public class ConfigurationOverrides
 	[Fact]
 	public void OuterConfigurationOverridesInner()
 	{
-		var moneyConfig = this.binder.BindInputFields<Inputs>()
+		var moneyConfig = this.binder.BuildInputFields<Inputs>()
 			.Single(t => t.Id == nameof(Inputs.Usd)).Component.GetConfigurationOrException<MoneyAttribute.Configuration>();
 
 		Assert.Equal(4, moneyConfig.DecimalPlaces);

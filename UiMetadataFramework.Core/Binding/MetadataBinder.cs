@@ -17,17 +17,17 @@ namespace UiMetadataFramework.Core.Binding
 		/// </summary>
 		public readonly IServiceProvider Container;
 
-		private readonly ConcurrentDictionary<Type, IEnumerable<InputFieldMetadata>> inputFieldMetadataCache = new();
-		private readonly ConcurrentDictionary<Type, InputFieldBinding> inputFieldMetadataMap = new();
+		private readonly ConcurrentDictionary<Type, InputComponentBinding> inputBindings = new();
+		private readonly ConcurrentDictionary<Type, IEnumerable<InputFieldMetadata>> inputFieldCache = new();
 		private readonly object key = new();
-		private readonly ConcurrentDictionary<Type, IEnumerable<OutputFieldMetadata>> outputFieldMetadataCache = new();
-		private readonly ConcurrentDictionary<Type, OutputFieldBinding> outputFieldMetadataMap = new();
+		private readonly ConcurrentDictionary<Type, OutputComponentBinding> outputBindings = new();
+		private readonly ConcurrentDictionary<Type, IEnumerable<OutputFieldMetadata>> outputFieldCache = new();
 		private readonly List<string> registeredAssemblies = new();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MetadataBinder"/> class and configures
 		/// <see cref="DependencyInjectionContainer.Default"/> to be responsible for instantiating
-		/// <see cref="InputFieldBinding"/> and <see cref="OutputFieldBinding"/> when registering
+		/// <see cref="InputComponentBinding"/> and <see cref="OutputComponentBinding"/> when registering
 		/// a new assembly.
 		/// </summary>
 		public MetadataBinder()
@@ -38,7 +38,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MetadataBinder"/> class and configures the given
 		/// <see cref="DependencyInjectionContainer"/> to be responsible for instantiating
-		/// <see cref="InputFieldBinding"/> and <see cref="OutputFieldBinding"/> when registering
+		/// <see cref="InputComponentBinding"/> and <see cref="OutputComponentBinding"/> when registering
 		/// a new assembly.
 		/// </summary>
 		public MetadataBinder(IServiceProvider container)
@@ -47,14 +47,14 @@ namespace UiMetadataFramework.Core.Binding
 		}
 
 		/// <summary>
-		/// Gets list of all registered <see cref="InputFieldBinding"/>.
+		/// Gets list of all registered <see cref="InputComponentBinding"/>.
 		/// </summary>
-		public IReadOnlyDictionary<Type, InputFieldBinding> InputFieldBindings => this.inputFieldMetadataMap.AsReadOnlyDictionary();
+		public IReadOnlyDictionary<Type, InputComponentBinding> InputBindings => this.inputBindings.AsReadOnlyDictionary();
 
 		/// <summary>
-		/// Gets list of all registered <see cref="OutputFieldBinding"/>.
+		/// Gets list of all registered <see cref="OutputComponentBinding"/>.
 		/// </summary>
-		public IReadOnlyDictionary<Type, OutputFieldBinding> OutputFieldBindings => this.outputFieldMetadataMap.AsReadOnlyDictionary();
+		public IReadOnlyDictionary<Type, OutputComponentBinding> OutputBindings => this.outputBindings.AsReadOnlyDictionary();
 
 		/// <summary>
 		/// Gets id of the form.
@@ -75,12 +75,12 @@ namespace UiMetadataFramework.Core.Binding
 		}
 
 		/// <summary>
-		/// Registers given <see cref="OutputFieldBinding"/> instance.
+		/// Registers given <see cref="OutputComponentBinding"/> instance.
 		/// </summary>
-		/// <param name="binding"><see cref="OutputFieldBinding"/> instance.</param>
-		public void AddBinding(OutputFieldBinding binding)
+		/// <param name="binding"><see cref="OutputComponentBinding"/> instance.</param>
+		public void AddBinding(OutputComponentBinding binding)
 		{
-			var existingBinding = this.outputFieldMetadataMap.Values.FirstOrDefault(t => t.ClientType == binding.ClientType);
+			var existingBinding = this.outputBindings.Values.FirstOrDefault(t => t.ClientType == binding.ClientType);
 
 			if (existingBinding != null)
 			{
@@ -96,7 +96,7 @@ namespace UiMetadataFramework.Core.Binding
 
 			foreach (var serverType in binding.ServerTypes)
 			{
-				if (this.outputFieldMetadataMap.ContainsKey(serverType))
+				if (this.outputBindings.ContainsKey(serverType))
 				{
 					throw new InvalidOperationException(
 						$"Type '{binding.ServerTypes}' is already bound to output field control '{binding.ClientType}'.");
@@ -108,20 +108,20 @@ namespace UiMetadataFramework.Core.Binding
 					// For example when binding "int", also bind "int?".
 					var nullable = typeof(Nullable<>).MakeGenericType(serverType);
 
-					this.outputFieldMetadataMap.TryAdd(nullable, binding);
+					this.outputBindings.TryAdd(nullable, binding);
 				}
 
-				this.outputFieldMetadataMap.TryAdd(serverType, binding);
+				this.outputBindings.TryAdd(serverType, binding);
 			}
 		}
 
 		/// <summary>
-		/// Registers given <see cref="InputFieldBinding"/> instance.
+		/// Registers given <see cref="InputComponentBinding"/> instance.
 		/// </summary>
-		/// <param name="binding"><see cref="InputFieldBinding"/> instance.</param>
-		public void AddBinding(InputFieldBinding binding)
+		/// <param name="binding"><see cref="InputComponentBinding"/> instance.</param>
+		public void AddBinding(InputComponentBinding binding)
 		{
-			var existingBinding = this.inputFieldMetadataMap.Values.FirstOrDefault(t => t.ClientType == binding.ClientType);
+			var existingBinding = this.inputBindings.Values.FirstOrDefault(t => t.ClientType == binding.ClientType);
 
 			if (existingBinding != null)
 			{
@@ -137,7 +137,7 @@ namespace UiMetadataFramework.Core.Binding
 
 			foreach (var serverType in binding.ServerTypes)
 			{
-				if (this.inputFieldMetadataMap.ContainsKey(serverType))
+				if (this.inputBindings.ContainsKey(serverType))
 				{
 					throw new InvalidOperationException(
 						$"Type '{binding.ServerTypes}' is already bound to input field control '{binding.ClientType}'.");
@@ -149,10 +149,10 @@ namespace UiMetadataFramework.Core.Binding
 					// For example when binding "int", also bind "int?".
 					var nullable = typeof(Nullable<>).MakeGenericType(serverType);
 
-					this.inputFieldMetadataMap.TryAdd(nullable, binding);
+					this.inputBindings.TryAdd(nullable, binding);
 				}
 
-				this.inputFieldMetadataMap.TryAdd(serverType, binding);
+				this.inputBindings.TryAdd(serverType, binding);
 			}
 		}
 
@@ -164,9 +164,9 @@ namespace UiMetadataFramework.Core.Binding
 		/// be used to construct custom metadata. If null, then no custom metadata will be constructed for
 		/// this component.</param>
 		/// <typeparam name="TServerType">Type to bind to a specific client control.</typeparam>
-		public void AddInputFieldBinding<TServerType>(string clientType, Type? metadataFactory)
+		public void AddInputBinding<TServerType>(string clientType, Type? metadataFactory)
 		{
-			var binding = new InputFieldBinding(
+			var binding = new InputComponentBinding(
 				typeof(TServerType),
 				clientType,
 				metadataFactory);
@@ -182,47 +182,16 @@ namespace UiMetadataFramework.Core.Binding
 		/// be used to construct custom metadata. If null, then no custom metadata will be constructed for
 		/// this component.</param>
 		/// <typeparam name="TServerType">Type to bind to a specific client control.</typeparam>
-		public void AddOutputFieldBinding<TServerType>(
+		public void AddOutputBinding<TServerType>(
 			string clientType,
 			Type? metadataFactory)
 		{
-			var binding = new OutputFieldBinding(
+			var binding = new OutputComponentBinding(
 				typeof(TServerType),
 				clientType,
 				metadataFactory);
 
 			this.AddBinding(binding);
-		}
-
-		/// <summary>
-		/// Gets form metadata for the specified form.
-		/// </summary>
-		/// <typeparam name="TForm">Type representing the form.</typeparam>
-		/// <typeparam name="TRequest">Type representing request for the form. 
-		/// <see cref="FormMetadata.InputFields"/> will be deduced from this class.</typeparam>
-		/// <typeparam name="TResponse">Type representing response of the form. 
-		/// <see cref="FormMetadata.OutputFields"/> will be deduced from this class.</typeparam>
-		/// <returns><see cref="FormMetadata"/> instance.</returns>
-		public FormMetadata BindForm<TForm, TRequest, TResponse>()
-		{
-			return this.BindForm(typeof(TForm), typeof(TRequest), typeof(TResponse));
-		}
-
-		/// <summary>
-		/// Gets form metadata for the specified form.
-		/// </summary>
-		/// <param name="formType"> name="TForm">Type representing the form.</param>
-		/// <param name="requestType">Type representing request for the form. 
-		/// <see cref="FormMetadata.InputFields"/> will be deduced from this class.</param>
-		/// <param name="responseType">Type representing response of the form. 
-		/// <see cref="FormMetadata.OutputFields"/> will be deduced from this class.</param>
-		/// <returns><see cref="FormMetadata"/> instance.</returns>
-		public FormMetadata BindForm(
-			Type formType,
-			Type requestType,
-			Type responseType)
-		{
-			return new FormMetadata(this, formType, requestType, responseType);
 		}
 
 		/// <summary>
@@ -239,7 +208,7 @@ namespace UiMetadataFramework.Core.Binding
 			ComponentConfigurationAttribute? configuration = null,
 			params ComponentConfigurationItemAttribute[] additionalConfigurations)
 		{
-			var binding = this.GetInputFieldBinding(type);
+			var binding = this.GetInputBinding(type);
 
 			return this.BuildComponent(
 				type,
@@ -249,9 +218,40 @@ namespace UiMetadataFramework.Core.Binding
 		}
 
 		/// <summary>
+		/// Gets form metadata for the specified form.
+		/// </summary>
+		/// <typeparam name="TForm">Type representing the form.</typeparam>
+		/// <typeparam name="TRequest">Type representing request for the form. 
+		/// <see cref="FormMetadata.InputFields"/> will be deduced from this class.</typeparam>
+		/// <typeparam name="TResponse">Type representing response of the form. 
+		/// <see cref="FormMetadata.OutputFields"/> will be deduced from this class.</typeparam>
+		/// <returns><see cref="FormMetadata"/> instance.</returns>
+		public FormMetadata BuildForm<TForm, TRequest, TResponse>()
+		{
+			return this.BuildForm(typeof(TForm), typeof(TRequest), typeof(TResponse));
+		}
+
+		/// <summary>
+		/// Gets form metadata for the specified form.
+		/// </summary>
+		/// <param name="formType"> name="TForm">Type representing the form.</param>
+		/// <param name="requestType">Type representing request for the form. 
+		/// <see cref="FormMetadata.InputFields"/> will be deduced from this class.</param>
+		/// <param name="responseType">Type representing response of the form. 
+		/// <see cref="FormMetadata.OutputFields"/> will be deduced from this class.</param>
+		/// <returns><see cref="FormMetadata"/> instance.</returns>
+		public FormMetadata BuildForm(
+			Type formType,
+			Type requestType,
+			Type responseType)
+		{
+			return new FormMetadata(this, formType, requestType, responseType);
+		}
+
+		/// <summary>
 		/// Builds metadata for the given property with an input component. 
 		/// </summary>
-		public Component BindInputComponent(PropertyInfo property)
+		public Component BuildInputComponent(PropertyInfo property)
 		{
 			return this.BindInputComponent(
 				property.PropertyType,
@@ -266,9 +266,9 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="strict">If true, then only properties that have <see cref="InputFieldAttribute"/>
 		/// will be taken into account.</param>
 		/// <returns>List of input field metadata.</returns>
-		public IEnumerable<InputFieldMetadata> BindInputFields<T>(bool strict = false)
+		public IEnumerable<InputFieldMetadata> BuildInputFields<T>(bool strict = false)
 		{
-			return this.BindInputFields(typeof(T), strict);
+			return this.BuildInputFields(typeof(T), strict);
 		}
 
 		/// <summary>
@@ -278,11 +278,11 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="strict">If true, then only properties that have <see cref="InputFieldAttribute"/>
 		/// will be taken into account.</param>
 		/// <returns>List of input field metadata.</returns>
-		public IEnumerable<InputFieldMetadata> BindInputFields(Type type, bool strict = false)
+		public IEnumerable<InputFieldMetadata> BuildInputFields(Type type, bool strict = false)
 		{
-			return this.inputFieldMetadataCache.GetOrAdd(
+			return this.inputFieldCache.GetOrAdd(
 				type,
-				t => this.BindInputFieldsInternal(t, strict));
+				t => this.BuildInputFieldsInternal(t, strict));
 		}
 
 		/// <summary>
@@ -294,12 +294,12 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="additionalConfigurations">Additional configurations to use when constructing the metadata.</param>
 		/// <returns>Metadata for component of type <paramref name="type"/>.</returns>
 		/// <exception cref="BindingException">Thrown if a mandatory custom property is missing.</exception>
-		public Component BindOutputComponent(
+		public Component BuildOutputComponent(
 			Type type,
 			ComponentConfigurationAttribute? configuration = null,
 			params ComponentConfigurationItemAttribute[] additionalConfigurations)
 		{
-			var binding = this.GetOutputFieldBinding(type);
+			var binding = this.GetOutputBinding(type);
 
 			return this.BuildComponent(
 				type,
@@ -311,9 +311,9 @@ namespace UiMetadataFramework.Core.Binding
 		/// <summary>
 		/// Builds metadata for the given property with an output component. 
 		/// </summary>
-		public Component BindOutputComponent(PropertyInfo property)
+		public Component BuildOutputComponent(PropertyInfo property)
 		{
-			return this.BindOutputComponent(
+			return this.BuildOutputComponent(
 				property.PropertyType,
 				property.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>(inherit: true),
 				property.GetCustomAttributes<ComponentConfigurationItemAttribute>(inherit: true).ToArray());
@@ -326,11 +326,11 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="strict">If true, then only properties that have <see cref="OutputFieldAttribute"/>
 		/// will be taken into account.</param>
 		/// <returns>List of output field metadata.</returns>
-		public IEnumerable<OutputFieldMetadata> BindOutputFields(Type type, bool strict = false)
+		public IEnumerable<OutputFieldMetadata> BuildOutputFields(Type type, bool strict = false)
 		{
-			return this.outputFieldMetadataCache.GetOrAdd(
+			return this.outputFieldCache.GetOrAdd(
 				type,
-				t => this.BindOutputFieldsInternal(t, strict));
+				t => this.BuildOutputFieldsInternal(t, strict));
 		}
 
 		/// <summary>
@@ -340,13 +340,13 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="strict">If true, then only properties that have <see cref="OutputFieldAttribute"/>
 		/// will be taken into account.</param>
 		/// <returns>List of output field metadata.</returns>
-		public IEnumerable<OutputFieldMetadata> BindOutputFields<T>(bool strict = false)
+		public IEnumerable<OutputFieldMetadata> BuildOutputFields<T>(bool strict = false)
 		{
-			return this.BindOutputFields(typeof(T), strict);
+			return this.BuildOutputFields(typeof(T), strict);
 		}
 
 		/// <summary>
-		/// Scans assembly for implementations of <see cref="OutputFieldBinding"/>, <see cref="InputFieldBinding"/>
+		/// Scans assembly for implementations of <see cref="OutputComponentBinding"/>, <see cref="InputComponentBinding"/>
 		/// and registers them in this instance of <see cref="MetadataBinder"/>.
 		/// </summary>
 		/// <param name="assembly">Assembly to scan.</param>
@@ -370,10 +370,10 @@ namespace UiMetadataFramework.Core.Binding
 						var typeInfo = t.GetTypeInfo();
 						return typeInfo.IsClass &&
 							!typeInfo.IsAbstract &&
-							typeInfo.IsSubclassOf(typeof(OutputFieldBinding));
+							typeInfo.IsSubclassOf(typeof(OutputComponentBinding));
 					})
 				.Select(t => this.Container.GetService(t))
-				.Cast<OutputFieldBinding>();
+				.Cast<OutputComponentBinding>();
 
 			foreach (var binding in outputFieldBindings)
 			{
@@ -387,7 +387,7 @@ namespace UiMetadataFramework.Core.Binding
 
 					if (attribute != null)
 					{
-						this.AddBinding(new OutputFieldBinding(t, attribute));
+						this.AddBinding(new OutputComponentBinding(t, attribute));
 					}
 				});
 
@@ -398,10 +398,10 @@ namespace UiMetadataFramework.Core.Binding
 						var typeInfo = t.GetTypeInfo();
 						return typeInfo.IsClass &&
 							!typeInfo.IsAbstract &&
-							typeInfo.IsSubclassOf(typeof(InputFieldBinding));
+							typeInfo.IsSubclassOf(typeof(InputComponentBinding));
 					})
 				.Select(t => this.Container.GetService(t))
-				.Cast<InputFieldBinding>();
+				.Cast<InputComponentBinding>();
 
 			foreach (var binding in inputFieldBindings)
 			{
@@ -415,7 +415,7 @@ namespace UiMetadataFramework.Core.Binding
 
 					if (attribute != null)
 					{
-						this.AddBinding(new InputFieldBinding(t, attribute));
+						this.AddBinding(new InputComponentBinding(t, attribute));
 					}
 				});
 		}
@@ -427,7 +427,27 @@ namespace UiMetadataFramework.Core.Binding
 				: formType.FullName ?? throw new BindingException($"Cannot form ID for type `{formType}`.");
 		}
 
-		private static Type? GetInnerType(Type type)
+		private static PropertyInfo? GetInnerComponent(Type type)
+		{
+			if (type.ImplementsType(typeof(IPreConfiguredComponent<>)))
+			{
+				var property = type.GetProperty(nameof(IPreConfiguredComponent<object>.Value))!;
+
+				if (property.PropertyType.ImplementsType(typeof(IPreConfiguredComponent<>)))
+				{
+					throw new BindingException(
+						$"Pre-configured component '{type.FullName}' cannot have nested pre-configured " +
+						$"component '{property.PropertyType.FullName}'. Nesting pre-configured components " +
+						$"is not supported.");
+				}
+
+				return property;
+			}
+
+			return null;
+		}
+
+		private static Type? GetInnerComponentType(Type type)
 		{
 			var innerType = type.GetInterfaces(typeof(IPreConfiguredComponent<>))
 				.SingleOrDefault()
@@ -445,7 +465,7 @@ namespace UiMetadataFramework.Core.Binding
 					$"in a recursive way which is invalid.");
 			}
 
-			var recursiveInnerType = GetInnerType(innerType);
+			var recursiveInnerType = GetInnerComponentType(innerType);
 
 			if (recursiveInnerType != null)
 			{
@@ -456,85 +476,6 @@ namespace UiMetadataFramework.Core.Binding
 			}
 
 			return innerType;
-		}
-
-		private Component BindComponent(PropertyInfo property)
-		{
-			var location = $"{property.DeclaringType?.FullName}.{property.Name}";
-
-			var outputBinding = this.GetOutputFieldBindingOrNull(property.PropertyType);
-
-			if (outputBinding != null)
-			{
-				return this.BindOutputComponent(
-					property.PropertyType,
-					property.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>(),
-					property.GetCustomAttributes<ComponentConfigurationItemAttribute>(true).ToArray());
-			}
-
-			var inputBinding = this.GetInputFieldBindingOrNull(property.PropertyType);
-
-			if (inputBinding != null)
-			{
-				return this.BindInputComponent(
-					property.PropertyType,
-					property.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>(),
-					property.GetCustomAttributes<ComponentConfigurationItemAttribute>(true).ToArray());
-			}
-
-			throw new BindingException($"Property '{location}' is not a component.");
-		}
-
-		private IEnumerable<InputFieldMetadata> BindInputFieldsInternal(Type type, bool strict = false)
-		{
-			var properties = type.GetPublicProperties();
-
-			foreach (var property in properties)
-			{
-				var attribute = property.GetCustomAttributeSingleOrDefault<InputFieldAttribute>();
-
-				if (strict && attribute == null)
-				{
-					continue;
-				}
-
-				var binding = this.GetInputFieldBinding(
-					property.PropertyType,
-					$"{property.DeclaringType?.FullName}.{property.Name}");
-
-				attribute ??= new InputFieldAttribute
-				{
-					Required = false,
-					Hidden = false
-				};
-
-				var metadata = attribute.GetMetadata(property, binding, this);
-
-				yield return metadata;
-			}
-		}
-
-		private IEnumerable<OutputFieldMetadata> BindOutputFieldsInternal(Type type, bool strict = false)
-		{
-			var properties = type.GetPublicProperties();
-
-			foreach (var property in properties)
-			{
-				var attribute = property.GetCustomAttributeSingleOrDefault<OutputFieldAttribute>();
-
-				if (strict && attribute == null)
-				{
-					continue;
-				}
-
-				var binding = this.GetOutputFieldBinding(
-					property.PropertyType,
-					$"{property.DeclaringType}.{property.Name}");
-
-				attribute ??= new OutputFieldAttribute();
-
-				yield return attribute.GetMetadata(property, binding, this);
-			}
 		}
 
 		/// <summary>
@@ -555,7 +496,7 @@ namespace UiMetadataFramework.Core.Binding
 			var effectiveConfiguration = configuration;
 			var effectiveConfigurationItems = configurationItems;
 
-			var innerComponent = this.GetInnerComponent(type);
+			var innerComponent = GetInnerComponent(type);
 
 			if (innerComponent != null)
 			{
@@ -617,29 +558,61 @@ namespace UiMetadataFramework.Core.Binding
 				metadata);
 		}
 
-		private PropertyInfo? GetInnerComponent(Type type)
+		private IEnumerable<InputFieldMetadata> BuildInputFieldsInternal(Type type, bool strict = false)
 		{
-			if (type.ImplementsType(typeof(IPreConfiguredComponent<>)))
-			{
-				var property = type.GetProperty(nameof(IPreConfiguredComponent<object>.Value))!;
+			var properties = type.GetPublicProperties();
 
-				if (property.PropertyType.ImplementsType(typeof(IPreConfiguredComponent<>)))
+			foreach (var property in properties)
+			{
+				var attribute = property.GetCustomAttributeSingleOrDefault<InputFieldAttribute>();
+
+				if (strict && attribute == null)
 				{
-					throw new BindingException(
-						$"Pre-configured component '{type.FullName}' cannot have nested pre-configured " +
-						$"component '{property.PropertyType.FullName}'. Nesting pre-configured components " +
-						$"is not supported.");
+					continue;
 				}
 
-				return property;
-			}
+				var binding = this.GetInputBinding(
+					property.PropertyType,
+					$"{property.DeclaringType?.FullName}.{property.Name}");
 
-			return null;
+				attribute ??= new InputFieldAttribute
+				{
+					Required = false,
+					Hidden = false
+				};
+
+				var metadata = attribute.GetMetadata(property, binding, this);
+
+				yield return metadata;
+			}
 		}
 
-		private InputFieldBinding GetInputFieldBinding(Type type, string? location = null)
+		private IEnumerable<OutputFieldMetadata> BuildOutputFieldsInternal(Type type, bool strict = false)
 		{
-			var binding = this.GetInputFieldBindingOrNull(type);
+			var properties = type.GetPublicProperties();
+
+			foreach (var property in properties)
+			{
+				var attribute = property.GetCustomAttributeSingleOrDefault<OutputFieldAttribute>();
+
+				if (strict && attribute == null)
+				{
+					continue;
+				}
+
+				var binding = this.GetOutputBinding(
+					property.PropertyType,
+					$"{property.DeclaringType}.{property.Name}");
+
+				attribute ??= new OutputFieldAttribute();
+
+				yield return attribute.GetMetadata(property, binding, this);
+			}
+		}
+
+		private InputComponentBinding GetInputBinding(Type type, string? location = null)
+		{
+			var binding = this.GetInputBindingOrNull(type);
 
 			if (binding == null)
 			{
@@ -653,22 +626,22 @@ namespace UiMetadataFramework.Core.Binding
 			return binding;
 		}
 
-		private InputFieldBinding? GetInputFieldBindingOrNull(Type type)
+		private InputComponentBinding? GetInputBindingOrNull(Type type)
 		{
-			var effectiveType = GetInnerType(type) ?? type;
+			var effectiveType = GetInnerComponentType(type) ?? type;
 
 			var componentType = effectiveType.IsConstructedGenericType && !effectiveType.IsNullabble()
 				? effectiveType.GetGenericTypeDefinition()
 				: effectiveType;
 
-			this.inputFieldMetadataMap.TryGetValue(componentType, out InputFieldBinding binding);
+			this.inputBindings.TryGetValue(componentType, out InputComponentBinding binding);
 
 			return binding;
 		}
 
-		private OutputFieldBinding GetOutputFieldBinding(Type type, string? location = null)
+		private OutputComponentBinding GetOutputBinding(Type type, string? location = null)
 		{
-			var binding = this.GetOutputFieldBindingOrNull(type);
+			var binding = this.GetOutputBindingOrNull(type);
 
 			if (binding == null)
 			{
@@ -682,9 +655,9 @@ namespace UiMetadataFramework.Core.Binding
 			return binding;
 		}
 
-		private OutputFieldBinding? GetOutputFieldBindingOrNull(Type type)
+		private OutputComponentBinding? GetOutputBindingOrNull(Type type)
 		{
-			var effectiveType = GetInnerType(type) ?? type;
+			var effectiveType = GetInnerComponentType(type) ?? type;
 
 			var componentType = effectiveType.IsArray
 				? typeof(Array)
@@ -692,7 +665,7 @@ namespace UiMetadataFramework.Core.Binding
 					? effectiveType.GetGenericTypeDefinition()
 					: effectiveType;
 
-			this.outputFieldMetadataMap.TryGetValue(componentType, out OutputFieldBinding binding);
+			this.outputBindings.TryGetValue(componentType, out OutputComponentBinding binding);
 
 			return binding;
 		}

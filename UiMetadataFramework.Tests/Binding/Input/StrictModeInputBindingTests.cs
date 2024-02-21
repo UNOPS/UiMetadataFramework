@@ -24,7 +24,7 @@ public class StrictModeInputBindingTests
 	public void StrictModeIgnoresPropertiesWithoutAttribute()
 	{
 		var inputs = this.binder
-			.BindInputFields(typeof(InputsAndOutputsTogether), strict: true)
+			.BuildInputFields(typeof(InputsAndOutputsTogether), strict: true)
 			.ToList();
 
 		Assert.Equal(1, inputs.Count);

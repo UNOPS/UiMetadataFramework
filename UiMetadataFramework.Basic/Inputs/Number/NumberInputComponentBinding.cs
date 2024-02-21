@@ -3,12 +3,12 @@
 	using UiMetadataFramework.Core.Binding;
 
 	/// <inheritdoc />
-	public class NumberInputFieldBinding : InputFieldBinding
+	public class NumberInputComponentBinding : InputComponentBinding
 	{
 		internal const string ControlName = "number";
 
 		/// <inheritdoc />
-		public NumberInputFieldBinding() : base(
+		public NumberInputComponentBinding() : base(
 			serverTypes: new[]
 			{
 				typeof(int),

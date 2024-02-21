@@ -37,7 +37,7 @@
 		[Fact]
 		public void CanGetFormMetadata()
 		{
-			var formMetadata = this.binder.BindForm<DoMagic, object, object>();
+			var formMetadata = this.binder.BuildForm<DoMagic, object, object>();
 
 			formMetadata
 				.HasCustomProperty("style", "blue")

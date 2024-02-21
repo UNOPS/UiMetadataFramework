@@ -13,7 +13,7 @@ public class MetadataCachingTests
 	[Fact]
 	public void DuplicateAttemptsToBindSameAssemblyAreIgnored()
 	{
-		this.binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
-		this.binder.RegisterAssembly(typeof(StringOutputFieldBinding).GetTypeInfo().Assembly);
+		this.binder.RegisterAssembly(typeof(StringOutputComponentBinding).GetTypeInfo().Assembly);
+		this.binder.RegisterAssembly(typeof(StringOutputComponentBinding).GetTypeInfo().Assembly);
 	}
 }

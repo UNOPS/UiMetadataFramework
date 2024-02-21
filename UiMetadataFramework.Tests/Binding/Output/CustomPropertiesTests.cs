@@ -23,14 +23,14 @@ public class CustomPropertiesTests
 	public void CustomPropertiesAreBound()
 	{
 		var outputFields = this.binder
-			.BindOutputFields<Response>()
+			.BuildOutputFields<Response>()
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 
 		outputFields
 			.AssertHasOutputField(
 				nameof(Response.DateOfBirth),
-				DateTimeOutputFieldBinding.ControlName,
+				DateTimeOutputComponentBinding.ControlName,
 				"DoB",
 				false,
 				2)
