@@ -13,10 +13,10 @@ using UiMetadataFramework.Core.Binding;
 public class TableMetadataFactory : IMetadataFactory
 {
 	/// <inheritdoc />
-	public object? CreateMetadata(
+	public object CreateMetadata(
 		Type type,
 		MetadataBinder binder,
-		params ComponentConfigurationItemAttribute[] additionalConfigurations)
+		params ComponentConfigurationItemAttribute[] configurationItems)
 	{
 		var innerType = type.IsArray
 			? type.GetElementType() ??
@@ -35,13 +35,12 @@ public class TableMetadataFactory : IMetadataFactory
 	/// <summary>
 	/// Custom properties for the table.
 	/// </summary>
-	/// <param name="columns">List of columns that the table should have.</param>
 	public class Properties(List<OutputFieldMetadata> columns)
 	{
 		/// <summary>
 		/// List of columns that the table should have.
 		/// </summary>
-		public List<OutputFieldMetadata> Columns { get; set; } = columns;
+		public List<OutputFieldMetadata> Columns { get; } = columns;
 	}
 
 	private sealed class Wrapper<T>(T value)

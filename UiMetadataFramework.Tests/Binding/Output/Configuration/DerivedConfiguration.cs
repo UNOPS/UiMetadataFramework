@@ -13,32 +13,46 @@ public class DerivedConfiguration
 
 	private class Response
 	{
-		[BetterMoney(DecimalPlaces = 2, Locale = "en-US", Format = "C2")]
+		[BetterMoney(2, Locale = "en-US", Format = "C2")]
 		public Money? Money { get; set; }
 	}
 
 	private class BetterMoney : MoneyAttribute
 	{
+		public BetterMoney()
+		{
+		}
+
+		public BetterMoney(int decimalPlaces)
+		{
+			this.DecimalPlaces = decimalPlaces;
+		}
+
 		public string? Format { get; set; }
 
-		public override object? CreateMetadata(
+		public override object CreateMetadata(
 			Type type,
 			MetadataBinder binder,
-			params ComponentConfigurationItemAttribute[] additionalConfigurations)
+			params ComponentConfigurationItemAttribute[] configurationItems)
 		{
-			return new
+			return new BetterConfiguration
 			{
-				this.DecimalPlaces,
-				this.Locale,
-				this.Format
+				DecimalPlaces = this.DecimalPlaces,
+				Locale = this.Locale,
+				Format = this.Format
 			};
+		}
+
+		public class BetterConfiguration : Configuration
+		{
+			public string? Format { get; set; }
 		}
 	}
 
 	[Fact]
 	public void DerivedConfigurationIsAllowed()
 	{
-		var field = this.binder.BindOutputFields<Response>().Single();
+		var field = this.binder.BindOutputFields<Response>().Single(t => t.Id == nameof(Response.Money));
 
 		dynamic component = field.GetComponentConfigurationOrException();
 

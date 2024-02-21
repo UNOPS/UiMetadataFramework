@@ -21,15 +21,9 @@ public class InvalidConfigurations
 		public Money? Money { get; set; }
 	}
 
-	private class MultipleConfigurationsOfSameType
-	{
-		[Money(DecimalPlaces = 2, Locale = "en-US")]
-		public Money? Money { get; set; }
-	}
-
 	private class MultipleConfigurationsOfDifferentTypes
 	{
-		[Money(DecimalPlaces = 2, Locale = "en-US")]
+		[Money(2, Locale = "en-US")]
 		[Flexbox]
 		public Money? Money { get; set; }
 	}

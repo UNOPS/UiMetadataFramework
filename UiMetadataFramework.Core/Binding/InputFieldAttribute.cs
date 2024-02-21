@@ -71,24 +71,10 @@ namespace UiMetadataFramework.Core.Binding
 				Label = this.Label ?? property.Name,
 				OrderIndex = this.OrderIndex,
 				Required = required,
-				ComponentConfiguration = GetComponentConfiguration(property, binder).Configuration,
+				ComponentConfiguration = binder.BindInputComponent(property).Configuration,
 				EventHandlers = eventHandlerAttributes.Select(t => t.ToMetadata(property, binder)).ToList(),
 				CustomProperties = property.GetCustomProperties(binder)
 			};
-		}
-
-		internal static Component GetComponentConfiguration(
-			PropertyInfo property,
-			MetadataBinder binder)
-		{
-			var optionalConfigurations = property
-				.GetCustomAttributes<ComponentConfigurationItemAttribute>(true)
-				.ToArray();
-
-			return binder.BindInputComponent(
-				property.PropertyType,
-				property.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>(inherit: true),
-				optionalConfigurations);
 		}
 	}
 }

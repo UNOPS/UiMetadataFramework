@@ -12,10 +12,10 @@ public class ConfigurationBinding
 
 	private class Response
 	{
-		[Money(DecimalPlaces = 4, Locale = "en-US")]
+		[Money(4, Locale = "en-US")]
 		public Money? Money { get; set; }
 
-		[Money(DecimalPlaces = 4, Locale = "en-US")]
+		[Money(4, Locale = "en-US")]
 		[MoneyStyleItem(Style = "fancy")]
 		public Money? StyledMoney { get; set; }
 	}

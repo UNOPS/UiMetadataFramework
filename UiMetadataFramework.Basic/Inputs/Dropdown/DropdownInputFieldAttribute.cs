@@ -28,7 +28,7 @@
 		public override object CreateMetadata(
 			Type type,
 			MetadataBinder binder,
-			params ComponentConfigurationItemAttribute[] additionalConfigurations)
+			params ComponentConfigurationItemAttribute[] configurationItems)
 		{
 			var inlineSource = this.Source
 				.GetInterfaces(typeof(IDropdownInlineSource))
@@ -47,7 +47,7 @@
 
 			if (this.Source.GetInterfaces(typeof(IDropdownRemoteSource)).Any())
 			{
-				var parameters = additionalConfigurations.OfType<RemoteSourceArgumentAttribute>()
+				var parameters = configurationItems.OfType<RemoteSourceArgumentAttribute>()
 					.Select(t => t.GetArgument())
 					.ToList();
 

@@ -1,4 +1,6 @@
-﻿namespace UiMetadataFramework.Tests.Binding.Input;
+﻿// ReSharper disable UnusedMember.Local
+
+namespace UiMetadataFramework.Tests.Binding.Input;
 
 using System.Linq;
 using UiMetadataFramework.Core.Binding;

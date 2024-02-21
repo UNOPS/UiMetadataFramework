@@ -6,23 +6,37 @@ using UiMetadataFramework.Core.Binding;
 
 public class MoneyAttribute : ComponentConfigurationAttribute
 {
-	public const string PropertyName = "money";
+	public MoneyAttribute()
+	{
+	}
 
-	public int DecimalPlaces { get; set; } = 2;
+	public MoneyAttribute(int decimals)
+	{
+		this.DecimalPlaces = decimals;
+	}
+
+	public int? DecimalPlaces { get; set; }
 	public string? Locale { get; set; }
 
-	public override object? CreateMetadata(
+	public override object CreateMetadata(
 		Type type,
 		MetadataBinder binder,
-		params ComponentConfigurationItemAttribute[] additionalConfigurations)
+		params ComponentConfigurationItemAttribute[] configurationItems)
 	{
-		var style = additionalConfigurations.OfType<MoneyStyleItemAttribute>().SingleOrDefault()?.Style;
+		var style = configurationItems.OfType<MoneyStyleItemAttribute>().FirstOrDefault()?.Style;
 
-		return new
+		return new Configuration
 		{
-			this.DecimalPlaces,
-			this.Locale,
+			DecimalPlaces = this.DecimalPlaces,
+			Locale = this.Locale,
 			Style = style
 		};
+	}
+
+	public class Configuration
+	{
+		public int? DecimalPlaces { get; set; }
+		public string? Locale { get; set; }
+		public string? Style { get; set; }
 	}
 }

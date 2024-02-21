@@ -18,10 +18,10 @@ public class PaginatedDataAttribute(string paginator) : ComponentConfigurationAt
 	public string Paginator { get; } = paginator;
 
 	/// <inheritdoc />
-	public override object? CreateMetadata(
+	public override object CreateMetadata(
 		Type type,
 		MetadataBinder binder,
-		params ComponentConfigurationItemAttribute[] additionalConfigurations)
+		params ComponentConfigurationItemAttribute[] configurationItems)
 	{
 		var paginatedItemType = type.GenericTypeArguments[0];
 
@@ -29,7 +29,11 @@ public class PaginatedDataAttribute(string paginator) : ComponentConfigurationAt
 		{
 			var columns = binder.BindOutputFields(paginatedItemType).ToList();
 
-			return new Properties(this.Paginator, columns);
+			return new Properties
+			{
+				Columns = columns,
+				Paginator = this.Paginator
+			};
 		}
 		catch (Exception ex)
 		{
@@ -40,16 +44,16 @@ public class PaginatedDataAttribute(string paginator) : ComponentConfigurationAt
 	/// <summary>
 	/// Custom properties for the <see cref="PaginatedDataAttribute"/>.
 	/// </summary>
-	public class Properties(string paginator, List<OutputFieldMetadata>? columns)
+	public class Properties
 	{
 		/// <summary>
 		/// Columns which will be displayed in the paginated data.
 		/// </summary>
-		public List<OutputFieldMetadata>? Columns { get; } = columns;
+		public List<OutputFieldMetadata>? Columns { get; set; }
 
 		/// <summary>
 		/// Name of the input field which will control the pagination parameters.
 		/// </summary>
-		public string Paginator { get; } = paginator;
+		public string? Paginator { get; set; }
 	}
 }

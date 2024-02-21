@@ -54,24 +54,10 @@ namespace UiMetadataFramework.Core.Binding
 				Hidden = this.Hidden,
 				Label = this.Label ?? property.Name,
 				OrderIndex = this.OrderIndex,
-				ComponentConfiguration = GetComponentConfiguration(property, binder).Configuration,
+				ComponentConfiguration = binder.BindOutputComponent(property).Configuration,
 				CustomProperties = property.GetCustomProperties(binder),
 				EventHandlers = eventHandlerAttributes.Select(t => t.ToMetadata(property, binder)).ToList()
 			};
-		}
-
-		internal static Component GetComponentConfiguration(
-			PropertyInfo property,
-			MetadataBinder binder)
-		{
-			var optionalConfigurations = property
-				.GetCustomAttributes<ComponentConfigurationItemAttribute>(true)
-				.ToArray();
-
-			return binder.BindOutputComponent(
-				property.PropertyType,
-				property.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>(inherit: true),
-				optionalConfigurations);
 		}
 	}
 }

@@ -228,7 +228,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <summary>
 		/// Builds metadata for the given input component with the provided list of custom properties. 
 		/// </summary>
-		/// <param name="type">Type of input component.</param>
+		/// <param name="type">Type of output component or a <see cref="IPreConfiguredComponent{T}"/>.</param>
 		/// <param name="configuration"><see cref="ComponentConfigurationAttribute"/> representing the configuration
 		/// to be applied to this component instance. Can be null if component does not have any configuration.</param>
 		/// <param name="additionalConfigurations">Additional configurations to use when constructing the metadata.</param>
@@ -275,9 +275,24 @@ namespace UiMetadataFramework.Core.Binding
 		}
 
 		/// <summary>
+		/// Builds metadata for the given property with an output component. 
+		/// </summary>
+		public Component BindOutputComponent(Type type, string propertyName)
+		{
+			var property = type.GetProperty(propertyName);
+
+			if (property == null)
+			{
+				throw new BindingException($"Cannot find property '{propertyName}' on type '{type.FullName}'.");
+			}
+
+			return this.BindOutputComponent(property);
+		}
+
+		/// <summary>
 		/// Builds metadata for the given output component with the provided list of custom properties. 
 		/// </summary>
-		/// <param name="type">Type of output component.</param>
+		/// <param name="type">Type of output component or a <see cref="IPreConfiguredComponent{T}"/>.</param>
 		/// <param name="configuration"><see cref="ComponentConfigurationAttribute"/> representing the configuration
 		/// to be applied to this component instance. Can be null if component does not have any configuration.</param>
 		/// <param name="additionalConfigurations">Additional configurations to use when constructing the metadata.</param>
@@ -295,6 +310,17 @@ namespace UiMetadataFramework.Core.Binding
 				configuration,
 				additionalConfigurations,
 				binding);
+		}
+
+		/// <summary>
+		/// Builds metadata for the given property with an output component. 
+		/// </summary>
+		public Component BindOutputComponent(PropertyInfo property)
+		{
+			return this.BindOutputComponent(
+				property.PropertyType,
+				property.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>(inherit: true),
+				property.GetCustomAttributes<ComponentConfigurationItemAttribute>(inherit: true).ToArray());
 		}
 
 		/// <summary>
@@ -405,6 +431,75 @@ namespace UiMetadataFramework.Core.Binding
 				: formType.FullName ?? throw new BindingException($"Cannot form ID for type `{formType}`.");
 		}
 
+		/// <summary>
+		/// Builds metadata for the given property with an input component. 
+		/// </summary>
+		internal Component BindInputComponent(PropertyInfo property)
+		{
+			return this.BindInputComponent(
+				property.PropertyType,
+				property.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>(inherit: true),
+				property.GetCustomAttributes<ComponentConfigurationItemAttribute>(inherit: true).ToArray());
+		}
+
+		private static Type? GetInnerType(Type type)
+		{
+			var innerType = type.GetInterfaces(typeof(IPreConfiguredComponent<>))
+				.SingleOrDefault()
+				?.GenericTypeArguments[0];
+
+			if (innerType == null)
+			{
+				return null;
+			}
+
+			if (innerType == type)
+			{
+				throw new BindingException(
+					$"Type '{type.FullName}' implements '{typeof(IPreConfiguredComponent<>).FullName}' " +
+					$"in a recursive way which is invalid.");
+			}
+
+			var recursiveInnerType = GetInnerType(innerType);
+
+			if (recursiveInnerType != null)
+			{
+				throw new BindingException(
+					$"Type '{type.FullName}' implements '{typeof(IPreConfiguredComponent<>).FullName}' " +
+					$"with nested pre-configured component '{innerType.FullName}'. Nesting pre-configured " +
+					$"components is not supported.");
+			}
+
+			return innerType;
+		}
+
+		private Component BindComponent(PropertyInfo property)
+		{
+			var location = $"{property.DeclaringType?.FullName}.{property.Name}";
+
+			var outputBinding = this.GetOutputFieldBindingOrNull(property.PropertyType);
+
+			if (outputBinding != null)
+			{
+				return this.BindOutputComponent(
+					property.PropertyType,
+					property.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>(),
+					property.GetCustomAttributes<ComponentConfigurationItemAttribute>(true).ToArray());
+			}
+
+			var inputBinding = this.GetInputFieldBindingOrNull(property.PropertyType);
+
+			if (inputBinding != null)
+			{
+				return this.BindInputComponent(
+					property.PropertyType,
+					property.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>(),
+					property.GetCustomAttributes<ComponentConfigurationItemAttribute>(true).ToArray());
+			}
+
+			throw new BindingException($"Property '{location}' is not a component.");
+		}
+
 		private IEnumerable<InputFieldMetadata> BindInputFieldsInternal(Type type, bool strict = false)
 		{
 			var properties = type.GetPublicProperties();
@@ -457,37 +552,71 @@ namespace UiMetadataFramework.Core.Binding
 			}
 		}
 
+		/// <summary>
+		/// Builds component metadata.
+		/// </summary>
+		/// <param name="type">Component type or a <see cref="IPreConfiguredComponent{T}"/>.</param>
+		/// <param name="configuration">Configuration for the component.</param>
+		/// <param name="configurationItems">Any additional configuration items to apply.</param>
+		/// <param name="binding">Component's binding.</param>
+		/// <returns><see cref="Component"/> instance.</returns>
+		/// <exception cref="BindingException">Thrown if the supplied configuration data is invalid.</exception>
 		private Component BuildComponent(
 			Type type,
 			ComponentConfigurationAttribute? configuration,
-			ComponentConfigurationItemAttribute[] additionalConfigurations,
+			ComponentConfigurationItemAttribute[] configurationItems,
 			IFieldBinding binding)
 		{
+			var effectiveConfiguration = configuration;
+			var effectiveConfigurationItems = configurationItems;
+
+			var innerComponent = this.GetInnerComponent(type);
+
+			if (innerComponent != null)
+			{
+				var innerConfiguration = innerComponent
+					.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>()
+					// Crete a clone of the inner configuration, so that we don't modify the original.
+					?.Clone();
+
+				if (innerConfiguration != null)
+				{
+					innerConfiguration.Merge(configuration);
+					effectiveConfiguration = innerConfiguration;
+				}
+
+				effectiveConfigurationItems = configurationItems
+					// Inner configuration items should come last. This way we indicate
+					// that inner configuration items have lower priority.
+					.Concat(innerComponent.GetCustomAttributes<ComponentConfigurationItemAttribute>(true))
+					.ToArray();
+			}
+
 			var requiresConfiguration = binding.MetadataFactory?.ImplementsClass(typeof(ComponentConfigurationAttribute)) == true;
 
 			if (requiresConfiguration)
 			{
-				if (configuration == null)
+				if (effectiveConfiguration == null)
 				{
 					throw new BindingException(
 						$"Cannot construct metadata for '{type.FullName}', because a configuration " +
 						$"of type '{binding.MetadataFactory!.FullName}' is expected.");
 				}
 
-				if (!configuration.GetType().ImplementsClass(binding.MetadataFactory!))
+				if (!effectiveConfiguration.GetType().ImplementsClass(binding.MetadataFactory!))
 				{
 					throw new BindingException(
 						$"Cannot construct metadata for '{type.FullName}', because configuration " +
 						$"of type '{binding.MetadataFactory!.FullName}' is expected, but configuration " +
-						$"of type '{configuration.GetType().FullName}' was provided instead.");
+						$"of type '{effectiveConfiguration.GetType().FullName}' was provided instead.");
 				}
 			}
-			else if (configuration != null)
+			else if (effectiveConfiguration != null)
 			{
 				throw new BindingException($"Component '{type.FullName}' does not have configuration, but one was provided.");
 			}
 
-			var metadataFactory = configuration ?? (
+			var metadataFactory = effectiveConfiguration ?? (
 				binding.MetadataFactory != null
 					? (IMetadataFactory)this.Container.GetService(binding.MetadataFactory)
 					: null
@@ -496,20 +625,38 @@ namespace UiMetadataFramework.Core.Binding
 			var metadata = metadataFactory?.CreateMetadata(
 				type,
 				this,
-				additionalConfigurations);
+				effectiveConfigurationItems);
 
 			return new Component(
 				binding.ClientType,
 				metadata);
 		}
 
+		private PropertyInfo? GetInnerComponent(Type type)
+		{
+			if (type.ImplementsType(typeof(IPreConfiguredComponent<>)))
+			{
+				var property = type.GetProperty(nameof(IPreConfiguredComponent<object>.Value))!;
+
+				if (property.PropertyType.ImplementsType(typeof(IPreConfiguredComponent<>)))
+				{
+					throw new BindingException(
+						$"Pre-configured component '{type.FullName}' cannot have nested pre-configured " +
+						$"component '{property.PropertyType.FullName}'. Nesting pre-configured components " +
+						$"is not supported.");
+				}
+
+				return property;
+			}
+
+			return null;
+		}
+
 		private InputFieldBinding GetInputFieldBinding(Type type, string? location = null)
 		{
-			var componentType = type.IsConstructedGenericType && !type.IsNullabble()
-				? type.GetGenericTypeDefinition()
-				: type;
+			var binding = this.GetInputFieldBindingOrNull(type);
 
-			if (!this.inputFieldMetadataMap.TryGetValue(componentType, out InputFieldBinding binding))
+			if (binding == null)
 			{
 				var message = !string.IsNullOrWhiteSpace(location)
 					? $"Cannot retrieve metadata for '{location}', because type '{type.FullName}' is not bound to any input field control."
@@ -521,15 +668,24 @@ namespace UiMetadataFramework.Core.Binding
 			return binding;
 		}
 
+		private InputFieldBinding? GetInputFieldBindingOrNull(Type type)
+		{
+			var effectiveType = GetInnerType(type) ?? type;
+
+			var componentType = effectiveType.IsConstructedGenericType && !effectiveType.IsNullabble()
+				? effectiveType.GetGenericTypeDefinition()
+				: effectiveType;
+
+			this.inputFieldMetadataMap.TryGetValue(componentType, out InputFieldBinding binding);
+
+			return binding;
+		}
+
 		private OutputFieldBinding GetOutputFieldBinding(Type type, string? location = null)
 		{
-			var componentType = type.IsArray
-				? typeof(Array)
-				: type.IsConstructedGenericType && !type.IsNullabble()
-					? type.GetGenericTypeDefinition()
-					: type;
+			var binding = this.GetOutputFieldBindingOrNull(type);
 
-			if (!this.outputFieldMetadataMap.TryGetValue(componentType, out OutputFieldBinding binding))
+			if (binding == null)
 			{
 				var message = !string.IsNullOrWhiteSpace(location)
 					? $"Cannot retrieve metadata for '{location}', because type '{type.FullName}' is not bound to any output field control."
@@ -537,6 +693,21 @@ namespace UiMetadataFramework.Core.Binding
 
 				throw new BindingException(message);
 			}
+
+			return binding;
+		}
+
+		private OutputFieldBinding? GetOutputFieldBindingOrNull(Type type)
+		{
+			var effectiveType = GetInnerType(type) ?? type;
+
+			var componentType = effectiveType.IsArray
+				? typeof(Array)
+				: effectiveType.IsConstructedGenericType && !effectiveType.IsNullabble()
+					? effectiveType.GetGenericTypeDefinition()
+					: effectiveType;
+
+			this.outputFieldMetadataMap.TryGetValue(componentType, out OutputFieldBinding binding);
 
 			return binding;
 		}

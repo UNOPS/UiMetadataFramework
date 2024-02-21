@@ -7,10 +7,10 @@ public class CheckboxAttribute : ComponentConfigurationAttribute
 {
 	public string? Style { get; set; }
 
-	public override object? CreateMetadata(
+	public override object CreateMetadata(
 		Type type,
 		MetadataBinder binder,
-		params ComponentConfigurationItemAttribute[] additionalConfigurations)
+		params ComponentConfigurationItemAttribute[] configurationItems)
 	{
 		return new Configuration { Style = this.Style };
 	}
