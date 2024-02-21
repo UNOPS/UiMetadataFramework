@@ -249,6 +249,17 @@ namespace UiMetadataFramework.Core.Binding
 		}
 
 		/// <summary>
+		/// Builds metadata for the given property with an input component. 
+		/// </summary>
+		public Component BindInputComponent(PropertyInfo property)
+		{
+			return this.BindInputComponent(
+				property.PropertyType,
+				property.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>(inherit: true),
+				property.GetCustomAttributes<ComponentConfigurationItemAttribute>(inherit: true).ToArray());
+		}
+
+		/// <summary>
 		/// Retrieves input field metadata for the given type.
 		/// </summary>
 		/// <typeparam name="T">Type which should be rendered on the client as input field(s).</typeparam>
@@ -272,21 +283,6 @@ namespace UiMetadataFramework.Core.Binding
 			return this.inputFieldMetadataCache.GetOrAdd(
 				type,
 				t => this.BindInputFieldsInternal(t, strict));
-		}
-
-		/// <summary>
-		/// Builds metadata for the given property with an output component. 
-		/// </summary>
-		public Component BindOutputComponent(Type type, string propertyName)
-		{
-			var property = type.GetProperty(propertyName);
-
-			if (property == null)
-			{
-				throw new BindingException($"Cannot find property '{propertyName}' on type '{type.FullName}'.");
-			}
-
-			return this.BindOutputComponent(property);
 		}
 
 		/// <summary>
@@ -429,17 +425,6 @@ namespace UiMetadataFramework.Core.Binding
 			return !string.IsNullOrWhiteSpace(formAttribute.Id)
 				? formAttribute.Id!
 				: formType.FullName ?? throw new BindingException($"Cannot form ID for type `{formType}`.");
-		}
-
-		/// <summary>
-		/// Builds metadata for the given property with an input component. 
-		/// </summary>
-		internal Component BindInputComponent(PropertyInfo property)
-		{
-			return this.BindInputComponent(
-				property.PropertyType,
-				property.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>(inherit: true),
-				property.GetCustomAttributes<ComponentConfigurationItemAttribute>(inherit: true).ToArray());
 		}
 
 		private static Type? GetInnerType(Type type)
