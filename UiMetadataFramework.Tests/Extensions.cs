@@ -1,11 +1,24 @@
 namespace UiMetadataFramework.Tests
 {
+	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Linq.Expressions;
 	using System.Reflection;
+	using UiMetadataFramework.Core.Binding;
 
 	public static class Extensions
 	{
+		public static Core.Component BuildOutputComponent<T>(
+			this MetadataBinder binder,
+			Expression<Func<T, object?>> propertyExpression)
+		{
+			var propertyName = ((MemberExpression)propertyExpression.Body).Member.Name;
+			var property = typeof(T).GetProperty(propertyName) ?? throw new Exception($"Property '{propertyName}' not found.");
+
+			return binder.BuildOutputComponent(property);
+		}
+
 		public static Dictionary<string, object?> ToDictionary(this object? request)
 		{
 			if (request == null)
@@ -17,7 +30,7 @@ namespace UiMetadataFramework.Tests
 				.GetProperties()
 				.Where(t => t is { CanRead: true, MemberType: MemberTypes.Property })
 				.Where(t => t.GetMethod!.IsPublic)
-				.ToDictionary(t => t.Name, t => (object?)t.GetValue(request));
+				.ToDictionary(t => t.Name, t => t.GetValue(request));
 		}
 	}
 }

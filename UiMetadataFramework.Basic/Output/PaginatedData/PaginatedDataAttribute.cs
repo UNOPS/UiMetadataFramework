@@ -21,7 +21,7 @@ public class PaginatedDataAttribute(string paginator) : ComponentConfigurationAt
 	public override object CreateMetadata(
 		Type type,
 		MetadataBinder binder,
-		params ComponentConfigurationItemAttribute[] configurationItems)
+		params ConfigurationDataAttribute[] configurationData)
 	{
 		var paginatedItemType = type.GenericTypeArguments[0];
 

@@ -206,7 +206,7 @@ namespace UiMetadataFramework.Core.Binding
 		public Component BindInputComponent(
 			Type type,
 			ComponentConfigurationAttribute? configuration = null,
-			params ComponentConfigurationItemAttribute[] additionalConfigurations)
+			params ConfigurationDataAttribute[] additionalConfigurations)
 		{
 			var binding = this.GetInputBinding(type);
 
@@ -256,7 +256,7 @@ namespace UiMetadataFramework.Core.Binding
 			return this.BindInputComponent(
 				property.PropertyType,
 				property.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>(inherit: true),
-				property.GetCustomAttributes<ComponentConfigurationItemAttribute>(inherit: true).ToArray());
+				property.GetCustomAttributes<ConfigurationDataAttribute>(inherit: true).ToArray());
 		}
 
 		/// <summary>
@@ -297,7 +297,7 @@ namespace UiMetadataFramework.Core.Binding
 		public Component BuildOutputComponent(
 			Type type,
 			ComponentConfigurationAttribute? configuration = null,
-			params ComponentConfigurationItemAttribute[] additionalConfigurations)
+			params ConfigurationDataAttribute[] additionalConfigurations)
 		{
 			var binding = this.GetOutputBinding(type);
 
@@ -316,7 +316,7 @@ namespace UiMetadataFramework.Core.Binding
 			return this.BuildOutputComponent(
 				property.PropertyType,
 				property.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>(inherit: true),
-				property.GetCustomAttributes<ComponentConfigurationItemAttribute>(inherit: true).ToArray());
+				property.GetCustomAttributes<ConfigurationDataAttribute>(inherit: true).ToArray());
 		}
 
 		/// <summary>
@@ -427,7 +427,7 @@ namespace UiMetadataFramework.Core.Binding
 				: formType.FullName ?? throw new BindingException($"Cannot form ID for type `{formType}`.");
 		}
 
-		private static PropertyInfo? GetInnerComponent(Type type)
+		internal static PropertyInfo? GetInnerComponent(Type type)
 		{
 			if (type.ImplementsType(typeof(IPreConfiguredComponent<>)))
 			{
@@ -490,7 +490,7 @@ namespace UiMetadataFramework.Core.Binding
 		private Component BuildComponent(
 			Type type,
 			ComponentConfigurationAttribute? configuration,
-			ComponentConfigurationItemAttribute[] configurationItems,
+			ConfigurationDataAttribute[] configurationItems,
 			IFieldBinding binding)
 		{
 			var effectiveConfiguration = configuration;
@@ -514,7 +514,7 @@ namespace UiMetadataFramework.Core.Binding
 				effectiveConfigurationItems = configurationItems
 					// Inner configuration items should come last. This way we indicate
 					// that inner configuration items have lower priority.
-					.Concat(innerComponent.GetCustomAttributes<ComponentConfigurationItemAttribute>(true))
+					.Concat(innerComponent.GetCustomAttributes<ConfigurationDataAttribute>(true))
 					.ToArray();
 			}
 
@@ -545,12 +545,12 @@ namespace UiMetadataFramework.Core.Binding
 			var metadataFactory = effectiveConfiguration ?? (
 				binding.MetadataFactory != null
 					? (IMetadataFactory)this.Container.GetService(binding.MetadataFactory)
-					: null
+					: new DefaultMetadataFactory()
 			);
 
 			try
 			{
-				var metadata = metadataFactory?.CreateMetadata(
+				var metadata = metadataFactory.CreateMetadata(
 					type,
 					this,
 					effectiveConfigurationItems);

@@ -10,7 +10,7 @@ public class FlexboxAttribute : ComponentConfigurationAttribute
 	public override object CreateMetadata(
 		Type type,
 		MetadataBinder binder,
-		params ComponentConfigurationItemAttribute[] configurationItems)
+		params ConfigurationDataAttribute[] configurationData)
 	{
 		return new Configuration { Style = this.Style };
 	}

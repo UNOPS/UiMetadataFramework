@@ -16,7 +16,7 @@ public class TableMetadataFactory : IMetadataFactory
 	public object CreateMetadata(
 		Type type,
 		MetadataBinder binder,
-		params ComponentConfigurationItemAttribute[] configurationItems)
+		params ConfigurationDataAttribute[] configurationData)
 	{
 		var innerType = type.IsArray
 			? type.GetElementType() ??

@@ -3,6 +3,7 @@ namespace UiMetadataFramework.Tests.Binding.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using UiMetadataFramework.Basic.Inputs.Dropdown;
 using UiMetadataFramework.Basic.Inputs.Typeahead;
 using UiMetadataFramework.Core.Binding;
@@ -16,7 +17,7 @@ public class DropdownTests
 	private class Request
 	{
 		[Dropdown(typeof(CountryRemoteSource))]
-		[RemoteSourceArgument("A", "B", "C")]
+		[RemoteSourceArgumentData("A", "B", "C")]
 		public DropdownValue<string>? Countries { get; set; }
 
 		[Dropdown(typeof(EnumSource<DayOfWeek>))]
@@ -47,7 +48,7 @@ public class DropdownTests
 		var field = this.binder.BuildInputFields<Request>()
 			.Single(t => t.Id == nameof(Request.Countries));
 
-		var component = field.Component.GetConfigurationOrException<DropdownAttribute.Configuration>();
+		var component = field.Component.Configuration.As<DropdownAttribute.Configuration>();
 
 		Assert.Null(component.Items);
 		Assert.Equal("A", component.Parameters?.Single().Parameter);
@@ -61,7 +62,7 @@ public class DropdownTests
 		var field = this.binder.BuildInputFields<Request>()
 			.Single(t => t.Id == nameof(Request.Gender));
 
-		var component = field.Component.GetConfigurationOrException<DropdownAttribute.Configuration>();
+		var component = field.Component.Configuration.As<DropdownAttribute.Configuration>();
 
 		Assert.Equal(2, component.Items?.Count);
 	}
@@ -72,7 +73,7 @@ public class DropdownTests
 		var inputFields = this.binder.BuildInputFields<Request>()
 			.Single(t => t.Id == nameof(Request.Day));
 
-		var component = inputFields.Component.GetConfigurationOrException<DropdownAttribute.Configuration>();
+		var component = inputFields.Component.Configuration.As<DropdownAttribute.Configuration>();
 
 		Assert.Equal(7, component.Items?.Count);
 	}

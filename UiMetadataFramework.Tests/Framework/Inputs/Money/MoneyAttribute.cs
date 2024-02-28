@@ -20,7 +20,7 @@ public class MoneyAttribute : ComponentConfigurationAttribute
 	public override object? CreateMetadata(
 		Type type,
 		MetadataBinder binder,
-		params ComponentConfigurationItemAttribute[] configurationItems)
+		params ConfigurationDataAttribute[] configurationData)
 	{
 		return new Configuration(this.Currency, this.DecimalPlaces);
 	}

@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using FluentAssertions;
 using UiMetadataFramework.Basic.Output.PaginatedData;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Utilities;
@@ -31,7 +32,7 @@ public class GenericComponent
 	{
 		var field = this.binder.BuildOutputFields<Response>().Single();
 
-		var component = field.Component.GetConfigurationOrException<PaginatedDataAttribute.Properties>();
+		var component = field.Component.Configuration.As<PaginatedDataAttribute.Properties>();
 
 		Assert.Equal("paginator-for-items", component.Paginator);
 

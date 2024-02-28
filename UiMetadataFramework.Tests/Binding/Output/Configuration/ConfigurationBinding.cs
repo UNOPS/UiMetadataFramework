@@ -1,6 +1,7 @@
 ﻿namespace UiMetadataFramework.Tests.Binding.Output.Configuration;
 
 using System.Linq;
+using FluentAssertions;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Framework.Outputs.Money;
 using UiMetadataFramework.Tests.Utilities;
@@ -16,7 +17,7 @@ public class ConfigurationBinding
 		public Money? Money { get; set; }
 
 		[Money(4, Locale = "en-US")]
-		[MoneyStyleItem(Style = "fancy")]
+		[MoneyStyleData(Style = "fancy")]
 		public Money? StyledMoney { get; set; }
 	}
 
@@ -44,7 +45,7 @@ public class ConfigurationBinding
 	{
 		var field = this.binder.BuildOutputFields<Response>().Single(t => t.Id == nameof(Response.Money));
 
-		dynamic component = field.Component.GetConfigurationOrException();
+		dynamic component = field.Component.Configuration.As<object>();
 
 		Assert.Equal(4, component.DecimalPlaces);
 		Assert.Equal("en-US", component.Locale);
@@ -55,7 +56,7 @@ public class ConfigurationBinding
 	{
 		var field = this.binder.BuildOutputFields<Response>().Single(t => t.Id == nameof(Response.StyledMoney));
 
-		dynamic component = field.Component.GetConfigurationOrException();
+		dynamic component = field.Component.Configuration.As<object>();
 
 		Assert.Equal(4, component.DecimalPlaces);
 		Assert.Equal("en-US", component.Locale);

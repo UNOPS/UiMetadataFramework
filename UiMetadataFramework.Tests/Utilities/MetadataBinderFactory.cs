@@ -4,7 +4,6 @@ using System.Reflection;
 using UiMetadataFramework.Basic;
 using UiMetadataFramework.Basic.Output.Text;
 using UiMetadataFramework.Core.Binding;
-using UiMetadataFramework.Tests.Binding;
 using UiMetadataFramework.Tests.Binding.Form;
 
 public static class MetadataBinderFactory

@@ -14,7 +14,7 @@ public abstract class ComponentConfigurationAttribute : Attribute, IMetadataFact
 	public abstract object? CreateMetadata(
 		Type type,
 		MetadataBinder binder,
-		params ComponentConfigurationItemAttribute[] configurationItems);
+		params ConfigurationDataAttribute[] configurationData);
 
 	/// <summary>
 	/// Creates a clone of this configuration.

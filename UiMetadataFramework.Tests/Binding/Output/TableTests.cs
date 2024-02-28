@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using UiMetadataFramework.Basic.Inputs.Text;
 using UiMetadataFramework.Basic.Output.DateTime;
 using UiMetadataFramework.Basic.Output.FormLink;
@@ -50,7 +51,7 @@ public class TableTests
 			.BuildOutputFields<Response>()
 			.Single(t => t.Id == property);
 
-		var component = outputField.Component.GetConfigurationOrException<TableMetadataFactory.Properties>();
+		var component = outputField.Component.Configuration.As<TableMetadataFactory.Properties>();
 
 		Assert.Equal(TableOutputComponentBinding.ObjectListOutputControlName, outputField.Component.Type);
 		Assert.Equal(1, component.Columns.Count);
@@ -63,11 +64,11 @@ public class TableTests
 		var outputFieldMetadatas = this.binder
 			.BuildOutputFields<Response>()
 			.ToList();
-		
+
 		var outputField = outputFieldMetadatas
 			.Single(t => t.Id == nameof(Response.RandomObjects));
 
-		var config = outputField.Component.GetConfigurationOrException<TableMetadataFactory.Properties>();
+		var config = outputField.Component.Configuration.As<TableMetadataFactory.Properties>();
 
 		Assert.Equal(TableOutputComponentBinding.ObjectListOutputControlName, outputField.Component.Type);
 
@@ -90,7 +91,7 @@ public class TableTests
 			NumberOutputComponentBinding.ControlName,
 			nameof(Person.Height),
 			true);
-		
+
 		config.Columns.AssertHasOutputField(
 			nameof(Person.Weight),
 			NumberOutputComponentBinding.ControlName,

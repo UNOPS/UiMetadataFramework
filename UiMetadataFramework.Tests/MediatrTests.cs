@@ -23,10 +23,7 @@
 			{
 				var menuAttribute = type.GetTypeInfo().GetCustomAttribute<MenuAttribute>();
 
-				return new Dictionary<string, object?>
-				{
-					{ "ParentMenu", menuAttribute?.ParentMenu }
-				};
+				return new Dictionary<string, object?> { { "ParentMenu", menuAttribute?.ParentMenu } };
 			}
 		}
 
@@ -176,18 +173,20 @@
 
 			var mediator = di.GetService<IMediator>();
 
-			var response = await mediator.Send(new InvokeForm.Request
-			{
-				Form = typeof(Magic).GetFormId(),
-				InputFieldValues = new BaseForm.Request
+			var response = await mediator.Send(
+				new InvokeForm.Request
 				{
-					FirstName = "John",
-					Height = 1,
-					DateOfBirth = DateTime.Now,
-					IsRegistered = true,
-					Weight = 2
-				}.ToDictionary()
-			}, CancellationToken.None);
+					Form = typeof(Magic).GetFormId(),
+					InputFieldValues = new BaseForm.Request
+					{
+						FirstName = "John",
+						Height = 1,
+						DateOfBirth = DateTime.Now,
+						IsRegistered = true,
+						Weight = 2
+					}.ToDictionary()
+				},
+				CancellationToken.None);
 
 			Assert.NotNull(response);
 		}
@@ -199,18 +198,20 @@
 
 			var mediator = di.GetService<IMediator>();
 
-			var response = await mediator.Send(new InvokeForm.Request
-			{
-				Form = typeof(Magic).GetFormId(),
-				InputFieldValues = new
+			var response = await mediator.Send(
+				new InvokeForm.Request
 				{
-					FirstName = "John",
-					Height = 1,
-					DateOfBirth = DateTime.Now,
-					IsRegistered = true,
-					Weight = 2
-				}
-			}, CancellationToken.None);
+					Form = typeof(Magic).GetFormId(),
+					InputFieldValues = new
+					{
+						FirstName = "John",
+						Height = 1,
+						DateOfBirth = DateTime.Now,
+						IsRegistered = true,
+						Weight = 2
+					}
+				},
+				CancellationToken.None);
 
 			Assert.NotNull(response);
 		}

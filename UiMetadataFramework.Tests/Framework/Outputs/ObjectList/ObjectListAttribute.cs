@@ -13,7 +13,7 @@ public class ObjectListAttribute : ComponentConfigurationAttribute
 	public override object CreateMetadata(
 		Type type,
 		MetadataBinder binder,
-		params ComponentConfigurationItemAttribute[] configurationItems)
+		params ConfigurationDataAttribute[] configurationData)
 	{
 		var innerType = type.GenericTypeArguments[0];
 

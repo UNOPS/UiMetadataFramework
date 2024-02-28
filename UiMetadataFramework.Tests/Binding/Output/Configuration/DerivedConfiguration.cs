@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using FluentAssertions;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Framework.Outputs.Money;
 using UiMetadataFramework.Tests.Utilities;
@@ -34,7 +35,7 @@ public class DerivedConfiguration
 		public override object CreateMetadata(
 			Type type,
 			MetadataBinder binder,
-			params ComponentConfigurationItemAttribute[] configurationItems)
+			params ConfigurationDataAttribute[] configurationData)
 		{
 			return new BetterConfiguration
 			{
@@ -55,7 +56,7 @@ public class DerivedConfiguration
 	{
 		var field = this.binder.BuildOutputFields<Response>().Single(t => t.Id == nameof(Response.Money));
 
-		dynamic component = field.Component.GetConfigurationOrException();
+		dynamic component = field.Component.Configuration.As<object>();
 
 		Assert.Equal(2, component.DecimalPlaces);
 		Assert.Equal("en-US", component.Locale);

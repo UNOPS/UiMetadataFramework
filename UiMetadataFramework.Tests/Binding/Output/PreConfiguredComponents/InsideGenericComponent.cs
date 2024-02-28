@@ -1,6 +1,7 @@
 ﻿namespace UiMetadataFramework.Tests.Binding.Output.PreConfiguredComponents;
 
 using System.Linq;
+using FluentAssertions;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Framework.Outputs.Money;
 using UiMetadataFramework.Tests.Framework.Outputs.ObjectList;
@@ -20,7 +21,7 @@ public class InsideGenericComponent
 	public class HighPrecisionMoney : IPreConfiguredComponent<Money>
 	{
 		[Money(8)]
-		[MoneyStyleItem(Style = "precise")]
+		[MoneyStyleData(Style = "precise")]
 		public Money? Value { get; set; }
 	}
 
@@ -28,7 +29,8 @@ public class InsideGenericComponent
 	public void NestedPreConfiguredComponentBound()
 	{
 		var money = this.binder.BuildOutputFields<Outputs>()
-			.Single(t => t.Id == nameof(Outputs.Amounts)).Component.GetConfigurationOrException<ObjectListAttribute.Configuration>()
+			.Single(t => t.Id == nameof(Outputs.Amounts))
+			.Component.Configuration.As<ObjectListAttribute.Configuration>()
 			.InnerComponent;
 
 		Assert.Equal("money", money.Type);
@@ -46,7 +48,7 @@ public class InsideGenericComponent
 		var objectList = this.binder.BuildOutputFields<Outputs>()
 			.Single(t => t.Id == nameof(Outputs.Amounts));
 
-		var objectListConfig = objectList.Component.GetConfigurationOrException<ObjectListAttribute.Configuration>();
+		var objectListConfig = objectList.Component.Configuration.As<ObjectListAttribute.Configuration>();
 
 		Assert.Equal("object-list", objectList.Component.Type);
 		Assert.Equal("bullet-point-list", objectListConfig.Style);

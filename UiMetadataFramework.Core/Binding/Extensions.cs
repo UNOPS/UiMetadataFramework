@@ -242,6 +242,11 @@
 				.ToList();
 		}
 
+		internal static string JoinStrings(this IEnumerable<string?> strings, string separator)
+		{
+			return string.Join(separator, strings);
+		}
+
 		/// <summary>
 		/// Creates a copy of the dictionary.
 		/// </summary>

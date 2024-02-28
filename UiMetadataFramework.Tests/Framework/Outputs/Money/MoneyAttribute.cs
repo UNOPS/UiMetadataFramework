@@ -21,9 +21,9 @@ public class MoneyAttribute : ComponentConfigurationAttribute
 	public override object CreateMetadata(
 		Type type,
 		MetadataBinder binder,
-		params ComponentConfigurationItemAttribute[] configurationItems)
+		params ConfigurationDataAttribute[] configurationData)
 	{
-		var style = configurationItems.OfType<MoneyStyleItemAttribute>().FirstOrDefault()?.Style;
+		var style = configurationData.OfType<MoneyStyleDataAttribute>().FirstOrDefault()?.Style;
 
 		return new Configuration
 		{

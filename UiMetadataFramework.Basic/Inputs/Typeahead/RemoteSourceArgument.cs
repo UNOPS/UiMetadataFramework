@@ -7,7 +7,7 @@
 	public class RemoteSourceArgument
 	{
 		/// <summary>
-		/// Creates a new instance of <see cref="RemoteSourceArgumentAttribute"/>.
+		/// Creates a new instance of <see cref="RemoteSourceArgumentDataAttribute"/>.
 		/// </summary>
 		/// <param name="parameter">Name of the request parameter on the remote source.</param>
 		/// <param name="source">Name of the source from which to take the value for the <paramref name="parameter"/>.</param>

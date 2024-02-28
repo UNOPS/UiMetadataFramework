@@ -6,15 +6,15 @@
 	/// Identifies a request parameter of a remote source and instructs client how to set the value
 	/// for this parameter. Each request to the remote source will have this parameter value set accordingly.
 	/// </summary>
-	public class RemoteSourceArgumentAttribute : ComponentConfigurationItemAttribute
+	public class RemoteSourceArgumentDataAttribute : ConfigurationDataAttribute
 	{
 		/// <summary>
-		/// Creates a new instance of <see cref="RemoteSourceArgumentAttribute"/>.
+		/// Creates a new instance of <see cref="RemoteSourceArgumentDataAttribute"/>.
 		/// </summary>
 		/// <param name="parameter">Name of the request parameter on the remote source.</param>
 		/// <param name="source">Name of the source from which to take the value for the <paramref name="parameter"/>.</param>
 		/// <param name="sourceType">Type of source specified by <paramref name="source"/>.</param>
-		public RemoteSourceArgumentAttribute(
+		public RemoteSourceArgumentDataAttribute(
 			string parameter,
 			string source,
 			string sourceType)

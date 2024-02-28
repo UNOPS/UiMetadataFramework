@@ -3,6 +3,7 @@
 namespace UiMetadataFramework.Tests.Binding.Input;
 
 using System.Linq;
+using FluentAssertions;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Framework.Inputs.Checkbox;
 using UiMetadataFramework.Tests.Utilities;
@@ -30,7 +31,7 @@ public class CustomInputTypeTests
 			.BuildInputFields<Request>()
 			.Single(t => t.Id == nameof(Request.AcceptTerms));
 
-		var custom = inputField.Component.GetConfigurationOrException<CheckboxAttribute.Configuration>();
+		var custom = inputField.Component.Configuration.As<CheckboxAttribute.Configuration>();
 
 		Assert.Equal("fancy", custom.Style);
 	}
