@@ -5,11 +5,27 @@ namespace UiMetadataFramework.Tests
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
+	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
 	public static class Extensions
 	{
-		public static Core.Component BuildOutputComponent<T>(
+		public static IDictionary<string, object?>? ConfigAsDictionary(this Component component)
+		{
+			return component.Configuration as IDictionary<string, object?>;
+		}
+
+		public static Component BuildInputComponent<T>(
+			this MetadataBinder binder,
+			Expression<Func<T, object?>> propertyExpression)
+		{
+			var propertyName = ((MemberExpression)propertyExpression.Body).Member.Name;
+			var property = typeof(T).GetProperty(propertyName) ?? throw new Exception($"Property '{propertyName}' not found.");
+
+			return binder.BuildInputComponent(property);
+		}
+
+		public static Component BuildOutputComponent<T>(
 			this MetadataBinder binder,
 			Expression<Func<T, object?>> propertyExpression)
 		{

@@ -198,21 +198,17 @@ namespace UiMetadataFramework.Core.Binding
 		/// Builds metadata for the given input component with the provided list of custom properties. 
 		/// </summary>
 		/// <param name="type">Type of output component or a <see cref="IPreConfiguredComponent{T}"/>.</param>
-		/// <param name="configuration"><see cref="ComponentConfigurationAttribute"/> representing the configuration
-		/// to be applied to this component instance. Can be null if component does not have any configuration.</param>
 		/// <param name="additionalConfigurations">Additional configurations to use when constructing the metadata.</param>
 		/// <returns>Metadata for component of type <paramref name="type"/>.</returns>
 		/// <exception cref="BindingException">Thrown if a mandatory custom property is missing.</exception>
 		public Component BindInputComponent(
 			Type type,
-			ComponentConfigurationAttribute? configuration = null,
 			params ConfigurationDataAttribute[] additionalConfigurations)
 		{
 			var binding = this.GetInputBinding(type);
 
 			return this.BuildComponent(
 				type,
-				configuration,
 				additionalConfigurations,
 				binding);
 		}
@@ -255,7 +251,6 @@ namespace UiMetadataFramework.Core.Binding
 		{
 			return this.BindInputComponent(
 				property.PropertyType,
-				property.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>(inherit: true),
 				property.GetCustomAttributes<ConfigurationDataAttribute>(inherit: true).ToArray());
 		}
 
@@ -289,21 +284,17 @@ namespace UiMetadataFramework.Core.Binding
 		/// Builds metadata for the given output component with the provided list of custom properties. 
 		/// </summary>
 		/// <param name="type">Type of output component or a <see cref="IPreConfiguredComponent{T}"/>.</param>
-		/// <param name="configuration"><see cref="ComponentConfigurationAttribute"/> representing the configuration
-		/// to be applied to this component instance. Can be null if component does not have any configuration.</param>
 		/// <param name="additionalConfigurations">Additional configurations to use when constructing the metadata.</param>
 		/// <returns>Metadata for component of type <paramref name="type"/>.</returns>
 		/// <exception cref="BindingException">Thrown if a mandatory custom property is missing.</exception>
 		public Component BuildOutputComponent(
 			Type type,
-			ComponentConfigurationAttribute? configuration = null,
 			params ConfigurationDataAttribute[] additionalConfigurations)
 		{
 			var binding = this.GetOutputBinding(type);
 
 			return this.BuildComponent(
 				type,
-				configuration,
 				additionalConfigurations,
 				binding);
 		}
@@ -315,7 +306,6 @@ namespace UiMetadataFramework.Core.Binding
 		{
 			return this.BuildOutputComponent(
 				property.PropertyType,
-				property.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>(inherit: true),
 				property.GetCustomAttributes<ConfigurationDataAttribute>(inherit: true).ToArray());
 		}
 
@@ -482,35 +472,21 @@ namespace UiMetadataFramework.Core.Binding
 		/// Builds component metadata.
 		/// </summary>
 		/// <param name="type">Component type or a <see cref="IPreConfiguredComponent{T}"/>.</param>
-		/// <param name="configuration">Configuration for the component.</param>
 		/// <param name="configurationItems">Any additional configuration items to apply.</param>
 		/// <param name="binding">Component's binding.</param>
 		/// <returns><see cref="Component"/> instance.</returns>
 		/// <exception cref="BindingException">Thrown if the supplied configuration data is invalid.</exception>
 		private Component BuildComponent(
 			Type type,
-			ComponentConfigurationAttribute? configuration,
 			ConfigurationDataAttribute[] configurationItems,
 			IFieldBinding binding)
 		{
-			var effectiveConfiguration = configuration;
 			var effectiveConfigurationItems = configurationItems;
 
 			var innerComponent = GetInnerComponent(type);
 
 			if (innerComponent != null)
 			{
-				var innerConfiguration = innerComponent
-					.GetCustomAttributeSingleOrDefault<ComponentConfigurationAttribute>()
-					// Crete a clone of the inner configuration, so that we don't modify the original.
-					?.Clone();
-
-				if (innerConfiguration != null)
-				{
-					innerConfiguration.Merge(configuration);
-					effectiveConfiguration = innerConfiguration;
-				}
-
 				effectiveConfigurationItems = configurationItems
 					// Inner configuration items should come last. This way we indicate
 					// that inner configuration items have lower priority.
@@ -518,35 +494,9 @@ namespace UiMetadataFramework.Core.Binding
 					.ToArray();
 			}
 
-			var requiresConfiguration = binding.MetadataFactory?.ImplementsClass(typeof(ComponentConfigurationAttribute)) == true;
-
-			if (requiresConfiguration)
-			{
-				if (effectiveConfiguration == null)
-				{
-					throw new BindingException(
-						$"Cannot construct metadata for '{type.FullName}', because a configuration " +
-						$"of type '{binding.MetadataFactory!.FullName}' is expected.");
-				}
-
-				if (!effectiveConfiguration.GetType().ImplementsClass(binding.MetadataFactory!))
-				{
-					throw new BindingException(
-						$"Cannot construct metadata for '{type.FullName}', because configuration " +
-						$"of type '{binding.MetadataFactory!.FullName}' is expected, but configuration " +
-						$"of type '{effectiveConfiguration.GetType().FullName}' was provided instead.");
-				}
-			}
-			else if (effectiveConfiguration != null)
-			{
-				throw new BindingException($"Component '{type.FullName}' does not have configuration, but one was provided.");
-			}
-
-			var metadataFactory = effectiveConfiguration ?? (
-				binding.MetadataFactory != null
-					? (IMetadataFactory)this.Container.GetService(binding.MetadataFactory)
-					: new DefaultMetadataFactory()
-			);
+			var metadataFactory = binding.MetadataFactory != null
+				? (IMetadataFactory)this.Container.GetService(binding.MetadataFactory)
+				: new DefaultMetadataFactory();
 
 			try
 			{

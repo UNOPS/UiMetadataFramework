@@ -1,7 +1,5 @@
 ﻿namespace UiMetadataFramework.Tests.Binding.Output.Configuration;
 
-using System.Linq;
-using FluentAssertions;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Framework.Outputs.Money;
 using UiMetadataFramework.Tests.Utilities;
@@ -24,42 +22,36 @@ public class ConfigurationBinding
 	[Fact]
 	public void BindingByMethodCallWorks()
 	{
-		var field = this.binder.BuildOutputComponent(
-			typeof(Money),
-			new MoneyAttribute
-			{
-				DecimalPlaces = 10,
-				Locale = "en-UK"
-			});
+		var field = this.binder.BuildOutputComponent(typeof(Money));
 
 		Assert.NotNull(field.Configuration);
 
-		dynamic component = field.Configuration!;
+		var component = field.ConfigAsDictionary()!;
 
-		Assert.Equal(10, component.DecimalPlaces);
-		Assert.Equal("en-UK", component.Locale);
+		Assert.Equal(10, component["DecimalPlaces"]);
+		Assert.Equal("en-UK", component["Locale"]);
 	}
 
 	[Fact]
 	public void ConfigurationAttributeWorks()
 	{
-		var field = this.binder.BuildOutputFields<Response>().Single(t => t.Id == nameof(Response.Money));
+		var field = this.binder.BuildOutputComponent<Response>(t => t.Money);
 
-		dynamic component = field.Component.Configuration.As<object>();
+		dynamic component = field.ConfigAsDictionary()!;
 
-		Assert.Equal(4, component.DecimalPlaces);
-		Assert.Equal("en-US", component.Locale);
+		Assert.Equal(4, component["DecimalPlaces"]);
+		Assert.Equal("en-US", component["Locale"]);
 	}
 
 	[Fact]
 	public void OptionalConfigurationAttributeWorks()
 	{
-		var field = this.binder.BuildOutputFields<Response>().Single(t => t.Id == nameof(Response.StyledMoney));
+		var field = this.binder.BuildOutputComponent<Response>(t => t.StyledMoney);
 
-		dynamic component = field.Component.Configuration.As<object>();
+		dynamic component = field.ConfigAsDictionary()!;
 
-		Assert.Equal(4, component.DecimalPlaces);
-		Assert.Equal("en-US", component.Locale);
-		Assert.Equal("fancy", component.Style);
+		Assert.Equal(4, component["DecimalPlaces"]);
+		Assert.Equal("en-US", component["Locale"]);
+		Assert.Equal("fancy", component["Style"]);
 	}
 }

@@ -19,7 +19,11 @@ public class HasConfigurationAttribute(
 	/// Configuration (<see cref="ConfigurationDataAttribute"/>) that
 	/// this component supports.
 	/// </summary>
-	public Type ConfigurationType { get; } = configurationType;
+	public Type ConfigurationType { get; } = configurationType.ImplementsClass(typeof(ConfigurationDataAttribute))
+		? configurationType
+		: throw new BindingException(
+			$"Invalid configuration type '{configurationType.Name}' specified. " +
+			$"Must be a subclass of '{nameof(ConfigurationDataAttribute)}'.");
 
 	/// <summary>
 	/// Indicates whether the configuration will hold an array of values or a single

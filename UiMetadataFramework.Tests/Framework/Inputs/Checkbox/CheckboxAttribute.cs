@@ -1,22 +1,9 @@
 ﻿namespace UiMetadataFramework.Tests.Framework.Inputs.Checkbox;
 
-using System;
 using UiMetadataFramework.Core.Binding;
 
-public class CheckboxAttribute : ComponentConfigurationAttribute
+public class CheckboxAttribute : ConfigurationDataAttribute
 {
+	[ConfigurationProperty("Style")]
 	public string? Style { get; set; }
-
-	public override object CreateMetadata(
-		Type type,
-		MetadataBinder binder,
-		params ConfigurationDataAttribute[] configurationData)
-	{
-		return new Configuration { Style = this.Style };
-	}
-
-	public class Configuration
-	{
-		public string? Style { get; set; }
-	}
 }

@@ -7,7 +7,8 @@ using UiMetadataFramework.Core.Binding;
 /// Represents subset of data from a data store. This subset of data corresponds
 /// to single "page".
 /// </summary>
-[OutputComponent("paginated-data", typeof(PaginatedDataAttribute))]
+[OutputComponent("paginated-data", typeof(PaginatedDataMetadataFactory))]
+[HasConfiguration(typeof(PaginatedDataAttribute), mandatory: true)]
 public class PaginatedData<T>
 {
 	/// <summary>

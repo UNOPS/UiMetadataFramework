@@ -2,6 +2,7 @@
 
 namespace UiMetadataFramework.Tests.Binding.Input;
 
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using UiMetadataFramework.Core.Binding;
@@ -27,13 +28,11 @@ public class CustomInputTypeTests
 	[Fact]
 	public void BindsCustomInputType()
 	{
-		var inputField = this.binder
-			.BuildInputFields<Request>()
-			.Single(t => t.Id == nameof(Request.AcceptTerms));
+		var component = this.binder.BuildInputComponent<Request>(t => t.AcceptTerms);
 
-		var custom = inputField.Component.Configuration.As<CheckboxAttribute.Configuration>();
+		var config = component.Configuration.As<Dictionary<string, object?>>();
 
-		Assert.Equal("fancy", custom.Style);
+		Assert.Equal("fancy", config["Style"]);
 	}
 
 	[Fact]

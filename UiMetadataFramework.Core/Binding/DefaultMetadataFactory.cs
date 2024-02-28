@@ -18,6 +18,9 @@ public class DefaultMetadataFactory : IMetadataFactory
 	/// Iterates over all <see cref="configurationData"/>, finds all properties marked with
 	/// <see cref="ConfigurationPropertyAttribute"/> and attaches their values to the result.
 	/// </summary>
+	/// <param name="type">Component type or a <see cref="IPreConfiguredComponent{T}"/>.</param>
+	/// <param name="binder">Binder to use.</param>
+	/// <param name="configurationData">Configurations to apply.</param>
 	/// <returns>Dictionary representing component's configuration.</returns>
 	public object? CreateMetadata(
 		Type type,
@@ -107,9 +110,28 @@ public class DefaultMetadataFactory : IMetadataFactory
 			throw new BindingException($"Mandatory configurations missing: {missingConfigs}.");
 		}
 
+		this.AugmentConfiguration(type, binder, configurationData, result);
+
 		return result.Count == 0
 			? null
 			: result;
+	}
+
+	/// <summary>
+	/// Provides a hook to amend the configuration object before it is returned.
+	/// </summary>
+	/// <param name="type">Component type or a <see cref="IPreConfiguredComponent{T}"/>.</param>
+	/// <param name="binder">Binder to use.</param>
+	/// <param name="configurationData">Configurations to apply.</param>
+	/// <param name="result">Configuration prepared by <see cref="DefaultMetadataFactory"/>.
+	/// This particular instance represents the final configuration object, so changes to it
+	/// will be reflected in return value of <see cref="CreateMetadata"/>.</param>
+	protected virtual void AugmentConfiguration(
+		Type type,
+		MetadataBinder binder,
+		ConfigurationDataAttribute[] configurationData,
+		Dictionary<string, object?> result)
+	{
 	}
 
 	/// <summary>

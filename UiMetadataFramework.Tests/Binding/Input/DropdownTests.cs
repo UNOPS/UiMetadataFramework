@@ -45,36 +45,40 @@ public class DropdownTests
 	[Fact]
 	public void CanBindRemoteSource()
 	{
-		var field = this.binder.BuildInputFields<Request>()
-			.Single(t => t.Id == nameof(Request.Countries));
+		var field = this.binder.BuildInputComponent<Request>(t => t.Countries);
 
-		var component = field.Component.Configuration.As<DropdownAttribute.Configuration>();
+		var component = field.Configuration.As<IDictionary<string, object?>>();
 
-		Assert.Null(component.Items);
-		Assert.Equal("A", component.Parameters?.Single().Parameter);
-		Assert.Equal("B", component.Parameters?.Single().Source);
-		Assert.Equal("C", component.Parameters?.Single().SourceType);
+		Assert.False(component.ContainsKey("Items"));
+
+		var parameters = component["Parameters"] as List<RemoteSourceArgument>;
+
+		Assert.Equal("A", parameters?.Single().Parameter);
+		Assert.Equal("B", parameters?.Single().Source);
+		Assert.Equal("C", parameters?.Single().SourceType);
 	}
 
 	[Fact]
 	public void CanBindToCustomInlineSource()
 	{
-		var field = this.binder.BuildInputFields<Request>()
-			.Single(t => t.Id == nameof(Request.Gender));
+		var field = this.binder.BuildInputComponent<Request>(t => t.Gender);
 
-		var component = field.Component.Configuration.As<DropdownAttribute.Configuration>();
+		var component = field.Configuration.As<IDictionary<string, object?>>();
 
-		Assert.Equal(2, component.Items?.Count);
+		var items = component["Items"] as List<DropdownItem>;
+
+		Assert.Equal(2, items?.Count);
 	}
 
 	[Fact]
 	public void CanBindToEnum()
 	{
-		var inputFields = this.binder.BuildInputFields<Request>()
-			.Single(t => t.Id == nameof(Request.Day));
+		var field = this.binder.BuildInputComponent<Request>(t => t.Day);
 
-		var component = inputFields.Component.Configuration.As<DropdownAttribute.Configuration>();
+		var component = field.Configuration.As<IDictionary<string, object?>>();
 
-		Assert.Equal(7, component.Items?.Count);
+		var items = component["Items"] as List<DropdownItem>;
+
+		Assert.Equal(7, items?.Count);
 	}
 }

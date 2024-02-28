@@ -44,6 +44,6 @@ public class InvalidConfigurations
 	[Fact]
 	public void ExceptionThrownIfConfigurationIsOfWrongType()
 	{
-		Assert.Throws<BindingException>(() => this.binder.BuildOutputComponent(typeof(Money), new FlexboxAttribute()));
+		Assert.Throws<BindingException>(() => this.binder.BuildOutputComponent(typeof(Money)));
 	}
 }
