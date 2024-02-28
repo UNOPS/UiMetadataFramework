@@ -548,14 +548,21 @@ namespace UiMetadataFramework.Core.Binding
 					: null
 			);
 
-			var metadata = metadataFactory?.CreateMetadata(
-				type,
-				this,
-				effectiveConfigurationItems);
+			try
+			{
+				var metadata = metadataFactory?.CreateMetadata(
+					type,
+					this,
+					effectiveConfigurationItems);
 
-			return new Component(
-				binding.ClientType,
-				metadata);
+				return new Component(
+					binding.ClientType,
+					metadata);
+			}
+			catch (Exception e)
+			{
+				throw new BindingException($"Failed to construct metadata for '{type.FullName}'.", e);
+			}
 		}
 
 		private IEnumerable<InputFieldMetadata> BuildInputFieldsInternal(Type type, bool strict = false)
