@@ -8,7 +8,7 @@ using UiMetadataFramework.Core.Binding;
 /// to single "page".
 /// </summary>
 [OutputComponent("paginated-data", typeof(PaginatedDataMetadataFactory))]
-[HasConfiguration(typeof(PaginatedDataAttribute), mandatory: true)]
+[HasConfiguration(typeof(PaginatedAttribute), mandatory: true)]
 public class PaginatedData<T>
 {
 	/// <summary>

@@ -33,9 +33,8 @@
 		/// </summary>
 		/// <param name="serverTypes">Types which should be rendered on the client.</param>
 		/// <param name="clientType">Name of the client control which will render the specified types.</param>
-		/// <param name="metadataFactory"><see cref="IMetadataFactory"/> to use for constructing component's metadata.
-		/// If the component requires configuration, then a type implementing <see cref="ComponentConfigurationAttribute"/>
-		/// can be provided.</param>
+		/// <param name="metadataFactory"><see cref="IMetadataFactory"/> to use for constructing component's
+		/// metadata. If null then <see cref="DefaultMetadataFactory"/> will be used.</param>
 		public OutputComponentBinding(
 			IEnumerable<Type> serverTypes,
 			string clientType,
@@ -67,12 +66,7 @@
 		/// <inheritdoc />
 		public string ClientType { get; }
 
-		/// <summary>
-		/// Represents <see cref="IMetadataFactory"/> that should be used to construct metadata.
-		/// If null then no custom metadata will be constructed.
-		/// </summary>
-		/// <remarks>If the type implements <see cref="ComponentConfigurationAttribute"/> then it will indicate
-		/// that this component has configuration that must be provided whenever constructing its metadata.</remarks>
+		/// <inheritdoc />
 		public Type? MetadataFactory { get; }
 
 		/// <inheritdoc />

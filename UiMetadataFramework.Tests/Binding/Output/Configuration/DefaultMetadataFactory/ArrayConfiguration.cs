@@ -14,14 +14,14 @@ public class ArrayConfiguration
 
 	public class Response
 	{
-		[IconStyleData("very")]
-		[IconStyleData("nice")]
+		[IconStyle("very")]
+		[IconStyle("nice")]
 		public Icon? WithMultipleUsages { get; set; }
 
-		[IconColorData(Color = "blue")]
+		[IconColor(Color = "blue")]
 		public Icon? WithNoUsages { get; set; }
 
-		[IconStyleData("nice")]
+		[IconStyle("nice")]
 		public Icon? WithOneUsage { get; set; }
 	}
 

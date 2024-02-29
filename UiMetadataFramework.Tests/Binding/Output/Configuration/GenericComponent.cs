@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using FluentAssertions;
 using UiMetadataFramework.Basic.Output.PaginatedData;
 using UiMetadataFramework.Core;
@@ -17,7 +16,7 @@ public class GenericComponent
 {
 	public class Response
 	{
-		[PaginatedDataAttribute("paginator-for-items")]
+		[Paginated("paginator-for-items")]
 		public PaginatedData<Item>? Items { get; set; }
 	}
 
@@ -32,13 +31,13 @@ public class GenericComponent
 	[Fact]
 	public void MetadataBoundCorrectly()
 	{
-		var field = this.binder.BuildOutputFields<Response>().Single();
+		var config = this.binder
+			.BuildOutputComponent<Response>(t => t.Items)
+			.ConfigAsDictionary()!;
 
-		var component = field.Component.Configuration.As<Dictionary<string, object?>>();
+		Assert.Equal("paginator-for-items", config["Paginator"]);
 
-		Assert.Equal("paginator-for-items", component["Paginator"]);
-
-		var columns = component["Columns"].As<IList<OutputFieldMetadata>>();
+		var columns = config["Columns"].As<IList<OutputFieldMetadata>>();
 
 		Assert.Equal(2, columns.Count);
 

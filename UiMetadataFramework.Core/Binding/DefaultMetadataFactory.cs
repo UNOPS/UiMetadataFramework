@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 
 /// <summary>
-/// <see cref="IMetadataFactory"/> that iterates over all <see cref="ConfigurationDataAttribute"/>s,
+/// <see cref="IMetadataFactory"/> that iterates over all <see cref="ComponentConfigurationAttribute"/>s,
 /// finds all properties marked with <see cref="ConfigurationPropertyAttribute"/> and adds them to the metadata.
 /// </summary>
 public class DefaultMetadataFactory : IMetadataFactory
@@ -15,37 +15,37 @@ public class DefaultMetadataFactory : IMetadataFactory
 	private static readonly ConcurrentDictionary<Type, HasConfigurationAttribute[]> AllowedConfigurationItems = new();
 
 	/// <summary>
-	/// Iterates over all <see cref="configurationData"/>, finds all properties marked with
+	/// Iterates over all <see cref="configurations"/>, finds all properties marked with
 	/// <see cref="ConfigurationPropertyAttribute"/> and attaches their values to the result.
 	/// </summary>
 	/// <param name="type">Component type or a <see cref="IPreConfiguredComponent{T}"/>.</param>
 	/// <param name="binder">Binder to use.</param>
-	/// <param name="configurationData">Configurations to apply.</param>
+	/// <param name="configurations">Configurations to apply. Highest priority configs should come first.</param>
 	/// <returns>Dictionary representing component's configuration.</returns>
 	public object? CreateMetadata(
 		Type type,
 		MetadataBinder binder,
-		params ConfigurationDataAttribute[] configurationData)
+		params ComponentConfigurationAttribute[] configurations)
 	{
 		var result = new Dictionary<string, object?>();
 
-		var availableConfigs = GetAvailableComponentConfigs(type);
+		var supportedConfigs = GetSupportedConfigs(type);
 
-		var remainingRequiredConfigs = availableConfigs
+		var remainingRequiredConfigs = supportedConfigs
 			.Where(t => t.Mandatory)
 			.ToList();
 
-		foreach (var configData in configurationData)
+		foreach (var configData in configurations)
 		{
 			var configType = configData.GetType();
 
-			var config = availableConfigs
-				.SingleOrDefault(t => t.ConfigurationType == configType);
+			var supportedConfig = supportedConfigs
+				.SingleOrDefault(t => configType.ImplementsClass(t.ConfigurationType));
 
-			if (config == null)
+			if (supportedConfig == null)
 			{
 				throw new BindingException(
-					$"Invalid configuration item '{configType.Name}' attached to '{type.Name}'.");
+					$"Component '{type.Name}' does not support configurations of type '{configType.Name}'.");
 			}
 
 			var configProperties = configType
@@ -60,9 +60,9 @@ public class DefaultMetadataFactory : IMetadataFactory
 				.Where(t => t.Info != null)
 				.ToList();
 
-			if (config.IsArray)
+			if (supportedConfig.IsArray)
 			{
-				result.TryGetValue(config.Name!, out var storedList);
+				result.TryGetValue(supportedConfig.Name!, out var storedList);
 
 				var list = storedList as List<Dictionary<string, object?>> ?? [];
 				var item = new Dictionary<string, object?>();
@@ -76,28 +76,32 @@ public class DefaultMetadataFactory : IMetadataFactory
 
 				list.Add(item);
 
-				result[config.Name!] = list;
+				result[supportedConfig.Name!] = list;
 			}
 			else
 			{
 				foreach (var property in configProperties)
 				{
-					var propertyValue = property.Property.GetValue(configData);
+					result.TryGetValue(property.Info!.Name, out var oldValue);
 
-					if (propertyValue != null)
+					// If the config property has already been set then we will not
+					// overwrite it. That's because the configurations come in the
+					// order of their priority (highest priority configs come first).
+					if (oldValue == null)
 					{
-						result[property.Info!.Name] = propertyValue;
-					}
-					else if (result.ContainsKey(property.Info!.Name))
-					{
-						result.Remove(property.Info!.Name);
+						var newValue = property.Property.GetValue(configData);
+
+						if (newValue != null)
+						{
+							result[property.Info!.Name] = newValue;
+						}
 					}
 				}
 			}
 
-			if (config.Mandatory)
+			if (supportedConfig.Mandatory)
 			{
-				remainingRequiredConfigs.Remove(config);
+				remainingRequiredConfigs.Remove(supportedConfig);
 			}
 		}
 
@@ -110,7 +114,7 @@ public class DefaultMetadataFactory : IMetadataFactory
 			throw new BindingException($"Mandatory configurations missing: {missingConfigs}.");
 		}
 
-		this.AugmentConfiguration(type, binder, configurationData, result);
+		this.AugmentConfiguration(type, binder, configurations, result);
 
 		return result.Count == 0
 			? null
@@ -129,7 +133,7 @@ public class DefaultMetadataFactory : IMetadataFactory
 	protected virtual void AugmentConfiguration(
 		Type type,
 		MetadataBinder binder,
-		ConfigurationDataAttribute[] configurationData,
+		ComponentConfigurationAttribute[] configurationData,
 		Dictionary<string, object?> result)
 	{
 	}
@@ -138,7 +142,7 @@ public class DefaultMetadataFactory : IMetadataFactory
 	/// Gets list of <see cref="HasConfigurationAttribute"/> applied to this component.
 	/// </summary>
 	/// <param name="type">Component type or a <see cref="IPreConfiguredComponent{T}"/>.</param>
-	private static HasConfigurationAttribute[] GetAvailableComponentConfigs(Type type)
+	private static HasConfigurationAttribute[] GetSupportedConfigs(Type type)
 	{
 		var innerComponent = MetadataBinder.GetInnerComponent(type);
 

@@ -13,10 +13,10 @@ public class MandatoryConfigurations
 
 	public class Response
 	{
-		[GridData]
+		[Grid]
 		public Grid<string>? Grid { get; set; }
 
-		[GridData(Areas = "abc")]
+		[Grid(Areas = "abc")]
 		public Grid<string>? GridWithAreas { get; set; }
 	}
 

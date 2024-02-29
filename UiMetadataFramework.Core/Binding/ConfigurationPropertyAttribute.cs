@@ -3,7 +3,7 @@ namespace UiMetadataFramework.Core.Binding;
 using System;
 
 /// <summary>
-/// To be used inside a <see cref="ConfigurationDataAttribute"/> class to indicate
+/// To be used inside a <see cref="ComponentConfigurationAttribute"/> class to indicate
 /// which properties should be serialized and added to component's configuration
 /// (<see cref="Component.Configuration"/>).
 /// </summary>

@@ -7,6 +7,11 @@
 
 	internal static class Extensions
 	{
+		public static List<T> AsList<T>(this T item)
+		{
+			return [..new[] { item }];
+		}
+
 		/// <summary>
 		/// Checks whether this class inherits another class.
 		/// </summary>

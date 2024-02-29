@@ -15,21 +15,22 @@ public class ConfigurationBinding
 		public Money? Money { get; set; }
 
 		[Money(4, Locale = "en-US")]
-		[MoneyStyleData(Style = "fancy")]
+		[MoneyStyle(Style = "fancy")]
 		public Money? StyledMoney { get; set; }
 	}
 
 	[Fact]
 	public void BindingByMethodCallWorks()
 	{
-		var field = this.binder.BuildOutputComponent(typeof(Money));
+		var config = this.binder
+			.BuildOutputComponent(
+				type: typeof(Money),
+				configurations: new MoneyAttribute(10) { Locale = "en-UK" })
+			.ConfigAsDictionary()!;
 
-		Assert.NotNull(field.Configuration);
-
-		var component = field.ConfigAsDictionary()!;
-
-		Assert.Equal(10, component["DecimalPlaces"]);
-		Assert.Equal("en-UK", component["Locale"]);
+		Assert.NotNull(config);
+		Assert.Equal(10, config["DecimalPlaces"]);
+		Assert.Equal("en-UK", config["Locale"]);
 	}
 
 	[Fact]

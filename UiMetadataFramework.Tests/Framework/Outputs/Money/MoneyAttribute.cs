@@ -1,7 +1,7 @@
+// ReSharper disable MemberCanBeProtected.Global
+
 namespace UiMetadataFramework.Tests.Framework.Outputs.Money;
 
-using System;
-using System.Linq;
 using UiMetadataFramework.Core.Binding;
 
 public class MoneyAttribute : ComponentConfigurationAttribute
@@ -15,28 +15,9 @@ public class MoneyAttribute : ComponentConfigurationAttribute
 		this.DecimalPlaces = decimals;
 	}
 
+	[ConfigurationProperty("DecimalPlaces")]
 	public int? DecimalPlaces { get; set; }
+
+	[ConfigurationProperty("Locale")]
 	public string? Locale { get; set; }
-
-	public override object CreateMetadata(
-		Type type,
-		MetadataBinder binder,
-		params ConfigurationDataAttribute[] configurationData)
-	{
-		var style = configurationData.OfType<MoneyStyleDataAttribute>().FirstOrDefault()?.Style;
-
-		return new Configuration
-		{
-			DecimalPlaces = this.DecimalPlaces,
-			Locale = this.Locale,
-			Style = style
-		};
-	}
-
-	public class Configuration
-	{
-		public int? DecimalPlaces { get; set; }
-		public string? Locale { get; set; }
-		public string? Style { get; set; }
-	}
 }

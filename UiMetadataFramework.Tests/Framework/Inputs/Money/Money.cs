@@ -2,7 +2,8 @@
 
 using UiMetadataFramework.Core.Binding;
 
-[InputComponent("money", typeof(MoneyAttribute))]
+[InputComponent("money")]
+[HasConfiguration(typeof(MoneyAttribute), mandatory: true)]
 public class Money
 {
 	public decimal Amount { get; set; }

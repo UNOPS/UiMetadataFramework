@@ -1,36 +1,15 @@
 ﻿namespace UiMetadataFramework.Tests.Framework.Outputs.ObjectList;
 
-using System;
-using UiMetadataFramework.Core;
 using UiMetadataFramework.Core.Binding;
 
 public class ObjectListAttribute : ComponentConfigurationAttribute
 {
+	[ConfigurationProperty("Gap")]
 	public string? Gap { get; set; }
+
+	[ConfigurationProperty("ListItem")]
 	public string? ListItem { get; set; }
+
+	[ConfigurationProperty("Style")]
 	public string? Style { get; set; }
-
-	public override object CreateMetadata(
-		Type type,
-		MetadataBinder binder,
-		params ConfigurationDataAttribute[] configurationData)
-	{
-		var innerType = type.GenericTypeArguments[0];
-
-		var component = binder.BuildOutputComponent(innerType);
-
-		return new Configuration(component, this.Style, this.ListItem, this.Gap);
-	}
-
-	public class Configuration(
-		Component innerComponent,
-		string? style,
-		string? listItem,
-		string? gap)
-	{
-		public string? Gap { get; } = gap;
-		public Component InnerComponent { get; } = innerComponent;
-		public string? ListItem { get; } = listItem;
-		public string? Style { get; } = style;
-	}
 }

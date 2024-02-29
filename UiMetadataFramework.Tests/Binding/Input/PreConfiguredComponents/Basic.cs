@@ -1,7 +1,5 @@
 ﻿namespace UiMetadataFramework.Tests.Binding.Input.PreConfiguredComponents;
 
-using System.Linq;
-using FluentAssertions;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Framework.Inputs.Money;
 using UiMetadataFramework.Tests.Utilities;
@@ -27,11 +25,11 @@ public class ConfigurationOverrides
 	[Fact]
 	public void OuterConfigurationOverridesInner()
 	{
-		var moneyConfig = this.binder.BuildInputFields<Inputs>()
-			.Single(t => t.Id == nameof(Inputs.Usd))
-			.Component.Configuration.As<MoneyAttribute.Configuration>();
+		var config = this.binder
+			.BuildInputComponent<Inputs>(t => t.Usd)
+			.ConfigAsDictionary()!;
 
-		Assert.Equal(4, moneyConfig.DecimalPlaces);
-		Assert.Equal("USD", moneyConfig.Currency);
+		Assert.Equal(4, config["DecimalPlaces"]);
+		Assert.Equal("USD", config["Currency"]);
 	}
 }

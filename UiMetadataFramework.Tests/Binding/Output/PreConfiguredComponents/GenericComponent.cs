@@ -1,7 +1,7 @@
 ﻿namespace UiMetadataFramework.Tests.Binding.Output.PreConfiguredComponents;
 
-using System.Linq;
 using FluentAssertions;
+using UiMetadataFramework.Core;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Framework.Outputs.Money;
 using UiMetadataFramework.Tests.Framework.Outputs.ObjectList;
@@ -28,34 +28,34 @@ public class GenericComponent
 	public class HighPrecisionMoney : IPreConfiguredComponent<Money>
 	{
 		[Money(8)]
-		[MoneyStyleData(Style = "precise")]
+		[MoneyStyle(Style = "precise")]
 		public Money? Value { get; set; }
 	}
 
 	[Fact]
 	public void NestedPreConfiguredComponentBound()
 	{
-		var money = this.binder.BuildOutputFields<Outputs>()
-			.Single(t => t.Id == nameof(Outputs.Amounts))
-			.Component.Configuration.As<ObjectListAttribute.Configuration>()
-			.InnerComponent;
+		var money = this.binder.BuildOutputComponent<Outputs>(t => t.Amounts)
+			.ConfigAsDictionary()!
+			["InnerComponent"]
+			.As<Component>();
 
 		Assert.Equal("money", money.Type);
 
-		var moneyConfig = money.Configuration as MoneyAttribute.Configuration;
+		var moneyConfig = money.ConfigAsDictionary()!;
 
 		Assert.NotNull(moneyConfig);
-		Assert.Equal(8, moneyConfig!.DecimalPlaces);
-		Assert.Equal("precise", moneyConfig.Style);
+		Assert.Equal(8, moneyConfig["DecimalPlaces"]);
+		Assert.Equal("precise", moneyConfig["Style"]);
 	}
 
 	[Fact]
 	public void NestedUnconfiguredComponentBound()
 	{
-		var text = this.binder.BuildOutputFields<Outputs>()
-			.Single(t => t.Id == nameof(Outputs.Names))
-			.Component.Configuration.As<ObjectListAttribute.Configuration>()
-			.InnerComponent;
+		var text = this.binder.BuildOutputComponent<Outputs>(t => t.Names)
+			.ConfigAsDictionary()!
+			["InnerComponent"]
+			.As<Component>();
 
 		Assert.Equal("text", text.Type);
 		Assert.Null(text.Configuration);
@@ -64,13 +64,11 @@ public class GenericComponent
 	[Fact]
 	public void OuterGenericComponentBound()
 	{
-		var objectList = this.binder.BuildOutputFields<Outputs>()
-			.Single(t => t.Id == nameof(Outputs.Amounts));
+		var component = this.binder.BuildOutputComponent<Outputs>(t => t.Amounts);
+		var config = component.ConfigAsDictionary()!;
 
-		var objectListConfig = objectList.Component.Configuration.As<ObjectListAttribute.Configuration>();
-
-		Assert.Equal("object-list", objectList.Component.Type);
-		Assert.Equal("bullet-point-list", objectListConfig.Style);
-		Assert.Equal("*", objectListConfig.ListItem);
+		Assert.Equal("object-list", component.Type);
+		Assert.Equal("bullet-point-list", config["Style"]);
+		Assert.Equal("*", config["ListItem"]);
 	}
 }

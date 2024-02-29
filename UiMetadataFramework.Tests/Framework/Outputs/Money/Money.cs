@@ -4,7 +4,9 @@ namespace UiMetadataFramework.Tests.Framework.Outputs.Money;
 
 using UiMetadataFramework.Core.Binding;
 
-[OutputComponent("money", metadataFactory: typeof(MoneyAttribute))]
+[OutputComponent("money")]
+[HasConfiguration(typeof(MoneyAttribute), mandatory: true)]
+[HasConfiguration(typeof(MoneyStyleAttribute))]
 public class Money
 {
 	public decimal Amount { get; set; }

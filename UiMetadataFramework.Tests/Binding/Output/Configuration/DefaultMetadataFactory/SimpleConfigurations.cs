@@ -13,16 +13,16 @@ public class SimpleConfigurations
 
 	public class Response
 	{
-		[IconBackgroundData(Color = "white", Pattern = null)]
+		[IconBackground(Color = "white", Pattern = null)]
 		public Icon? WithNullProperty { get; set; }
 
-		[IconColorData(Color = "blue")]
+		[IconColor(Color = "blue")]
 		public Icon? WithOneConfig { get; set; }
 
 		public Icon? WithoutConfiguration { get; set; }
 
-		[IconColorData(Color = "blue")]
-		[IconBackgroundData(Color = "white", Pattern = "stripes")]
+		[IconColor(Color = "blue")]
+		[IconBackground(Color = "white", Pattern = "stripes")]
 		public Icon? WithTwoConfigs { get; set; }
 	}
 

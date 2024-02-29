@@ -3,9 +3,9 @@
 using UiMetadataFramework.Core.Binding;
 
 [OutputComponent("icon")]
-[HasConfiguration(typeof(IconColorDataAttribute))]
-[HasConfiguration(typeof(IconBackgroundDataAttribute))]
-[HasConfiguration(typeof(IconStyleDataAttribute), isArray: true, name: "Style")]
+[HasConfiguration(typeof(IconColorAttribute))]
+[HasConfiguration(typeof(IconBackgroundAttribute))]
+[HasConfiguration(typeof(IconStyleAttribute), isArray: true, name: "Style")]
 public class Icon(string name)
 {
 	/// <summary>

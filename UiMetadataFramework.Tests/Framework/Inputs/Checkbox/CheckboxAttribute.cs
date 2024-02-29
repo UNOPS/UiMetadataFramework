@@ -2,7 +2,7 @@
 
 using UiMetadataFramework.Core.Binding;
 
-public class CheckboxAttribute : ConfigurationDataAttribute
+public class CheckboxAttribute : ComponentConfigurationAttribute
 {
 	[ConfigurationProperty("Style")]
 	public string? Style { get; set; }

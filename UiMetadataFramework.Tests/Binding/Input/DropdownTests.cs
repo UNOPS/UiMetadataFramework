@@ -17,7 +17,7 @@ public class DropdownTests
 	private class Request
 	{
 		[Dropdown(typeof(CountryRemoteSource))]
-		[RemoteSourceArgumentData("A", "B", "C")]
+		[RemoteSourceArgument("A", "B", "C")]
 		public DropdownValue<string>? Countries { get; set; }
 
 		[Dropdown(typeof(EnumSource<DayOfWeek>))]

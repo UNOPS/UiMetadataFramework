@@ -1,7 +1,5 @@
 ﻿namespace UiMetadataFramework.Tests.Binding.Output.PreConfiguredComponents;
 
-using System.Linq;
-using FluentAssertions;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Framework.Outputs.Money;
 using UiMetadataFramework.Tests.Utilities;
@@ -14,26 +12,26 @@ public class ConfigurationOverrides
 	public class Outputs
 	{
 		[Money(Locale = "en-EN")]
-		[MoneyStyleData(Style = "high-precision-override")]
+		[MoneyStyle(Style = "high-precision-override")]
 		public HighPrecisionMoney? Amounts { get; set; }
 	}
 
 	public class HighPrecisionMoney : IPreConfiguredComponent<Money>
 	{
 		[Money(8, Locale = "en-US")]
-		[MoneyStyleData(Style = "high-precision")]
+		[MoneyStyle(Style = "high-precision")]
 		public Money? Value { get; set; }
 	}
 
 	[Fact]
 	public void OuterConfigurationOverridesInner()
 	{
-		var moneyConfig = this.binder.BuildOutputFields<Outputs>()
-			.Single(t => t.Id == nameof(Outputs.Amounts))
-			.Component.Configuration.As<MoneyAttribute.Configuration>();
+		var moneyConfig = this.binder
+			.BuildOutputComponent<Outputs>(t => t.Amounts)
+			.ConfigAsDictionary()!;
 
-		Assert.Equal(8, moneyConfig.DecimalPlaces);
-		Assert.Equal("en-EN", moneyConfig.Locale);
-		Assert.Equal("high-precision-override", moneyConfig.Style);
+		Assert.Equal(8, moneyConfig["DecimalPlaces"]);
+		Assert.Equal("en-EN", moneyConfig["Locale"]);
+		Assert.Equal("high-precision-override", moneyConfig["Style"]);
 	}
 }

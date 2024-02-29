@@ -13,7 +13,7 @@ public class InvalidConfigurations
 	{
 		public Grid<string>? MissingMandatoryConfig { get; set; }
 
-		[MoneyStyleData(Style = "fancy")]
+		[MoneyStyle(Style = "fancy")]
 		public Icon? UnrelatedConfig { get; set; }
 	}
 

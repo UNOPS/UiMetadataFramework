@@ -11,7 +11,7 @@ namespace UiMetadataFramework.Basic.Inputs.Dropdown
 	/// <typeparam name="T"></typeparam>
 	[InputComponent(ControlName, typeof(DropdownMetadataFactory))]
 	[HasConfiguration(typeof(DropdownAttribute), mandatory: true)]
-	[HasConfiguration(typeof(RemoteSourceArgumentDataAttribute), isArray: true, name: "Parameters")]
+	[HasConfiguration(typeof(RemoteSourceArgumentAttribute), isArray: true, name: "Parameters")]
 	public class DropdownValue<T>
 	{
 		internal const string ControlName = "dropdown";

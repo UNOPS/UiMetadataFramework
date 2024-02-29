@@ -10,13 +10,14 @@ using UiMetadataFramework.Core.Binding;
 /// Builds metadata for a generic component such as <see cref="IEnumerable{T}"/>
 /// which can later be used to render a table.  
 /// </summary>
-public class TableMetadataFactory : IMetadataFactory
+public class TableMetadataFactory : DefaultMetadataFactory
 {
 	/// <inheritdoc />
-	public object CreateMetadata(
+	protected override void AugmentConfiguration(
 		Type type,
 		MetadataBinder binder,
-		params ConfigurationDataAttribute[] configurationData)
+		ComponentConfigurationAttribute[] configurationData,
+		Dictionary<string, object?> result)
 	{
 		var innerType = type.IsArray
 			? type.GetElementType() ??
@@ -25,27 +26,8 @@ public class TableMetadataFactory : IMetadataFactory
 
 		var isKnownOutputType = binder.OutputBindings.Any(t => t.Key.ImplementsClass(innerType));
 
-		var containerType = isKnownOutputType
-			? typeof(Wrapper<>).MakeGenericType(innerType)
-			: innerType;
-
-		return new Properties(binder.BuildOutputFields(containerType).ToList());
-	}
-
-	/// <summary>
-	/// Custom properties for the table.
-	/// </summary>
-	public class Properties(List<OutputFieldMetadata> columns)
-	{
-		/// <summary>
-		/// List of columns that the table should have.
-		/// </summary>
-		public List<OutputFieldMetadata> Columns { get; } = columns;
-	}
-
-	private sealed class Wrapper<T>(T value)
-	{
-		[InputField]
-		public T Value { get; set; } = value;
+		result["Columns"] = isKnownOutputType
+			? new OutputFieldMetadata(binder.BuildOutputComponent(innerType, configurationData)).AsList()
+			: binder.BuildOutputFields(innerType).ToList();
 	}
 }

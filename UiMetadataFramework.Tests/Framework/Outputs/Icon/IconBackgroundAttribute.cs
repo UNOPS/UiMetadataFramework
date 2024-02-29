@@ -2,7 +2,7 @@ namespace UiMetadataFramework.Tests.Framework.Outputs.Icon;
 
 using UiMetadataFramework.Core.Binding;
 
-public class IconBackgroundDataAttribute : ConfigurationDataAttribute
+public class IconBackgroundAttribute : ComponentConfigurationAttribute
 {
 	[ConfigurationProperty("Background")]
 	public string? Color { get; set; }

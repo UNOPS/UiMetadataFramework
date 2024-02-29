@@ -3,11 +3,16 @@ namespace UiMetadataFramework.Core.Binding;
 using System;
 
 /// <summary>
-/// To be used on a classes inheriting from <see cref="DefaultMetadataFactory"/>
-/// in order to indicate which <see cref="ConfigurationDataAttribute"/>
-/// are allowed for the component.
+/// When applied to a component class will indicate a <see cref="ComponentConfigurationAttribute"/>
+/// that can be used on component.
 /// </summary>
-/// <param name="configurationType"></param>
+/// <param name="configurationType">A class that implements <see cref="ComponentConfigurationAttribute"/>.</param>
+/// <param name="name">Unique name for the configuration.</param>
+/// <param name="mandatory">Indicates if this configuration is mandatory and must always be specified.</param>
+/// <param name="isArray">Indicates whether the configuration will hold an array of values or a single
+/// value. If set to true, then the configuration attribute can be applied multiple
+/// times and the value from each attribute usage will be added to the final array,
+/// which will constitute the configuration's value.</param> 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public class HasConfigurationAttribute(
 	Type configurationType,
@@ -16,14 +21,14 @@ public class HasConfigurationAttribute(
 	string? name = null) : Attribute
 {
 	/// <summary>
-	/// Configuration (<see cref="ConfigurationDataAttribute"/>) that
+	/// Configuration (<see cref="ComponentConfigurationAttribute"/>) that
 	/// this component supports.
 	/// </summary>
-	public Type ConfigurationType { get; } = configurationType.ImplementsClass(typeof(ConfigurationDataAttribute))
+	public Type ConfigurationType { get; } = configurationType.ImplementsClass(typeof(ComponentConfigurationAttribute))
 		? configurationType
 		: throw new BindingException(
 			$"Invalid configuration type '{configurationType.Name}' specified. " +
-			$"Must be a subclass of '{nameof(ConfigurationDataAttribute)}'.");
+			$"Must be a subclass of '{nameof(ComponentConfigurationAttribute)}'.");
 
 	/// <summary>
 	/// Indicates whether the configuration will hold an array of values or a single

@@ -14,7 +14,7 @@ public class PaginatedDataMetadataFactory : DefaultMetadataFactory
 	protected override void AugmentConfiguration(
 		Type type,
 		MetadataBinder binder,
-		ConfigurationDataAttribute[] configurationData,
+		ComponentConfigurationAttribute[] configurationData,
 		Dictionary<string, object?> result)
 	{
 		try

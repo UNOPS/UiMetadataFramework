@@ -55,7 +55,7 @@ namespace UiMetadataFramework.Basic.Inputs.Typeahead
 		{
 			if (this.Source.GetInterfaces(typeof(ITypeaheadRemoteSource)).Any())
 			{
-				var parameters = property.GetCustomAttributes<RemoteSourceArgumentDataAttribute>()
+				var parameters = property.GetCustomAttributes<RemoteSourceArgumentAttribute>()
 					.Select(t => t.GetArgument())
 					.ToList();
 

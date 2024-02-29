@@ -9,11 +9,6 @@ using UiMetadataFramework.Core.Binding;
 /// </summary>
 public class TableOutputComponentBinding : OutputComponentBinding
 {
-	/// <summary>
-	/// Name of the client-side control which should be able to render tabular data.
-	/// </summary>
-	public const string ObjectListOutputControlName = "table";
-
 	/// <inheritdoc />
 	public TableOutputComponentBinding() : base(
 		new[]
@@ -22,7 +17,7 @@ public class TableOutputComponentBinding : OutputComponentBinding
 			typeof(IList<>),
 			typeof(Array)
 		},
-		ObjectListOutputControlName,
+		"table",
 		typeof(TableMetadataFactory))
 	{
 	}

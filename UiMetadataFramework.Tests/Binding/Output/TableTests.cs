@@ -8,8 +8,8 @@ using UiMetadataFramework.Basic.Inputs.Text;
 using UiMetadataFramework.Basic.Output.DateTime;
 using UiMetadataFramework.Basic.Output.FormLink;
 using UiMetadataFramework.Basic.Output.Number;
-using UiMetadataFramework.Basic.Output.Table;
 using UiMetadataFramework.Basic.Output.Text;
+using UiMetadataFramework.Core;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Utilities;
 using Xunit;
@@ -51,11 +51,14 @@ public class TableTests
 			.BuildOutputFields<Response>()
 			.Single(t => t.Id == property);
 
-		var component = outputField.Component.Configuration.As<TableMetadataFactory.Properties>();
+		var config = outputField.Component.ConfigAsDictionary()!;
 
-		Assert.Equal(TableOutputComponentBinding.ObjectListOutputControlName, outputField.Component.Type);
-		Assert.Equal(1, component.Columns.Count);
-		Assert.Equal(itemType, component.Columns.Single().Component.Type);
+		Assert.Equal("table", outputField.Component.Type);
+
+		var columns = config["Columns"].As<List<OutputFieldMetadata>>();
+
+		Assert.Equal(1, columns.Count);
+		Assert.Equal(itemType, columns.Single().Component.Type);
 	}
 
 	[Fact]
@@ -68,31 +71,33 @@ public class TableTests
 		var outputField = outputFieldMetadatas
 			.Single(t => t.Id == nameof(Response.RandomObjects));
 
-		var config = outputField.Component.Configuration.As<TableMetadataFactory.Properties>();
+		var config = outputField.Component.ConfigAsDictionary()!;
 
-		Assert.Equal(TableOutputComponentBinding.ObjectListOutputControlName, outputField.Component.Type);
+		Assert.Equal("table", outputField.Component.Type);
 
-		config.Columns.AssertHasOutputField(
+		var columns = config["Columns"].As<List<OutputFieldMetadata>>();
+
+		columns.AssertHasOutputField(
 			nameof(Person.FirstName),
 			StringOutputComponentBinding.ControlName,
 			"First name",
 			false,
 			1);
 
-		config.Columns.AssertHasOutputField(
+		columns.AssertHasOutputField(
 			nameof(Person.DateOfBirth),
 			DateTimeOutputComponentBinding.ControlName,
 			"DoB",
 			false,
 			2);
 
-		config.Columns.AssertHasOutputField(
+		columns.AssertHasOutputField(
 			nameof(Person.Height),
 			NumberOutputComponentBinding.ControlName,
 			nameof(Person.Height),
 			true);
 
-		config.Columns.AssertHasOutputField(
+		columns.AssertHasOutputField(
 			nameof(Person.Weight),
 			NumberOutputComponentBinding.ControlName,
 			nameof(Person.Weight),

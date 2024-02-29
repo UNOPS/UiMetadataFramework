@@ -16,7 +16,7 @@
 		protected override void AugmentConfiguration(
 			Type type,
 			MetadataBinder binder,
-			ConfigurationDataAttribute[] configurationData,
+			ComponentConfigurationAttribute[] configurationData,
 			Dictionary<string, object?> result)
 		{
 			var sourceType = configurationData.OfType<DropdownAttribute>().First().Source;
@@ -40,7 +40,7 @@
 
 			if (sourceType.GetInterfaces(typeof(IDropdownRemoteSource)).Any())
 			{
-				var parameters = configurationData.OfType<RemoteSourceArgumentDataAttribute>()
+				var parameters = configurationData.OfType<RemoteSourceArgumentAttribute>()
 					.Select(t => t.GetArgument())
 					.ToList();
 

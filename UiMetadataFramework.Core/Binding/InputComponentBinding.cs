@@ -69,12 +69,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <inheritdoc />
 		public string ClientType { get; }
 
-		/// <summary>
-		/// Represents <see cref="IMetadataFactory"/> that should be used to construct metadata.
-		/// If null then no custom metadata will be constructed.
-		/// </summary>
-		/// <remarks>If the type implements <see cref="ComponentConfigurationAttribute"/> then it will indicate
-		/// that this component has configuration that must be provided whenever constructing its metadata.</remarks>
+		/// <inheritdoc />
 		public Type? MetadataFactory { get; }
 
 		/// <inheritdoc />

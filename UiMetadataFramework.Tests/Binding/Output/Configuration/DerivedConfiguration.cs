@@ -1,6 +1,5 @@
 ﻿namespace UiMetadataFramework.Tests.Binding.Output.Configuration;
 
-using System;
 using System.Linq;
 using FluentAssertions;
 using UiMetadataFramework.Core.Binding;
@@ -30,25 +29,8 @@ public class DerivedConfiguration
 			this.DecimalPlaces = decimalPlaces;
 		}
 
+		[ConfigurationProperty("Format")]
 		public string? Format { get; set; }
-
-		public override object CreateMetadata(
-			Type type,
-			MetadataBinder binder,
-			params ConfigurationDataAttribute[] configurationData)
-		{
-			return new BetterConfiguration
-			{
-				DecimalPlaces = this.DecimalPlaces,
-				Locale = this.Locale,
-				Format = this.Format
-			};
-		}
-
-		public class BetterConfiguration : Configuration
-		{
-			public string? Format { get; set; }
-		}
 	}
 
 	[Fact]
@@ -56,10 +38,10 @@ public class DerivedConfiguration
 	{
 		var field = this.binder.BuildOutputFields<Response>().Single(t => t.Id == nameof(Response.Money));
 
-		dynamic component = field.Component.Configuration.As<object>();
+		var config = field.Component.ConfigAsDictionary()!;
 
-		Assert.Equal(2, component.DecimalPlaces);
-		Assert.Equal("en-US", component.Locale);
-		Assert.Equal("C2", component.Format);
+		Assert.Equal(2, config["DecimalPlaces"]);
+		Assert.Equal("en-US", config["Locale"]);
+		Assert.Equal("C2", config["Format"]);
 	}
 }
