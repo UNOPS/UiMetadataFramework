@@ -6,6 +6,7 @@ using UiMetadataFramework.Core.Binding;
 /// <summary>
 /// Input component for controlling pagination parameters of a <see cref="PaginatedData{T}"/> 
 /// </summary>
+[InputComponent("paginator", AlwaysHidden = true)]
 public class Paginator
 {
 	/// <summary>

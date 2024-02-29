@@ -30,8 +30,8 @@ namespace UiMetadataFramework.Core.Binding
 
 		/// <inheritdoc />
 		public object GetValue(Type type, MetadataBinder binder)
-        {
-            return this.Value;
-        }
+		{
+			return this.Value;
+		}
 	}
 }

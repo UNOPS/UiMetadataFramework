@@ -65,7 +65,7 @@ namespace UiMetadataFramework.Core.Binding
 			}
 
 			var component = binder.BuildInputComponent(property);
-			
+
 			return new InputFieldMetadata(component)
 			{
 				Id = property.Name,

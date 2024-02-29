@@ -49,13 +49,13 @@ namespace UiMetadataFramework.Core.Binding
 			}
 
 			var component = binder.BuildOutputComponent(property);
-			
+
 			return new OutputFieldMetadata(component)
 			{
 				Id = property.Name,
 				Hidden = this.Hidden,
 				Label = this.Label ?? property.Name,
-				OrderIndex = this.OrderIndex, 
+				OrderIndex = this.OrderIndex,
 				CustomProperties = property.GetCustomProperties(binder),
 				EventHandlers = eventHandlerAttributes.Select(t => t.ToMetadata(property, binder)).ToList()
 			};

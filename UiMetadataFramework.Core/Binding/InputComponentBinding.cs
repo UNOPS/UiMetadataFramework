@@ -34,6 +34,7 @@ namespace UiMetadataFramework.Core.Binding
 			: this(new[] { serverType }, attribute.Name, attribute.MetadataFactory)
 		{
 			this.MetadataFactory = attribute.MetadataFactory;
+			this.IsInputAlwaysHidden = attribute.AlwaysHidden;
 		}
 
 		/// <summary>
@@ -61,9 +62,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// </summary>
 		public bool IsInputAlwaysHidden { get; set; }
 
-		/// <summary>
-		/// Gets the server-side types being bound.
-		/// </summary>
+		/// <inheritdoc />
 		public IEnumerable<Type> ServerTypes { get; }
 
 		/// <inheritdoc />

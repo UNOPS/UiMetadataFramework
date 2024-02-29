@@ -3,43 +3,23 @@ namespace UiMetadataFramework.Core.Binding
 	using System;
 
 	/// <summary>
-	/// Used for decorating classes which will be used as input components.
-	/// A binding will be created based on this attribute, when
-	/// <see cref="MetadataBinder.RegisterAssembly"/> is called.
+	/// Declares that the decorated class is an input component.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Enum, Inherited = false)]
-	public class InputComponentAttribute : Attribute
+	public class InputComponentAttribute : ComponentAttribute
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="InputComponentAttribute"/> class.
-		/// </summary>
-		/// <param name="name">Name of the component.</param>
-		/// <param name="metadataFactory">Type that implements <see cref="IMetadataFactory"/> and which will
-		/// be used to construct component metadata (or null if component does not need any custom metadata).
-		/// </param>
-		public InputComponentAttribute(string name, Type? metadataFactory = null)
+		/// <inheritdoc />
+		public InputComponentAttribute(
+			string name,
+			Type? metadataFactory = null) : base(name, metadataFactory)
 		{
-			if (metadataFactory != null &&
-				!typeof(IMetadataFactory).IsAssignableFrom(metadataFactory))
-			{
-				throw new BindingException(
-					$"Invalid configuration of output component '{name}'. '{metadataFactory.FullName}' " +
-					$"must implement '{typeof(IMetadataFactory).FullName}' in order to be used as a metadata factory.");
-			}
-			
-			this.Name = name;
-			this.MetadataFactory = metadataFactory;
 		}
 
 		/// <summary>
-		/// Component name.
+		/// Gets or sets value indicating whether input should never be explicitly rendered on the client.
+		/// If this value is set to true, then <see cref="InputFieldMetadata.Hidden"/> will always
+		/// be true.
 		/// </summary>
-		public string Name { get; }
-
-		/// <summary>
-		/// Represents <see cref="IMetadataFactory"/> that should be used to construct
-		/// component metadata. If null then component does not need any custom metadata.
-		/// </summary>
-		public Type? MetadataFactory { get; }
+		public bool AlwaysHidden { get; set; }
 	}
 }

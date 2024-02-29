@@ -3,45 +3,15 @@ namespace UiMetadataFramework.Core.Binding
 	using System;
 
 	/// <summary>
-	/// Used for decorating classes which will be used as output components.
-	/// A binding will be created based on this attribute, when
-	/// <see cref="MetadataBinder.RegisterAssembly"/> is called.
+	/// Declares that the decorated class is an output component.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Enum, Inherited = false)]
-	public class OutputComponentAttribute : Attribute
+	public class OutputComponentAttribute : ComponentAttribute
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="OutputComponentAttribute"/> class.
-		/// </summary>
-		/// <param name="name">Name of the component.</param>
-		/// <param name="metadataFactory">Type that implements <see cref="IMetadataFactory"/> and which will
-		/// be used to construct component metadata (or null if component does not need any custom metadata).
-		/// </param>
+		/// <inheritdoc />
 		public OutputComponentAttribute(
 			string name,
-			Type? metadataFactory = null)
+			Type? metadataFactory = null) : base(name, metadataFactory)
 		{
-			if (metadataFactory != null &&
-				!typeof(IMetadataFactory).IsAssignableFrom(metadataFactory))
-			{
-				throw new BindingException(
-					$"Invalid configuration of output component '{name}'. '{metadataFactory.FullName}' " +
-					$"must implement '{typeof(IMetadataFactory).FullName}' in order to be used as a metadata factory.");
-			}
-
-			this.Name = name;
-			this.MetadataFactory = metadataFactory;
 		}
-
-		/// <summary>
-		/// Component name.
-		/// </summary>
-		public string Name { get; set; }
-
-		/// <summary>
-		/// Represents <see cref="IMetadataFactory"/> that should be used to construct
-		/// component metadata. If null then component does not need any custom metadata.
-		/// </summary>
-		public Type? MetadataFactory { get; }
 	}
 }

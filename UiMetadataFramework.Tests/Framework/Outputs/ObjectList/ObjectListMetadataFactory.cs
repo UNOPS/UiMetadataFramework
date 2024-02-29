@@ -12,7 +12,6 @@ public class ObjectListMetadataFactory : DefaultMetadataFactory
 		ComponentConfigurationAttribute[] configurationData,
 		Dictionary<string, object?> result)
 	{
-		var innerType = type.GenericTypeArguments[0];
-		result["InnerComponent"] = binder.BuildOutputComponent(innerType);
+		result["InnerComponent"] = binder.BuildOutputComponent(type.GenericTypeArguments[0]);
 	}
 }

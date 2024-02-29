@@ -58,9 +58,7 @@
 		{
 		}
 
-		/// <summary>
-		/// Gets the server-side types being bound.
-		/// </summary>
+		/// <inheritdoc />
 		public IEnumerable<Type> ServerTypes { get; }
 
 		/// <inheritdoc />

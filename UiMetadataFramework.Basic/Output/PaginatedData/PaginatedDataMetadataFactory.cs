@@ -17,16 +17,6 @@ public class PaginatedDataMetadataFactory : DefaultMetadataFactory
 		ComponentConfigurationAttribute[] configurationData,
 		Dictionary<string, object?> result)
 	{
-		try
-		{
-			var paginatedItemType = type.GenericTypeArguments[0];
-			var columns = binder.BuildOutputFields(paginatedItemType).ToList();
-
-			result["Columns"] = columns;
-		}
-		catch (Exception ex)
-		{
-			throw new BindingException($"Failed to retrieve custom properties for '{type}'.", ex);
-		}
+		result["Columns"] = binder.BuildOutputFields(type.GenericTypeArguments[0]).ToList();
 	}
 }

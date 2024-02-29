@@ -5,7 +5,7 @@
 /// instead of the component itself.
 /// </summary>
 /// <typeparam name="T">Component to be pre-configured.</typeparam>
-public interface IPreConfiguredComponent<T> 
+public interface IPreConfiguredComponent<T>
 {
 	/// <summary>
 	/// Gets or sets the component's value.
