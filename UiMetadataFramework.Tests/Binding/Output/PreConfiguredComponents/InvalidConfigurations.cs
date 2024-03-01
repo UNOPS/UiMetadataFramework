@@ -31,6 +31,6 @@ public class InvalidConfigurations
 	[Fact]
 	public void MultilevelConfigurationNotAllowed()
 	{
-		Assert.Throws<BindingException>(() => this.binder.BuildOutputFields<Outputs>().ToList());
+		Assert.Throws<BindingException>(() => this.binder.Outputs.GetFields(typeof(Outputs)).ToList());
 	}
 }

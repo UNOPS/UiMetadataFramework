@@ -22,7 +22,7 @@ namespace UiMetadataFramework.Tests
 			var propertyName = ((MemberExpression)propertyExpression.Body).Member.Name;
 			var property = typeof(T).GetProperty(propertyName) ?? throw new Exception($"Property '{propertyName}' not found.");
 
-			return binder.BuildInputComponent(property);
+			return binder.Inputs.BuildComponent(property);
 		}
 
 		public static Component BuildOutputComponent<T>(
@@ -32,7 +32,9 @@ namespace UiMetadataFramework.Tests
 			var propertyName = ((MemberExpression)propertyExpression.Body).Member.Name;
 			var property = typeof(T).GetProperty(propertyName) ?? throw new Exception($"Property '{propertyName}' not found.");
 
-			return binder.BuildOutputComponent(property);
+			return binder.Outputs.BuildComponent(
+				property.PropertyType,
+				property.GetCustomAttributes<ComponentConfigurationAttribute>(inherit: true).ToArray());
 		}
 
 		public static Dictionary<string, object?> ToDictionary(this object? request)

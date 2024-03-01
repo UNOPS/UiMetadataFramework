@@ -3,6 +3,7 @@ namespace UiMetadataFramework.Basic.Output.PaginatedData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UiMetadataFramework.Core;
 using UiMetadataFramework.Core.Binding;
 
 /// <summary>
@@ -17,6 +18,6 @@ public class PaginatedDataMetadataFactory : DefaultMetadataFactory
 		ComponentConfigurationAttribute[] configurationData,
 		Dictionary<string, object?> result)
 	{
-		result["Columns"] = binder.BuildOutputFields(type.GenericTypeArguments[0]).ToList();
+		result["Columns"] = binder.Outputs.GetFields(type.GenericTypeArguments[0], false).ToList();
 	}
 }

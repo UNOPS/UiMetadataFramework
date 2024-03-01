@@ -7,7 +7,7 @@ namespace UiMetadataFramework.Core.Binding
 	/// <summary>
 	/// Attribute used for decorating input fields.
 	/// </summary>
-	public class InputFieldAttribute : Attribute
+	public class InputFieldAttribute : FieldAttribute<InputComponentBinding, InputFieldMetadata>
 	{
 		/// <summary>
 		/// Gets or sets value indicating whether this field should be visible or not.
@@ -39,7 +39,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="binder">Metadata binder.</param>
 		/// <returns>Instance of <see cref="InputFieldMetadata"/>.</returns>
 		/// <remarks>This method will be used internally by <see cref="MetadataBinder"/>.</remarks>
-		public virtual InputFieldMetadata GetMetadata(
+		public override InputFieldMetadata GetMetadata(
 			PropertyInfo property,
 			InputComponentBinding binding,
 			MetadataBinder binder)
@@ -64,7 +64,7 @@ namespace UiMetadataFramework.Core.Binding
 					$"'{illegalAttributes[0].GetType().FullName}', because the attribute is not applicable for input fields.");
 			}
 
-			var component = binder.BuildInputComponent(property);
+			var component = binder.Inputs.BuildComponent(property);
 
 			return new InputFieldMetadata(component)
 			{

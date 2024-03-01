@@ -25,8 +25,8 @@ public class StrictVsDefaultMode
 	[Fact]
 	public void DefaultModeTakesAllPublicProperties()
 	{
-		var outputFields = this.binder
-			.BuildOutputFields<InputsAndOutputsTogether>(strict: false)
+		var outputFields = this.binder.Outputs
+			.GetFields(typeof(InputsAndOutputsTogether))
 			.ToList();
 
 		outputFields.AssertHasOutputField(nameof(InputsAndOutputsTogether.Label));
@@ -37,8 +37,8 @@ public class StrictVsDefaultMode
 	[Fact]
 	public void StrictModeTakesPropertiesWithOutputFieldAttributeOnly()
 	{
-		var outputs = this.binder
-			.BuildOutputFields<InputsAndOutputsTogether>(strict: true)
+		var outputs = this.binder.Outputs
+			.GetFields(typeof(InputsAndOutputsTogether), true)
 			.ToList();
 
 		Assert.Equal(1, outputs.Count);

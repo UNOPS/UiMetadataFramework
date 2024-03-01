@@ -32,7 +32,7 @@ public class GeneralInputBindingTests
 	[Fact]
 	public void CanGetInputFieldsMetadata()
 	{
-		var inputFields = this.binder.BuildInputFields<Request>()
+		var inputFields = (this.binder.Inputs.GetFields(typeof(Request)))
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 

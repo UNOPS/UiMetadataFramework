@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UiMetadataFramework.Basic.Inputs.DateTime;
+using UiMetadataFramework.Core;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Utilities;
 using Xunit;
@@ -42,7 +43,7 @@ public class InputCustomPropertyBindingTests
 	[Fact]
 	public void CanBindCustomProperty()
 	{
-		var inputFields = this.binder.BuildInputFields<Request>()
+		var inputFields = this.binder.Inputs.GetFields(typeof(Request), false)
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 

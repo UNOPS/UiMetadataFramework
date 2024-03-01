@@ -24,10 +24,10 @@ public class TableMetadataFactory : DefaultMetadataFactory
 			throw new BindingException($"Cannot get element type from array '{type.FullName}'.")
 			: type.GenericTypeArguments[0];
 
-		var isKnownOutputType = binder.OutputBindings.Any(t => t.Key.ImplementsClass(innerType));
+		var isKnownOutputType = binder.Outputs.Bindings.All.Any(t => t.Key.ImplementsClass(innerType));
 
 		result["Columns"] = isKnownOutputType
-			? new OutputFieldMetadata(binder.BuildOutputComponent(innerType)).AsList()
-			: binder.BuildOutputFields(innerType).ToList();
+			? new OutputFieldMetadata(binder.Outputs.BuildComponent(innerType)).AsList()
+			: binder.Outputs.GetFields(innerType, false).ToList();
 	}
 }

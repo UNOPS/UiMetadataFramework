@@ -22,8 +22,8 @@ public class CustomPropertiesTests
 	[Fact]
 	public void CustomPropertiesAreBound()
 	{
-		var outputFields = this.binder
-			.BuildOutputFields<Response>()
+		var outputFields = this.binder.Outputs
+			.GetFields(typeof(Response))
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 

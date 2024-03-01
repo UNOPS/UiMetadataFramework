@@ -1,7 +1,6 @@
 ﻿namespace UiMetadataFramework.Tests.Binding.Output.Configuration;
 
 using System.Linq;
-using FluentAssertions;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Framework.Outputs.Money;
 using UiMetadataFramework.Tests.Utilities;
@@ -36,7 +35,9 @@ public class DerivedConfiguration
 	[Fact]
 	public void DerivedConfigurationIsAllowed()
 	{
-		var field = this.binder.BuildOutputFields<Response>().Single(t => t.Id == nameof(Response.Money));
+		var field = this.binder.Outputs
+			.GetFields(typeof(Response))
+			.Single(t => t.Id == nameof(Response.Money));
 
 		var config = field.Component.ConfigAsDictionary()!;
 

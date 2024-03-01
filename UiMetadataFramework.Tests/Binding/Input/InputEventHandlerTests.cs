@@ -1,3 +1,5 @@
+// ReSharper disable UnusedMember.Local
+
 namespace UiMetadataFramework.Tests.Binding.Input;
 
 using System.Linq;
@@ -28,7 +30,7 @@ public class InputEventHandlerTests
 	[Fact]
 	public void CanBindEventHandlers()
 	{
-		var inputFields = this.binder.BuildInputFields<ValidRequest>()
+		var inputFields = this.binder.Inputs.GetFields(typeof(ValidRequest))
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 
@@ -45,6 +47,6 @@ public class InputEventHandlerTests
 	[Fact]
 	public void EventHandlerCanOnlyBeAppliedToIntendedElements()
 	{
-		Assert.Throws<BindingException>(() => this.binder.BuildInputFields<InvalidRequest>().ToList());
+		Assert.Throws<BindingException>(() => this.binder.Inputs.GetFields(typeof(InvalidRequest)).ToList());
 	}
 }

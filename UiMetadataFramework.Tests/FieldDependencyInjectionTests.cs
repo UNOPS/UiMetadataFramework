@@ -6,6 +6,7 @@ namespace UiMetadataFramework.Tests
 	using UiMetadataFramework.Basic;
 	using UiMetadataFramework.Basic.Inputs.Text;
 	using UiMetadataFramework.Basic.Inputs.Typeahead;
+	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 	using Xunit;
 
@@ -70,7 +71,7 @@ namespace UiMetadataFramework.Tests
 
 			metadataBinder.RegisterAssembly(typeof(StringInputComponentBinding).GetTypeInfo().Assembly);
 
-			var fields = metadataBinder.BuildInputFields<Request>().ToList();
+			var fields = metadataBinder.Inputs.GetFields(typeof(Request), false).ToList();
 			var categoryInputField = fields.Single(t => t.Id == nameof(Request.CategoryId));
 
 			// Ensure that the inline source has 3 items.

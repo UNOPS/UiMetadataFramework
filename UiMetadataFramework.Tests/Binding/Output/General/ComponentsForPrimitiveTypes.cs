@@ -25,8 +25,8 @@ public class ComponentsForPrimitiveTypes
 	[Fact]
 	public void CanGetBasicMetadata()
 	{
-		var outputFields = this.binder
-			.BuildOutputFields<Response>()
+		var outputFields = this.binder.Outputs
+			.GetFields(typeof(Response))
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 

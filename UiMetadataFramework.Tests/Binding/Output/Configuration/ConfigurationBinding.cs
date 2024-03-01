@@ -22,8 +22,8 @@ public class ConfigurationBinding
 	[Fact]
 	public void BindingByMethodCallWorks()
 	{
-		var config = this.binder
-			.BuildOutputComponent(
+		var config = this.binder.Outputs
+			.BuildComponent(
 				type: typeof(Money),
 				configurations: new MoneyAttribute(10) { Locale = "en-UK" })
 			.ConfigAsDictionary()!;

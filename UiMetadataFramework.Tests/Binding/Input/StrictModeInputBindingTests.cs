@@ -1,3 +1,5 @@
+// ReSharper disable UnusedMember.Local
+
 namespace UiMetadataFramework.Tests.Binding.Input;
 
 using System.Linq;
@@ -23,8 +25,8 @@ public class StrictModeInputBindingTests
 	[Fact]
 	public void StrictModeIgnoresPropertiesWithoutAttribute()
 	{
-		var inputs = this.binder
-			.BuildInputFields(typeof(InputsAndOutputsTogether), strict: true)
+		var inputs = this.binder.Inputs
+			.GetFields(typeof(InputsAndOutputsTogether), strict: true)
 			.ToList();
 
 		Assert.Equal(1, inputs.Count);

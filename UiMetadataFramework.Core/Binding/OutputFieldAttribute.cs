@@ -1,13 +1,12 @@
 namespace UiMetadataFramework.Core.Binding
 {
-	using System;
 	using System.Linq;
 	using System.Reflection;
 
 	/// <summary>
 	/// Attribute used for decorating output fields.
 	/// </summary>
-	public class OutputFieldAttribute : Attribute
+	public class OutputFieldAttribute : FieldAttribute<OutputComponentBinding, OutputFieldMetadata>
 	{
 		/// <summary>
 		/// Gets or sets value indicating whether this field should be visible or not.
@@ -33,7 +32,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="binder">Metadata binder.</param>
 		/// <returns>Instance of <see cref="OutputFieldMetadata"/>.</returns>
 		/// <remarks>This method will be used internally by <see cref="MetadataBinder"/>.</remarks>
-		public virtual OutputFieldMetadata GetMetadata(
+		public override OutputFieldMetadata GetMetadata(
 			PropertyInfo property,
 			OutputComponentBinding binding,
 			MetadataBinder binder)
@@ -48,7 +47,9 @@ namespace UiMetadataFramework.Core.Binding
 					$"applicable for output fields.");
 			}
 
-			var component = binder.BuildOutputComponent(property);
+			var component = binder.Outputs.BuildComponent(
+				property.PropertyType,
+				property.GetCustomAttributes<ComponentConfigurationAttribute>(inherit: true).ToArray());
 
 			return new OutputFieldMetadata(component)
 			{

@@ -5,6 +5,7 @@ namespace UiMetadataFramework.Tests.Binding.Input;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using UiMetadataFramework.Core;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Framework.Inputs.Checkbox;
 using UiMetadataFramework.Tests.Utilities;
@@ -38,6 +39,6 @@ public class CustomInputTypeTests
 	[Fact]
 	public void ThrowsExceptionWhenMandatoryAttributeIsMissing()
 	{
-		Assert.Throws<BindingException>(() => this.binder.BuildInputFields<RequestWithMissingMandatoryAttribute>().ToList());
+		Assert.Throws<BindingException>(() => this.binder.Inputs.GetFields(typeof(RequestWithMissingMandatoryAttribute), false).ToList());
 	}
 }

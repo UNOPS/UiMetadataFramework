@@ -47,8 +47,8 @@ namespace UiMetadataFramework.Core
 			this.PostOnLoad = formAttribute.PostOnLoad;
 			this.PostOnLoadValidation = formAttribute.PostOnLoadValidation;
 			this.CloseOnPostIfModal = formAttribute.CloseOnPostIfModal;
-			this.OutputFields = binder.BuildOutputFields(responseType).ToList();
-			this.InputFields = binder.BuildInputFields(requestType).ToList();
+			this.OutputFields = binder.Outputs.GetFields(responseType).ToList();
+			this.InputFields = binder.Inputs.GetFields(requestType).ToList();
 			this.CustomProperties = formAttribute.GetCustomProperties(formType).Merge(formType.GetCustomProperties(binder));
 			this.EventHandlers = formEventHandlers;
 		}
