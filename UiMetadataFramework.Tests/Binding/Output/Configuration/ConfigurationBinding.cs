@@ -25,6 +25,7 @@ public class ConfigurationBinding
 		var config = this.binder.Outputs
 			.BuildComponent(
 				type: typeof(Money),
+				location: null,
 				configurations: new MoneyAttribute(10) { Locale = "en-UK" })
 			.ConfigAsDictionary()!;
 

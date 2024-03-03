@@ -9,20 +9,21 @@ using System.Reflection;
 /// <summary>
 /// Collection of <see cref="IFieldBinding"/> instances.
 /// </summary>
-public class BindingCollection<T> where T : IFieldBinding
+public class BindingCollection<TBinding>
+	where TBinding : IFieldBinding
 {
-	private readonly ConcurrentDictionary<Type, T> bindings = new();
+	private readonly ConcurrentDictionary<Type, TBinding> bindings = new();
 
 	/// <summary>
 	/// Gets list of all bindings in the collection.
 	/// </summary>
-	public IReadOnlyDictionary<Type, T> All => this.bindings.AsReadOnlyDictionary();
+	public IReadOnlyDictionary<Type, TBinding> All => this.bindings.AsReadOnlyDictionary();
 
 	/// <summary>
 	/// Adds binding to the collection.
 	/// </summary>
-	/// <param name="binding"><see cref="T"/> instance.</param>
-	public void AddBinding(T binding)
+	/// <param name="binding"><typeparamref name="TBinding"/> instance.</param>
+	public void AddBinding(TBinding binding)
 	{
 		this.EnforceNotDuplicate(binding);
 
@@ -48,33 +49,14 @@ public class BindingCollection<T> where T : IFieldBinding
 	}
 
 	/// <summary>
-	/// Gets binding for the specified type.
-	/// </summary>
-	/// <returns>Instance of <see cref="T"/> or null if the binding cannot be found.</returns>
-	public T? GetBindingOrNull(Type type)
-	{
-		var effectiveType = GetInnerComponentType(type) ?? type;
-
-		var componentType = effectiveType.IsArray
-			? typeof(Array)
-			: effectiveType.IsConstructedGenericType && !effectiveType.IsNullabble()
-				? effectiveType.GetGenericTypeDefinition()
-				: effectiveType;
-
-		this.bindings.TryGetValue(componentType, out var binding);
-
-		return binding;
-	}
-
-	/// <summary>
 	/// Retrieves binding for the specified type. If not found then an exception is thrown.
 	/// </summary>
-	/// <param name="type">Type of output component or a <see cref="IPreConfiguredComponent{T}"/>.</param>
+	/// <param name="type">Component type or a <see cref="IPreConfiguredComponent{T}"/>.</param>
 	/// <param name="location">Path to the field where the component is located. This parameter will
 	/// be used to generate a meaningful exception message if the binding cannot be found.</param>
-	/// <returns>Instance of <see cref="T"/>.</returns>
+	/// <returns>Instance of <typeparamref name="TBinding"/>.</returns>
 	/// <exception cref="BindingException">Thrown if the binding cannot be found.</exception>
-	public T GetBinding(Type type, string? location = null)
+	public TBinding GetBinding(Type type, string? location = null)
 	{
 		var binding = this.GetBindingOrNull(type);
 
@@ -90,7 +72,37 @@ public class BindingCollection<T> where T : IFieldBinding
 		return binding;
 	}
 
-	private static Type? GetInnerComponentType(Type type)
+	/// <summary>
+	/// Returns binding for the specified type or null if no such binding can be found.
+	/// </summary>
+	/// <param name="type">Component type or a <see cref="IPreConfiguredComponent{T}"/>.</param>
+	/// <returns>Instance of <typeparamref name="TBinding"/> or null if the binding cannot be found.</returns>
+	public TBinding? GetBindingOrNull(Type type)
+	{
+		var effectiveType = GetPreConfiguredComponent(type) ?? type;
+
+		effectiveType = MetadataBinder.GetBaseComponent<ComponentAttribute>(effectiveType) ?? type;
+
+		var componentType = effectiveType.IsArray
+			? typeof(Array)
+			: effectiveType.IsConstructedGenericType && !effectiveType.IsNullabble()
+				? effectiveType.GetGenericTypeDefinition()
+				: effectiveType;
+
+		this.bindings.TryGetValue(componentType, out var binding);
+
+		return binding;
+	}
+
+	/// <summary>
+	/// Gets the component type T encapsulated inside <see cref="IPreConfiguredComponent{T}"/>.
+	/// </summary>
+	/// <param name="type">Type implementing <see cref="IPreConfiguredComponent{T}"/>.</param>
+	/// <returns>Component type that is a T inside <see cref="IPreConfiguredComponent{T}"/> or null if
+	/// <paramref name="type"/> is not a <see cref="IPreConfiguredComponent{T}"/>.</returns>
+	/// <exception cref="BindingException">Thrown if <paramref name="type"/> implements
+	/// <see cref="IPreConfiguredComponent{T}"/> in a recursive way.</exception>
+	private static Type? GetPreConfiguredComponent(Type type)
 	{
 		var innerType = type.GetInterfaces(typeof(IPreConfiguredComponent<>))
 			.SingleOrDefault()
@@ -108,7 +120,7 @@ public class BindingCollection<T> where T : IFieldBinding
 				$"in a recursive way which is invalid.");
 		}
 
-		var recursiveInnerType = GetInnerComponentType(innerType);
+		var recursiveInnerType = GetPreConfiguredComponent(innerType);
 
 		if (recursiveInnerType != null)
 		{

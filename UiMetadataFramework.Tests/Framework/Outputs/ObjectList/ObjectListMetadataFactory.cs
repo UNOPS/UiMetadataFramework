@@ -15,6 +15,7 @@ public class ObjectListMetadataFactory : DefaultMetadataFactory
 	{
 		result["InnerComponent"] = binder.Outputs.BuildComponent(
 			type.GenericTypeArguments[0],
+			null,
 			new ComponentConfigurationAttribute[0]);
 	}
 }

@@ -71,7 +71,7 @@ namespace UiMetadataFramework.Tests
 
 			metadataBinder.RegisterAssembly(typeof(StringInputComponentBinding).GetTypeInfo().Assembly);
 
-			var fields = metadataBinder.Inputs.GetFields(typeof(Request), false).ToList();
+			var fields = metadataBinder.Inputs.GetFields(typeof(Request)).ToList();
 			var categoryInputField = fields.Single(t => t.Id == nameof(Request.CategoryId));
 
 			// Ensure that the inline source has 3 items.

@@ -47,9 +47,7 @@ namespace UiMetadataFramework.Core.Binding
 					$"applicable for output fields.");
 			}
 
-			var component = binder.Outputs.BuildComponent(
-				property.PropertyType,
-				property.GetCustomAttributes<ComponentConfigurationAttribute>(inherit: true).ToArray());
+			var component = binder.Outputs.BuildComponent(property);
 
 			return new OutputFieldMetadata(component)
 			{

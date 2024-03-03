@@ -39,6 +39,6 @@ public class CustomInputTypeTests
 	[Fact]
 	public void ThrowsExceptionWhenMandatoryAttributeIsMissing()
 	{
-		Assert.Throws<BindingException>(() => this.binder.Inputs.GetFields(typeof(RequestWithMissingMandatoryAttribute), false).ToList());
+		Assert.Throws<BindingException>(() => this.binder.Inputs.GetFields(typeof(RequestWithMissingMandatoryAttribute)).ToList());
 	}
 }

@@ -4,9 +4,32 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UiMetadataFramework.Core.Binding;
 
 internal static class InternalExtensions
 {
+	public static IEnumerable<Type> GetBindings<T>(this Assembly assembly) where T : IFieldBinding
+	{
+		return assembly.ExportedTypes
+			.Where(
+				t =>
+				{
+					var typeInfo = t.GetTypeInfo();
+					return typeInfo.IsClass &&
+						!typeInfo.IsAbstract &&
+						typeInfo.IsSubclassOf(typeof(T));
+				});
+	}
+
+	public static IEnumerable<(T Attribute, Type Type)> GetComponents<T>(this Assembly assembly)
+		where T : ComponentAttribute
+	{
+		return assembly.ExportedTypes
+			.Select(t => (Attribute: t.GetTypeInfo().GetCustomAttributeSingleOrDefault<T>(inherit: false), Type: t))
+			.Where(t => t.Attribute != null)
+			.Cast<(T Attribute, Type Type)>();
+	}
+
 	/// <summary>
 	/// Retrieves a collection of interfaces implemented by a given type that match a specific interface.
 	/// </summary>

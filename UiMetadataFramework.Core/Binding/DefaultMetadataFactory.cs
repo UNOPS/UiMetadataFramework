@@ -15,7 +15,7 @@ public class DefaultMetadataFactory : IMetadataFactory
 	private static readonly ConcurrentDictionary<Type, HasConfigurationAttribute[]> AllowedConfigurationItems = new();
 
 	/// <summary>
-	/// Iterates over all <see cref="configurations"/>, finds all properties marked with
+	/// Iterates over all <paramref name="configurations"/>, finds all properties marked with
 	/// <see cref="ConfigurationPropertyAttribute"/> and attaches their values to the result.
 	/// </summary>
 	/// <param name="type">Component type or a <see cref="IPreConfiguredComponent{T}"/>.</param>
@@ -114,7 +114,11 @@ public class DefaultMetadataFactory : IMetadataFactory
 			throw new BindingException($"Mandatory configurations missing: {missingConfigs}.");
 		}
 
-		this.AugmentConfiguration(type, binder, configurations, result);
+		this.AugmentConfiguration(
+			type,
+			binder,
+			configurations,
+			result);
 
 		return result.Count == 0
 			? null

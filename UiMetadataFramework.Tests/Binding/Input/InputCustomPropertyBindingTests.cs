@@ -43,7 +43,7 @@ public class InputCustomPropertyBindingTests
 	[Fact]
 	public void CanBindCustomProperty()
 	{
-		var inputFields = this.binder.Inputs.GetFields(typeof(Request), false)
+		var inputFields = this.binder.Inputs.GetFields(typeof(Request))
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 

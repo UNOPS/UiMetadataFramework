@@ -54,6 +54,32 @@ namespace UiMetadataFramework.Core.Binding
 		}
 
 		/// <summary>
+		/// Looks into the inheritance chain of <paramref name="component"/> and tries to find
+		/// the class which has <typeparamref name="TAttribute"/> attribute applied directly to it. If
+		/// <paramref name="component"/> itself has the attribute then it will be returned.
+		/// </summary>
+		/// <param name="component">Component class or a class deriving from a component class.</param>
+		/// <returns>Class that has <typeparamref name="TAttribute"/> attribute applied directly to it and
+		/// thereby represents a component.</returns>
+		public static Type? GetBaseComponent<TAttribute>(Type component) where TAttribute : ComponentAttribute
+		{
+			while (true)
+			{
+				if (component.GetCustomAttribute<TAttribute>(inherit: false) != null)
+				{
+					return component;
+				}
+
+				if (component.BaseType == null || component.BaseType == typeof(object))
+				{
+					return null;
+				}
+
+				component = component.BaseType;
+			}
+		}
+
+		/// <summary>
 		/// Gets id of the form.
 		/// </summary>
 		/// <param name="formType">Type representing the form.</param>
@@ -150,61 +176,23 @@ namespace UiMetadataFramework.Core.Binding
 				this.registeredAssemblies.Add(assembly.FullName);
 			}
 
-			var outputFieldBindings = assembly.ExportedTypes
-				.Where(
-					t =>
-					{
-						var typeInfo = t.GetTypeInfo();
-						return typeInfo.IsClass &&
-							!typeInfo.IsAbstract &&
-							typeInfo.IsSubclassOf(typeof(OutputComponentBinding));
-					})
+			assembly
+				.GetBindings<OutputComponentBinding>()
 				.Select(t => this.Container.GetService(t))
-				.Cast<OutputComponentBinding>();
+				.Cast<OutputComponentBinding>()
+				.ForEach(t => this.Outputs.Bindings.AddBinding(t));
 
-			foreach (var binding in outputFieldBindings)
-			{
-				this.Outputs.Bindings.AddBinding(binding);
-			}
+			assembly.GetComponents<OutputComponentAttribute>()
+				.ForEach(t => this.Outputs.Bindings.AddBinding(new OutputComponentBinding(t.Type, t.Attribute)));
 
-			assembly.ExportedTypes.ForEach(
-				t =>
-				{
-					var attribute = t.GetTypeInfo().GetCustomAttributeSingleOrDefault<OutputComponentAttribute>();
-
-					if (attribute != null)
-					{
-						this.Outputs.Bindings.AddBinding(new OutputComponentBinding(t, attribute));
-					}
-				});
-
-			var inputFieldBindings = assembly.ExportedTypes
-				.Where(
-					t =>
-					{
-						var typeInfo = t.GetTypeInfo();
-						return typeInfo.IsClass &&
-							!typeInfo.IsAbstract &&
-							typeInfo.IsSubclassOf(typeof(InputComponentBinding));
-					})
+			assembly
+				.GetBindings<InputComponentBinding>()
 				.Select(t => this.Container.GetService(t))
-				.Cast<InputComponentBinding>();
+				.Cast<InputComponentBinding>()
+				.ForEach(t => this.Inputs.Bindings.AddBinding(t));
 
-			foreach (var binding in inputFieldBindings)
-			{
-				this.Inputs.Bindings.AddBinding(binding);
-			}
-
-			assembly.ExportedTypes.ForEach(
-				t =>
-				{
-					var attribute = t.GetTypeInfo().GetCustomAttributeSingleOrDefault<InputComponentAttribute>();
-
-					if (attribute != null)
-					{
-						this.Inputs.Bindings.AddBinding(new InputComponentBinding(t, attribute));
-					}
-				});
+			assembly.GetComponents<InputComponentAttribute>()
+				.ForEach(t => this.Inputs.Bindings.AddBinding(new InputComponentBinding(t.Type, t.Attribute)));
 		}
 
 		internal static string GetFormId(Type formType, FormAttribute formAttribute)

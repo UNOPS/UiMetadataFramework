@@ -2,12 +2,11 @@ namespace UiMetadataFramework.Core.Binding
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
 
 	/// <summary>
 	/// <see cref="IFieldBinding"/> for an input field.
 	/// </summary>
-	public class InputComponentBinding : IFieldBinding
+	public class InputComponentBinding : FieldBinding<InputComponentAttribute>
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="InputComponentBinding"/> class.
@@ -21,7 +20,10 @@ namespace UiMetadataFramework.Core.Binding
 			Type serverType,
 			string clientType,
 			Type? metadataFactory)
-			: this(new[] { serverType }, clientType, metadataFactory)
+			: base(
+				new[] { serverType },
+				clientType,
+				metadataFactory)
 		{
 		}
 
@@ -31,9 +33,11 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="serverType">Type which should be rendered on the client.</param>
 		/// <param name="attribute"><see cref="InputComponentAttribute"/> instance.</param>
 		public InputComponentBinding(Type serverType, InputComponentAttribute attribute)
-			: this(new[] { serverType }, attribute.Name, attribute.MetadataFactory)
+			: base(
+				new[] { serverType },
+				attribute.Name,
+				attribute.MetadataFactory)
 		{
-			this.MetadataFactory = attribute.MetadataFactory;
 			this.IsInputAlwaysHidden = attribute.AlwaysHidden;
 		}
 
@@ -48,11 +52,11 @@ namespace UiMetadataFramework.Core.Binding
 		public InputComponentBinding(
 			IEnumerable<Type> serverTypes,
 			string clientType,
-			Type? metadataFactory)
+			Type? metadataFactory) : base(
+			serverTypes,
+			clientType,
+			metadataFactory)
 		{
-			this.ServerTypes = serverTypes;
-			this.ClientType = clientType;
-			this.MetadataFactory = metadataFactory;
 		}
 
 		/// <summary>
@@ -61,38 +65,5 @@ namespace UiMetadataFramework.Core.Binding
 		/// be true.
 		/// </summary>
 		public bool IsInputAlwaysHidden { get; set; }
-
-		/// <inheritdoc />
-		public IEnumerable<Type> ServerTypes { get; }
-
-		/// <inheritdoc />
-		public string ClientType { get; }
-
-		/// <inheritdoc />
-		public Type? MetadataFactory { get; }
-
-		/// <inheritdoc />
-		public override bool Equals(object? obj)
-		{
-			if (!(obj is InputComponentBinding binding))
-			{
-				return false;
-			}
-
-			return this.ClientType == binding.ClientType &&
-				this.ServerTypes.All(t => binding.ServerTypes.Contains(t)) &&
-				binding.ServerTypes.All(t => this.ServerTypes.Contains(t));
-		}
-
-		/// <inheritdoc />
-		public override int GetHashCode()
-		{
-			unchecked
-			{
-				var hashCode = this.ClientType.GetHashCode();
-				hashCode = (hashCode * 397) ^ this.ServerTypes.GetHashCode();
-				return hashCode;
-			}
-		}
 	}
 }

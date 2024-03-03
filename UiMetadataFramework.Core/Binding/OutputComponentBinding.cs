@@ -2,12 +2,11 @@
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
 
 	/// <summary>
 	/// <see cref="IFieldBinding"/> for an output field.
 	/// </summary>
-	public class OutputComponentBinding : IFieldBinding
+	public class OutputComponentBinding : FieldBinding<OutputComponentAttribute>
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="OutputComponentBinding"/> class.
@@ -21,7 +20,7 @@
 			Type serverType,
 			string clientType,
 			Type? metadataFactory)
-			: this(
+			: base(
 				new[] { serverType },
 				clientType,
 				metadataFactory)
@@ -38,11 +37,8 @@
 		public OutputComponentBinding(
 			IEnumerable<Type> serverTypes,
 			string clientType,
-			Type? metadataFactory)
+			Type? metadataFactory) : base(serverTypes, clientType, metadataFactory)
 		{
-			this.ServerTypes = serverTypes;
-			this.ClientType = clientType;
-			this.MetadataFactory = metadataFactory;
 		}
 
 		/// <summary>
@@ -51,42 +47,11 @@
 		/// <param name="serverType">Type which should be rendered on the client.</param>
 		/// <param name="attribute"><see cref="OutputComponentAttribute"/> instance.</param>
 		public OutputComponentBinding(Type serverType, OutputComponentAttribute attribute)
-			: this(
-				serverType,
+			: base(
+				new[] { serverType },
 				attribute.Name,
 				attribute.MetadataFactory)
 		{
-		}
-
-		/// <inheritdoc />
-		public IEnumerable<Type> ServerTypes { get; }
-
-		/// <inheritdoc />
-		public string ClientType { get; }
-
-		/// <inheritdoc />
-		public Type? MetadataFactory { get; }
-
-		/// <inheritdoc />
-		public override bool Equals(object? obj)
-		{
-			if (obj is not OutputComponentBinding binding)
-			{
-				return false;
-			}
-
-			return this.ClientType == binding.ClientType &&
-				this.ServerTypes.All(t => binding.ServerTypes.Contains(t)) &&
-				binding.ServerTypes.All(t => this.ServerTypes.Contains(t));
-		}
-
-		/// <inheritdoc />
-		public override int GetHashCode()
-		{
-			unchecked
-			{
-				return (this.ClientType.GetHashCode() * 397) ^ this.ServerTypes.GetHashCode();
-			}
 		}
 	}
 }

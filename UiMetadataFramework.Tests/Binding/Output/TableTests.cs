@@ -47,7 +47,7 @@ public class TableTests
 	[InlineData(nameof(Response.Numbers), NumberOutputComponentBinding.ControlName)]
 	public void EnumerableOfComponentHasOneColumn(string property, string itemType)
 	{
-		var outputField = this.binder.Outputs.GetFields(typeof(Response), false)
+		var outputField = this.binder.Outputs.GetFields(typeof(Response))
 			.Single(t => t.Id == property);
 
 		var config = outputField.Component.ConfigAsDictionary()!;
@@ -63,7 +63,7 @@ public class TableTests
 	[Fact]
 	public void EnumerableOfNonComponentHasMultipleColumns()
 	{
-		var outputFieldMetadatas = this.binder.Outputs.GetFields(typeof(Response), false)
+		var outputFieldMetadatas = this.binder.Outputs.GetFields(typeof(Response))
 			.ToList();
 
 		var outputField = outputFieldMetadatas

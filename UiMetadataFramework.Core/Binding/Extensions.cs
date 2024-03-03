@@ -156,11 +156,11 @@
 				.Cast<T>();
 		}
 
-		internal static T? GetCustomAttributeSingleOrDefault<T>(this TypeInfo typeInfo) where T : Attribute
+		internal static T? GetCustomAttributeSingleOrDefault<T>(this TypeInfo typeInfo, bool inherit = true) where T : Attribute
 		{
 			try
 			{
-				return typeInfo.GetCustomAttribute<T>();
+				return typeInfo.GetCustomAttribute<T>(inherit);
 			}
 			catch (AmbiguousMatchException)
 			{

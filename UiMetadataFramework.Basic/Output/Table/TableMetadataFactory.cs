@@ -28,6 +28,6 @@ public class TableMetadataFactory : DefaultMetadataFactory
 
 		result["Columns"] = isKnownOutputType
 			? new OutputFieldMetadata(binder.Outputs.BuildComponent(innerType)).AsList()
-			: binder.Outputs.GetFields(innerType, false).ToList();
+			: binder.Outputs.GetFields(innerType).ToList();
 	}
 }

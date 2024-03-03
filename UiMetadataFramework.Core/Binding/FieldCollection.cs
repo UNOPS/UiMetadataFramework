@@ -10,6 +10,7 @@ using System.Reflection;
 /// Represents a collection of fields.
 /// </summary>
 /// <param name="binder">Metadata binder to use.</param>
+/// <param name="container">Container to be used when/if necessary (for example to instantiate <see cref="IMetadataFactory"/> objects).</param>
 public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(MetadataBinder binder, IServiceProvider container)
 	where TBinding : IFieldBinding
 	where TFieldAttribute : FieldAttribute<TBinding, TFieldMetadata>, new()
@@ -36,17 +37,22 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 			.GetCustomAttributes<ComponentConfigurationAttribute>(inherit: true)
 			.ToArray();
 
-		return this.BuildComponent(property.PropertyType, configurations);
+		return this.BuildComponent(
+			property.PropertyType,
+			$"{property.DeclaringType!.FullName}.{property.Name}",
+			configurations);
 	}
 
 	/// <summary>
 	/// Builds metadata for the component with the given configurations. 
 	/// </summary>
 	/// <param name="type">Component type or a <see cref="IPreConfiguredComponent{T}"/>.</param>
+	/// <param name="location"></param>
 	/// <param name="configurations">Configurations to apply. Highest priority configs should come first.</param>
 	/// <returns>Metadata for the component.</returns>
 	public Component BuildComponent(
 		Type type,
+		string? location = null,
 		params ComponentConfigurationAttribute[] configurations)
 	{
 		var binding = this.Bindings.GetBinding(type);
@@ -54,7 +60,58 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 		return this.BuildComponent(
 			type,
 			configurations,
-			binding);
+			binding,
+			location: location);
+	}
+
+	/// <summary>
+	/// Builds field metadata for <paramref name="type"/>. This method does not take into account
+	/// any previous cache and will always build metadata from scratch. The result will also not be stored
+	/// in cache.
+	/// </summary>
+	/// <param name="type">Type that has a set of properties that represent fields.</param>
+	/// <param name="strict">If true, then only properties decorated with <typeparamref name="TFieldAttribute"/>
+	/// will be taken into account.</param>
+	/// <returns>Field metadata.</returns>
+	public IEnumerable<TFieldMetadata> BuildFields(Type type, bool strict = false)
+	{
+		var properties = type.GetPublicProperties();
+
+		foreach (var property in properties)
+		{
+			var attribute = property.GetCustomAttributeSingleOrDefault<TFieldAttribute>();
+
+			if (strict && attribute == null)
+			{
+				continue;
+			}
+
+			var binding = this.GetBinding(
+				property.PropertyType,
+				$"{property.DeclaringType?.FullName}.{property.Name}");
+
+			attribute ??= new TFieldAttribute();
+
+			var metadata = attribute.GetMetadata(property, binding, binder);
+
+			yield return metadata;
+		}
+	}
+
+	/// <summary>
+	/// Attempts to retrieve field metadata for <paramref name="type"/> from cache. If the
+	/// cache yields no results then the metadata will be built and stored it in the cache
+	/// for future use.
+	/// </summary>
+	/// <param name="type">Type that has a set of properties that represent fields.</param>
+	/// <param name="strict">If true, then only properties decorated with <typeparamref name="TFieldAttribute"/>
+	/// will be taken into account.</param>
+	/// <returns>Field metadata.</returns>
+	public IEnumerable<TFieldMetadata> GetFields(Type type, bool strict = false)
+	{
+		return this.fieldCache.GetOrAdd(
+			type,
+			t => this.BuildFields(t, strict));
 	}
 
 	/// <summary>
@@ -63,12 +120,15 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 	/// <param name="type">Component type or a <see cref="IPreConfiguredComponent{T}"/>.</param>
 	/// <param name="configurations">Configurations to apply. Highest priority configs should come first.</param>
 	/// <param name="binding">Component's binding.</param>
+	/// <param name="location">Path to the field where the component is located. This parameter will
+	/// be used to generate a meaningful exception message if the metadata cannot be constructed.</param>
 	/// <returns><see cref="Component"/> instance.</returns>
 	/// <exception cref="BindingException">Thrown if the supplied configuration data is invalid.</exception>
-	public Component BuildComponent(
+	private Component BuildComponent(
 		Type type,
 		ComponentConfigurationAttribute[] configurations,
-		TBinding binding)
+		TBinding binding,
+		string? location = null)
 	{
 		var effectiveConfigurationData = configurations;
 
@@ -100,69 +160,31 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 		}
 		catch (Exception e)
 		{
-			throw new BindingException($"Failed to construct metadata for '{type.FullName}'.", e);
+			var message = !string.IsNullOrWhiteSpace(location)
+				? $"Failed to construct metadata for '{location}'."
+				: $"Failed to construct metadata for '{type.Name}'.";
+
+			throw new BindingException(message, e);
 		}
 	}
 
 	/// <summary>
-	/// Builds field metadata for <paramref name="type"/>. This method does not take into account
-	/// any previous cache and will always build metadata from scratch. The result will also not be stored
-	/// in cache.
+	/// Gets binding for the specified component type.
 	/// </summary>
-	/// <param name="type">Type that has a set of properties that represent fields.</param>
-	/// <param name="strict">If true, then only properties decorated with <see cref="TFieldAttribute"/>
-	/// will be taken into account.</param>
-	/// <returns>Field metadata.</returns>
-	public IEnumerable<TFieldMetadata> BuildFields(Type type, bool strict = false)
-	{
-		var properties = type.GetPublicProperties();
-
-		foreach (var property in properties)
-		{
-			var attribute = property.GetCustomAttributeSingleOrDefault<TFieldAttribute>();
-
-			if (strict && attribute == null)
-			{
-				continue;
-			}
-
-			var binding = this.GetInputBinding(
-				property.PropertyType,
-				$"{property.DeclaringType?.FullName}.{property.Name}");
-
-			attribute ??= new TFieldAttribute();
-
-			var metadata = attribute.GetMetadata(property, binding, binder);
-
-			yield return metadata;
-		}
-	}
-
-	/// <summary>
-	/// Attempts to retrieve field metadata for <paramref name="type"/> from cache. If the
-	/// cache yields no results then the metadata will be built and stored it in the cache
-	/// for future use.
-	/// </summary>
-	/// <param name="type">Type that has a set of properties that represent fields.</param>
-	/// <param name="strict">If true, then only properties decorated with <see cref="TFieldAttribute"/>
-	/// will be taken into account.</param>
-	/// <returns>Field metadata.</returns>
-	public IEnumerable<TFieldMetadata> GetFields(Type type, bool strict = false)
-	{
-		return this.fieldCache.GetOrAdd(
-			type,
-			t => this.BuildFields(t, strict));
-	}
-
-	private TBinding GetInputBinding(Type type, string? location = null)
+	/// <param name="type">Component type or a <see cref="IPreConfiguredComponent{T}"/>.</param>
+	/// <param name="location">Path to the field where the component is located. This parameter will
+	/// be used to generate a meaningful exception message if the binding cannot be found.</param>
+	/// <returns>Instance of <typeparamref name="TBinding"/>.</returns>
+	/// <exception cref="BindingException">Thrown if binding cannot be found.</exception>
+	private TBinding GetBinding(Type type, string? location = null)
 	{
 		var binding = this.Bindings.GetBindingOrNull(type);
 
 		if (binding == null)
 		{
 			var message = !string.IsNullOrWhiteSpace(location)
-				? $"Cannot retrieve metadata for '{location}', because type '{type.FullName}' is not bound to any input component."
-				: $"Type '{type.FullName}' is not bound to any input component.";
+				? $"Cannot retrieve metadata for '{location}', because type '{type.FullName}' is not bound to any component."
+				: $"Type '{type.FullName}' is not bound to any component.";
 
 			throw new BindingException(message);
 		}

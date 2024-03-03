@@ -18,6 +18,6 @@ public class PaginatedDataMetadataFactory : DefaultMetadataFactory
 		ComponentConfigurationAttribute[] configurationData,
 		Dictionary<string, object?> result)
 	{
-		result["Columns"] = binder.Outputs.GetFields(type.GenericTypeArguments[0], false).ToList();
+		result["Columns"] = binder.Outputs.GetFields(type.GenericTypeArguments[0]).ToList();
 	}
 }

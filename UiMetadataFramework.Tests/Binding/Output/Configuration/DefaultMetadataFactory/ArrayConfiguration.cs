@@ -25,6 +25,7 @@ public class ArrayConfiguration
 		public Icon? WithOneUsage { get; set; }
 	}
 
+	[Fact]
 	public void NoUsagesResultsInNull()
 	{
 		var component = this.binder.BuildOutputComponent<Response>(t => t.WithNoUsages);

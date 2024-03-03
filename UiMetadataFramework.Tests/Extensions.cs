@@ -10,11 +10,6 @@ namespace UiMetadataFramework.Tests
 
 	public static class Extensions
 	{
-		public static IDictionary<string, object?>? ConfigAsDictionary(this Component component)
-		{
-			return component.Configuration as IDictionary<string, object?>;
-		}
-
 		public static Component BuildInputComponent<T>(
 			this MetadataBinder binder,
 			Expression<Func<T, object?>> propertyExpression)
@@ -32,9 +27,12 @@ namespace UiMetadataFramework.Tests
 			var propertyName = ((MemberExpression)propertyExpression.Body).Member.Name;
 			var property = typeof(T).GetProperty(propertyName) ?? throw new Exception($"Property '{propertyName}' not found.");
 
-			return binder.Outputs.BuildComponent(
-				property.PropertyType,
-				property.GetCustomAttributes<ComponentConfigurationAttribute>(inherit: true).ToArray());
+			return binder.Outputs.BuildComponent(property);
+		}
+
+		public static IDictionary<string, object?>? ConfigAsDictionary(this Component component)
+		{
+			return component.Configuration as IDictionary<string, object?>;
 		}
 
 		public static Dictionary<string, object?> ToDictionary(this object? request)
@@ -48,7 +46,7 @@ namespace UiMetadataFramework.Tests
 				.GetProperties()
 				.Where(t => t is { CanRead: true, MemberType: MemberTypes.Property })
 				.Where(t => t.GetMethod!.IsPublic)
-				.ToDictionary(t => t.Name, t => t.GetValue(request));
+				.ToDictionary(t => t.Name, t => (object?)t.GetValue(request));
 		}
 	}
 }

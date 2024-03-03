@@ -5,7 +5,7 @@
 		<AssemblyName>UiMetadataFramework.MediatR</AssemblyName>
 		<RootNamespace>UiMetadataFramework.MediatR</RootNamespace>
 		<Description>UiMetadataFramework implementation on top of MediatR's IRequestHandler.</Description>
-		<Version>1.0.6-alpha</Version>
+		<Version>1.0.7-alpha</Version>
 		<Authors>UNOPS</Authors>
 		<FileVersion>0.0.1.0</FileVersion>
 		<PackageTags>ui metadata forms</PackageTags>
