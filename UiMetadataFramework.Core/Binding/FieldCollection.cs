@@ -65,53 +65,29 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 	}
 
 	/// <summary>
-	/// Builds field metadata for <paramref name="type"/>. This method does not take into account
-	/// any previous cache and will always build metadata from scratch. The result will also not be stored
-	/// in cache.
+	/// Gets fields declared on <paramref name="type"/>.
 	/// </summary>
 	/// <param name="type">Type that has a set of properties that represent fields.</param>
 	/// <param name="strict">If true, then only properties decorated with <typeparamref name="TFieldAttribute"/>
 	/// will be taken into account.</param>
+	/// <param name="useCache">If true then will attempt to retrieve field metadata from cache. If not
+	/// in the cache then will build the metadata and store it in cache for future calls.</param>
 	/// <returns>Field metadata.</returns>
-	public IEnumerable<TFieldMetadata> BuildFields(Type type, bool strict = false)
+	public IEnumerable<TFieldMetadata> GetFields(
+		Type type,
+		bool strict = false,
+		bool useCache = true)
 	{
-		var properties = type.GetPublicProperties();
-
-		foreach (var property in properties)
+		if (useCache)
 		{
-			var attribute = property.GetCustomAttributeSingleOrDefault<TFieldAttribute>();
-
-			if (strict && attribute == null)
-			{
-				continue;
-			}
-
-			var binding = this.GetBinding(
-				property.PropertyType,
-				$"{property.DeclaringType?.FullName}.{property.Name}");
-
-			attribute ??= new TFieldAttribute();
-
-			var metadata = attribute.GetMetadata(property, binding, binder);
-
-			yield return metadata;
+			return this.fieldCache.GetOrAdd(
+				type,
+				t => this.BuildFieldsInternal(t, strict));
 		}
-	}
-
-	/// <summary>
-	/// Attempts to retrieve field metadata for <paramref name="type"/> from cache. If the
-	/// cache yields no results then the metadata will be built and stored it in the cache
-	/// for future use.
-	/// </summary>
-	/// <param name="type">Type that has a set of properties that represent fields.</param>
-	/// <param name="strict">If true, then only properties decorated with <typeparamref name="TFieldAttribute"/>
-	/// will be taken into account.</param>
-	/// <returns>Field metadata.</returns>
-	public IEnumerable<TFieldMetadata> GetFields(Type type, bool strict = false)
-	{
-		return this.fieldCache.GetOrAdd(
-			type,
-			t => this.BuildFields(t, strict));
+		else
+		{
+			return this.BuildFieldsInternal(type, strict);
+		}
 	}
 
 	/// <summary>
@@ -165,6 +141,40 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 				: $"Failed to construct metadata for '{type.Name}'.";
 
 			throw new BindingException(message, e);
+		}
+	}
+
+	/// <summary>
+	/// Builds field metadata for <paramref name="type"/>. This method does not take into account
+	/// any previous cache and will always build metadata from scratch. The result will also not be stored
+	/// in cache.
+	/// </summary>
+	/// <param name="type">Type that has a set of properties that represent fields.</param>
+	/// <param name="strict">If true, then only properties decorated with <typeparamref name="TFieldAttribute"/>
+	/// will be taken into account.</param>
+	/// <returns>Field metadata.</returns>
+	private IEnumerable<TFieldMetadata> BuildFieldsInternal(Type type, bool strict = false)
+	{
+		var properties = type.GetPublicProperties();
+
+		foreach (var property in properties)
+		{
+			var attribute = property.GetCustomAttributeSingleOrDefault<TFieldAttribute>();
+
+			if (strict && attribute == null)
+			{
+				continue;
+			}
+
+			var binding = this.GetBinding(
+				property.PropertyType,
+				$"{property.DeclaringType?.FullName}.{property.Name}");
+
+			attribute ??= new TFieldAttribute();
+
+			var metadata = attribute.GetMetadata(property, binding, binder);
+
+			yield return metadata;
 		}
 	}
 
