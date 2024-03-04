@@ -1,6 +1,7 @@
 namespace UiMetadataFramework.Core.Binding
 {
 	using System;
+	using System.Collections.Concurrent;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
@@ -11,6 +12,8 @@ namespace UiMetadataFramework.Core.Binding
 	/// </summary>
 	public class MetadataBinder
 	{
+		private static readonly ConcurrentDictionary<Type, Type?> BaseComponentCache = new();
+
 		/// <summary>
 		/// <see cref="IServiceProvider"/> instance used when/if necessary.
 		/// </summary>
@@ -63,20 +66,36 @@ namespace UiMetadataFramework.Core.Binding
 		/// thereby represents a component.</returns>
 		public static Type? GetBaseComponent<TAttribute>(Type component) where TAttribute : ComponentAttribute
 		{
-			while (true)
-			{
-				if (component.GetCustomAttribute<TAttribute>(inherit: false) != null)
+			return BaseComponentCache.GetOrAdd(
+				component,
+				_ =>
 				{
-					return component;
-				}
+					int levels = 0;
 
-				if (component.BaseType == null || component.BaseType == typeof(object))
-				{
-					return null;
-				}
+					while (true)
+					{
+						if (component.GetCustomAttribute<TAttribute>(inherit: false) != null)
+						{
+							if (levels > 1)
+							{
+								throw new BindingException(
+									$"Derived component '{component.FullName}' cannot inherit from another derived component. " +
+									$"Multi-level derived components are not supported.");
+							}
 
-				component = component.BaseType;
-			}
+							return component;
+						}
+
+						if (component.BaseType == null || component.BaseType == typeof(object))
+						{
+							return null;
+						}
+
+						component = component.BaseType;
+
+						levels += 1;
+					}
+				});
 		}
 
 		/// <summary>
@@ -96,35 +115,6 @@ namespace UiMetadataFramework.Core.Binding
 			}
 
 			return GetFormId(formType, attribute);
-		}
-
-		/// <summary>
-		/// Gets component property encapsulated inside <see cref="IPreConfiguredComponent{T}"/>.
-		/// If <paramref name="type"/> is not a <see cref="IPreConfiguredComponent{T}"/>, then null is returned. 
-		/// </summary>
-		/// <param name="type">Type that potentially implements <see cref="IPreConfiguredComponent{T}"/>.</param>
-		/// <returns><see cref="PropertyInfo"/> representing
-		/// <see cref="IPreConfiguredComponent{T}"/>.<see cref="IPreConfiguredComponent{T}.Value"/> or null
-		/// if <paramref name="type"/> is not a <see cref="IPreConfiguredComponent{T}"/>.</returns>
-		/// <exception cref="BindingException"></exception>
-		public static PropertyInfo? GetInnerComponent(Type type)
-		{
-			if (type.ImplementsType(typeof(IPreConfiguredComponent<>)))
-			{
-				var property = type.GetProperty(nameof(IPreConfiguredComponent<object>.Value))!;
-
-				if (property.PropertyType.ImplementsType(typeof(IPreConfiguredComponent<>)))
-				{
-					throw new BindingException(
-						$"Pre-configured component '{type.FullName}' cannot have nested pre-configured " +
-						$"component '{property.PropertyType.FullName}'. Nesting pre-configured components " +
-						$"is not supported.");
-				}
-
-				return property;
-			}
-
-			return null;
 		}
 
 		/// <summary>

@@ -2,6 +2,7 @@
 
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Framework.Outputs.Money;
+using UiMetadataFramework.Tests.Framework.Outputs.ObjectList;
 using UiMetadataFramework.Tests.Utilities;
 using Xunit;
 
@@ -14,13 +15,28 @@ public class ConfigurationOverrides
 		[Money(Locale = "en-EN")]
 		[MoneyStyle(Style = "high-precision-override")]
 		public HighPrecisionMoney? Amounts { get; set; }
+
+		[ObjectList(Gap = "10")]
+		public BulletPointList<int>? ListOfLists { get; set; }
 	}
 
-	public class HighPrecisionMoney : IPreConfiguredComponent<Money>
+	[Money(8, Locale = "en-US")]
+	[MoneyStyle(Style = "high-precision")]
+	public class HighPrecisionMoney : Money;
+
+	[ObjectList(Style = "bullet-point-list")]
+	public class BulletPointList<T> : ObjectList<T>;
+
+	[Fact]
+	public void MultilevelOuterConfigurations()
 	{
-		[Money(8, Locale = "en-US")]
-		[MoneyStyle(Style = "high-precision")]
-		public Money? Value { get; set; }
+		var config = this.binder
+			.BuildOutputComponent<Outputs>(t => t.ListOfLists)
+			.ConfigAsDictionary()!;
+
+		Assert.Equal("10", config["Gap"]);
+		Assert.Equal("bullet-point-list", config["Style"]);
+		Assert.False(config.ContainsKey("ListItem"));
 	}
 
 	[Fact]

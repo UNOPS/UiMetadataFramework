@@ -19,18 +19,12 @@ public class GenericComponent
 		public BulletPointList<string>? Names { get; set; }
 	}
 
-	public class BulletPointList<T> : IPreConfiguredComponent<ObjectList<T>>
-	{
-		[ObjectList(Style = "bullet-point-list", ListItem = "*")]
-		public ObjectList<T>? Value { get; set; }
-	}
+	[ObjectList(Style = "bullet-point-list", ListItem = "*")]
+	public class BulletPointList<T> : ObjectList<T>;
 
-	public class HighPrecisionMoney : IPreConfiguredComponent<Money>
-	{
-		[Money(8)]
-		[MoneyStyle(Style = "precise")]
-		public Money? Value { get; set; }
-	}
+	[Money(8)]
+	[MoneyStyle(Style = "precise")]
+	public class HighPrecisionMoney : Money;
 
 	[Fact]
 	public void NestedPreConfiguredComponentBound()

@@ -46,7 +46,7 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 	/// <summary>
 	/// Builds metadata for the component with the given configurations. 
 	/// </summary>
-	/// <param name="type">Component type or a <see cref="IPreConfiguredComponent{T}"/>.</param>
+	/// <param name="type">Component type or a derived component (aka pre-configured component).</param>
 	/// <param name="location"></param>
 	/// <param name="configurations">Configurations to apply. Highest priority configs should come first.</param>
 	/// <returns>Metadata for the component.</returns>
@@ -84,16 +84,14 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 				type,
 				t => this.BuildFieldsInternal(t, strict));
 		}
-		else
-		{
-			return this.BuildFieldsInternal(type, strict);
-		}
+
+		return this.BuildFieldsInternal(type, strict);
 	}
 
 	/// <summary>
 	/// Builds component metadata.
 	/// </summary>
-	/// <param name="type">Component type or a <see cref="IPreConfiguredComponent{T}"/>.</param>
+	/// <param name="type">Component type or a derived component (aka pre-configured component).</param>
 	/// <param name="binding">Component's binding.</param>
 	/// <param name="location">Path to the field where the component is located. This parameter will
 	/// be used to generate a meaningful exception message if the metadata cannot be constructed.</param>
@@ -108,14 +106,14 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 	{
 		var effectiveConfigurationData = configurations;
 
-		var innerComponent = MetadataBinder.GetInnerComponent(type);
+		var innerComponentType = MetadataBinder.GetBaseComponent<ComponentAttribute>(type);
 
-		if (innerComponent != null)
+		if (innerComponentType != null)
 		{
 			effectiveConfigurationData = configurations
 				// Inner configuration data should come last. This way we indicate
 				// that inner configuration items have lower priority.
-				.Concat(innerComponent.GetCustomAttributes<ComponentConfigurationAttribute>(true))
+				.Concat(type.GetCustomAttributes<ComponentConfigurationAttribute>(true))
 				.ToArray();
 		}
 
@@ -126,7 +124,7 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 		try
 		{
 			var metadata = metadataFactory.CreateMetadata(
-				innerComponent?.PropertyType ?? type,
+				innerComponentType ?? type,
 				binding,
 				binder,
 				effectiveConfigurationData);
@@ -182,7 +180,7 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 	/// <summary>
 	/// Gets binding for the specified component type.
 	/// </summary>
-	/// <param name="type">Component type or a <see cref="IPreConfiguredComponent{T}"/>.</param>
+	/// <param name="type">Component type or a derived component (aka pre-configured component).</param>
 	/// <param name="location">Path to the field where the component is located. This parameter will
 	/// be used to generate a meaningful exception message if the binding cannot be found.</param>
 	/// <returns>Instance of <typeparamref name="TBinding"/>.</returns>

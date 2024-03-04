@@ -124,7 +124,7 @@ public class DefaultMetadataFactory : IMetadataFactory
 	/// <summary>
 	/// Provides a hook to amend the configuration object before it is returned.
 	/// </summary>
-	/// <param name="type">Component type or a <see cref="IPreConfiguredComponent{T}"/>.</param>
+	/// <param name="type">Component type or a derived component (aka pre-configured component).</param>
 	/// <param name="binder">Binder to use.</param>
 	/// <param name="configurationData">Configurations to apply.</param>
 	/// <param name="result">Configuration prepared by <see cref="DefaultMetadataFactory"/>.

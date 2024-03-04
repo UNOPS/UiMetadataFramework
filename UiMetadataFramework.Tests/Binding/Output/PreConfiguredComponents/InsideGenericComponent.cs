@@ -18,12 +18,9 @@ public class InsideGenericComponent
 		public ObjectList<HighPrecisionMoney>? Amounts { get; set; }
 	}
 
-	public class HighPrecisionMoney : IPreConfiguredComponent<Money>
-	{
-		[Money(8)]
-		[MoneyStyle(Style = "precise")]
-		public Money? Value { get; set; }
-	}
+	[Money(8)]
+	[MoneyStyle(Style = "precise")]
+	public class HighPrecisionMoney : Money;
 
 	[Fact]
 	public void NestedPreConfiguredComponentBound()

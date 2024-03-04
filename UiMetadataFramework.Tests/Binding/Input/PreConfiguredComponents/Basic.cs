@@ -16,11 +16,8 @@ public class ConfigurationOverrides
 		public UsdMoney? Usd { get; set; }
 	}
 
-	public class UsdMoney : IPreConfiguredComponent<Money>
-	{
-		[Money(Currency = "USD")]
-		public Money? Value { get; set; }
-	}
+	[Money(Currency = "USD")]
+	public class UsdMoney : Money;
 
 	[Fact]
 	public void OuterConfigurationOverridesInner()

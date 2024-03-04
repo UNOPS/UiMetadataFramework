@@ -16,17 +16,11 @@ public class InvalidConfigurations
 
 	private readonly MetadataBinder binder = MetadataBinderFactory.CreateMetadataBinder();
 
-	public class BulletPointList<T> : IPreConfiguredComponent<ObjectList<T>>
-	{
-		[ObjectList(Style = "bullet-point-list", ListItem = "*")]
-		public ObjectList<T>? Value { get; set; }
-	}
+	[ObjectList(Style = "bullet-point-list", ListItem = "*")]
+	public class BulletPointList<T> : ObjectList<T>;
 
-	public class StarPointList<T> : IPreConfiguredComponent<BulletPointList<T>>
-	{
-		[ObjectList(Style = "start-point-list")]
-		public BulletPointList<T>? Value { get; set; }
-	}
+	[ObjectList(Style = "start-point-list")]
+	public class StarPointList<T> : BulletPointList<T>;
 
 	[Fact]
 	public void MultilevelConfigurationNotAllowed()
