@@ -20,15 +20,21 @@ public abstract class FieldBinding<T> : IFieldBinding
 	/// <param name="clientType">Name of the client control which will render the specified types.</param>
 	/// <param name="metadataFactory"><see cref="IMetadataFactory"/> to use for constructing component's
 	/// metadata. If null then <see cref="DefaultMetadataFactory"/> will be used.</param>
+	/// <param name="allowedConfigurations">Allowed configurations for this component.</param>
 	public FieldBinding(
 		IEnumerable<Type> serverTypes,
 		string clientType,
-		Type? metadataFactory)
+		Type? metadataFactory,
+		params HasConfigurationAttribute[] allowedConfigurations)
 	{
 		this.serverTypes = serverTypes.ToList();
 		this.ClientType = clientType;
 		this.MetadataFactory = metadataFactory;
+		this.AllowedConfigurations = allowedConfigurations;
 	}
+
+	/// <inheritdoc />
+	public HasConfigurationAttribute[] AllowedConfigurations { get; }
 
 	/// <inheritdoc />
 	public IEnumerable<Type> ServerTypes => this.serverTypes;

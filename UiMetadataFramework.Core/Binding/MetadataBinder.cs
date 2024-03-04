@@ -183,7 +183,7 @@ namespace UiMetadataFramework.Core.Binding
 				.ForEach(t => this.Outputs.Bindings.AddBinding(t));
 
 			assembly.GetComponents<OutputComponentAttribute>()
-				.ForEach(t => this.Outputs.Bindings.AddBinding(new OutputComponentBinding(t.Type, t.Attribute)));
+				.ForEach(t => this.Outputs.Bindings.AddBinding(new OutputComponentBinding(t.Type, t.Attribute, t.AllowedConfigurations)));
 
 			assembly
 				.GetBindings<InputComponentBinding>()
@@ -192,7 +192,7 @@ namespace UiMetadataFramework.Core.Binding
 				.ForEach(t => this.Inputs.Bindings.AddBinding(t));
 
 			assembly.GetComponents<InputComponentAttribute>()
-				.ForEach(t => this.Inputs.Bindings.AddBinding(new InputComponentBinding(t.Type, t.Attribute)));
+				.ForEach(t => this.Inputs.Bindings.AddBinding(new InputComponentBinding(t.Type, t.Attribute, t.AllowedConfigurations)));
 		}
 
 		internal static string GetFormId(Type formType, FormAttribute formAttribute)

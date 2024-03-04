@@ -1,10 +1,8 @@
 ﻿namespace UiMetadataFramework.Core.Binding;
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 /// <summary>
 /// <see cref="IMetadataFactory"/> that iterates over all <see cref="ComponentConfigurationAttribute"/>s,
@@ -12,26 +10,24 @@ using System.Reflection;
 /// </summary>
 public class DefaultMetadataFactory : IMetadataFactory
 {
-	private static readonly ConcurrentDictionary<Type, HasConfigurationAttribute[]> AllowedConfigurationItems = new();
-
 	/// <summary>
 	/// Iterates over all <paramref name="configurations"/>, finds all properties marked with
 	/// <see cref="ConfigurationPropertyAttribute"/> and attaches their values to the result.
 	/// </summary>
-	/// <param name="type">Component type or a <see cref="IPreConfiguredComponent{T}"/>.</param>
+	/// <param name="type">Component's type.</param>
+	/// <param name="binding">Binding for the component.</param>
 	/// <param name="binder">Binder to use.</param>
 	/// <param name="configurations">Configurations to apply. Highest priority configs should come first.</param>
 	/// <returns>Dictionary representing component's configuration.</returns>
 	public object? CreateMetadata(
 		Type type,
+		IFieldBinding binding,
 		MetadataBinder binder,
 		params ComponentConfigurationAttribute[] configurations)
 	{
 		var result = new Dictionary<string, object?>();
 
-		var supportedConfigs = GetSupportedConfigs(type);
-
-		var remainingRequiredConfigs = supportedConfigs
+		var remainingRequiredConfigs = binding.AllowedConfigurations
 			.Where(t => t.Mandatory)
 			.ToList();
 
@@ -39,7 +35,7 @@ public class DefaultMetadataFactory : IMetadataFactory
 		{
 			var configType = configData.GetType();
 
-			var supportedConfig = supportedConfigs
+			var supportedConfig = binding.AllowedConfigurations
 				.SingleOrDefault(t => configType.ImplementsClass(t.ConfigurationType));
 
 			if (supportedConfig == null)
@@ -140,22 +136,5 @@ public class DefaultMetadataFactory : IMetadataFactory
 		ComponentConfigurationAttribute[] configurationData,
 		Dictionary<string, object?> result)
 	{
-	}
-
-	/// <summary>
-	/// Gets list of <see cref="HasConfigurationAttribute"/> applied to this component.
-	/// </summary>
-	/// <param name="type">Component type or a <see cref="IPreConfiguredComponent{T}"/>.</param>
-	private static HasConfigurationAttribute[] GetSupportedConfigs(Type type)
-	{
-		var innerComponent = MetadataBinder.GetInnerComponent(type);
-
-		var effectiveType = innerComponent != null
-			? innerComponent.PropertyType
-			: type;
-
-		return AllowedConfigurationItems.GetOrAdd(
-			effectiveType,
-			t => t.GetCustomAttributes<HasConfigurationAttribute>().ToArray());
 	}
 }

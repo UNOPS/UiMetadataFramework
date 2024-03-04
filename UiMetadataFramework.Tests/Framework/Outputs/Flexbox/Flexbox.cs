@@ -2,7 +2,7 @@
 
 using UiMetadataFramework.Core.Binding;
 
-[OutputComponent("flexbox")]
+[OutputComponent("flexbox", metadataFactory: typeof(FlexboxMetadataFactory))]
 [HasConfiguration(typeof(FlexboxAttribute), mandatory: true)]
 public class Flexbox<T>
 {

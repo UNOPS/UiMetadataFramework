@@ -16,14 +16,17 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="metadataFactory">Type that implements <see cref="IMetadataFactory"/> and which will
 		/// be used to construct custom metadata. If null, then no custom metadata will be constructed for
 		/// this component.</param>
+		/// <param name="allowedConfigurations">Allowed configurations for this component.</param>
 		public InputComponentBinding(
 			Type serverType,
 			string clientType,
-			Type? metadataFactory)
+			Type? metadataFactory,
+			params HasConfigurationAttribute[] allowedConfigurations)
 			: base(
 				new[] { serverType },
 				clientType,
-				metadataFactory)
+				metadataFactory,
+				allowedConfigurations)
 		{
 		}
 
@@ -32,11 +35,16 @@ namespace UiMetadataFramework.Core.Binding
 		/// </summary>
 		/// <param name="serverType">Type which should be rendered on the client.</param>
 		/// <param name="attribute"><see cref="InputComponentAttribute"/> instance.</param>
-		public InputComponentBinding(Type serverType, InputComponentAttribute attribute)
+		/// <param name="allowedConfigurations">Allowed configurations for this component.</param>
+		public InputComponentBinding(
+			Type serverType,
+			InputComponentAttribute attribute,
+			params HasConfigurationAttribute[] allowedConfigurations)
 			: base(
 				new[] { serverType },
 				attribute.Name,
-				attribute.MetadataFactory)
+				attribute.MetadataFactory,
+				allowedConfigurations)
 		{
 			this.IsInputAlwaysHidden = attribute.AlwaysHidden;
 		}
@@ -49,13 +57,16 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="metadataFactory">Type that implements <see cref="IMetadataFactory"/> and which will
 		/// be used to construct custom metadata. If null, then no custom metadata will be constructed for
 		/// this component.</param>
+		/// <param name="allowedConfigurations">Allowed configurations for this component.</param>
 		public InputComponentBinding(
 			IEnumerable<Type> serverTypes,
 			string clientType,
-			Type? metadataFactory) : base(
+			Type? metadataFactory,
+			params HasConfigurationAttribute[] allowedConfigurations) : base(
 			serverTypes,
 			clientType,
-			metadataFactory)
+			metadataFactory,
+			allowedConfigurations)
 		{
 		}
 

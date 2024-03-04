@@ -59,9 +59,9 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 
 		return this.BuildComponent(
 			type,
-			configurations,
 			binding,
-			location: location);
+			location,
+			configurations);
 	}
 
 	/// <summary>
@@ -94,17 +94,17 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 	/// Builds component metadata.
 	/// </summary>
 	/// <param name="type">Component type or a <see cref="IPreConfiguredComponent{T}"/>.</param>
-	/// <param name="configurations">Configurations to apply. Highest priority configs should come first.</param>
 	/// <param name="binding">Component's binding.</param>
 	/// <param name="location">Path to the field where the component is located. This parameter will
 	/// be used to generate a meaningful exception message if the metadata cannot be constructed.</param>
+	/// <param name="configurations">Configurations to apply. Highest priority configs should come first.</param>
 	/// <returns><see cref="Component"/> instance.</returns>
 	/// <exception cref="BindingException">Thrown if the supplied configuration data is invalid.</exception>
 	private Component BuildComponent(
 		Type type,
-		ComponentConfigurationAttribute[] configurations,
 		TBinding binding,
-		string? location = null)
+		string? location = null,
+		params ComponentConfigurationAttribute[] configurations)
 	{
 		var effectiveConfigurationData = configurations;
 
@@ -126,7 +126,8 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 		try
 		{
 			var metadata = metadataFactory.CreateMetadata(
-				type,
+				innerComponent?.PropertyType ?? type,
+				binding,
 				binder,
 				effectiveConfigurationData);
 

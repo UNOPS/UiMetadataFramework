@@ -11,6 +11,11 @@ using System.Collections.Generic;
 public interface IFieldBinding
 {
 	/// <summary>
+	/// Allowed configurations for the component.
+	/// </summary>
+	public HasConfigurationAttribute[] AllowedConfigurations { get; }
+
+	/// <summary>
 	/// Gets name of the UI component which will render the field.
 	/// </summary>
 	string ClientType { get; }

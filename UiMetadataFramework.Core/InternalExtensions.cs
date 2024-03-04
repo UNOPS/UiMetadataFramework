@@ -21,13 +21,19 @@ internal static class InternalExtensions
 				});
 	}
 
-	public static IEnumerable<(T Attribute, Type Type)> GetComponents<T>(this Assembly assembly)
+	public static IEnumerable<(T Attribute, Type Type, HasConfigurationAttribute[] AllowedConfigurations)> GetComponents<T>(this Assembly assembly)
 		where T : ComponentAttribute
 	{
 		return assembly.ExportedTypes
 			.Select(t => (Attribute: t.GetTypeInfo().GetCustomAttributeSingleOrDefault<T>(inherit: false), Type: t))
 			.Where(t => t.Attribute != null)
-			.Cast<(T Attribute, Type Type)>();
+			.Select(
+				t =>
+				(
+					Attribute: t.Attribute!,
+					t.Type,
+					AllowedConfigurations: t.Type.GetCustomAttributes<HasConfigurationAttribute>().ToArray()
+				));
 	}
 
 	/// <summary>
@@ -70,12 +76,23 @@ internal static class InternalExtensions
 	}
 
 	/// <summary>
+	/// Checks whether this type implements the given interface.
+	/// </summary>
+	/// <param name="type">Type which might be implementing <paramref name="baseInterface"/>.</param>
+	/// <param name="baseInterface">Interface which should be implemented by <paramref name="type"/>.</param>
+	/// <returns>True or false.</returns>
+	public static bool ImplementsInterface(this Type type, Type baseInterface)
+	{
+		return type.GetInterfaces(baseInterface).Any();
+	}
+
+	/// <summary>
 	/// Checks whether this type implements the given class/interface.
 	/// </summary>
 	/// <param name="type">Type which might be implementing <paramref name="baseType"/>.</param>
 	/// <param name="baseType">Class or interface. Can be a generic type (both constructed and
 	/// non-constructed generic types are supported).</param>
-	/// <returns></returns>
+	/// <returns>True/false.</returns>
 	public static bool ImplementsType(this Type type, Type baseType)
 	{
 		if (baseType.IsInterface)
@@ -122,16 +139,5 @@ internal static class InternalExtensions
 
 		// T1 : T2
 		return type.BaseType.GetBaseClassOfType(baseClass);
-	}
-
-	/// <summary>
-	/// Checks whether this type implements the given interface.
-	/// </summary>
-	/// <param name="type">Type which might be implementing <paramref name="baseInterface"/>.</param>
-	/// <param name="baseInterface">Interface which should be implemented by <paramref name="type"/>.</param>
-	/// <returns>True or false.</returns>
-	private static bool ImplementsInterface(Type type, Type baseInterface)
-	{
-		return type.GetInterfaces(baseInterface).Any();
 	}
 }
