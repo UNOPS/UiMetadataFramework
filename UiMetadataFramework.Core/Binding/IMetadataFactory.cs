@@ -19,7 +19,7 @@ public interface IMetadataFactory
 	/// <returns>Metadata for component of type <paramref name="type"/>.</returns>
 	public object? CreateMetadata(
 		Type type,
-		IFieldBinding binding,
+		IComponentBinding binding,
 		MetadataBinder binder,
 		params ComponentConfigurationAttribute[] configurations);
 }

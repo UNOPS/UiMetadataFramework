@@ -12,7 +12,7 @@ using System.Reflection;
 /// <param name="binder">Metadata binder to use.</param>
 /// <param name="container">Container to be used when/if necessary (for example to instantiate <see cref="IMetadataFactory"/> objects).</param>
 public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(MetadataBinder binder, IServiceProvider container)
-	where TBinding : IFieldBinding
+	where TBinding : IComponentBinding
 	where TFieldAttribute : FieldAttribute<TBinding, TFieldMetadata>, new()
 	where TFieldMetadata : IFieldMetadata
 {

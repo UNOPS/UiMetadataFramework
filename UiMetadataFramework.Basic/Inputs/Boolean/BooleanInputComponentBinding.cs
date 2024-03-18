@@ -8,7 +8,7 @@
 		/// <inheritdoc />
 		public BooleanInputComponentBinding() : base(
 			serverType: typeof(bool),
-			clientType: "boolean",
+			componentType: "boolean",
 			metadataFactory: null)
 		{
 		}

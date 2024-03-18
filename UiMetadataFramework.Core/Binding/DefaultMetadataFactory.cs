@@ -21,7 +21,7 @@ public class DefaultMetadataFactory : IMetadataFactory
 	/// <returns>Dictionary representing component's configuration.</returns>
 	public object? CreateMetadata(
 		Type type,
-		IFieldBinding binding,
+		IComponentBinding binding,
 		MetadataBinder binder,
 		params ComponentConfigurationAttribute[] configurations)
 	{

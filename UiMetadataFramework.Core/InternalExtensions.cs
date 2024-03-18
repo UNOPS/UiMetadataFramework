@@ -8,7 +8,7 @@ using UiMetadataFramework.Core.Binding;
 
 internal static class InternalExtensions
 {
-	public static IEnumerable<Type> GetBindings<T>(this Assembly assembly) where T : IFieldBinding
+	public static IEnumerable<Type> GetBindings<T>(this Assembly assembly) where T : IComponentBinding
 	{
 		return assembly.ExportedTypes
 			.Where(

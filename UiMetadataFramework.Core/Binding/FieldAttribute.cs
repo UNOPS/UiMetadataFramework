@@ -9,7 +9,7 @@ using System.Reflection;
 /// <typeparam name="TBinding">Binding type for this field.</typeparam>
 /// <typeparam name="TFieldMetadata">Metadata type for this field..</typeparam>
 public abstract class FieldAttribute<TBinding, TFieldMetadata> : Attribute
-	where TBinding : IFieldBinding
+	where TBinding : IComponentBinding
 	where TFieldMetadata : IFieldMetadata
 {
 	/// <summary>

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 /// control which will render that field. The binding can involve multiple server-side
 /// types being bound to the same client-side control.
 /// </summary>
-public interface IFieldBinding
+public interface IComponentBinding
 {
 	/// <summary>
 	/// Allowed configurations for the component.

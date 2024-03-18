@@ -11,7 +11,7 @@ namespace UiMetadataFramework.Basic.Output.DateTime
 		/// <inheritdoc />
 		public DateTimeOutputComponentBinding() : base(
 			serverType: typeof(DateTime),
-			clientType: ControlName,
+			componentType: ControlName,
 			metadataFactory: null)
 		{
 		}

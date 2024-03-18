@@ -8,27 +8,27 @@ using System.Linq;
 /// Represents a mapping between server types and a component.
 /// </summary>
 /// <typeparam name="T">Component type.</typeparam>
-public abstract class FieldBinding<T> : IFieldBinding
+public abstract class ComponentBinding<T> : IComponentBinding
 	where T : ComponentAttribute
 {
 	private readonly IList<Type> serverTypes;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="OutputComponentBinding"/> class.
+	/// Initializes a new instance of the <see cref="ComponentBinding{T}"/> class.
 	/// </summary>
-	/// <param name="serverTypes">Types which should be rendered on the client.</param>
-	/// <param name="clientType">Name of the client control which will render the specified types.</param>
+	/// <param name="serverTypes">Types which should be mapped to the component.</param>
+	/// <param name="componentType">Name of the component.</param>
 	/// <param name="metadataFactory"><see cref="IMetadataFactory"/> to use for constructing component's
 	/// metadata. If null then <see cref="DefaultMetadataFactory"/> will be used.</param>
 	/// <param name="allowedConfigurations">Allowed configurations for this component.</param>
-	public FieldBinding(
+	public ComponentBinding(
 		IEnumerable<Type> serverTypes,
-		string clientType,
+		string componentType,
 		Type? metadataFactory,
 		params HasConfigurationAttribute[] allowedConfigurations)
 	{
 		this.serverTypes = serverTypes.ToList();
-		this.ComponentType = clientType;
+		this.ComponentType = componentType;
 		this.MetadataFactory = metadataFactory;
 		this.AllowedConfigurations = allowedConfigurations;
 	}
@@ -48,7 +48,7 @@ public abstract class FieldBinding<T> : IFieldBinding
 	/// <inheritdoc />
 	public override bool Equals(object? obj)
 	{
-		if (obj is not FieldBinding<T> binding)
+		if (obj is not ComponentBinding<T> binding)
 		{
 			return false;
 		}

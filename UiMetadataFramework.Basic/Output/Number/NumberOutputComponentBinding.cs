@@ -18,7 +18,7 @@
 				typeof(long),
 				typeof(byte)
 			},
-			clientType: ControlName,
+			componentType: ControlName,
 			metadataFactory: null)
 		{
 		}

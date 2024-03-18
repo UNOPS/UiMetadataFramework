@@ -7,10 +7,10 @@ using System.Linq;
 using System.Reflection;
 
 /// <summary>
-/// Collection of <see cref="IFieldBinding"/> instances.
+/// Collection of <see cref="IComponentBinding"/> instances.
 /// </summary>
 public class BindingCollection<TBinding>
-	where TBinding : IFieldBinding
+	where TBinding : IComponentBinding
 {
 	private readonly ConcurrentDictionary<Type, TBinding> bindings = new();
 
@@ -92,9 +92,9 @@ public class BindingCollection<TBinding>
 		return binding;
 	}
 
-	private void EnforceNotDuplicate(IFieldBinding newBinding)
+	private void EnforceNotDuplicate(IComponentBinding newBinding)
 	{
-		IFieldBinding? oldBinding = this.bindings.Values.FirstOrDefault(t => t.ComponentType == newBinding.ComponentType);
+		IComponentBinding? oldBinding = this.bindings.Values.FirstOrDefault(t => t.ComponentType == newBinding.ComponentType);
 
 		if (oldBinding == null || oldBinding.Equals(newBinding))
 		{

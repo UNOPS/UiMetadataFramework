@@ -10,7 +10,7 @@
 		/// <inheritdoc />
 		public StringInputComponentBinding() : base(
 			serverType: typeof(string),
-			clientType: ControlName,
+			componentType: ControlName,
 			metadataFactory: null)
 		{
 		}

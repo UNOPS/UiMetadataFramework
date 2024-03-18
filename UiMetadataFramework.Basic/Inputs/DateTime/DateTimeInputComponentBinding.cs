@@ -11,7 +11,7 @@ namespace UiMetadataFramework.Basic.Inputs.DateTime
 		/// <inheritdoc />
 		public DateTimeInputComponentBinding() : base(
 			serverType: typeof(DateTime),
-			clientType: ControlName,
+			componentType: ControlName,
 			metadataFactory: null)
 		{
 		}

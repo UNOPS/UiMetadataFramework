@@ -14,7 +14,7 @@
 				typeof(string),
 				typeof(bool)
 			},
-			clientType: ControlName,
+			componentType: ControlName,
 			metadataFactory: null)
 		{
 		}
