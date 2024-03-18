@@ -130,7 +130,7 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 				effectiveConfigurationData);
 
 			return new Component(
-				binding.ClientType,
+				binding.ComponentType,
 				metadata);
 		}
 		catch (Exception e)

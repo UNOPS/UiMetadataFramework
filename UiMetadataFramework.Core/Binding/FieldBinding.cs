@@ -28,7 +28,7 @@ public abstract class FieldBinding<T> : IFieldBinding
 		params HasConfigurationAttribute[] allowedConfigurations)
 	{
 		this.serverTypes = serverTypes.ToList();
-		this.ClientType = clientType;
+		this.ComponentType = clientType;
 		this.MetadataFactory = metadataFactory;
 		this.AllowedConfigurations = allowedConfigurations;
 	}
@@ -40,7 +40,7 @@ public abstract class FieldBinding<T> : IFieldBinding
 	public IEnumerable<Type> ServerTypes => this.serverTypes;
 
 	/// <inheritdoc />
-	public string ClientType { get; }
+	public string ComponentType { get; }
 
 	/// <inheritdoc />
 	public Type? MetadataFactory { get; }
@@ -53,7 +53,7 @@ public abstract class FieldBinding<T> : IFieldBinding
 			return false;
 		}
 
-		return this.ClientType == binding.ClientType &&
+		return this.ComponentType == binding.ComponentType &&
 			this.ServerTypes.All(t => binding.ServerTypes.Contains(t)) &&
 			binding.ServerTypes.All(t => this.ServerTypes.Contains(t));
 	}
@@ -63,7 +63,7 @@ public abstract class FieldBinding<T> : IFieldBinding
 	{
 		unchecked
 		{
-			return (this.ClientType.GetHashCode() * 397) ^ this.ServerTypes.GetHashCode();
+			return (this.ComponentType.GetHashCode() * 397) ^ this.ServerTypes.GetHashCode();
 		}
 	}
 }

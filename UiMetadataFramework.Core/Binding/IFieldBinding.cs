@@ -16,9 +16,9 @@ public interface IFieldBinding
 	public HasConfigurationAttribute[] AllowedConfigurations { get; }
 
 	/// <summary>
-	/// Gets name of the UI component which will render the field.
+	/// Component which will be rendered.
 	/// </summary>
-	string ClientType { get; }
+	string ComponentType { get; }
 
 	/// <summary>
 	/// Represents <see cref="IMetadataFactory"/> that should be used to construct metadata.

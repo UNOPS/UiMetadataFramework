@@ -32,7 +32,7 @@ public class BindingCollection<TBinding>
 			if (this.bindings.ContainsKey(serverType))
 			{
 				throw new InvalidOperationException(
-					$"Type '{binding.ServerTypes}' is already bound to component '{binding.ClientType}'.");
+					$"Type '{binding.ServerTypes}' is already bound to component '{binding.ComponentType}'.");
 			}
 
 			if (serverType.GetTypeInfo().IsValueType)
@@ -94,7 +94,7 @@ public class BindingCollection<TBinding>
 
 	private void EnforceNotDuplicate(IFieldBinding newBinding)
 	{
-		IFieldBinding? oldBinding = this.bindings.Values.FirstOrDefault(t => t.ClientType == newBinding.ClientType);
+		IFieldBinding? oldBinding = this.bindings.Values.FirstOrDefault(t => t.ComponentType == newBinding.ComponentType);
 
 		if (oldBinding == null || oldBinding.Equals(newBinding))
 		{
@@ -110,7 +110,7 @@ public class BindingCollection<TBinding>
 			.JoinStrings(", ");
 
 		throw new BindingException(
-			$"Dupplicate attempts to declare component '{newBinding.ClientType}' by " +
+			$"Dupplicate attempts to declare component '{newBinding.ComponentType}' by " +
 			$"[{oldTypes}] and [{newTypes}]. Components can only be declared once.");
 	}
 }
