@@ -15,4 +15,10 @@ public class Component(string type, object? configuration = null)
 	/// Indicates the component's type.
 	/// </summary>
 	public string Type { get; } = type;
+
+	/// <inheritdoc />
+	public override string ToString()
+	{
+		return this.Type;
+	}
 }

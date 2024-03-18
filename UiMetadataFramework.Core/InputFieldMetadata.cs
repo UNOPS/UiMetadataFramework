@@ -69,5 +69,11 @@
 
 		/// <inheritdoc />
 		public Component Component { get; }
+
+		/// <inheritdoc />
+		public override string ToString()
+		{
+			return this.ToDescriptiveString();
+		}
 	}
 }
