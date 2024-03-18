@@ -53,7 +53,7 @@ namespace UiMetadataFramework.Core.Binding
 			{
 				Id = property.Name,
 				Hidden = this.Hidden,
-				Label = this.Label ?? property.Name,
+				Label = this.Label ?? (binding.NoLabelByDefault ? "" : null) ?? property.Name,
 				OrderIndex = this.OrderIndex,
 				CustomProperties = property.GetCustomProperties(binder),
 				EventHandlers = eventHandlerAttributes.Select(t => t.ToMetadata(property, binder)).ToList()
