@@ -16,7 +16,7 @@ public class TableMetadataFactory : DefaultMetadataFactory
 	protected override void AugmentConfiguration(
 		Type type,
 		MetadataBinder binder,
-		ComponentConfigurationAttribute[] configurationData,
+		ComponentConfigurationAttribute[] configurations,
 		Dictionary<string, object?> result)
 	{
 		var innerType = type.IsArray

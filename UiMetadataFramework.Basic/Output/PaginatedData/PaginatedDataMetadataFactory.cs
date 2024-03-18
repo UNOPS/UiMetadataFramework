@@ -15,7 +15,7 @@ public class PaginatedDataMetadataFactory : DefaultMetadataFactory
 	protected override void AugmentConfiguration(
 		Type type,
 		MetadataBinder binder,
-		ComponentConfigurationAttribute[] configurationData,
+		ComponentConfigurationAttribute[] configurations,
 		Dictionary<string, object?> result)
 	{
 		result["Columns"] = binder.Outputs.GetFields(type.GenericTypeArguments[0]).ToList();

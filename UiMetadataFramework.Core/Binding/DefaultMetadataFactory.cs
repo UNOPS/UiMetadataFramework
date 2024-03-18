@@ -126,14 +126,14 @@ public class DefaultMetadataFactory : IMetadataFactory
 	/// </summary>
 	/// <param name="type">Component type or a derived component (aka pre-configured component).</param>
 	/// <param name="binder">Binder to use.</param>
-	/// <param name="configurationData">Configurations to apply.</param>
+	/// <param name="configurations">Configurations to apply.</param>
 	/// <param name="result">Configuration prepared by <see cref="DefaultMetadataFactory"/>.
 	/// This particular instance represents the final configuration object, so changes to it
 	/// will be reflected in return value of <see cref="CreateMetadata"/>.</param>
 	protected virtual void AugmentConfiguration(
 		Type type,
 		MetadataBinder binder,
-		ComponentConfigurationAttribute[] configurationData,
+		ComponentConfigurationAttribute[] configurations,
 		Dictionary<string, object?> result)
 	{
 	}
