@@ -20,5 +20,6 @@ public class TableOutputComponentBinding : OutputComponentBinding
 		"table",
 		typeof(TableMetadataFactory))
 	{
+		this.NoLabelByDefault = true;
 	}
 }
