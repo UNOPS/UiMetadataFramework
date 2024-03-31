@@ -67,6 +67,7 @@
 				attribute.MetadataFactory,
 				allowedConfigurations)
 		{
+			this.NoLabelByDefault = attribute.NoLabelByDefault;
 		}
 
 		/// <summary>

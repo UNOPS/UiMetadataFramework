@@ -72,6 +72,7 @@ public class TableTests
 		var config = outputField.Component.ConfigAsDictionary()!;
 
 		Assert.Equal("table", outputField.Component.Type);
+		Assert.Equal("", outputField.Label);
 
 		var columns = config["Columns"].As<List<OutputFieldMetadata>>();
 
