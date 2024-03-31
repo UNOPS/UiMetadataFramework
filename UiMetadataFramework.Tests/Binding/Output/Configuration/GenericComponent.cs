@@ -16,7 +16,7 @@ public class GenericComponent
 {
 	public class Response
 	{
-		[Paginated("paginator-for-items")]
+		[PaginatedData("paginator-for-items")]
 		public PaginatedData<Item>? Items { get; set; }
 	}
 
