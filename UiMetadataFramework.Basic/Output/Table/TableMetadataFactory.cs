@@ -15,6 +15,7 @@ public class TableMetadataFactory : DefaultMetadataFactory
 	/// <inheritdoc />
 	protected override void AugmentConfiguration(
 		Type type,
+		Type? derivedType,
 		MetadataBinder binder,
 		ComponentConfigurationAttribute[] configurations,
 		Dictionary<string, object?> result)

@@ -11,6 +11,7 @@ public interface IMetadataFactory
 	/// Creates metadata for a given component type.
 	/// </summary>
 	/// <param name="type">Component's type.</param>
+	/// <param name="derivedType">In case of a derived component this will be the class that derives from <see cref="type"/>. Otherwise should be null.</param>
 	/// <param name="binder"><see cref="MetadataBinder"/> instance.</param>
 	/// <param name="binding">Binding for the component.</param>
 	/// <param name="configurations">Configurations data to use when constructing the metadata.
@@ -19,6 +20,7 @@ public interface IMetadataFactory
 	/// <returns>Metadata for component of type <paramref name="type"/>.</returns>
 	public object? CreateMetadata(
 		Type type,
+		Type? derivedType,
 		IComponentBinding binding,
 		MetadataBinder binder,
 		params ComponentConfigurationAttribute[] configurations);

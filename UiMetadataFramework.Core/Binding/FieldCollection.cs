@@ -106,9 +106,9 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 	{
 		var effectiveConfigurationData = configurations;
 
-		var innerComponentType = MetadataBinder.GetBaseComponent<ComponentAttribute>(type);
+		var baseComponentType = MetadataBinder.GetBaseComponent<ComponentAttribute>(type);
 
-		if (innerComponentType != null)
+		if (baseComponentType != null)
 		{
 			effectiveConfigurationData = configurations
 				// Inner configuration data should come last. This way we indicate
@@ -124,7 +124,8 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 		try
 		{
 			var metadata = metadataFactory.CreateMetadata(
-				innerComponentType ?? type,
+				baseComponentType ?? type,
+				baseComponentType != type ? type : null,
 				binding,
 				binder,
 				effectiveConfigurationData);

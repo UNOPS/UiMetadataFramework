@@ -15,12 +15,14 @@ public class DefaultMetadataFactory : IMetadataFactory
 	/// <see cref="ConfigurationPropertyAttribute"/> and attaches their values to the result.
 	/// </summary>
 	/// <param name="type">Component's type.</param>
+	/// <param name="derivedType">In case of a derived component this will be the class that derives from <see cref="type"/>. Otherwise should be null.</param>
 	/// <param name="binding">Binding for the component.</param>
 	/// <param name="binder">Binder to use.</param>
 	/// <param name="configurations">Configurations to apply. Highest priority configs should come first.</param>
 	/// <returns>Dictionary representing component's configuration.</returns>
 	public object? CreateMetadata(
 		Type type,
+		Type? derivedType,
 		IComponentBinding binding,
 		MetadataBinder binder,
 		params ComponentConfigurationAttribute[] configurations)
@@ -112,6 +114,7 @@ public class DefaultMetadataFactory : IMetadataFactory
 
 		this.AugmentConfiguration(
 			type,
+			derivedType,
 			binder,
 			configurations,
 			result);
@@ -125,6 +128,7 @@ public class DefaultMetadataFactory : IMetadataFactory
 	/// Provides a hook to amend the configuration object before it is returned.
 	/// </summary>
 	/// <param name="type">Component type or a derived component (aka pre-configured component).</param>
+	/// <param name="derivedType">In case of a derived component this will be the class that derives from <see cref="type"/>. Otherwise should be null.</param>
 	/// <param name="binder">Binder to use.</param>
 	/// <param name="configurations">Configurations to apply.</param>
 	/// <param name="result">Configuration prepared by <see cref="DefaultMetadataFactory"/>.
@@ -132,6 +136,7 @@ public class DefaultMetadataFactory : IMetadataFactory
 	/// will be reflected in return value of <see cref="CreateMetadata"/>.</param>
 	protected virtual void AugmentConfiguration(
 		Type type,
+		Type? derivedType,
 		MetadataBinder binder,
 		ComponentConfigurationAttribute[] configurations,
 		Dictionary<string, object?> result)

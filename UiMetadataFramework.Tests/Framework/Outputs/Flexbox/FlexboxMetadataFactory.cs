@@ -10,6 +10,7 @@ public class FlexboxMetadataFactory : DefaultMetadataFactory
 {
 	protected override void AugmentConfiguration(
 		Type type,
+		Type? derivedType,
 		MetadataBinder binder,
 		ComponentConfigurationAttribute[] configurations,
 		Dictionary<string, object?> result)
@@ -18,6 +19,6 @@ public class FlexboxMetadataFactory : DefaultMetadataFactory
 
 		Debug.Assert(value != null, nameof(value) + " != null");
 
-		result["Fields"] = binder.Outputs.GetFields(value!.PropertyType).ToArray();
+		result["Fields"] = binder.Outputs.GetFields(value.PropertyType).ToArray();
 	}
 }
