@@ -93,7 +93,10 @@ namespace UiMetadataFramework.Core.Binding
 
 						component = component.BaseType;
 
-						levels += 1;
+						if (!component.IsAbstract)
+						{
+							levels += 1;
+						}
 					}
 				});
 		}
