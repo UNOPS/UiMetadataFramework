@@ -45,6 +45,7 @@ namespace UiMetadataFramework.Core.Binding
 				attribute,
 				allowedConfigurations)
 		{
+			this.IsInputAlwaysHidden = attribute.AlwaysHidden;
 		}
 
 		/// <summary>
