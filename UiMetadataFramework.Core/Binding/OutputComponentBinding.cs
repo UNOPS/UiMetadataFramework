@@ -62,9 +62,8 @@
 			OutputComponentAttribute attribute,
 			params HasConfigurationAttribute[] allowedConfigurations)
 			: base(
-				new[] { serverType },
-				attribute.Name,
-				attribute.MetadataFactory,
+				[serverType],
+				attribute,
 				allowedConfigurations)
 		{
 			this.NoLabelByDefault = attribute.NoLabelByDefault;
@@ -74,6 +73,6 @@
 		/// If true then the output field won't have a label, unless one is explicitly specified
 		/// by `<see cref="OutputFieldAttribute"/>.<see cref="OutputFieldAttribute.Label"/>`.
 		/// </summary>
-		public bool NoLabelByDefault { get; set; }
+		public bool NoLabelByDefault { get; protected set; }
 	}
 }

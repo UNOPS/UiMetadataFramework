@@ -11,6 +11,11 @@ using System.Collections.Generic;
 public interface IComponentBinding
 {
 	/// <summary>
+	/// Additional data associated with this component type.
+	/// </summary>
+	public IReadOnlyDictionary<string, object?>? AdditionalData { get; }
+
+	/// <summary>
 	/// Allowed configurations for the component.
 	/// </summary>
 	public HasConfigurationAttribute[] AllowedConfigurations { get; }

@@ -3,6 +3,7 @@
 namespace UiMetadataFramework.Core.Binding;
 
 using System;
+using System.Collections.Generic;
 
 /// <summary>
 /// Used for decorating classes which will be used as output components.
@@ -45,4 +46,15 @@ public abstract class ComponentAttribute : Attribute
 	/// Component name.
 	/// </summary>
 	public string Name { get; set; }
+
+	/// <summary>
+	/// Get additional data associated with this component type.
+	/// </summary>
+	/// <remarks>This method can be overriden to augment components with additional
+	/// data that can be useful for UI generation or other purposes.</remarks>
+	/// <returns>Dictionary of additional data or null.</returns>
+	public virtual IReadOnlyDictionary<string, object?>? GetAdditionalData()
+	{
+		return null;
+	}
 }

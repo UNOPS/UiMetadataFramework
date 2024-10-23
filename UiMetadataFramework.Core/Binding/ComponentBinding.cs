@@ -21,7 +21,7 @@ public abstract class ComponentBinding<T> : IComponentBinding
 	/// <param name="metadataFactory"><see cref="IMetadataFactory"/> to use for constructing component's
 	/// metadata. If null then <see cref="DefaultMetadataFactory"/> will be used.</param>
 	/// <param name="allowedConfigurations">Allowed configurations for this component.</param>
-	public ComponentBinding(
+	protected ComponentBinding(
 		IEnumerable<Type> serverTypes,
 		string componentType,
 		Type? metadataFactory,
@@ -32,6 +32,24 @@ public abstract class ComponentBinding<T> : IComponentBinding
 		this.MetadataFactory = metadataFactory;
 		this.AllowedConfigurations = allowedConfigurations;
 	}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ComponentBinding{T}"/> class.
+	/// </summary>
+	/// <param name="serverTypes">Types which should be mapped to the component.</param>
+	/// <param name="attribute">Component attribute.</param>
+	/// <param name="allowedConfigurations">Allowed configurations for this component.</param>
+	protected ComponentBinding(
+		IEnumerable<Type> serverTypes,
+		ComponentAttribute attribute,
+		params HasConfigurationAttribute[] allowedConfigurations)
+		: this(serverTypes, attribute.Name, attribute.MetadataFactory, allowedConfigurations)
+	{
+		this.AdditionalData = attribute.GetAdditionalData();
+	}
+
+	/// <inheritdoc />
+	public IReadOnlyDictionary<string, object?>? AdditionalData { get; protected set; }
 
 	/// <inheritdoc />
 	public HasConfigurationAttribute[] AllowedConfigurations { get; }

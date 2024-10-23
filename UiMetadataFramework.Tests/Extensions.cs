@@ -35,6 +35,11 @@ namespace UiMetadataFramework.Tests
 			return component.Configuration as IDictionary<string, object?>;
 		}
 
+		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
+		{
+			return dictionary.TryGetValue(key, out var value) ? value : default;
+		}
+
 		public static Dictionary<string, object?> ToDictionary(this object? request)
 		{
 			if (request == null)

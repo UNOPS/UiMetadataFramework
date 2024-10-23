@@ -9,15 +9,15 @@
 
 		/// <inheritdoc />
 		public NumberInputComponentBinding() : base(
-			serverTypes: new[]
-			{
+			serverTypes:
+			[
 				typeof(int),
 				typeof(decimal),
 				typeof(double),
 				typeof(short),
 				typeof(long),
 				typeof(byte)
-			},
+			],
 			componentType: ControlName,
 			metadataFactory: null)
 		{

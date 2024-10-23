@@ -11,12 +11,11 @@ public class TableOutputComponentBinding : OutputComponentBinding
 {
 	/// <inheritdoc />
 	public TableOutputComponentBinding() : base(
-		new[]
-		{
+		[
 			typeof(IEnumerable<>),
 			typeof(IList<>),
 			typeof(Array)
-		},
+		],
 		"table",
 		typeof(TableMetadataFactory))
 	{

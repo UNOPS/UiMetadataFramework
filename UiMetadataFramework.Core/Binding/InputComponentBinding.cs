@@ -23,7 +23,7 @@ namespace UiMetadataFramework.Core.Binding
 			Type? metadataFactory,
 			params HasConfigurationAttribute[] allowedConfigurations)
 			: base(
-				new[] { serverType },
+				[serverType],
 				componentType,
 				metadataFactory,
 				allowedConfigurations)
@@ -41,12 +41,10 @@ namespace UiMetadataFramework.Core.Binding
 			InputComponentAttribute attribute,
 			params HasConfigurationAttribute[] allowedConfigurations)
 			: base(
-				new[] { serverType },
-				attribute.Name,
-				attribute.MetadataFactory,
+				[serverType],
+				attribute,
 				allowedConfigurations)
 		{
-			this.IsInputAlwaysHidden = attribute.AlwaysHidden;
 		}
 
 		/// <summary>
