@@ -21,7 +21,7 @@ namespace UiMetadataFramework.Core.Binding
 
 		/// <summary>
 		/// Gets or sets value which will dictate rendering position of this field
-		/// in relationship to other input fields in <see cref="FormMetadata.InputFields"/>.
+		/// in relationship to other input fields.
 		/// </summary>
 		public int OrderIndex { get; set; }
 

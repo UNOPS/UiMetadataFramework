@@ -121,37 +121,6 @@ namespace UiMetadataFramework.Core.Binding
 		}
 
 		/// <summary>
-		/// Gets form metadata for the specified form.
-		/// </summary>
-		/// <typeparam name="TForm">Type representing the form.</typeparam>
-		/// <typeparam name="TRequest">Type representing request for the form. 
-		/// <see cref="FormMetadata.InputFields"/> will be deduced from this class.</typeparam>
-		/// <typeparam name="TResponse">Type representing response of the form. 
-		/// <see cref="FormMetadata.OutputFields"/> will be deduced from this class.</typeparam>
-		/// <returns><see cref="FormMetadata"/> instance.</returns>
-		public FormMetadata BuildForm<TForm, TRequest, TResponse>()
-		{
-			return this.BuildForm(typeof(TForm), typeof(TRequest), typeof(TResponse));
-		}
-
-		/// <summary>
-		/// Gets form metadata for the specified form.
-		/// </summary>
-		/// <param name="formType"> name="TForm">Type representing the form.</param>
-		/// <param name="requestType">Type representing request for the form. 
-		/// <see cref="FormMetadata.InputFields"/> will be deduced from this class.</param>
-		/// <param name="responseType">Type representing response of the form. 
-		/// <see cref="FormMetadata.OutputFields"/> will be deduced from this class.</param>
-		/// <returns><see cref="FormMetadata"/> instance.</returns>
-		public FormMetadata BuildForm(
-			Type formType,
-			Type requestType,
-			Type responseType)
-		{
-			return new FormMetadata(this, formType, requestType, responseType);
-		}
-
-		/// <summary>
 		/// Scans assembly for implementations of <see cref="OutputComponentBinding"/>, <see cref="InputComponentBinding"/>
 		/// and registers them in this instance of <see cref="MetadataBinder"/>.
 		/// </summary>

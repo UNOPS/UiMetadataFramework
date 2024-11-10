@@ -1,1 +1,2 @@
 ﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleToAttribute("UiMetadataFramework.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleToAttribute("UiMetadataFramework.MediatR")]

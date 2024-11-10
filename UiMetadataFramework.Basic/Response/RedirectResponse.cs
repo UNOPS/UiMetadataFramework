@@ -21,7 +21,7 @@ namespace UiMetadataFramework.Basic.Response
 		public string Form { get; set; } = null!;
 
 		/// <summary>
-		/// Gets or sets values for the input fields of the form (i.e. - <see cref="FormMetadata.InputFields"/>).
+		/// Gets or sets values for the input fields of the form.
 		/// </summary>
 		public IDictionary<string, object?>? InputFieldValues { get; set; }
 	}

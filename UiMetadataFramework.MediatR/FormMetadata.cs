@@ -1,11 +1,12 @@
 ﻿// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 
-namespace UiMetadataFramework.Core
+namespace UiMetadataFramework.MediatR
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
+	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
 	/// <summary>
@@ -39,7 +40,7 @@ namespace UiMetadataFramework.Core
 
 			var formEventHandlers = formType
 				.GetCustomAttributesImplementingInterface<IFormEventHandlerAttribute>()
-				.Select(t => t.ToMetadata(formType, binder))
+				.Select<IFormEventHandlerAttribute, EventHandlerMetadata>(t => t.ToMetadata(formType, binder))
 				.ToList();
 
 			this.Label = formAttribute.Label;
@@ -49,7 +50,7 @@ namespace UiMetadataFramework.Core
 			this.CloseOnPostIfModal = formAttribute.CloseOnPostIfModal;
 			this.OutputFields = binder.Outputs.GetFields(responseType).ToList();
 			this.InputFields = binder.Inputs.GetFields(requestType).ToList();
-			this.CustomProperties = formAttribute.GetCustomProperties(formType).Merge(formType.GetCustomProperties(binder));
+			this.CustomProperties = Extensions.Merge(formAttribute.GetCustomProperties(formType), formType.GetCustomProperties(binder));
 			this.EventHandlers = formEventHandlers;
 		}
 

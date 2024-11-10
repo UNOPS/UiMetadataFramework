@@ -1,7 +1,6 @@
 ﻿namespace UiMetadataFramework.Basic.Output.FormLink
 {
 	using System.Collections.Generic;
-	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
 	/// <summary>
@@ -23,7 +22,7 @@
 		public string Form { get; set; } = null!;
 
 		/// <summary>
-		/// Gets or sets values for the input fields of the form (i.e. - <see cref="FormMetadata.InputFields"/>).
+		/// Gets or sets values for the input fields of the invoked form.
 		/// </summary>
 		public IDictionary<string, object?>? InputFieldValues { get; set; }
 

@@ -20,7 +20,7 @@ namespace UiMetadataFramework.Core.Binding
 
 		/// <summary>
 		/// Gets or sets value which will dictate rendering position of this field
-		/// in relationship to other output fields in <see cref="FormMetadata.OutputFields"/>.
+		/// in relationship to other output fields.
 		/// </summary>
 		public int OrderIndex { get; set; }
 

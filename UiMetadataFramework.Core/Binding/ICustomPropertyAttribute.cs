@@ -5,7 +5,7 @@ namespace UiMetadataFramework.Core.Binding
 	/// <summary>
 	/// Represents an <see cref="Attribute"/> which can be applied to an input field, output field 
 	/// or to a form. The attribute is used to add additional metadata to
-	/// <see cref="IFieldMetadata.CustomProperties"/> or <see cref="FormMetadata.CustomProperties"/>.
+	/// <see cref="IFieldMetadata.CustomProperties"/>.
 	/// </summary>
 	public interface ICustomPropertyAttribute
 	{

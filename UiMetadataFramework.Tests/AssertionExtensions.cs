@@ -5,6 +5,7 @@
 	using System.Linq;
 	using FluentAssertions;
 	using UiMetadataFramework.Core;
+	using UiMetadataFramework.MediatR;
 	using Xunit;
 
 	public static class AssertionExtensions
