@@ -1,7 +1,6 @@
 namespace UiMetadataFramework.MediatR;
 
 using System;
-using UiMetadataFramework.Core;
 using UiMetadataFramework.Core.Binding;
 
 /// <summary>

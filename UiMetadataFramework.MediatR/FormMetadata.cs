@@ -50,7 +50,7 @@ namespace UiMetadataFramework.MediatR
 			this.CloseOnPostIfModal = formAttribute.CloseOnPostIfModal;
 			this.OutputFields = binder.Outputs.GetFields(responseType).ToList();
 			this.InputFields = binder.Inputs.GetFields(requestType).ToList();
-			this.CustomProperties = Extensions.Merge(formAttribute.GetCustomProperties(formType), formType.GetCustomProperties(binder));
+			this.CustomProperties = formAttribute.GetCustomProperties(formType).Merge(formType.GetCustomProperties(binder));
 			this.EventHandlers = formEventHandlers;
 		}
 

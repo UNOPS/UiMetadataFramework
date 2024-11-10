@@ -28,6 +28,60 @@
 		}
 
 		/// <summary>
+		/// Scans for attributes implementing <see cref="ICustomPropertyAttribute"/> and builds a
+		/// dictionary of their values.
+		/// </summary>
+		public static IDictionary<string, object?>? GetCustomProperties(
+			this IEnumerable<ICustomPropertyAttribute> attributes,
+			Type type,
+			string location,
+			MetadataBinder binder)
+		{
+			var customPropertyAttributes = attributes
+				.Select(
+					t => new
+					{
+						Attribute = t,
+						Usage = t.GetType().GetTypeInfo().GetCustomAttribute<CustomPropertyConfigAttribute>()
+					})
+				.ToList();
+
+			IDictionary<string, object?>? result = null;
+
+			var singleValueCustomProperties = customPropertyAttributes
+				.Where(t => t.Usage == null || t.Usage.IsArray == false)
+				.ToList();
+
+			foreach (var customProperty in singleValueCustomProperties)
+			{
+				if (result?.ContainsKey(customProperty.Attribute.Name) == true)
+				{
+					throw new BindingException(
+						$"Invalid attempt to add multiple values for custom property '{customProperty.Attribute.Name}' " +
+						$"on '{location}'. To allow having multiple values for the custom property " +
+						$"'{customProperty.Attribute.Name}', please decorate attribute '{customProperty.Attribute.GetType().FullName}' " +
+						$"with '{nameof(CustomPropertyConfigAttribute)}' and set " +
+						$"'{nameof(CustomPropertyConfigAttribute)}.{nameof(CustomPropertyConfigAttribute.IsArray)}' to true.");
+				}
+
+				result = result.Set(customProperty.Attribute.Name, customProperty.Attribute.GetValue(type, binder));
+			}
+
+			var multiValueCustomProperties = customPropertyAttributes
+				.Where(t => t.Usage?.IsArray == true)
+				.GroupBy(t => t.Attribute.Name)
+				.ToList();
+
+			foreach (var customProperty in multiValueCustomProperties)
+			{
+				var values = customProperty.Select(t => t.Attribute.GetValue(type, binder)).ToList();
+				result = result!.Set(customProperty.Key, values);
+			}
+
+			return result;
+		}
+
+		/// <summary>
 		/// Gets unique identifier for the specified form. If form has <see cref="FormAttribute"/> and
 		/// <see cref="FormAttribute.Id"/> is specified, then the <see cref="FormAttribute.Id"/> will be returned.
 		/// Otherwise class' full name is returned.
@@ -158,56 +212,6 @@
 					$"Property '{propertyInfo.DeclaringType!.FullName}.{propertyInfo.Name}' is decorated with multiple attributes of type " +
 					$"'{typeof(T).FullName}'. Only one instance of the attribute is allowed.");
 			}
-		}
-
-		internal static IDictionary<string, object?>? GetCustomProperties(
-			this IEnumerable<ICustomPropertyAttribute> attributes,
-			Type type,
-			string location,
-			MetadataBinder binder)
-		{
-			var customPropertyAttributes = attributes
-				.Select(
-					t => new
-					{
-						Attribute = t,
-						Usage = t.GetType().GetTypeInfo().GetCustomAttribute<CustomPropertyConfigAttribute>()
-					})
-				.ToList();
-
-			IDictionary<string, object?>? result = null;
-
-			var singleValueCustomProperties = customPropertyAttributes
-				.Where(t => t.Usage == null || t.Usage.IsArray == false)
-				.ToList();
-
-			foreach (var customProperty in singleValueCustomProperties)
-			{
-				if (result?.ContainsKey(customProperty.Attribute.Name) == true)
-				{
-					throw new BindingException(
-						$"Invalid attempt to add multiple values for custom property '{customProperty.Attribute.Name}' " +
-						$"on '{location}'. To allow having multiple values for the custom property " +
-						$"'{customProperty.Attribute.Name}', please decorate attribue '{customProperty.Attribute.GetType().FullName}' " +
-						$"with '{nameof(CustomPropertyConfigAttribute)}' and set " +
-						$"'{nameof(CustomPropertyConfigAttribute)}.{nameof(CustomPropertyConfigAttribute.IsArray)}' to true.");
-				}
-
-				result = result.Set(customProperty.Attribute.Name, customProperty.Attribute.GetValue(type, binder));
-			}
-
-			var multiValueCustomProperties = customPropertyAttributes
-				.Where(t => t.Usage?.IsArray == true)
-				.GroupBy(t => t.Attribute.Name)
-				.ToList();
-
-			foreach (var customProperty in multiValueCustomProperties)
-			{
-				var values = customProperty.Select(t => t.Attribute.GetValue(type, binder)).ToList();
-				result = result!.Set(customProperty.Key, values);
-			}
-
-			return result;
 		}
 
 		internal static IEnumerable<PropertyInfo> GetPublicProperties(this Type type)
