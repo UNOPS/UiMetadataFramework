@@ -6,7 +6,6 @@ namespace UiMetadataFramework.Tests
 	using UiMetadataFramework.Basic;
 	using UiMetadataFramework.Basic.Inputs.Text;
 	using UiMetadataFramework.Basic.Inputs.Typeahead;
-	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 	using Xunit;
 
