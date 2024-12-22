@@ -14,12 +14,5 @@ namespace UiMetadataFramework.Core.Binding
 			Type? metadataFactory = null) : base(name, metadataFactory)
 		{
 		}
-
-		/// <summary>
-		/// Gets or sets value indicating whether input should never be explicitly rendered on the client.
-		/// If this value is set to true, then <see cref="InputFieldMetadata.Hidden"/> will always
-		/// be true.
-		/// </summary>
-		public bool AlwaysHidden { get; set; }
 	}
 }

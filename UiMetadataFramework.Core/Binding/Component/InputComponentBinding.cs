@@ -44,8 +44,7 @@ namespace UiMetadataFramework.Core.Binding
 				[serverType],
 				attribute,
 				allowedConfigurations)
-		{
-			this.IsInputAlwaysHidden = attribute.AlwaysHidden;
+		{;
 		}
 
 		/// <summary>
@@ -68,12 +67,5 @@ namespace UiMetadataFramework.Core.Binding
 			allowedConfigurations)
 		{
 		}
-
-		/// <summary>
-		/// Gets or sets value indicating whether input should never be explicitly rendered on the client.
-		/// If this value is set to true, then <see cref="InputFieldMetadata.Hidden"/> will always
-		/// be true.
-		/// </summary>
-		public bool IsInputAlwaysHidden { get; set; }
 	}
 }

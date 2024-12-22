@@ -69,7 +69,7 @@ namespace UiMetadataFramework.Core.Binding
 			return new InputFieldMetadata(component)
 			{
 				Id = property.Name,
-				Hidden = binding.IsInputAlwaysHidden || this.Hidden,
+				Hidden = this.Hidden,
 				Label = this.Label ?? property.Name,
 				OrderIndex = this.OrderIndex,
 				Required = required,
