@@ -5,12 +5,20 @@ using System.Collections.Generic;
 using UiMetadataFramework.Core.Binding;
 
 /// <inheritdoc />
-public class MyOutputComponentAttribute : OutputComponentAttribute
+public class MyOutputComponentAttribute : ComponentAttribute
 {
 	/// <inheritdoc />
-	public MyOutputComponentAttribute(string name, Type? metadataFactory = null) : base(name, metadataFactory)
+	public MyOutputComponentAttribute(string name, Type? metadataFactory = null) : base(
+		MetadataBinder.ComponentCategories.Output,
+		name,
+		metadataFactory)
 	{
 	}
+
+	/// <summary>
+	/// Default order index.
+	/// </summary>
+	public int DefaultOrderIndex { get; set; }
 
 	/// <summary>
 	/// If true then the output field won't have a label, unless one is explicitly specified
@@ -21,6 +29,10 @@ public class MyOutputComponentAttribute : OutputComponentAttribute
 	/// <inheritdoc />
 	public override IReadOnlyDictionary<string, object?> GetAdditionalData()
 	{
-		return new Dictionary<string, object?> { { nameof(NoLabelByDefault), this.NoLabelByDefault } };
+		return new Dictionary<string, object?>
+		{
+			{ nameof(this.NoLabelByDefault), this.NoLabelByDefault },
+			{ nameof(this.DefaultOrderIndex), this.DefaultOrderIndex }
+		};
 	}
 }

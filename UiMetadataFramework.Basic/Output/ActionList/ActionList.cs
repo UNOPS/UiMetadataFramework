@@ -3,12 +3,11 @@
 	using System.Collections.Generic;
 	using System.Linq;
 	using UiMetadataFramework.Basic.Output.FormLink;
-	using UiMetadataFramework.Core.Binding;
 
 	/// <summary>
 	/// Represents a list of actions that user can perform.
 	/// </summary>
-	[OutputComponent("action-list")]
+	[MyOutputComponent("action-list")]
 	public class ActionList
 	{
 		/// <summary>

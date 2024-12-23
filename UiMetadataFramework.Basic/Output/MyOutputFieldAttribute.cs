@@ -7,6 +7,11 @@ using UiMetadataFramework.Core.Binding;
 /// <inheritdoc />
 public class MyOutputFieldAttribute : OutputFieldAttribute
 {
+	/// <summary>
+	/// CSS class to apply to the output field.
+	/// </summary>
+	public string? CssClass { get; set; }
+
 	/// <inheritdoc />
 	public override OutputFieldMetadata GetMetadata(
 		PropertyInfo property,
@@ -23,6 +28,30 @@ public class MyOutputFieldAttribute : OutputFieldAttribute
 			}
 		}
 
-		return basic;
+		if (binding.AdditionalData?.TryGetValue(nameof(MyOutputComponentAttribute.DefaultOrderIndex), out var defaultOrderIndex) == true)
+		{
+			if (defaultOrderIndex is int orderIndex)
+			{
+				basic.OrderIndex = this.OrderIndex == 0
+					? orderIndex
+					: this.OrderIndex;
+			}
+		}
+
+		return new Metadata(basic) { CssClass = this.CssClass };
+	}
+
+	/// <inheritdoc />
+	public class Metadata : OutputFieldMetadata
+	{
+		/// <inheritdoc />
+		public Metadata(OutputFieldMetadata metadata) : base(metadata)
+		{
+		}
+
+		/// <summary>
+		/// CSS class to apply to the output field.
+		/// </summary>
+		public string? CssClass { get; set; }
 	}
 }

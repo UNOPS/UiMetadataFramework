@@ -1,8 +1,9 @@
 ﻿namespace UiMetadataFramework.Tests.Framework.Outputs.Icon;
 
+using UiMetadataFramework.Basic.Output;
 using UiMetadataFramework.Core.Binding;
 
-[OutputComponent("icon")]
+[MyOutputComponent("icon")]
 [HasConfiguration(typeof(IconColorAttribute))]
 [HasConfiguration(typeof(IconBackgroundAttribute))]
 [HasConfiguration(typeof(IconStyleAttribute), isArray: true, name: "Style")]

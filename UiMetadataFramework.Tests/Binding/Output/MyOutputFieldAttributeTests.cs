@@ -1,8 +1,8 @@
 namespace UiMetadataFramework.Tests.Binding.Output;
 
 using System.Linq;
+using UiMetadataFramework.Basic.Output;
 using UiMetadataFramework.Core.Binding;
-using UiMetadataFramework.Tests.Framework.Outputs;
 using UiMetadataFramework.Tests.Utilities;
 using Xunit;
 
@@ -12,7 +12,7 @@ public class MyOutputFieldAttributeTests
 
 	private class Response
 	{
-		[MyOutputField(Hidden = true, Style = "fancy-output")]
+		[MyOutputField(Hidden = true, CssClass = "fancy-output")]
 		public decimal Weight { get; set; }
 	}
 
@@ -26,6 +26,6 @@ public class MyOutputFieldAttributeTests
 		var custom = outputField as MyOutputFieldAttribute.Metadata;
 
 		Assert.NotNull(custom);
-		Assert.Equal("fancy-output", custom!.Style);
+		Assert.Equal("fancy-output", custom!.CssClass);
 	}
 }

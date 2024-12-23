@@ -6,7 +6,8 @@ using UiMetadataFramework.Core;
 using UiMetadataFramework.Core.Binding;
 
 /// <inheritdoc />
-public class MyInputComponentAttribute(string name, Type? metadataFactory = null) : InputComponentAttribute(name, metadataFactory)
+public class MyInputComponentAttribute(string name, Type? metadataFactory = null)
+	: ComponentAttribute(MetadataBinder.ComponentCategories.Input, name, metadataFactory)
 {
 	/// <summary>
 	/// Gets or sets value indicating whether input should never be explicitly rendered on the client.

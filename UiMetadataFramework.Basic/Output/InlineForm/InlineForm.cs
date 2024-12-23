@@ -1,12 +1,11 @@
 ﻿namespace UiMetadataFramework.Basic.Output.InlineForm
 {
 	using System.Collections.Generic;
-	using UiMetadataFramework.Core.Binding;
 
 	/// <summary>
 	/// Represents a form which will be rendered as part of response.
 	/// </summary>
-	[OutputComponent("inline-form")]
+	[MyOutputComponent("inline-form")]
 	public class InlineForm
 	{
 		/// <summary>

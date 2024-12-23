@@ -3,10 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UiMetadataFramework.Basic.Output;
 using UiMetadataFramework.Core;
 using UiMetadataFramework.Core.Binding;
 
-[OutputComponent(Type, typeof(ComplexOutputMetadataFactory))]
+[MyOutputComponent(Type, typeof(ComplexOutputMetadataFactory))]
 public abstract class ComplexOutput
 {
 	public const string Type = "complex-output";

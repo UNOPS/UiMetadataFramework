@@ -1,11 +1,9 @@
 ﻿namespace UiMetadataFramework.Basic.Inputs.Textarea
 {
-	using UiMetadataFramework.Core.Binding;
-
 	/// <summary>
 	/// Represents an input field for multiline text.
 	/// </summary>
-	[InputComponent(ControlName)]
+	[MyInputComponent(ControlName)]
 	public class TextareaValue
 	{
 		internal const string ControlName = "textarea";

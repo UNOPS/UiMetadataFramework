@@ -1,12 +1,10 @@
 ﻿namespace UiMetadataFramework.Basic.Inputs.Typeahead
 {
-	using UiMetadataFramework.Core.Binding;
-
 	/// <summary>
 	/// Input field type for typeahead client control.
 	/// </summary>
 	/// <typeparam name="T">Type of values retrieved by the typeahead.</typeparam>
-	[InputComponent("typeahead")]
+	[MyInputComponent("typeahead")]
 	public class TypeaheadValue<T>
 	{
 		/// <summary>

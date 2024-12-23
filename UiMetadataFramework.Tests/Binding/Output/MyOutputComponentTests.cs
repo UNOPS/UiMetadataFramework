@@ -2,8 +2,8 @@ namespace UiMetadataFramework.Tests.Binding.Output;
 
 using System.Linq;
 using FluentAssertions;
+using UiMetadataFramework.Basic.Output;
 using UiMetadataFramework.Core.Binding;
-using UiMetadataFramework.Tests.Framework.Outputs;
 using UiMetadataFramework.Tests.Framework.Outputs.Alert;
 using UiMetadataFramework.Tests.Utilities;
 using Xunit;

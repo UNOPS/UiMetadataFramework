@@ -6,7 +6,7 @@
 	/// <summary>
 	/// Represents a reference to a form.
 	/// </summary>
-	[OutputComponent("formlink")]
+	[MyOutputComponent("formlink")]
 	public class FormLink
 	{
 		/// <summary>

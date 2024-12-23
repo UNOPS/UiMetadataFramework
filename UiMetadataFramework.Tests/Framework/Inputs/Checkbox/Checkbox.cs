@@ -1,8 +1,9 @@
 namespace UiMetadataFramework.Tests.Framework.Inputs.Checkbox;
 
+using UiMetadataFramework.Basic.Inputs;
 using UiMetadataFramework.Core.Binding;
 
-[InputComponent("checkbox")]
+[MyInputComponent("checkbox")]
 [HasConfiguration(typeof(CheckboxAttribute), mandatory: true)]
 public class Checkbox
 {

@@ -9,7 +9,7 @@ namespace UiMetadataFramework.Basic.Inputs.Dropdown
 	/// Represents the value of a dropdown field.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	[InputComponent(ControlName, typeof(DropdownMetadataFactory))]
+	[MyInputComponent(ControlName, typeof(DropdownMetadataFactory))]
 	[HasConfiguration(typeof(DropdownAttribute), mandatory: true)]
 	[HasConfiguration(typeof(RemoteSourceArgumentAttribute), isArray: true, name: "Parameters")]
 	public class DropdownValue<T>

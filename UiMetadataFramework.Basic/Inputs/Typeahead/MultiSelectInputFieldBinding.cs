@@ -4,13 +4,12 @@ namespace UiMetadataFramework.Basic.Inputs.Typeahead
 {
 	using System.Collections.Generic;
 	using System.Linq;
-	using UiMetadataFramework.Core.Binding;
 
 	/// <summary>
 	/// Represents an input field where multiple values can be selected.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	[InputComponent("multiselect")]
+	[MyInputComponent("multiselect")]
 	public class MultiSelect<T>
 	{
 		/// <summary>

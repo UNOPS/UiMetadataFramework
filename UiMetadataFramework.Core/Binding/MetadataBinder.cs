@@ -141,6 +141,9 @@ namespace UiMetadataFramework.Core.Binding
 				.Select(t => this.Container.GetService(t))
 				.Cast<ComponentBinding>()
 				.ToList();
+			
+			var components = assembly.GetComponents<ComponentAttribute>()
+				.ToList();
 
 			bindings
 				.Where(t => t.Category == ComponentCategories.Output)
@@ -148,25 +151,24 @@ namespace UiMetadataFramework.Core.Binding
 
 			bindings
 				.Where(t => t.Category == ComponentCategories.Input)
-				.ForEach(t =>
-				{
-					this.Inputs.Bindings.AddBinding(t);
-				});
-
-			assembly.GetComponents<OutputComponentAttribute>()
+				.ForEach(t => this.Inputs.Bindings.AddBinding(t));
+			
+			components
+				.Where(t => t.Attribute.Category == ComponentCategories.Output)
 				.ForEach(
 					t => this.Outputs.Bindings.AddBinding(
 						new ComponentBinding(
-							ComponentCategories.Output,
+							t.Attribute.Category,
 							[t.Type],
 							t.Attribute,
 							t.AllowedConfigurations)));
 
-			assembly.GetComponents<InputComponentAttribute>()
+			components
+				.Where(t => t.Attribute.Category == ComponentCategories.Input)
 				.ForEach(
 					t => this.Inputs.Bindings.AddBinding(
 						new ComponentBinding(
-							ComponentCategories.Input,
+							t.Attribute.Category,
 							[t.Type],
 							t.Attribute,
 							t.AllowedConfigurations)));

@@ -2,9 +2,10 @@
 
 namespace UiMetadataFramework.Tests.Framework.Outputs.Money;
 
+using UiMetadataFramework.Basic.Output;
 using UiMetadataFramework.Core.Binding;
 
-[OutputComponent("money")]
+[MyOutputComponent("money")]
 [HasConfiguration(typeof(MoneyAttribute), mandatory: true)]
 [HasConfiguration(typeof(MoneyStyleAttribute))]
 public class Money
