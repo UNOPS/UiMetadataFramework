@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using UiMetadataFramework.Basic.Inputs.Text;
+using UiMetadataFramework.Basic.Output;
 using UiMetadataFramework.Basic.Output.DateTime;
 using UiMetadataFramework.Basic.Output.FormLink;
 using UiMetadataFramework.Basic.Output.Number;
@@ -23,6 +24,8 @@ public class TableTests
 		public IList<string>? Categories { get; set; }
 		public IList<FormLink>? Links { get; set; }
 		public int[]? Numbers { get; set; }
+		
+		[MyOutputField]
 		public IList<Person>? RandomObjects { get; set; }
 	}
 

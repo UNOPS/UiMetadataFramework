@@ -1,6 +1,7 @@
 ﻿namespace UiMetadataFramework.Basic.Output;
 
 using System;
+using System.Collections.Generic;
 using UiMetadataFramework.Core.Binding;
 
 /// <inheritdoc />
@@ -16,4 +17,9 @@ public class MyOutputComponentAttribute : OutputComponentAttribute
 	/// by `<see cref="OutputFieldAttribute"/>.<see cref="OutputFieldAttribute.Label"/>`.
 	/// </summary>
 	public bool NoLabelByDefault { get; set; }
+
+	public override IReadOnlyDictionary<string, object?>? GetAdditionalData()
+	{
+		return new Dictionary<string, object?> { { nameof(NoLabelByDefault), this.NoLabelByDefault } };
+	}
 }
