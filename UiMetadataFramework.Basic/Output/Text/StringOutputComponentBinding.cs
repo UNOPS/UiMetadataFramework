@@ -3,17 +3,18 @@
 	using UiMetadataFramework.Core.Binding;
 
 	/// <inheritdoc />
-	public class StringOutputComponentBinding : OutputComponentBinding
+	public class StringOutputComponentBinding : ComponentBinding
 	{
 		internal const string ControlName = "text";
 
 		/// <inheritdoc />
 		public StringOutputComponentBinding() : base(
-			serverTypes: new[]
-			{
+			MetadataBinder.ComponentCategories.Output,
+			serverTypes:
+			[
 				typeof(string),
 				typeof(bool)
-			},
+			],
 			componentType: ControlName,
 			metadataFactory: null)
 		{

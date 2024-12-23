@@ -7,8 +7,13 @@ namespace UiMetadataFramework.Core.Binding
 	/// <summary>
 	/// Attribute used for decorating input fields.
 	/// </summary>
-	public class InputFieldAttribute : FieldAttribute<InputComponentBinding, InputFieldMetadata>
+	public class InputFieldAttribute : FieldAttribute<ComponentBinding, InputFieldMetadata>
 	{
+		/// <inheritdoc />
+		public InputFieldAttribute() : base(MetadataBinder.ComponentCategories.Input)
+		{
+		}
+
 		/// <summary>
 		/// Gets or sets value indicating whether this field should be visible or not.
 		/// </summary>
@@ -41,7 +46,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <remarks>This method will be used internally by <see cref="MetadataBinder"/>.</remarks>
 		public override InputFieldMetadata GetMetadata(
 			PropertyInfo property,
-			InputComponentBinding binding,
+			ComponentBinding binding,
 			MetadataBinder binder)
 		{
 			var propertyType = property.PropertyType.IsConstructedGenericType && !property.PropertyType.IsNullabble()
@@ -61,7 +66,8 @@ namespace UiMetadataFramework.Core.Binding
 			{
 				throw new BindingException(
 					$"Input '{property.DeclaringType!.FullName}.{property.Name}' cannot use " +
-					$"'{illegalAttributes[0].GetType().FullName}', because the attribute is not applicable for input fields.");
+					$"'{illegalAttributes[0].GetType().FullName}', because the attribute is not " +
+					$"applicable for input fields.");
 			}
 
 			var component = binder.Inputs.BuildComponent(property);

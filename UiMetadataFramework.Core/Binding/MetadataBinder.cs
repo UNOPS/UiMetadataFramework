@@ -22,12 +22,12 @@ namespace UiMetadataFramework.Core.Binding
 		/// <summary>
 		/// Collection of input fields.
 		/// </summary>
-		public readonly FieldCollection<InputFieldAttribute, InputFieldMetadata, InputComponentBinding> Inputs;
+		public readonly FieldCollection<InputFieldAttribute, InputFieldMetadata> Inputs;
 
 		/// <summary>
 		/// Collection of output fields.
 		/// </summary>
-		public readonly FieldCollection<OutputFieldAttribute, OutputFieldMetadata, OutputComponentBinding> Outputs;
+		public readonly FieldCollection<OutputFieldAttribute, OutputFieldMetadata> Outputs;
 
 		private readonly object key = new();
 		private readonly List<string> registeredAssemblies = new();
@@ -35,8 +35,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MetadataBinder"/> class and configures
 		/// <see cref="DependencyInjectionContainer.Default"/> to be responsible for instantiating
-		/// <see cref="InputComponentBinding"/> and <see cref="OutputComponentBinding"/> when registering
-		/// a new assembly.
+		/// <see cref="ComponentBinding"/> when registering a new assembly.
 		/// </summary>
 		public MetadataBinder()
 			: this(DependencyInjectionContainer.Default)
@@ -46,8 +45,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MetadataBinder"/> class and configures the given
 		/// <see cref="DependencyInjectionContainer"/> to be responsible for instantiating
-		/// <see cref="InputComponentBinding"/> and <see cref="OutputComponentBinding"/> when registering
-		/// a new assembly.
+		/// <see cref="ComponentBinding"/> when registering a new assembly.
 		/// </summary>
 		public MetadataBinder(IServiceProvider container)
 		{
@@ -121,7 +119,7 @@ namespace UiMetadataFramework.Core.Binding
 		}
 
 		/// <summary>
-		/// Scans assembly for implementations of <see cref="OutputComponentBinding"/>, <see cref="InputComponentBinding"/>
+		/// Scans assembly for implementations of <see cref="ComponentBinding"/>
 		/// and registers them in this instance of <see cref="MetadataBinder"/>.
 		/// </summary>
 		/// <param name="assembly">Assembly to scan.</param>
@@ -138,23 +136,40 @@ namespace UiMetadataFramework.Core.Binding
 				this.registeredAssemblies.Add(assembly.FullName);
 			}
 
-			assembly
-				.GetBindings<OutputComponentBinding>()
+			var bindings = assembly
+				.GetBindings<ComponentBinding>()
 				.Select(t => this.Container.GetService(t))
-				.Cast<OutputComponentBinding>()
+				.Cast<ComponentBinding>()
+				.ToList();
+
+			bindings
+				.Where(t => t.Category == ComponentCategories.Output)
 				.ForEach(t => this.Outputs.Bindings.AddBinding(t));
 
-			assembly.GetComponents<OutputComponentAttribute>()
-				.ForEach(t => this.Outputs.Bindings.AddBinding(new OutputComponentBinding(t.Type, t.Attribute, t.AllowedConfigurations)));
+			bindings
+				.Where(t => t.Category == ComponentCategories.Input)
+				.ForEach(t =>
+				{
+					this.Inputs.Bindings.AddBinding(t);
+				});
 
-			assembly
-				.GetBindings<InputComponentBinding>()
-				.Select(t => this.Container.GetService(t))
-				.Cast<InputComponentBinding>()
-				.ForEach(t => this.Inputs.Bindings.AddBinding(t));
+			assembly.GetComponents<OutputComponentAttribute>()
+				.ForEach(
+					t => this.Outputs.Bindings.AddBinding(
+						new ComponentBinding(
+							ComponentCategories.Output,
+							[t.Type],
+							t.Attribute,
+							t.AllowedConfigurations)));
 
 			assembly.GetComponents<InputComponentAttribute>()
-				.ForEach(t => this.Inputs.Bindings.AddBinding(new InputComponentBinding(t.Type, t.Attribute, t.AllowedConfigurations)));
+				.ForEach(
+					t => this.Inputs.Bindings.AddBinding(
+						new ComponentBinding(
+							ComponentCategories.Input,
+							[t.Type],
+							t.Attribute,
+							t.AllowedConfigurations)));
 		}
 
 		internal static string GetFormId(Type formType, FormAttribute formAttribute)

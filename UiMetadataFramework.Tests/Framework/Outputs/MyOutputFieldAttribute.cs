@@ -1,6 +1,5 @@
 ﻿namespace UiMetadataFramework.Tests.Framework.Outputs;
 
-using System.Collections.Generic;
 using System.Reflection;
 using UiMetadataFramework.Core;
 using UiMetadataFramework.Core.Binding;
@@ -11,7 +10,7 @@ public class MyOutputFieldAttribute : OutputFieldAttribute
 
 	public override OutputFieldMetadata GetMetadata(
 		PropertyInfo property,
-		OutputComponentBinding binding,
+		ComponentBinding binding,
 		MetadataBinder binder)
 	{
 		var basic = base.GetMetadata(property, binding, binder);

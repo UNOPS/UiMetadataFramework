@@ -2,8 +2,8 @@ namespace UiMetadataFramework.Tests.Binding.Input;
 
 using System.Linq;
 using FluentAssertions;
+using UiMetadataFramework.Basic.Inputs;
 using UiMetadataFramework.Core.Binding;
-using UiMetadataFramework.Tests.Framework.Inputs;
 using UiMetadataFramework.Tests.Framework.Inputs.Email;
 using UiMetadataFramework.Tests.Utilities;
 using Xunit;

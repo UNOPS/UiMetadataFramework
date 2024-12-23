@@ -10,7 +10,7 @@ public class MyOutputFieldAttribute : OutputFieldAttribute
 	/// <inheritdoc />
 	public override OutputFieldMetadata GetMetadata(
 		PropertyInfo property,
-		OutputComponentBinding binding,
+		ComponentBinding binding,
 		MetadataBinder binder)
 	{
 		var basic = base.GetMetadata(property, binding, binder);

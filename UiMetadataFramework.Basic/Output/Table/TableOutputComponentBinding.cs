@@ -7,10 +7,11 @@ using UiMetadataFramework.Core.Binding;
 /// <summary>
 /// Provides binding for all <see cref="IEnumerable{T}"/> properties.
 /// </summary>
-public class TableOutputComponentBinding : OutputComponentBinding
+public class TableOutputComponentBinding : ComponentBinding
 {
 	/// <inheritdoc />
 	public TableOutputComponentBinding() : base(
+		MetadataBinder.ComponentCategories.Output,
 		[
 			typeof(IEnumerable<>),
 			typeof(IList<>),

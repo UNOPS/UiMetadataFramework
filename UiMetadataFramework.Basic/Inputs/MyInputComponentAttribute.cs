@@ -15,9 +15,18 @@ public class MyInputComponentAttribute(string name, Type? metadataFactory = null
 	/// </summary>
 	public bool AlwaysHidden { get; set; }
 
+	/// <summary>
+	/// Default label for the input.
+	/// </summary>
+	public string? DefaultLabel { get; set; }
+
 	/// <inheritdoc />
 	public override IReadOnlyDictionary<string, object?> GetAdditionalData()
 	{
-		return new Dictionary<string, object?> { { nameof(this.AlwaysHidden), this.AlwaysHidden } };
+		return new Dictionary<string, object?>
+		{
+			{ nameof(this.AlwaysHidden), this.AlwaysHidden },
+			{ nameof(this.DefaultLabel), this.DefaultLabel }
+		};
 	}
 }

@@ -11,9 +11,8 @@ using System.Reflection;
 /// </summary>
 /// <param name="binder">Metadata binder to use.</param>
 /// <param name="container">Container to be used when/if necessary (for example to instantiate <see cref="IMetadataFactory"/> objects).</param>
-public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(MetadataBinder binder, IServiceProvider container)
-	where TBinding : IComponentBinding
-	where TFieldAttribute : FieldAttribute<TBinding, TFieldMetadata>, new()
+public class FieldCollection<TFieldAttribute, TFieldMetadata>(MetadataBinder binder, IServiceProvider container)
+	where TFieldAttribute : FieldAttribute<ComponentBinding, TFieldMetadata>, new()
 	where TFieldMetadata : IFieldMetadata
 {
 	/// <summary>
@@ -26,7 +25,7 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 	/// <summary>
 	/// Registered bindings.
 	/// </summary>
-	public BindingCollection<TBinding> Bindings { get; } = new();
+	public BindingCollection<ComponentBinding> Bindings { get; } = new();
 
 	/// <summary>
 	/// Builds metadata for a component represented by the property. 
@@ -100,7 +99,7 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 	/// <exception cref="BindingException">Thrown if the supplied configuration data is invalid.</exception>
 	private Component BuildComponent(
 		Type type,
-		TBinding binding,
+		ComponentBinding binding,
 		string? location = null,
 		params ComponentConfigurationAttribute[] configurations)
 	{
@@ -184,9 +183,9 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata, TBinding>(Metadata
 	/// <param name="type">Component type or a derived component (aka pre-configured component).</param>
 	/// <param name="location">Path to the field where the component is located. This parameter will
 	/// be used to generate a meaningful exception message if the binding cannot be found.</param>
-	/// <returns>Instance of <typeparamref name="TBinding"/>.</returns>
+	/// <returns>Instance of <see cref="ComponentBinding"/>.</returns>
 	/// <exception cref="BindingException">Thrown if binding cannot be found.</exception>
-	private TBinding GetBinding(Type type, string? location = null)
+	private ComponentBinding GetBinding(Type type, string? location = null)
 	{
 		var binding = this.Bindings.GetBindingOrNull(type);
 

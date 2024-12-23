@@ -3,10 +3,11 @@
 	using UiMetadataFramework.Core.Binding;
 
 	/// <inheritdoc />
-	public class BooleanInputComponentBinding : InputComponentBinding
+	public class BooleanInputComponentBinding : ComponentBinding
 	{
 		/// <inheritdoc />
 		public BooleanInputComponentBinding() : base(
+			MetadataBinder.ComponentCategories.Input,
 			serverType: typeof(bool),
 			componentType: "boolean",
 			metadataFactory: null)

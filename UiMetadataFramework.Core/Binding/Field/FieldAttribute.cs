@@ -13,6 +13,19 @@ public abstract class FieldAttribute<TBinding, TFieldMetadata> : Attribute
 	where TFieldMetadata : IFieldMetadata
 {
 	/// <summary>
+	/// Initializes a new instance of the <see cref="FieldAttribute{TBinding, TFieldMetadata}"/> class.
+	/// </summary>
+	protected FieldAttribute(string category)
+	{
+		this.Category = category;
+	}
+
+	/// <summary>
+	/// Component category that this field attribute supports.
+	/// </summary>
+	public string Category { get; }
+
+	/// <summary>
 	/// Gets metadata for the output field decorated with this attribute.
 	/// </summary>
 	/// <param name="property">Output field that has been decorated with this attribute.</param>
@@ -22,6 +35,6 @@ public abstract class FieldAttribute<TBinding, TFieldMetadata> : Attribute
 	/// <remarks>This method will be used internally by <see cref="MetadataBinder"/>.</remarks>
 	public abstract TFieldMetadata GetMetadata(
 		PropertyInfo property,
-		TBinding binding,
+		ComponentBinding binding,
 		MetadataBinder binder);
 }

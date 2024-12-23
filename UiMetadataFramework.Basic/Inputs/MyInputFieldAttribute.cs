@@ -10,17 +10,29 @@ public class MyInputFieldAttribute : InputFieldAttribute
 	/// <inheritdoc />
 	public override InputFieldMetadata GetMetadata(
 		PropertyInfo property,
-		InputComponentBinding binding,
+		ComponentBinding binding,
 		MetadataBinder binder)
 	{
 		var basic = base.GetMetadata(property, binding, binder);
 
-		if (binding.AdditionalData?.TryGetValue(nameof(MyInputComponentAttribute.AlwaysHidden), out var alwaysHidden) == true)
+		if (!basic.Hidden)
 		{
-			if (alwaysHidden is bool hide)
+			if (binding.AdditionalData?.TryGetValue(nameof(MyInputComponentAttribute.AlwaysHidden), out var alwaysHidden) == true)
 			{
-				basic.Hidden = hide || basic.Hidden;
-			}
+				if (alwaysHidden is bool hide)
+				{
+					basic.Hidden = hide || basic.Hidden;
+				}
+			}	
+		}
+
+		if (string.IsNullOrWhiteSpace(this.Label))
+		{
+			var defaultLabel = binding.AdditionalData?.TryGetValue(nameof(MyInputComponentAttribute.DefaultLabel), out var label) == true
+				? label?.ToString()
+				: null;
+			
+			basic.Label = defaultLabel ?? property.Name;
 		}
 
 		return basic;

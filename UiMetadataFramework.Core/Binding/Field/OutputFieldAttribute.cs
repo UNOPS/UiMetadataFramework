@@ -6,8 +6,13 @@ namespace UiMetadataFramework.Core.Binding
 	/// <summary>
 	/// Attribute used for decorating output fields.
 	/// </summary>
-	public class OutputFieldAttribute : FieldAttribute<OutputComponentBinding, OutputFieldMetadata>
+	public class OutputFieldAttribute : FieldAttribute<ComponentBinding, OutputFieldMetadata>
 	{
+		/// <inheritdoc />
+		public OutputFieldAttribute() : base(MetadataBinder.ComponentCategories.Output)
+		{
+		}
+
 		/// <summary>
 		/// Gets or sets value indicating whether this field should be visible or not.
 		/// </summary>
@@ -34,7 +39,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <remarks>This method will be used internally by <see cref="MetadataBinder"/>.</remarks>
 		public override OutputFieldMetadata GetMetadata(
 			PropertyInfo property,
-			OutputComponentBinding binding,
+			ComponentBinding binding,
 			MetadataBinder binder)
 		{
 			var eventHandlerAttributes = property.GetCustomAttributesImplementingInterface<IFieldEventHandlerAttribute>().ToList();
@@ -53,7 +58,7 @@ namespace UiMetadataFramework.Core.Binding
 			{
 				Id = property.Name,
 				Hidden = this.Hidden,
-				Label = this.Label ??  property.Name,
+				Label = this.Label ?? property.Name,
 				OrderIndex = this.OrderIndex,
 				CustomProperties = property.GetCustomProperties(binder),
 				EventHandlers = eventHandlerAttributes.Select(t => t.ToMetadata(property, binder)).ToList()

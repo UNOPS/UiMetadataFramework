@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using UiMetadataFramework.Basic.Inputs;
 using UiMetadataFramework.Basic.Inputs.DateTime;
 using UiMetadataFramework.Basic.Inputs.Number;
 using UiMetadataFramework.Basic.Inputs.Text;
@@ -16,10 +17,10 @@ public class GeneralInputBindingTests
 
 	private class Request
 	{
-		[InputField(Label = "First name", OrderIndex = 1, Required = true)]
+		[MyInputField(Label = "First name", OrderIndex = 1, Required = true)]
 		public string? FirstName { get; set; }
 
-		[InputField(Hidden = true)]
+		[MyInputField(Hidden = true)]
 		public int? Height { get; set; }
 
 		[IntProperty("number-1", 1)]
@@ -32,7 +33,8 @@ public class GeneralInputBindingTests
 	[Fact]
 	public void CanGetInputFieldsMetadata()
 	{
-		var inputFields = (this.binder.Inputs.GetFields(typeof(Request)))
+		var inputFields = this.binder.Inputs
+			.GetFields(typeof(Request))
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 
@@ -54,9 +56,9 @@ public class GeneralInputBindingTests
 
 		inputFields
 			.AssertHasInputField(
-				nameof(Request.Height),
-				NumberInputComponentBinding.ControlName,
-				nameof(Request.Height),
+				id: nameof(Request.Height),
+				type: NumberInputComponentBinding.ControlName,
+				label: nameof(Request.Height),
 				hidden: true);
 
 		inputFields

@@ -18,7 +18,8 @@ public class MyOutputComponentAttribute : OutputComponentAttribute
 	/// </summary>
 	public bool NoLabelByDefault { get; set; }
 
-	public override IReadOnlyDictionary<string, object?>? GetAdditionalData()
+	/// <inheritdoc />
+	public override IReadOnlyDictionary<string, object?> GetAdditionalData()
 	{
 		return new Dictionary<string, object?> { { nameof(NoLabelByDefault), this.NoLabelByDefault } };
 	}
