@@ -44,6 +44,7 @@ public class InputCustomPropertyBindingTests
 	public void CanBindCustomProperty()
 	{
 		var inputFields = this.binder.Inputs.GetFields(typeof(Request))
+			.Cast<InputFieldMetadata>()
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 

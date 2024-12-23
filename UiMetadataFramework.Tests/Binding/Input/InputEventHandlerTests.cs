@@ -4,6 +4,7 @@ namespace UiMetadataFramework.Tests.Binding.Input;
 
 using System.Linq;
 using UiMetadataFramework.Basic.Inputs.Number;
+using UiMetadataFramework.Core;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Framework.EventHandlers.Inputs;
 using UiMetadataFramework.Tests.Framework.EventHandlers.Outputs;
@@ -31,6 +32,7 @@ public class InputEventHandlerTests
 	public void CanBindEventHandlers()
 	{
 		var inputFields = this.binder.Inputs.GetFields(typeof(ValidRequest))
+			.Cast<InputFieldMetadata>()
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 

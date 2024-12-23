@@ -11,16 +11,15 @@ using System.Reflection;
 /// </summary>
 /// <param name="binder">Metadata binder to use.</param>
 /// <param name="container">Container to be used when/if necessary (for example to instantiate <see cref="IMetadataFactory"/> objects).</param>
-public class FieldCollection<TFieldAttribute, TFieldMetadata>(MetadataBinder binder, IServiceProvider container)
-	where TFieldAttribute : FieldAttribute<TFieldMetadata>, new()
-	where TFieldMetadata : IFieldMetadata
+public class FieldCollection<TFieldAttribute>(MetadataBinder binder, IServiceProvider container)
+	where TFieldAttribute : FieldAttribute, new()
 {
 	/// <summary>
 	/// <see cref="IServiceProvider"/> instance used when/if necessary.
 	/// </summary>
 	public readonly IServiceProvider Container = container;
 
-	private readonly ConcurrentDictionary<Type, IEnumerable<TFieldMetadata>> fieldCache = new();
+	private readonly ConcurrentDictionary<Type, IEnumerable<FieldMetadata>> fieldCache = new();
 
 	/// <summary>
 	/// Registered bindings.
@@ -72,7 +71,7 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata>(MetadataBinder bin
 	/// <param name="useCache">If true then will attempt to retrieve field metadata from cache. If not
 	/// in the cache then will build the metadata and store it in cache for future calls.</param>
 	/// <returns>Field metadata.</returns>
-	public IEnumerable<TFieldMetadata> GetFields(
+	public IEnumerable<FieldMetadata> GetFields(
 		Type type,
 		bool strict = false,
 		bool useCache = true)
@@ -152,7 +151,7 @@ public class FieldCollection<TFieldAttribute, TFieldMetadata>(MetadataBinder bin
 	/// <param name="strict">If true, then only properties decorated with <typeparamref name="TFieldAttribute"/>
 	/// will be taken into account.</param>
 	/// <returns>Field metadata.</returns>
-	private IEnumerable<TFieldMetadata> BuildFieldsInternal(Type type, bool strict = false)
+	private IEnumerable<FieldMetadata> BuildFieldsInternal(Type type, bool strict = false)
 	{
 		var properties = type.GetPublicProperties();
 

@@ -13,7 +13,7 @@ public class MyOutputFieldAttribute : OutputFieldAttribute
 	public string? CssClass { get; set; }
 
 	/// <inheritdoc />
-	public override OutputFieldMetadata GetMetadata(
+	public override FieldMetadata GetMetadata(
 		PropertyInfo property,
 		ComponentBinding binding,
 		MetadataBinder binder)
@@ -42,10 +42,10 @@ public class MyOutputFieldAttribute : OutputFieldAttribute
 	}
 
 	/// <inheritdoc />
-	public class Metadata : OutputFieldMetadata
+	public class Metadata : FieldMetadata
 	{
 		/// <inheritdoc />
-		public Metadata(OutputFieldMetadata metadata) : base(metadata)
+		public Metadata(FieldMetadata metadata) : base(metadata)
 		{
 		}
 

@@ -17,10 +17,10 @@ public class ComplexOutputMetadataFactory : DefaultMetadataFactory
 {
 	public const string Properties = "Properties";
 
-	public static IList<OutputFieldMetadata> ParseConfiguration(object configuration)
+	public static IList<FieldMetadata> ParseConfiguration(object configuration)
 	{
 		var dic = (Dictionary<string, object?>)configuration;
-		return (IList<OutputFieldMetadata>)dic[Properties]!;
+		return (IList<FieldMetadata>)dic[Properties]!;
 	}
 
 	protected override void AugmentConfiguration(

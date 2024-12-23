@@ -103,7 +103,7 @@ internal static class InternalExtensions
 		return type.GetBaseClassOfType(baseType) != null;
 	}
 
-	internal static string ToDescriptiveString(this IFieldMetadata field)
+	internal static string ToDescriptiveString(this FieldMetadata field)
 	{
 		return $"{field.Id ?? "unnamed"} ({field.Component.Type})";
 	}

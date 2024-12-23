@@ -6,28 +6,12 @@ namespace UiMetadataFramework.Core.Binding
 	/// <summary>
 	/// Attribute used for decorating output fields.
 	/// </summary>
-	public class OutputFieldAttribute : FieldAttribute<OutputFieldMetadata>
+	public class OutputFieldAttribute : FieldAttribute
 	{
 		/// <inheritdoc />
 		public OutputFieldAttribute() : base(MetadataBinder.ComponentCategories.Output)
 		{
 		}
-
-		/// <summary>
-		/// Gets or sets value indicating whether this field should be visible or not.
-		/// </summary>
-		public bool Hidden { get; set; }
-
-		/// <summary>
-		/// Gets or sets label for the output field.
-		/// </summary>
-		public string? Label { get; set; }
-
-		/// <summary>
-		/// Gets or sets value which will dictate rendering position of this field
-		/// in relationship to other output fields.
-		/// </summary>
-		public int OrderIndex { get; set; }
 
 		/// <summary>
 		/// Gets metadata for the output field decorated with this attribute.
@@ -37,7 +21,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="binder">Metadata binder.</param>
 		/// <returns>Instance of <see cref="OutputFieldMetadata"/>.</returns>
 		/// <remarks>This method will be used internally by <see cref="MetadataBinder"/>.</remarks>
-		public override OutputFieldMetadata GetMetadata(
+		public override FieldMetadata GetMetadata(
 			PropertyInfo property,
 			ComponentBinding binding,
 			MetadataBinder binder)
@@ -54,7 +38,7 @@ namespace UiMetadataFramework.Core.Binding
 
 			var component = binder.Outputs.BuildComponent(property);
 
-			return new OutputFieldMetadata(component)
+			return new FieldMetadata(component)
 			{
 				Id = property.Name,
 				Hidden = this.Hidden,

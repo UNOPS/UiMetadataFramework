@@ -47,8 +47,8 @@
 			return field!;
 		}
 
-		public static OutputFieldMetadata AssertHasOutputField(
-			this IEnumerable<OutputFieldMetadata> fields,
+		public static FieldMetadata AssertHasOutputField(
+			this IEnumerable<FieldMetadata> fields,
 			string id)
 		{
 			var matching = fields
@@ -60,8 +60,8 @@
 			return matching[0];
 		}
 
-		public static OutputFieldMetadata AssertHasOutputField(
-			this IEnumerable<OutputFieldMetadata> fields,
+		public static FieldMetadata AssertHasOutputField(
+			this IEnumerable<FieldMetadata> fields,
 			string id,
 			string type,
 			string label,
@@ -111,16 +111,8 @@
 			return field.HasCustomPropertyInternal(property, assertion, message);
 		}
 
-		public static OutputFieldMetadata HasCustomProperty<T>(
-			this OutputFieldMetadata field,
-			string name,
-			T value)
-		{
-			return field.AssertHasCustomProperty(name, value);
-		}
-
-		public static InputFieldMetadata HasCustomProperty<T>(
-			this InputFieldMetadata field,
+		public static FieldMetadata HasCustomProperty<T>(
+			this FieldMetadata field,
 			string name,
 			T value)
 		{
@@ -146,7 +138,7 @@
 			this TFieldMetadata field,
 			string name,
 			TValue value)
-			where TFieldMetadata : IFieldMetadata
+			where TFieldMetadata : FieldMetadata
 		{
 			if (field.CustomProperties?.TryGetValue(name, out var actual) is true)
 			{
@@ -164,7 +156,7 @@
 			Func<T, bool> assertion,
 			string? message = null)
 			where T : class
-			where TFieldMetadata : IFieldMetadata
+			where TFieldMetadata : FieldMetadata
 		{
 			var customProperties = (T?)field.CustomProperties?[property];
 

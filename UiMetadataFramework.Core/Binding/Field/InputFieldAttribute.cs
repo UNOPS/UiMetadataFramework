@@ -7,28 +7,12 @@ namespace UiMetadataFramework.Core.Binding
 	/// <summary>
 	/// Attribute used for decorating input fields.
 	/// </summary>
-	public class InputFieldAttribute : FieldAttribute<InputFieldMetadata>
+	public class InputFieldAttribute : FieldAttribute
 	{
 		/// <inheritdoc />
 		public InputFieldAttribute() : base(MetadataBinder.ComponentCategories.Input)
 		{
 		}
-
-		/// <summary>
-		/// Gets or sets value indicating whether this field should be visible or not.
-		/// </summary>
-		public bool Hidden { get; set; }
-
-		/// <summary>
-		/// Gets or sets label for the field.
-		/// </summary>
-		public string? Label { get; set; }
-
-		/// <summary>
-		/// Gets or sets value which will dictate rendering position of this field
-		/// in relationship to other input fields.
-		/// </summary>
-		public int OrderIndex { get; set; }
 
 		/// <summary>
 		/// Gets or sets value indicating whether value for this input field is required
@@ -44,7 +28,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <param name="binder">Metadata binder.</param>
 		/// <returns>Instance of <see cref="InputFieldMetadata"/>.</returns>
 		/// <remarks>This method will be used internally by <see cref="MetadataBinder"/>.</remarks>
-		public override InputFieldMetadata GetMetadata(
+		public override FieldMetadata GetMetadata(
 			PropertyInfo property,
 			ComponentBinding binding,
 			MetadataBinder binder)

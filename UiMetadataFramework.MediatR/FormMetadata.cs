@@ -79,7 +79,7 @@ namespace UiMetadataFramework.MediatR
 		/// <summary>
 		/// Gets or sets list of input fields.
 		/// </summary>
-		public IList<InputFieldMetadata> InputFields { get; set; }
+		public IList<FieldMetadata> InputFields { get; set; }
 
 		/// <summary>
 		/// Gets or sets label for this form.
@@ -89,7 +89,7 @@ namespace UiMetadataFramework.MediatR
 		/// <summary>
 		/// Gets or sets list of output fields.
 		/// </summary>
-		public IList<OutputFieldMetadata> OutputFields { get; set; }
+		public IList<FieldMetadata> OutputFields { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the form should be auto-posted

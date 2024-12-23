@@ -11,7 +11,7 @@ public class MyInputComponentAttribute(string name, Type? metadataFactory = null
 {
 	/// <summary>
 	/// Gets or sets value indicating whether input should never be explicitly rendered on the client.
-	/// If this value is set to true, then <see cref="InputFieldMetadata.Hidden"/> will always
+	/// If this value is set to true, then <see cref="FieldMetadata.Hidden"/> will always
 	/// be true.
 	/// </summary>
 	public bool AlwaysHidden { get; set; }

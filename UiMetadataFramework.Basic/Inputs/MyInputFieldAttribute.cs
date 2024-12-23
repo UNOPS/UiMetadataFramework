@@ -8,7 +8,7 @@ using UiMetadataFramework.Core.Binding;
 public class MyInputFieldAttribute : InputFieldAttribute
 {
 	/// <inheritdoc />
-	public override InputFieldMetadata GetMetadata(
+	public override FieldMetadata GetMetadata(
 		PropertyInfo property,
 		ComponentBinding binding,
 		MetadataBinder binder)

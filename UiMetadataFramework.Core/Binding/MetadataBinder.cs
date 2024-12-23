@@ -22,12 +22,12 @@ namespace UiMetadataFramework.Core.Binding
 		/// <summary>
 		/// Collection of input fields.
 		/// </summary>
-		public readonly FieldCollection<InputFieldAttribute, InputFieldMetadata> Inputs;
+		public readonly FieldCollection<InputFieldAttribute> Inputs;
 
 		/// <summary>
 		/// Collection of output fields.
 		/// </summary>
-		public readonly FieldCollection<OutputFieldAttribute, OutputFieldMetadata> Outputs;
+		public readonly FieldCollection<OutputFieldAttribute> Outputs;
 
 		private readonly object key = new();
 		private readonly List<string> registeredAssemblies = new();

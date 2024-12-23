@@ -37,7 +37,7 @@ public class GenericComponent
 
 		Assert.Equal("paginator-for-items", config["Paginator"]);
 
-		var columns = config["Columns"].As<IList<OutputFieldMetadata>>();
+		var columns = config["Columns"].As<IList<FieldMetadata>>();
 
 		Assert.Equal(2, columns.Count);
 

@@ -7,6 +7,7 @@ using UiMetadataFramework.Basic.Inputs.DateTime;
 using UiMetadataFramework.Basic.Inputs.Number;
 using UiMetadataFramework.Basic.Inputs.Text;
 using UiMetadataFramework.Basic.Inputs.Textarea;
+using UiMetadataFramework.Core;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Utilities;
 using Xunit;
@@ -35,6 +36,7 @@ public class GeneralInputBindingTests
 	{
 		var inputFields = this.binder.Inputs
 			.GetFields(typeof(Request))
+			.Cast<InputFieldMetadata>()
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 

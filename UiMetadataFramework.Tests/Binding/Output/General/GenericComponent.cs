@@ -35,7 +35,7 @@ public class GenericComponent
 
 		Assert.Equal("flexbox", outputField.Component.Type);
 
-		var fields = (IFieldMetadata[])outputField.Component.ConfigAsDictionary()!["Fields"]!;
+		var fields = (FieldMetadata[])outputField.Component.ConfigAsDictionary()!["Fields"]!;
 
 		Assert.Equal(2, fields.Length);
 	}
