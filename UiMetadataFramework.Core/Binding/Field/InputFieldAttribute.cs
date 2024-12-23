@@ -7,7 +7,7 @@ namespace UiMetadataFramework.Core.Binding
 	/// <summary>
 	/// Attribute used for decorating input fields.
 	/// </summary>
-	public class InputFieldAttribute : FieldAttribute<ComponentBinding, InputFieldMetadata>
+	public class InputFieldAttribute : FieldAttribute<InputFieldMetadata>
 	{
 		/// <inheritdoc />
 		public InputFieldAttribute() : base(MetadataBinder.ComponentCategories.Input)

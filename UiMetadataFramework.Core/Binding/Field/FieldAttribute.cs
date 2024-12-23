@@ -6,14 +6,12 @@ using System.Reflection;
 /// <summary>
 /// Retrieves metadata for a field.
 /// </summary>
-/// <typeparam name="TBinding">Binding type for this field.</typeparam>
 /// <typeparam name="TFieldMetadata">Metadata type for this field..</typeparam>
-public abstract class FieldAttribute<TBinding, TFieldMetadata> : Attribute
-	where TBinding : IComponentBinding
+public abstract class FieldAttribute<TFieldMetadata> : Attribute
 	where TFieldMetadata : IFieldMetadata
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="FieldAttribute{TBinding, TFieldMetadata}"/> class.
+	/// Initializes a new instance of the <see cref="FieldAttribute{TFieldMetadata}"/> class.
 	/// </summary>
 	protected FieldAttribute(string category)
 	{
