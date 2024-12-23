@@ -23,6 +23,7 @@ namespace UiMetadataFramework.Core.Binding
 			Type? metadataFactory,
 			params HasConfigurationAttribute[] allowedConfigurations)
 			: base(
+				MetadataBinder.ComponentCategories.Input,
 				[serverType],
 				componentType,
 				metadataFactory,
@@ -41,10 +42,11 @@ namespace UiMetadataFramework.Core.Binding
 			InputComponentAttribute attribute,
 			params HasConfigurationAttribute[] allowedConfigurations)
 			: base(
+				MetadataBinder.ComponentCategories.Input,
 				[serverType],
 				attribute,
 				allowedConfigurations)
-		{;
+		{
 		}
 
 		/// <summary>
@@ -61,6 +63,7 @@ namespace UiMetadataFramework.Core.Binding
 			string componentType,
 			Type? metadataFactory,
 			params HasConfigurationAttribute[] allowedConfigurations) : base(
+			MetadataBinder.ComponentCategories.Input,
 			serverTypes,
 			componentType,
 			metadataFactory,

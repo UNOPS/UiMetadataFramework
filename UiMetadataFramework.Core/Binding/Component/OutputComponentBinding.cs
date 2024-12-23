@@ -23,6 +23,7 @@
 			Type? metadataFactory,
 			params HasConfigurationAttribute[] allowedConfigurations)
 			: base(
+				MetadataBinder.ComponentCategories.Output,
 				[serverType],
 				componentType,
 				metadataFactory,
@@ -44,6 +45,7 @@
 			Type? metadataFactory,
 			params HasConfigurationAttribute[] allowedConfigurations)
 			: base(
+				MetadataBinder.ComponentCategories.Output,
 				serverTypes,
 				componentType,
 				metadataFactory,
@@ -62,6 +64,7 @@
 			OutputComponentAttribute attribute,
 			params HasConfigurationAttribute[] allowedConfigurations)
 			: base(
+				MetadataBinder.ComponentCategories.Output,
 				[serverType],
 				attribute,
 				allowedConfigurations)

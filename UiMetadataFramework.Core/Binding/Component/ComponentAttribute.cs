@@ -16,11 +16,13 @@ public abstract class ComponentAttribute : Attribute
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ComponentAttribute"/> class.
 	/// </summary>
+	/// <param name="category">Component category to which this component belongs (e.g. - "output" or "input").</param>
 	/// <param name="name">Name of the component.</param>
 	/// <param name="metadataFactory">Type that implements <see cref="IMetadataFactory"/> and which will
 	/// be used to construct component metadata (or null if component does not need any custom metadata).
 	/// </param>
 	protected ComponentAttribute(
+		string category,
 		string name,
 		Type? metadataFactory = null)
 	{
@@ -32,9 +34,16 @@ public abstract class ComponentAttribute : Attribute
 				$"must implement '{typeof(IMetadataFactory).FullName}' in order to be used as a metadata factory.");
 		}
 
+		this.Category = category;
 		this.Name = name;
 		this.MetadataFactory = metadataFactory;
 	}
+
+	/// <summary>
+	/// Component category to which this component belongs. Components
+	/// within the same category must have unique names (<see cref="Name"/>).
+	/// </summary>
+	public string Category { get; }
 
 	/// <summary>
 	/// Represents <see cref="IMetadataFactory"/> that should be used to construct
@@ -43,7 +52,7 @@ public abstract class ComponentAttribute : Attribute
 	public Type? MetadataFactory { get; }
 
 	/// <summary>
-	/// Component name.
+	/// Component name. Must be unique within the category (<see cref="Category"/>).
 	/// </summary>
 	public string Name { get; set; }
 

@@ -11,7 +11,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <inheritdoc />
 		public InputComponentAttribute(
 			string name,
-			Type? metadataFactory = null) : base(name, metadataFactory)
+			Type? metadataFactory = null) : base("input", name, metadataFactory)
 		{
 		}
 	}

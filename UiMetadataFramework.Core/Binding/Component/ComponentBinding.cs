@@ -16,17 +16,20 @@ public abstract class ComponentBinding<T> : IComponentBinding
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ComponentBinding{T}"/> class.
 	/// </summary>
+	/// <param name="category">Component category.</param>
 	/// <param name="serverTypes">Types which should be mapped to the component.</param>
 	/// <param name="componentType">Name of the component.</param>
 	/// <param name="metadataFactory"><see cref="IMetadataFactory"/> to use for constructing component's
 	/// metadata. If null then <see cref="DefaultMetadataFactory"/> will be used.</param>
 	/// <param name="allowedConfigurations">Allowed configurations for this component.</param>
 	protected ComponentBinding(
+		string category,
 		IEnumerable<Type> serverTypes,
 		string componentType,
 		Type? metadataFactory,
 		params HasConfigurationAttribute[] allowedConfigurations)
 	{
+		this.Category = category;
 		this.serverTypes = serverTypes.ToList();
 		this.ComponentType = componentType;
 		this.MetadataFactory = metadataFactory;
@@ -36,17 +39,25 @@ public abstract class ComponentBinding<T> : IComponentBinding
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ComponentBinding{T}"/> class.
 	/// </summary>
+	/// <param name="category">Component category.</param>
 	/// <param name="serverTypes">Types which should be mapped to the component.</param>
 	/// <param name="attribute">Component attribute.</param>
 	/// <param name="allowedConfigurations">Allowed configurations for this component.</param>
 	protected ComponentBinding(
+		string category,
 		IEnumerable<Type> serverTypes,
 		ComponentAttribute attribute,
 		params HasConfigurationAttribute[] allowedConfigurations)
-		: this(serverTypes, attribute.Name, attribute.MetadataFactory, allowedConfigurations)
+		: this(category, serverTypes, attribute.Name, attribute.MetadataFactory, allowedConfigurations)
 	{
 		this.AdditionalData = attribute.GetAdditionalData();
 	}
+
+	/// <summary>
+	/// Component category to which this component belongs. Components
+	/// within the same category must have unique names (<see cref="Type"/>).
+	/// </summary>
+	public string Category { get; }
 
 	/// <inheritdoc />
 	public IReadOnlyDictionary<string, object?>? AdditionalData { get; protected set; }

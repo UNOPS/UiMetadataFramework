@@ -163,5 +163,21 @@ namespace UiMetadataFramework.Core.Binding
 				? formAttribute.Id!
 				: formType.FullName ?? throw new BindingException($"Cannot form ID for type `{formType}`.");
 		}
+
+		/// <summary>
+		/// Component categories that the framework uses.
+		/// </summary>
+		public static class ComponentCategories
+		{
+			/// <summary>
+			/// Output components.
+			/// </summary>
+			public const string Output = "output";
+
+			/// <summary>
+			/// Input components.
+			/// </summary>
+			public const string Input = "input";
+		}
 	}
 }

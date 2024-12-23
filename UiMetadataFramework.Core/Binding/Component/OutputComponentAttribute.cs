@@ -10,7 +10,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// <inheritdoc />
 		public OutputComponentAttribute(
 			string name,
-			Type? metadataFactory = null) : base(name, metadataFactory)
+			Type? metadataFactory = null) : base("output", name, metadataFactory)
 		{
 		}
 	}
