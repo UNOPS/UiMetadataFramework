@@ -13,11 +13,5 @@ namespace UiMetadataFramework.Core.Binding
 			Type? metadataFactory = null) : base(name, metadataFactory)
 		{
 		}
-
-		/// <summary>
-		/// If true then the output field won't have a label, unless one is explicitly given
-		/// in `<see cref="OutputFieldAttribute"/>.<see cref="OutputFieldAttribute.Label"/>`.
-		/// </summary>
-		public bool NoLabelByDefault { get; set; }
 	}
 }

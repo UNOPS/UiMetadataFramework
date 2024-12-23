@@ -23,7 +23,7 @@
 			Type? metadataFactory,
 			params HasConfigurationAttribute[] allowedConfigurations)
 			: base(
-				new[] { serverType },
+				[serverType],
 				componentType,
 				metadataFactory,
 				allowedConfigurations)
@@ -66,13 +66,6 @@
 				attribute,
 				allowedConfigurations)
 		{
-			this.NoLabelByDefault = attribute.NoLabelByDefault;
 		}
-
-		/// <summary>
-		/// If true then the output field won't have a label, unless one is explicitly specified
-		/// by `<see cref="OutputFieldAttribute"/>.<see cref="OutputFieldAttribute.Label"/>`.
-		/// </summary>
-		public bool NoLabelByDefault { get; protected set; }
 	}
 }

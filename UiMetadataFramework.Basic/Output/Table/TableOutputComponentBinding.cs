@@ -19,6 +19,6 @@ public class TableOutputComponentBinding : OutputComponentBinding
 		"table",
 		typeof(TableMetadataFactory))
 	{
-		this.NoLabelByDefault = true;
+		this.AdditionalData = new Dictionary<string, object?> { { nameof(MyOutputComponentAttribute.NoLabelByDefault), true } };
 	}
 }
