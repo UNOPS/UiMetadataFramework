@@ -22,8 +22,16 @@
 		/// were found.</returns>
 		public static IDictionary<string, object?>? GetCustomProperties(this PropertyInfo propertyInfo, MetadataBinder binder)
 		{
-			return propertyInfo
+			var propertyLevel = propertyInfo
+				.GetCustomAttributesImplementingInterface<ICustomPropertyAttribute>();
+
+			var classLevel = propertyInfo.PropertyType
+				.GetTypeInfo()
 				.GetCustomAttributesImplementingInterface<ICustomPropertyAttribute>()
+				.Where(t => !propertyLevel.Any(c => c.Name == t.Name));
+
+			return propertyLevel
+				.Concat(classLevel)
 				.GetCustomProperties(propertyInfo.PropertyType, propertyInfo.DeclaringType!.FullName + "." + propertyInfo.Name, binder);
 		}
 
@@ -181,6 +189,14 @@
 		internal static IEnumerable<T> GetCustomAttributesImplementingInterface<T>(this PropertyInfo propertyInfo)
 		{
 			return propertyInfo
+				.GetCustomAttributes()
+				.Where(t => typeof(T).GetTypeInfo().IsInstanceOfType(t))
+				.Cast<T>();
+		}
+
+		internal static IEnumerable<T> GetCustomAttributesImplementingInterface<T>(this TypeInfo typeInfo)
+		{
+			return typeInfo
 				.GetCustomAttributes()
 				.Where(t => typeof(T).GetTypeInfo().IsInstanceOfType(t))
 				.Cast<T>();

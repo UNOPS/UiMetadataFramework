@@ -159,6 +159,13 @@ public class FieldCollection<TFieldAttribute>(MetadataBinder binder, IServicePro
 		{
 			var attribute = property.GetCustomAttributeSingleOrDefault<TFieldAttribute>();
 
+			if (attribute == null)
+			{
+				// If the field is not decorated with the field attribute, then check if
+				// the component itself is decorated with the field attribute.
+				attribute = property.PropertyType.GetTypeInfo().GetCustomAttributeSingleOrDefault<TFieldAttribute>();
+			}
+
 			if (strict && attribute == null)
 			{
 				continue;
