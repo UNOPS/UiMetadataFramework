@@ -24,7 +24,7 @@ public class FieldCollection<TFieldAttribute>(MetadataBinder binder, IServicePro
 	/// <summary>
 	/// Registered bindings.
 	/// </summary>
-	public BindingCollection<ComponentBinding> Bindings { get; } = new();
+	public BindingCollection Bindings { get; } = new();
 
 	/// <summary>
 	/// Builds metadata for a component represented by the property. 

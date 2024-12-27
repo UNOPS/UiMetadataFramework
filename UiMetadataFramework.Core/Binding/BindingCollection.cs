@@ -9,21 +9,20 @@ using System.Reflection;
 /// <summary>
 /// Collection of <see cref="IComponentBinding"/> instances.
 /// </summary>
-public class BindingCollection<TBinding>
-	where TBinding : IComponentBinding
+public class BindingCollection
 {
-	private readonly ConcurrentDictionary<Type, TBinding> bindings = new();
+	private readonly ConcurrentDictionary<Type, ComponentBinding> bindings = new();
 
 	/// <summary>
 	/// Gets list of all bindings in the collection.
 	/// </summary>
-	public IReadOnlyDictionary<Type, TBinding> All => this.bindings.AsReadOnlyDictionary();
+	public IReadOnlyDictionary<Type, ComponentBinding> All => this.bindings.AsReadOnlyDictionary();
 
 	/// <summary>
 	/// Adds binding to the collection.
 	/// </summary>
-	/// <param name="binding"><typeparamref name="TBinding"/> instance.</param>
-	public void AddBinding(TBinding binding)
+	/// <param name="binding"><see name="ComponentBinding"/> instance.</param>
+	public void AddBinding(ComponentBinding binding)
 	{
 		this.EnforceNotDuplicate(binding);
 
@@ -54,9 +53,9 @@ public class BindingCollection<TBinding>
 	/// <param name="type">Component type or a derived component (aka pre-configured component).</param>
 	/// <param name="location">Path to the field where the component is located. This parameter will
 	/// be used to generate a meaningful exception message if the binding cannot be found.</param>
-	/// <returns>Instance of <typeparamref name="TBinding"/>.</returns>
+	/// <returns>Instance of <see name="ComponentBinding"/>.</returns>
 	/// <exception cref="BindingException">Thrown if the binding cannot be found.</exception>
-	public TBinding GetBinding(Type type, string? location = null)
+	public ComponentBinding GetBinding(Type type, string? location = null)
 	{
 		var binding = this.GetBindingOrNull(type);
 
@@ -76,8 +75,8 @@ public class BindingCollection<TBinding>
 	/// Returns binding for the specified type or null if no such binding can be found.
 	/// </summary>
 	/// <param name="type">Component type or a derived component (aka pre-configured component).</param>
-	/// <returns>Instance of <typeparamref name="TBinding"/> or null if the binding cannot be found.</returns>
-	public TBinding? GetBindingOrNull(Type type)
+	/// <returns>Instance of <see name="ComponentBinding"/> or null if the binding cannot be found.</returns>
+	public ComponentBinding? GetBindingOrNull(Type type)
 	{
 		var effectiveType = MetadataBinder.GetBaseComponent<ComponentAttribute>(type) ?? type;
 
@@ -110,7 +109,7 @@ public class BindingCollection<TBinding>
 			.JoinStrings(", ");
 
 		throw new BindingException(
-			$"Dupplicate attempts to declare component '{newBinding.ComponentType}' by " +
+			$"Duplicate attempts to declare component '{newBinding.ComponentType}' by " +
 			$"[{oldTypes}] and [{newTypes}]. Components can only be declared once.");
 	}
 }
