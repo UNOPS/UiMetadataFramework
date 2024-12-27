@@ -33,7 +33,7 @@ public class ComponentsForPrimitiveTypes
 		Assert.Equal(3, outputFields.Count);
 
 		outputFields
-			.AssertHasOutputField(
+			.AssertHasField(
 				id: nameof(Response.FirstName),
 				type: StringOutputComponentBinding.ControlName,
 				label: "First name",
@@ -41,13 +41,13 @@ public class ComponentsForPrimitiveTypes
 				orderIndex: 1);
 
 		outputFields
-			.AssertHasOutputField(
+			.AssertHasField(
 				id: nameof(Response.LastName),
 				type: StringOutputComponentBinding.ControlName,
 				label: "LastName");
 
 		outputFields
-			.AssertHasOutputField(
+			.AssertHasField(
 				nameof(Response.Height),
 				NumberOutputComponentBinding.ControlName,
 				nameof(Response.Height),

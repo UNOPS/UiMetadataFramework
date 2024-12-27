@@ -1,10 +1,15 @@
 ﻿namespace UiMetadataFramework.Basic.Inputs.Typeahead
 {
+	using UiMetadataFramework.Basic.Inputs.Dropdown;
+	using UiMetadataFramework.Core.Binding;
+
 	/// <summary>
 	/// Input field type for typeahead client control.
 	/// </summary>
 	/// <typeparam name="T">Type of values retrieved by the typeahead.</typeparam>
-	[MyInputComponent("typeahead")]
+	[MyInputComponent("typeahead", typeof(DropdownMetadataFactory))]
+	[HasConfiguration(typeof(TypeaheadAttribute), mandatory: true)]
+	[HasConfiguration(typeof(RemoteSourceArgumentAttribute), isArray: true, name: "Parameters")]
 	public class TypeaheadValue<T>
 	{
 		/// <summary>

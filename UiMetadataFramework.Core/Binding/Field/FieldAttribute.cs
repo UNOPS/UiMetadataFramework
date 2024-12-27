@@ -1,7 +1,6 @@
 namespace UiMetadataFramework.Core.Binding;
 
 using System;
-using System.Reflection;
 
 /// <summary>
 /// Retrieves metadata for a field.
@@ -36,17 +35,4 @@ public abstract class FieldAttribute : Attribute
 	/// in relationship to other input fields.
 	/// </summary>
 	public int OrderIndex { get; set; }
-
-	/// <summary>
-	/// Gets metadata for the output field decorated with this attribute.
-	/// </summary>
-	/// <param name="property">Output field that has been decorated with this attribute.</param>
-	/// <param name="binding">Binding for the output field.</param>
-	/// <param name="binder">Metadata binder.</param>
-	/// <returns>Instance of <see cref="OutputFieldMetadata"/>.</returns>
-	/// <remarks>This method will be used internally by <see cref="MetadataBinder"/>.</remarks>
-	public abstract FieldMetadata GetMetadata(
-		PropertyInfo property,
-		ComponentBinding binding,
-		MetadataBinder binder);
 }

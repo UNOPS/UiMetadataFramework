@@ -11,8 +11,11 @@ using System.Reflection;
 /// </summary>
 /// <param name="binder">Metadata binder to use.</param>
 /// <param name="container">Container to be used when/if necessary (for example to instantiate <see cref="IMetadataFactory"/> objects).</param>
-public class FieldCollection<TFieldAttribute>(MetadataBinder binder, IServiceProvider container)
-	where TFieldAttribute : FieldAttribute, new()
+public class FieldCollection(
+	MetadataBinder binder,
+	IServiceProvider container,
+	IFieldMetadataFactory fieldMetadataFactory,
+	string category)
 {
 	/// <summary>
 	/// <see cref="IServiceProvider"/> instance used when/if necessary.
@@ -66,7 +69,7 @@ public class FieldCollection<TFieldAttribute>(MetadataBinder binder, IServicePro
 	/// Gets fields declared on <paramref name="type"/>.
 	/// </summary>
 	/// <param name="type">Type that has a set of properties that represent fields.</param>
-	/// <param name="strict">If true, then only properties decorated with <typeparamref name="TFieldAttribute"/>
+	/// <param name="strict">If true, then only properties decorated with <see name="FieldAttribute"/>
 	/// will be taken into account.</param>
 	/// <param name="useCache">If true then will attempt to retrieve field metadata from cache. If not
 	/// in the cache then will build the metadata and store it in cache for future calls.</param>
@@ -148,7 +151,7 @@ public class FieldCollection<TFieldAttribute>(MetadataBinder binder, IServicePro
 	/// in cache.
 	/// </summary>
 	/// <param name="type">Type that has a set of properties that represent fields.</param>
-	/// <param name="strict">If true, then only properties decorated with <typeparamref name="TFieldAttribute"/>
+	/// <param name="strict">If true, then only properties decorated with <see name="FieldAttribute"/>
 	/// will be taken into account.</param>
 	/// <returns>Field metadata.</returns>
 	private IEnumerable<FieldMetadata> BuildFieldsInternal(Type type, bool strict = false)
@@ -157,13 +160,19 @@ public class FieldCollection<TFieldAttribute>(MetadataBinder binder, IServicePro
 
 		foreach (var property in properties)
 		{
-			var attribute = property.GetCustomAttributeSingleOrDefault<TFieldAttribute>();
+			var attribute = property.GetCustomAttributeSingleOrDefault<FieldAttribute>();
+
+			if (attribute != null &&
+				attribute.Category != category)
+			{
+				continue;
+			}
 
 			if (attribute == null)
 			{
 				// If the field is not decorated with the field attribute, then check if
 				// the component itself is decorated with the field attribute.
-				attribute = property.PropertyType.GetTypeInfo().GetCustomAttributeSingleOrDefault<TFieldAttribute>();
+				attribute = property.PropertyType.GetTypeInfo().GetCustomAttributeSingleOrDefault<FieldAttribute>();
 			}
 
 			if (strict && attribute == null)
@@ -175,9 +184,11 @@ public class FieldCollection<TFieldAttribute>(MetadataBinder binder, IServicePro
 				property.PropertyType,
 				$"{property.DeclaringType?.FullName}.{property.Name}");
 
-			attribute ??= new TFieldAttribute();
-
-			var metadata = attribute.GetMetadata(property, binding, binder);
+			var metadata = fieldMetadataFactory.GetMetadata(
+				attribute,
+				property,
+				binding,
+				binder);
 
 			yield return metadata;
 		}

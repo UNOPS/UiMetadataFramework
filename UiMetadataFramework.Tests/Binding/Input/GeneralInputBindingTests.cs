@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using FluentAssertions;
 using UiMetadataFramework.Basic.Inputs;
 using UiMetadataFramework.Basic.Inputs.DateTime;
 using UiMetadataFramework.Basic.Inputs.Number;
@@ -18,10 +19,10 @@ public class GeneralInputBindingTests
 
 	private class Request
 	{
-		[MyInputField(Label = "First name", OrderIndex = 1, Required = true)]
+		[InputField(Label = "First name", OrderIndex = 1, Required = true)]
 		public string? FirstName { get; set; }
 
-		[MyInputField(Hidden = true)]
+		[InputField(Hidden = true)]
 		public int? Height { get; set; }
 
 		[IntProperty("number-1", 1)]
@@ -36,35 +37,35 @@ public class GeneralInputBindingTests
 	{
 		var inputFields = this.binder.Inputs
 			.GetFields(typeof(Request))
-			.Cast<InputFieldMetadata>()
+			.Cast<MyInputFieldMetadataFactory.Metadata>()
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 
 		Assert.Equal(4, inputFields.Count);
 
 		inputFields
-			.AssertHasInputField(
+			.AssertHasField<MyInputFieldMetadataFactory.Metadata>(
 				nameof(Request.FirstName),
 				StringInputComponentBinding.ControlName,
 				"First name",
-				orderIndex: 1,
-				required: true);
+				orderIndex: 1)
+			.Required.Should().BeTrue();
 
 		inputFields
-			.AssertHasInputField(
+			.AssertHasField<MyInputFieldMetadataFactory.Metadata>(
 				nameof(Request.SubmissionDate),
 				DateTimeInputComponentBinding.ControlName,
 				nameof(Request.SubmissionDate));
 
 		inputFields
-			.AssertHasInputField(
+			.AssertHasField<MyInputFieldMetadataFactory.Metadata>(
 				id: nameof(Request.Height),
 				type: NumberInputComponentBinding.ControlName,
 				label: nameof(Request.Height),
 				hidden: true);
 
 		inputFields
-			.AssertHasInputField(
+			.AssertHasField<MyInputFieldMetadataFactory.Metadata>(
 				nameof(Request.Notes),
 				TextareaValue.ControlName,
 				nameof(Request.Notes))

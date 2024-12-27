@@ -3,6 +3,7 @@
 namespace UiMetadataFramework.Tests.Binding.Output.BindingModes;
 
 using System.Linq;
+using FluentAssertions;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Utilities;
 using Xunit;
@@ -29,9 +30,10 @@ public class StrictVsDefaultMode
 			.GetFields(typeof(InputsAndOutputsTogether))
 			.ToList();
 
-		outputFields.AssertHasOutputField(nameof(InputsAndOutputsTogether.Label));
-		outputFields.AssertHasOutputField(nameof(InputsAndOutputsTogether.Label));
-		outputFields.AssertHasOutputField(nameof(InputsAndOutputsTogether.Label));
+		outputFields.Count.Should().Be(2);
+
+		outputFields.AssertHasField(nameof(InputsAndOutputsTogether.Label));
+		outputFields.AssertHasField(nameof(InputsAndOutputsTogether.NotField));
 	}
 
 	[Fact]

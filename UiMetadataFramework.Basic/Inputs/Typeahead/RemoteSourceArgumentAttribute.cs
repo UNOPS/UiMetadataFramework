@@ -1,5 +1,6 @@
 ﻿namespace UiMetadataFramework.Basic.Inputs.Typeahead
 {
+	using System.Collections.Generic;
 	using UiMetadataFramework.Core.Binding;
 
 	/// <summary>
@@ -27,24 +28,30 @@
 		/// <summary>
 		/// Gets or sets name of the request parameter on the remote source.
 		/// </summary>
+		[ConfigurationProperty("Parameter")]
 		public string Parameter { get; set; }
 
 		/// <summary>
 		/// Gets or sets name of the source from which to take the value for the <see cref="Parameter"/>.
 		/// </summary>
+		[ConfigurationProperty("Source")]
 		public string Source { get; set; }
 
 		/// <summary>
 		/// Gets or sets type of source specified in <see cref="Source"/>.
 		/// </summary>
+		[ConfigurationProperty("SourceType")]
 		public string SourceType { get; set; }
 
 		/// <summary>
-		/// Gets instance of the <see cref="RemoteSourceArgument"/> based on the configuration of this attribute.
+		/// Builds an instance of <see cref="RemoteSourceArgumentAttribute"/> from a dictionary.
 		/// </summary>
-		public RemoteSourceArgument GetArgument()
+		public static RemoteSourceArgumentAttribute FromDictionary(Dictionary<string, object> t)
 		{
-			return new RemoteSourceArgument(this.Parameter, this.Source, this.SourceType);
+			return new RemoteSourceArgumentAttribute(
+				t[nameof(Parameter)].ToString(),
+				t[nameof(Source)].ToString(),
+				t[nameof(SourceType)].ToString());
 		}
 	}
 }

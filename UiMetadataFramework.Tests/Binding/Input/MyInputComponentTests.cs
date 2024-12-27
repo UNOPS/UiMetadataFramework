@@ -2,7 +2,6 @@ namespace UiMetadataFramework.Tests.Binding.Input;
 
 using System.Linq;
 using FluentAssertions;
-using UiMetadataFramework.Basic.Inputs;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Framework.Inputs.Email;
 using UiMetadataFramework.Tests.Utilities;
@@ -14,10 +13,10 @@ public class MyInputComponentTests
 
 	private class Request
 	{
-		[MyInputField(Label = "Custom")]
+		[InputField(Label = "Custom")]
 		public Email? Custom { get; set; }
 
-		[MyInputField]
+		[InputField]
 		public Email? Default { get; set; }
 	}
 

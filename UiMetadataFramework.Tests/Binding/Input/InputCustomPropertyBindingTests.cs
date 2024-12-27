@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
+using UiMetadataFramework.Basic.Inputs;
 using UiMetadataFramework.Basic.Inputs.DateTime;
 using UiMetadataFramework.Core;
 using UiMetadataFramework.Core.Binding;
@@ -44,20 +46,22 @@ public class InputCustomPropertyBindingTests
 	public void CanBindCustomProperty()
 	{
 		var inputFields = this.binder.Inputs.GetFields(typeof(Request))
-			.Cast<InputFieldMetadata>()
+			.Cast<MyInputFieldMetadataFactory.Metadata>()
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 
-		inputFields
-			.AssertHasInputField(
+		var field = inputFields
+			.AssertHasField<MyInputFieldMetadataFactory.Metadata>(
 				nameof(Request.DateOfBirth),
 				DateTimeInputComponentBinding.ControlName,
 				"DoB",
-				orderIndex: 2,
-				required: true)
-			.HasCustomProperty<IList<object>>(
-				"documentation",
-				t => t.Cast<string>().Count() == 2,
-				"Custom property 'documentation' has incorrect value.");
+				orderIndex: 2);
+
+		field.Required.Should().BeTrue();
+
+		field.HasCustomProperty<IList<object>>(
+			property: "documentation",
+			assertion: t => t.Cast<string>().Count() == 2,
+			message: "Custom property 'documentation' has incorrect value.");
 	}
 }

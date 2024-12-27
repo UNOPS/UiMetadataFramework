@@ -23,7 +23,7 @@ public class FieldMetadataAtComponentLevel
 	{
 		var fields = this.binder.Outputs.GetFields(typeof(Response));
 
-		var field = fields.FirstOrDefault(t => t.Id == fieldId) as MyOutputFieldAttribute.Metadata;
+		var field = fields.FirstOrDefault(t => t.Id == fieldId) as MyOutputFieldMetadataFactory.Metadata;
 
 		Assert.NotNull(field);
 		Assert.Equal("my-component", field!.Component.Type);

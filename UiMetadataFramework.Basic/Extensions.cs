@@ -12,6 +12,18 @@
 			return [..new[] { item }];
 		}
 
+		public static Type? GetEnumType(this Type type)
+		{
+			if (type.GetTypeInfo().IsEnum)
+			{
+				return type;
+			}
+
+			return Nullable.GetUnderlyingType(type)?.GetTypeInfo().IsEnum == true
+				? Nullable.GetUnderlyingType(type)
+				: null;
+		}
+
 		/// <summary>
 		/// Checks whether this class inherits another class.
 		/// </summary>
@@ -35,6 +47,16 @@
 			return type.GetTypeInfo()
 				.GetInterfaces()
 				.Where(t => t == toFind);
+		}
+
+		internal static TValue? GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key)
+		{
+			if (key == null)
+			{
+				return default;
+			}
+
+			return dic.TryGetValue(key, out var value) ? value : default;
 		}
 
 		/// <summary>

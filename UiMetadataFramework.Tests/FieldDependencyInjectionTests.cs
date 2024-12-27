@@ -4,6 +4,7 @@ namespace UiMetadataFramework.Tests
 	using System.Linq;
 	using System.Reflection;
 	using UiMetadataFramework.Basic;
+	using UiMetadataFramework.Basic.Inputs.Dropdown;
 	using UiMetadataFramework.Basic.Inputs.Text;
 	using UiMetadataFramework.Basic.Inputs.Typeahead;
 	using UiMetadataFramework.Core.Binding;
@@ -19,29 +20,22 @@ namespace UiMetadataFramework.Tests
 
 		public class Database
 		{
-			public IEnumerable<TypeaheadItem<int>> GetCategories()
+			public IEnumerable<DropdownItem> GetCategories()
 			{
-				return new List<TypeaheadItem<int>>
+				return new List<DropdownItem>
 				{
-					new("one", 1),
-					new("two", 2),
-					new("3", 3)
+					new("one", "1"),
+					new("two", "2"),
+					new("3", "3")
 				};
 			}
 		}
 
-		public class CategorySource : ITypeaheadInlineSource<int>
+		public class CategorySource(Database db) : IDropdownInlineSource
 		{
-			private readonly Database db;
-
-			public CategorySource(Database db)
+			public IEnumerable<DropdownItem> GetItems()
 			{
-				this.db = db;
-			}
-
-			public IEnumerable<TypeaheadItem<int>> GetItems()
-			{
-				return this.db.GetCategories();
+				return db.GetCategories();
 			}
 		}
 
@@ -74,9 +68,9 @@ namespace UiMetadataFramework.Tests
 			var categoryInputField = fields.Single(t => t.Id == nameof(Request.CategoryId));
 
 			// Ensure that the inline source has 3 items.
-			var source = categoryInputField.CustomProperties?["Source"] as IEnumerable<TypeaheadItem<int>>;
-			Assert.NotNull(source);
-			Assert.Equal(3, source!.Count());
+			var config = DropdownMetadataFactory.GetConfiguration(categoryInputField.Component);
+			Assert.NotNull(config.Items);
+			Assert.Equal(3, config.Items!.Length);
 		}
 	}
 }

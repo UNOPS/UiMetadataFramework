@@ -34,10 +34,12 @@ namespace UiMetadataFramework.Core
 			this.CustomProperties = metadata.CustomProperties != null
 				? new Dictionary<string, object?>(metadata.CustomProperties)
 				: null;
+
+			this.Configuration = metadata.Configuration;
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="InputFieldMetadata"/> class.
+		/// Initializes a new instance of the <see cref="FieldMetadata"/> class.
 		/// </summary>
 		public FieldMetadata(Component component)
 		{
@@ -82,6 +84,12 @@ namespace UiMetadataFramework.Core
 		/// in relationship to other fields.
 		/// </summary>
 		public int OrderIndex { get; set; }
+		
+		/// <summary>
+		/// Configuration describing how the field should look/behave.
+		/// May be null if the field does not require any configuration.
+		/// </summary>
+		public object? Configuration { get; set; }
 
 		/// <inheritdoc />
 		public override string ToString()

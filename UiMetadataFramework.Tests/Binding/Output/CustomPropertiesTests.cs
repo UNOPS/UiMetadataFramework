@@ -28,7 +28,7 @@ public class CustomPropertiesTests
 			.ToList();
 
 		outputFields
-			.AssertHasOutputField(
+			.AssertHasField(
 				nameof(Response.DateOfBirth),
 				DateTimeOutputComponentBinding.ControlName,
 				"DoB",

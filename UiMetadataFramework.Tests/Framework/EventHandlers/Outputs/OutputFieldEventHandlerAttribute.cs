@@ -18,4 +18,20 @@ public class OutputFieldEventHandlerAttribute : Attribute, IFieldEventHandlerAtt
 	{
 		return new EventHandlerMetadata(this.Id, this.RunAt);
 	}
+
+	/// <inheritdoc />
+	public bool ApplicableToFieldCategory(string category)
+	{
+		if (category == MetadataBinder.ComponentCategories.Input)
+		{
+			return this.ApplicableToInputField;
+		}
+
+		if (category == MetadataBinder.ComponentCategories.Output)
+		{
+			return this.ApplicableToOutputField;
+		}
+
+		return false;
+	}
 }

@@ -3,8 +3,9 @@
 namespace UiMetadataFramework.Tests.Binding.Input;
 
 using System.Linq;
+using FluentAssertions;
+using UiMetadataFramework.Basic.Inputs;
 using UiMetadataFramework.Basic.Inputs.Number;
-using UiMetadataFramework.Core;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Framework.EventHandlers.Inputs;
 using UiMetadataFramework.Tests.Framework.EventHandlers.Outputs;
@@ -32,18 +33,19 @@ public class InputEventHandlerTests
 	public void CanBindEventHandlers()
 	{
 		var inputFields = this.binder.Inputs.GetFields(typeof(ValidRequest))
-			.Cast<InputFieldMetadata>()
+			.Cast<MyInputFieldMetadataFactory.Metadata>()
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 
-		inputFields
-			.AssertHasInputField(
+		var field = inputFields
+			.AssertHasField<MyInputFieldMetadataFactory.Metadata>(
 				nameof(ValidRequest.Weight),
 				NumberInputComponentBinding.ControlName,
 				nameof(ValidRequest.Weight),
 				hidden: true,
-				required: true,
-				eventHandlers: new[] { InputFieldEventHandlerAttribute.Identifier });
+				eventHandlers: [InputFieldEventHandlerAttribute.Identifier]);
+		
+		field.Required.Should().BeTrue();
 	}
 
 	[Fact]

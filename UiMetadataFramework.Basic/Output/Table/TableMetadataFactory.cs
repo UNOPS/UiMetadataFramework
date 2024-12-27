@@ -28,7 +28,7 @@ public class TableMetadataFactory : DefaultMetadataFactory
 		var isKnownOutputType = binder.Outputs.Bindings.All.Any(t => t.Key.ImplementsClass(innerType));
 
 		result["Columns"] = isKnownOutputType
-			? new OutputFieldMetadata(binder.Outputs.BuildComponent(innerType)).AsList()
+			? new FieldMetadata(binder.Outputs.BuildComponent(innerType)).AsList()
 			: binder.Outputs.GetFields(innerType).ToList();
 	}
 }

@@ -40,22 +40,22 @@ public class DropdownTests
 	}
 
 	[Form]
-	private class CountryRemoteSource : IDropdownRemoteSource;
+	private class CountryRemoteSource : ITypeaheadRemoteSource;
 
 	[Fact]
 	public void CanBindRemoteSource()
 	{
 		var field = this.binder.BuildInputComponent<Request>(t => t.Countries);
 
-		var component = field.Configuration.As<IDictionary<string, object?>>();
+		var config = DropdownMetadataFactory.GetConfiguration(field);
 
-		Assert.False(component.ContainsKey("Items"));
+		Assert.Null(config.Items);
 
-		var parameters = component["Parameters"] as List<RemoteSourceArgument>;
+		var parameter = config.Parameters?.Single();
 
-		Assert.Equal("A", parameters?.Single().Parameter);
-		Assert.Equal("B", parameters?.Single().Source);
-		Assert.Equal("C", parameters?.Single().SourceType);
+		Assert.Equal("A", parameter?.Parameter);
+		Assert.Equal("B", parameter?.Source);
+		Assert.Equal("C", parameter?.SourceType);
 	}
 
 	[Fact]
@@ -63,11 +63,9 @@ public class DropdownTests
 	{
 		var field = this.binder.BuildInputComponent<Request>(t => t.Gender);
 
-		var component = field.Configuration.As<IDictionary<string, object?>>();
+		var component = DropdownMetadataFactory.GetConfiguration(field);
 
-		var items = component["Items"] as List<DropdownItem>;
-
-		Assert.Equal(2, items?.Count);
+		Assert.Equal(2, component.Items?.Length);
 	}
 
 	[Fact]

@@ -2,9 +2,12 @@
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.Linq;
 	using System.Reflection;
+	using Humanizer;
 	using UiMetadataFramework.Basic.Inputs.Typeahead;
+	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
 
 	/// <summary>
@@ -12,46 +15,149 @@
 	/// </summary>
 	public class DropdownMetadataFactory : DefaultMetadataFactory
 	{
+		private const string SubtypeProperty = "Subtype";
+
 		/// <inheritdoc />
 		protected override void AugmentConfiguration(
 			Type type,
 			Type? derivedType,
 			MetadataBinder binder,
-			ComponentConfigurationAttribute[] configurations,
+			ComponentConfigurationAttribute[] configurationData,
 			Dictionary<string, object?> result)
 		{
-			var sourceType = configurations.OfType<DropdownAttribute>().First().Source;
+			var sourceType = configurationData.OfType<DropdownAttribute>().SingleOrDefault()?.Source;
 
-			var inlineSource = sourceType
-				.GetInterfaces(typeof(IDropdownInlineSource))
-				.SingleOrDefault();
+			var innerType = type.GenericTypeArguments[0];
+			result[SubtypeProperty] = Nullable.GetUnderlyingType(innerType)?.Name ?? innerType.Name;
 
-			if (inlineSource != null)
+			if (sourceType == null)
 			{
-				var source = binder.Container.GetService(sourceType);
+				// Get the T in DropdownValue<T>.
+				var enumType = type.GenericTypeArguments[0].GetEnumType();
 
-				var items = (IEnumerable<DropdownItem>)sourceType.GetTypeInfo()
-					.GetMethod(nameof(IDropdownInlineSource.GetItems))!
-					.Invoke(source, null);
+				if (enumType != null)
+				{
+					var items = Enum.GetValues(enumType)
+						.Cast<object>()
+						.Select(
+							t => new DropdownItem(
+								label: t.ToString().Humanize(LetterCasing.Sentence),
+								value: t.ToString()))
+						.ToList();
 
-				result["Items"] = items.ToList();
+					result["Items"] = items;
+					result["Source"] = enumType.FullName;
 
-				return;
+					return;
+				}
+			}
+			else
+			{
+				var inlineSource = sourceType
+					.GetInterfaces(typeof(IDropdownInlineSource))
+					.SingleOrDefault();
+
+				if (inlineSource != null)
+				{
+					var source = binder.Container.GetService(sourceType);
+
+					var items = sourceType.GetTypeInfo()
+						.GetMethod(nameof(IDropdownInlineSource.GetItems))!
+						.Invoke(source, null);
+
+					result["Items"] = items;
+					result["Source"] = sourceType.FullName;
+
+					return;
+				}
+
+				if (sourceType.GetInterfaces(typeof(ITypeaheadRemoteSource)).Any())
+				{
+					result["Source"] = sourceType.GetFormId();
+
+					return;
+				}
 			}
 
-			if (sourceType.GetInterfaces(typeof(IDropdownRemoteSource)).Any())
+			throw new BindingException("Field defines an invalid dropdown source.");
+		}
+
+		internal static Dictionary<string, object> ForInlineItems(List<DropdownItem> items, string? source = null)
+		{
+			return new Dictionary<string, object>
 			{
-				var parameters = configurations.OfType<RemoteSourceArgumentAttribute>()
-					.Select(t => t.GetArgument())
-					.ToList();
+				{ "Items", items },
+				{ "Source", source ?? Guid.NewGuid().ToString() },
+				{ "Subtype", "string" }
+			};
+		}
 
-				result["Source"] = sourceType.GetFormId();
-				result["Parameters"] = parameters;
+		internal static DropdownConfigurationValue GetConfiguration(Component component)
+		{
+			var dictionary = (Dictionary<string, object>)component.Configuration!;
 
-				return;
+			Debug.Assert(dictionary != null, nameof(dictionary) + " != null");
+
+			var source = dictionary!["Source"] as string;
+
+			if (dictionary.GetValueOrDefault("Items") is IEnumerable<DropdownItem> items)
+			{
+				return new DropdownConfigurationValue(source, items);
 			}
 
-			throw new BindingException($"Type '{sourceType}' is not a valid dropdown source.");
+			var paramsOrDefault = dictionary.GetValueOrDefault("Parameters");
+			
+			var parameters = (paramsOrDefault as IEnumerable<Dictionary<string, object>>)
+				?.Select(RemoteSourceArgumentAttribute.FromDictionary)
+				.ToArray();
+
+			var subtype = dictionary[SubtypeProperty] as string;
+
+			return new DropdownConfigurationValue(
+				source,
+				parameters,
+				subtype);
+		}
+
+		/// <summary>
+		/// Configuration for the dropdown.
+		/// </summary>
+		internal class DropdownConfigurationValue
+		{
+			public DropdownConfigurationValue(
+				string? source,
+				IEnumerable<RemoteSourceArgumentAttribute>? args,
+				string? subtype)
+			{
+				this.Source = source;
+				this.Parameters = args?.ToArray() ?? [];
+				this.Subtype = subtype;
+			}
+
+			public DropdownConfigurationValue(string? source, IEnumerable<DropdownItem> items)
+			{
+				this.Source = source;
+				this.Items = items.ToArray();
+			}
+
+			/// <summary>
+			/// List of inline items. If empty, then the items can be retrieved from the source
+			/// (which in this case is a remote source).
+			/// </summary>
+			public DropdownItem[]? Items { get; }
+
+			public RemoteSourceArgumentAttribute[]? Parameters { get; }
+
+			/// <summary>
+			/// An identifier for the source from where the items are taken. If <see cref="Items"/> are empty,
+			/// then this is a remote source.
+			/// </summary>
+			public string? Source { get; }
+
+			/// <summary>
+			/// Indicate the name of the type T inside the `Dropdown{T}`.
+			/// </summary>
+			public string? Subtype { get; }
 		}
 	}
 }

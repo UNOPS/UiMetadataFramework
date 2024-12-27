@@ -4,34 +4,21 @@
 	using System.Collections.Generic;
 	using System.Linq;
 	using FluentAssertions;
+	using FluentAssertions.Execution;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.MediatR;
 	using Xunit;
 
 	public static class AssertionExtensions
 	{
-		public static InputFieldMetadata AssertHasInputField(
-			this IEnumerable<InputFieldMetadata> fields,
-			string id)
-		{
-			var matching = fields
-				.Where(t => t.Id == id)
-				.ToList();
-
-			matching.Should().HaveCount(1);
-
-			return matching[0];
-		}
-
-		public static InputFieldMetadata AssertHasInputField(
-			this IEnumerable<InputFieldMetadata> fields,
+		public static T AssertHasField<T>(
+			this IEnumerable<FieldMetadata> fields,
 			string id,
 			string type,
 			string label,
 			bool hidden = false,
 			int orderIndex = 0,
-			bool required = false,
-			string[]? eventHandlers = null)
+			string[]? eventHandlers = null) where T : FieldMetadata
 		{
 			var field = fields
 				.Where(t => t.Id == id)
@@ -39,15 +26,19 @@
 				.Where(t => t.Component.Type == type)
 				.Where(t => t.OrderIndex == orderIndex)
 				.Where(t => t.Label == label)
-				.Where(t => t.Required == required)
 				.FirstOrDefault(t => eventHandlers == null || eventHandlers.All(p => t.EventHandlers?.Any(x => x.Id == p) == true));
 
 			field.Should().NotBeNull("field '{0}' is expected to exist", id);
 
-			return field!;
+			if (field is not T result)
+			{
+				throw new AssertionFailedException("Field is not of type " + typeof(T).Name);
+			}
+
+			return result;
 		}
 
-		public static FieldMetadata AssertHasOutputField(
+		public static FieldMetadata AssertHasField(
 			this IEnumerable<FieldMetadata> fields,
 			string id)
 		{
@@ -60,7 +51,7 @@
 			return matching[0];
 		}
 
-		public static FieldMetadata AssertHasOutputField(
+		public static FieldMetadata AssertHasField(
 			this IEnumerable<FieldMetadata> fields,
 			string id,
 			string type,
@@ -82,27 +73,8 @@
 			return field!;
 		}
 
-		public static InputFieldMetadata HasCustomProperty<T>(
-			this InputFieldMetadata field,
-			string property,
-			Func<T, bool> assertion,
-			string message)
-			where T : class
-		{
-			return field.HasCustomPropertyInternal(property, assertion, message);
-		}
-
-		public static OutputFieldMetadata HasCustomProperty(
-			this OutputFieldMetadata field,
-			string property,
-			Func<dynamic, bool> assertion,
-			string? message = null)
-		{
-			return field.HasCustomPropertyInternal(property, assertion, message);
-		}
-
-		public static OutputFieldMetadata HasCustomProperty<T>(
-			this OutputFieldMetadata field,
+		public static FieldMetadata HasCustomProperty<T>(
+			this FieldMetadata field,
 			string property,
 			Func<T, bool> assertion,
 			string? message = null)

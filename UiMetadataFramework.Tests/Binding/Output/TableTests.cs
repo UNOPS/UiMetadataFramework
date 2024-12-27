@@ -57,7 +57,7 @@ public class TableTests
 
 		Assert.Equal("table", outputField.Component.Type);
 
-		var columns = config["Columns"].As<List<OutputFieldMetadata>>();
+		var columns = config["Columns"].As<List<FieldMetadata>>();
 
 		Assert.Equal(1, columns.Count);
 		Assert.Equal(itemType, columns.Single().Component.Type);
@@ -79,27 +79,27 @@ public class TableTests
 
 		var columns = config["Columns"].As<List<FieldMetadata>>();
 
-		columns.AssertHasOutputField(
+		columns.AssertHasField(
 			nameof(Person.FirstName),
 			StringOutputComponentBinding.ControlName,
 			"First name",
 			false,
 			1);
 
-		columns.AssertHasOutputField(
+		columns.AssertHasField(
 			nameof(Person.DateOfBirth),
 			DateTimeOutputComponentBinding.ControlName,
 			"DoB",
 			false,
 			2);
 
-		columns.AssertHasOutputField(
+		columns.AssertHasField(
 			nameof(Person.Height),
 			NumberOutputComponentBinding.ControlName,
 			nameof(Person.Height),
 			true);
 
-		columns.AssertHasOutputField(
+		columns.AssertHasField(
 			nameof(Person.Weight),
 			NumberOutputComponentBinding.ControlName,
 			nameof(Person.Weight),

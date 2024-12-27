@@ -23,7 +23,7 @@ public class MyOutputFieldAttributeTests
 			.GetFields(typeof(Response))
 			.Single(t => t.Id == nameof(Response.Weight));
 
-		var custom = outputField as MyOutputFieldAttribute.Metadata;
+		var custom = outputField as MyOutputFieldMetadataFactory.Metadata;
 
 		Assert.NotNull(custom);
 		Assert.Equal("fancy-output", custom!.CssClass);

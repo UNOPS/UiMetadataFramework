@@ -34,7 +34,7 @@ public class EventHandlerTests
 			.OrderBy(t => t.OrderIndex)
 			.ToList();
 
-		var field = outputFields.AssertHasOutputField(nameof(ValidResponse.Weight));
+		var field = outputFields.AssertHasField(nameof(ValidResponse.Weight));
 
 		field.EventHandlers.Should().NotBeNull();
 		field.EventHandlers.Should().HaveCount(1);

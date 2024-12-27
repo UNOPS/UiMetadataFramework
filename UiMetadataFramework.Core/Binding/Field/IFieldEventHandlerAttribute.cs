@@ -29,5 +29,11 @@
 		/// <param name="binder">Metadata binder being used.</param>
 		/// <returns>Metadata for the function.</returns>
 		EventHandlerMetadata ToMetadata(PropertyInfo property, MetadataBinder binder);
+
+		/// <summary>
+		/// Checks if this event can be used by fields in the specified category.
+		/// </summary>
+		/// <param name="category">Field category.</param>
+		bool ApplicableToFieldCategory(string category);
 	}
 }

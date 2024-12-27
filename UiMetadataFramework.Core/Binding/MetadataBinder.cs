@@ -22,12 +22,12 @@ namespace UiMetadataFramework.Core.Binding
 		/// <summary>
 		/// Collection of input fields.
 		/// </summary>
-		public readonly FieldCollection<InputFieldAttribute> Inputs;
+		public readonly FieldCollection Inputs;
 
 		/// <summary>
 		/// Collection of output fields.
 		/// </summary>
-		public readonly FieldCollection<OutputFieldAttribute> Outputs;
+		public readonly FieldCollection Outputs;
 
 		private readonly object key = new();
 		private readonly List<string> registeredAssemblies = new();
@@ -47,12 +47,31 @@ namespace UiMetadataFramework.Core.Binding
 		/// <see cref="DependencyInjectionContainer"/> to be responsible for instantiating
 		/// <see cref="ComponentBinding"/> when registering a new assembly.
 		/// </summary>
-		public MetadataBinder(IServiceProvider container)
+		public MetadataBinder(IServiceProvider container, MetadataBinderConfiguration? config = null)
 		{
 			this.Container = container;
-			this.Inputs = new(this, container);
-			this.Outputs = new(this, container);
+
+			this.Config = config ?? new MetadataBinderConfiguration(
+				new InputFieldMetadataFactory(),
+				new DefaultFieldMetadataFactory());
+
+			this.Inputs = new(
+				this,
+				container,
+				this.Config.InputFieldMetadataFactory,
+				ComponentCategories.Input);
+
+			this.Outputs = new(
+				this,
+				container,
+				this.Config.OutputFieldMetadataFactory,
+				ComponentCategories.Output);
 		}
+
+		/// <summary>
+		/// Configuration for this metadata binder.
+		/// </summary>
+		private MetadataBinderConfiguration Config { get; }
 
 		/// <summary>
 		/// Looks into the inheritance chain of <paramref name="component"/> and tries to find
@@ -119,6 +138,20 @@ namespace UiMetadataFramework.Core.Binding
 		}
 
 		/// <summary>
+		/// Get <see cref="FieldCollection"/> for the given field category.
+		/// </summary>
+		/// <param name="category">Field category (<see cref="ComponentCategories"/>).</param>
+		public FieldCollection GetFieldCollection(string category)
+		{
+			return category switch
+			{
+				ComponentCategories.Input => this.Inputs,
+				ComponentCategories.Output => this.Outputs,
+				_ => throw new BindingException("Cannot find field collection with category `" + category + "`.")
+			};
+		}
+
+		/// <summary>
 		/// Scans assembly for implementations of <see cref="ComponentBinding"/>
 		/// and registers them in this instance of <see cref="MetadataBinder"/>.
 		/// </summary>
@@ -141,7 +174,7 @@ namespace UiMetadataFramework.Core.Binding
 				.Select(t => this.Container.GetService(t))
 				.Cast<ComponentBinding>()
 				.ToList();
-			
+
 			var components = assembly.GetComponents<ComponentAttribute>()
 				.ToList();
 
@@ -152,7 +185,7 @@ namespace UiMetadataFramework.Core.Binding
 			bindings
 				.Where(t => t.Category == ComponentCategories.Input)
 				.ForEach(t => this.Inputs.Bindings.AddBinding(t));
-			
+
 			components
 				.Where(t => t.Attribute.Category == ComponentCategories.Output)
 				.ForEach(
