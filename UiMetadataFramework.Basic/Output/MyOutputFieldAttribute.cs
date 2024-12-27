@@ -20,22 +20,20 @@ public class MyOutputFieldAttribute : OutputFieldAttribute
 	{
 		var basic = base.GetMetadata(property, binding, binder);
 
-		if (binding.AdditionalData?.TryGetValue(nameof(MyOutputComponentAttribute.NoLabelByDefault), out var noLabelByDefault) == true)
+		var noLabelByDefault = binding.GetAdditionalData<bool?>(nameof(MyOutputComponentAttribute.NoLabelByDefault));
+
+		if (noLabelByDefault != null)
 		{
-			if (noLabelByDefault is bool noLabel)
-			{
-				basic.Label = this.Label ?? (noLabel ? "" : null) ?? property.Name;
-			}
+			basic.Label = this.Label ?? (noLabelByDefault.Value ? "" : null) ?? property.Name;
 		}
 
-		if (binding.AdditionalData?.TryGetValue(nameof(MyOutputComponentAttribute.DefaultOrderIndex), out var defaultOrderIndex) == true)
+		var defaultOrderIndex = binding.GetAdditionalData<int?>(nameof(MyOutputComponentAttribute.DefaultOrderIndex));
+
+		if (defaultOrderIndex != null)
 		{
-			if (defaultOrderIndex is int orderIndex)
-			{
-				basic.OrderIndex = this.OrderIndex == 0
-					? orderIndex
-					: this.OrderIndex;
-			}
+			basic.OrderIndex = this.OrderIndex == 0
+				? defaultOrderIndex.Value
+				: this.OrderIndex;
 		}
 
 		return new Metadata(basic) { CssClass = this.CssClass };

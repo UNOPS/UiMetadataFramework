@@ -111,6 +111,28 @@ public class ComponentBinding : IComponentBinding
 			binding.ServerTypes.All(t => this.ServerTypes.Contains(t));
 	}
 
+	/// <summary>
+	/// Attempts to retrieve a value from <see cref="AdditionalData"/> with the specified key and of specified type.
+	/// </summary>
+	/// <param name="key">Key of the item in <see cref="AdditionalData"/>.</param>
+	/// <typeparam name="T">Type that the value should have. If the value exists but is not of
+	/// this type then the default value will be returned.</typeparam>
+	/// <returns>Value from <see cref="AdditionalData"/> or default if no matching value was found.</returns>
+	public T? GetAdditionalData<T>(string key)
+	{
+		if (this.AdditionalData == null)
+		{
+			return default;
+		}
+
+		if (this.AdditionalData.TryGetValue(key, out var value))
+		{
+			return value is T result ? result : default;
+		}
+
+		return default;
+	}
+
 	/// <inheritdoc />
 	public override int GetHashCode()
 	{
