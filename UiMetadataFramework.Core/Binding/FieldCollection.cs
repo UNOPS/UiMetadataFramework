@@ -11,6 +11,8 @@ using System.Reflection;
 /// </summary>
 /// <param name="binder">Metadata binder to use.</param>
 /// <param name="container">Container to be used when/if necessary (for example to instantiate <see cref="IMetadataFactory"/> objects).</param>
+/// <param name="fieldMetadataFactory"><see cref="IFieldMetadataFactory"/> to use for instantiating fields.</param>
+/// <param name="category">Category to which this field belongs.</param>
 public class FieldCollection(
 	MetadataBinder binder,
 	IServiceProvider container,

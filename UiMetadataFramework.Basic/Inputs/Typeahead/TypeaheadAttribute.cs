@@ -14,7 +14,7 @@ namespace UiMetadataFramework.Basic.Inputs.Typeahead
 		/// Initialises a new instance of the <see cref="TypeaheadAttribute"/> class.
 		/// </summary>
 		/// <param name="source">Type which acts as datasource for the items. It must implement
-		/// <see cref="ITypeaheadRemoteSource"/> or <see cref="ITypeaheadInlineSource{T}"/>.</param>
+		/// <see cref="ITypeaheadRemoteSource"/> or <see cref="IDropdownInlineSource"/>.</param>
 		public TypeaheadAttribute(Type source) : base(source)
 		{
 			this.Source = source;

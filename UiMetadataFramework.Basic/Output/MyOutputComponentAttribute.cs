@@ -22,7 +22,7 @@ public class MyOutputComponentAttribute : ComponentAttribute
 
 	/// <summary>
 	/// If true then the output field won't have a label, unless one is explicitly specified
-	/// by `<see cref="OutputFieldAttribute"/>.<see cref="OutputFieldAttribute.Label"/>`.
+	/// by `<see cref="OutputFieldAttribute"/>.<see cref="FieldAttribute.Label"/>`.
 	/// </summary>
 	public bool NoLabelByDefault { get; set; }
 
