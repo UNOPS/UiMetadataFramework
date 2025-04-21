@@ -16,7 +16,7 @@ namespace UiMetadataFramework.Core.Binding
 		/// </summary>
 		/// <param name="name">Name of the custom property.</param>
 		/// <param name="value">Value of the custom property.</param>
-		public StringPropertyAttribute(string name, string value)
+		public StringPropertyAttribute(string name, string? value)
 		{
 			this.Name = name;
 			this.Value = value;
@@ -25,13 +25,13 @@ namespace UiMetadataFramework.Core.Binding
 		/// <summary>
 		/// Gets or sets value for the custom property.
 		/// </summary>
-		public string Value { get; set; }
+		public string? Value { get; set; }
 
 		/// <inheritdoc />
 		public string Name { get; set; }
 
 		/// <inheritdoc />
-		public object GetValue(Type type, MetadataBinder binder)
+		public object? GetValue(Type type, MetadataBinder binder)
 		{
 			return this.Value;
 		}

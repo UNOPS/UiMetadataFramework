@@ -21,6 +21,6 @@ namespace UiMetadataFramework.Core.Binding
 		/// need to be constructed based on the component type itself (e.g. - generic components).</param>
 		/// <param name="binder">Metadata binder instance.</param>
 		/// <returns>Object representing value of the custom property.</returns>
-		object GetValue(Type type, MetadataBinder binder);
+		object? GetValue(Type type, MetadataBinder binder);
 	}
 }
