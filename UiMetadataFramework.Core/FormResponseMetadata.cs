@@ -32,7 +32,7 @@
 
 		/// <summary>
 		/// Gets or sets name of the client-side handler which will be responsible for
-		/// processing the <see cref="FormResponse{T}"/>.
+		/// processing the response.
 		/// </summary>
 		/// <remarks>Client can implement an arbitrary number of handlers,
 		/// however usually it will at least need to have an "object" handler,

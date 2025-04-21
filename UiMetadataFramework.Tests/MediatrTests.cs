@@ -50,7 +50,7 @@
 				return new Response();
 			}
 
-			public class Response : FormResponse
+			public class Response : FormResponse<FormResponseMetadata>
 			{
 				[OutputField(Label = "DoB", OrderIndex = 2)]
 				public DateTime? DateOfBirth { get; set; }
