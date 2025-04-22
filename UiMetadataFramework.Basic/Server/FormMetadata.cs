@@ -43,8 +43,11 @@ namespace UiMetadataFramework.Basic.Server
 				.Select<IFormEventHandlerAttribute, EventHandlerMetadata>(t => t.ToMetadata(formType, binder))
 				.ToList();
 
+			this.Id = !string.IsNullOrWhiteSpace(formAttribute.Id)
+				? formAttribute.Id!
+				: formType.FullName ?? throw new BindingException($"Cannot find form ID for type `{formType}`.");
+			
 			this.Label = formAttribute.Label;
-			this.Id = MetadataBinder.GetFormId(formType, formAttribute);
 			this.PostOnLoad = formAttribute.PostOnLoad;
 			this.PostOnLoadValidation = formAttribute.PostOnLoadValidation;
 			this.CloseOnPostIfModal = formAttribute.CloseOnPostIfModal;

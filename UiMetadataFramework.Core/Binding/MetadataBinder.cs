@@ -134,7 +134,9 @@ namespace UiMetadataFramework.Core.Binding
 					$"attribute '{typeof(FormAttribute).FullName}'.");
 			}
 
-			return GetFormId(formType, attribute);
+			return !string.IsNullOrWhiteSpace(attribute.Id)
+				? attribute.Id!
+				: formType.FullName ?? throw new BindingException($"Cannot form ID for type `{formType}`.");
 		}
 
 		/// <summary>
@@ -205,13 +207,6 @@ namespace UiMetadataFramework.Core.Binding
 							[t.Type],
 							t.Attribute,
 							t.AllowedConfigurations)));
-		}
-
-		internal static string GetFormId(Type formType, FormAttribute formAttribute)
-		{
-			return !string.IsNullOrWhiteSpace(formAttribute.Id)
-				? formAttribute.Id!
-				: formType.FullName ?? throw new BindingException($"Cannot form ID for type `{formType}`.");
 		}
 
 		/// <summary>
