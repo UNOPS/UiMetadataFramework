@@ -1,11 +1,11 @@
-namespace UiMetadataFramework.MediatR
+namespace UiMetadataFramework.Basic.Server
 {
 	using System;
 	using System.Linq;
 	using System.Reflection;
 	using System.Threading;
 	using System.Threading.Tasks;
-	using global::MediatR;
+	using MediatR;
 	using Newtonsoft.Json;
 
 	/// <summary>

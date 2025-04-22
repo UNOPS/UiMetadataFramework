@@ -1,4 +1,4 @@
-﻿namespace UiMetadataFramework.Basic.Form;
+﻿namespace UiMetadataFramework.Basic.Server;
 
 using UiMetadataFramework.Core;
 using UiMetadataFramework.Core.Binding;
@@ -6,8 +6,8 @@ using UiMetadataFramework.Core.Binding;
 /// <summary>
 /// Represents response of a form.
 /// </summary>
-public class FormResponse<T> : IFormResponse<T> 
-	where T : FormResponseMetadata
+/// <typeparam name="T">Type representing form metadata.</typeparam>
+public class FormResponse<T> where T : FormResponseMetadata
 {
 	/// <summary>
 	/// Represents response which has additional metadata describing how to render the results.

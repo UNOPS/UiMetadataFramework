@@ -4,8 +4,8 @@
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
+	using UiMetadataFramework.Basic.Server;
 	using UiMetadataFramework.Core.Binding;
-	using UiMetadataFramework.MediatR;
 	using UiMetadataFramework.Tests.Framework.CustomProperties;
 	using UiMetadataFramework.Tests.Utilities;
 	using Xunit;

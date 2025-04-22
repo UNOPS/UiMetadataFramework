@@ -1,8 +1,8 @@
-namespace UiMetadataFramework.MediatR
+namespace UiMetadataFramework.Basic.Server
 {
 	using System.Threading;
 	using System.Threading.Tasks;
-	using global::MediatR;
+	using MediatR;
 	using UiMetadataFramework.Core;
 
 	/// <summary>

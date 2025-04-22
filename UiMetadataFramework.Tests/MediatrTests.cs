@@ -10,9 +10,9 @@
 	using Microsoft.Extensions.DependencyInjection;
 	using UiMetadataFramework.Basic;
 	using UiMetadataFramework.Basic.Output.Text;
+	using UiMetadataFramework.Basic.Server;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
-	using UiMetadataFramework.MediatR;
 	using Xunit;
 
 	public class MediatrTests

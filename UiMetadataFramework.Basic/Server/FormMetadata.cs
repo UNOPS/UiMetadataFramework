@@ -1,6 +1,6 @@
 ﻿// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 
-namespace UiMetadataFramework.MediatR
+namespace UiMetadataFramework.Basic.Server
 {
 	using System;
 	using System.Collections.Generic;

@@ -1,7 +1,7 @@
 ﻿namespace UiMetadataFramework.Basic.Response
 {
 	using System.Collections.Generic;
-	using UiMetadataFramework.Basic.Form;
+	using UiMetadataFramework.Basic.Server;
 	using UiMetadataFramework.Core;
 
 	/// <summary>

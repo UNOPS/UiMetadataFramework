@@ -1,11 +1,11 @@
-﻿namespace UiMetadataFramework.MediatR
+﻿namespace UiMetadataFramework.Basic.Server
 {
 	using System;
 	using System.Collections.Concurrent;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
-	using global::MediatR;
+	using MediatR;
 	using UiMetadataFramework.Core.Binding;
 
 	/// <summary>

@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UiMetadataFramework.Core", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UiMetadataFramework.Tests", "UiMetadataFramework.Tests\UiMetadataFramework.Tests.csproj", "{6347D627-082A-4AC4-9D9E-2700007E5C34}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UiMetadataFramework.MediatR", "UiMetadataFramework.MediatR\UiMetadataFramework.MediatR.csproj", "{AB883DE3-4C9D-4C03-99F4-06BF61C89312}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{63C5E740-4557-4B6A-81C6-B78FFBAFAA1F}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
@@ -31,10 +29,6 @@ Global
 		{6347D627-082A-4AC4-9D9E-2700007E5C34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6347D627-082A-4AC4-9D9E-2700007E5C34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6347D627-082A-4AC4-9D9E-2700007E5C34}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AB883DE3-4C9D-4C03-99F4-06BF61C89312}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB883DE3-4C9D-4C03-99F4-06BF61C89312}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB883DE3-4C9D-4C03-99F4-06BF61C89312}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB883DE3-4C9D-4C03-99F4-06BF61C89312}.Release|Any CPU.Build.0 = Release|Any CPU
 		{67AA6D88-3B45-4C07-A021-F26ACFFDADA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{67AA6D88-3B45-4C07-A021-F26ACFFDADA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67AA6D88-3B45-4C07-A021-F26ACFFDADA6}.Release|Any CPU.ActiveCfg = Release|Any CPU

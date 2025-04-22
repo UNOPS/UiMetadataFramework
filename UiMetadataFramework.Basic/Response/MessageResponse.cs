@@ -1,6 +1,6 @@
 ﻿namespace UiMetadataFramework.Basic.Response
 {
-	using UiMetadataFramework.Basic.Form;
+	using UiMetadataFramework.Basic.Server;
 
 	/// <summary>
 	/// Represents a response which displays a message to the user.

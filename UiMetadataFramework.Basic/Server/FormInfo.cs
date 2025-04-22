@@ -1,7 +1,6 @@
-namespace UiMetadataFramework.MediatR
+namespace UiMetadataFramework.Basic.Server
 {
 	using System;
-	using UiMetadataFramework.Core;
 
 	/// <summary>
 	/// Holds metadata information about a form.

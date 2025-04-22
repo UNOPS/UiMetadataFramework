@@ -5,8 +5,8 @@
 	using System.Linq;
 	using FluentAssertions;
 	using FluentAssertions.Execution;
+	using UiMetadataFramework.Basic.Server;
 	using UiMetadataFramework.Core;
-	using UiMetadataFramework.MediatR;
 	using Xunit;
 
 	public static class AssertionExtensions

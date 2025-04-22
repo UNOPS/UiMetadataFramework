@@ -1,4 +1,4 @@
-namespace UiMetadataFramework.MediatR;
+namespace UiMetadataFramework.Basic.Server;
 
 using System;
 using UiMetadataFramework.Core.Binding;

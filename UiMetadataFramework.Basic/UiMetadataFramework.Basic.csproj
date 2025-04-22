@@ -1,32 +1,34 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
-		<AssemblyName>UiMetadataFramework.Basic</AssemblyName>
-		<RootNamespace>UiMetadataFramework.Basic</RootNamespace>
-		<Description>Basic metadata components (input/output fields, response types) for UiMetadataFramework.</Description>
-		<Version>1.0.18-alpha</Version>
-		<Authors>UNOPS</Authors>
-		<FileVersion>0.0.1.0</FileVersion>
-		<PackageTags>ui metadata forms basic</PackageTags>
-		<RepositoryUrl>https://github.com/UNOPS/UiMetadataFramework</RepositoryUrl>
-		<Copyright>Copyright 2020 (c) UNOPS. All rights reserved.</Copyright>
-		<PackageProjectUrl>https://github.com/UNOPS/UiMetadataFramework</PackageProjectUrl>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<LangVersion>default</LangVersion>
-		<Nullable>enable</Nullable>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
+        <AssemblyName>UiMetadataFramework.Basic</AssemblyName>
+        <RootNamespace>UiMetadataFramework.Basic</RootNamespace>
+        <Description>Basic metadata components (input/output fields, response types) for UiMetadataFramework.</Description>
+        <Version>1.0.18-alpha</Version>
+        <Authors>UNOPS</Authors>
+        <FileVersion>0.0.1.0</FileVersion>
+        <PackageTags>ui metadata forms basic</PackageTags>
+        <RepositoryUrl>https://github.com/UNOPS/UiMetadataFramework</RepositoryUrl>
+        <Copyright>Copyright 2020 (c) UNOPS. All rights reserved.</Copyright>
+        <PackageProjectUrl>https://github.com/UNOPS/UiMetadataFramework</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <LangVersion>default</LangVersion>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-	<PropertyGroup>
-		<DocumentationFile>bin\$(Configuration)\$(Platform)\UiMetadataFramework.Basic.xml</DocumentationFile>
-	</PropertyGroup>
+    <PropertyGroup>
+        <DocumentationFile>bin\$(Configuration)\$(Platform)\UiMetadataFramework.Basic.xml</DocumentationFile>
+    </PropertyGroup>
 
-	<ItemGroup>
-	  <PackageReference Include="Humanizer.Core" Version="2.8.26" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Humanizer.Core" Version="2.8.26"/>
+        <PackageReference Include="MediatR" Version="9.0.0"/>
+        <PackageReference Include="Microsoft.CSharp" Version="4.7.0"/>
+    </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\UiMetadataFramework.Core\UiMetadataFramework.Core.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\UiMetadataFramework.Core\UiMetadataFramework.Core.csproj"/>
+    </ItemGroup>
 
 </Project>
