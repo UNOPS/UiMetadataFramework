@@ -6,7 +6,7 @@
 	using System.Reflection;
 	using System.Threading;
 	using System.Threading.Tasks;
-	using global::MediatR;
+	using MediatR;
 	using Microsoft.Extensions.DependencyInjection;
 	using UiMetadataFramework.Basic;
 	using UiMetadataFramework.Basic.Output.Text;
@@ -130,10 +130,11 @@
 			services.AddSingleton(di);
 			services.AddSingleton(binder);
 			services.AddSingleton(formRegister);
+			services.AddTransient<FormRunner>();
 
 			services.AddMediatR(
 				typeof(MediatrTests).Assembly,
-				typeof(InvokeForm).Assembly,
+				typeof(FormRunner).Assembly,
 				typeof(StringOutputComponentBinding).Assembly);
 
 			var provider = new DefaultServiceProviderFactory().CreateServiceProvider(services);
@@ -171,21 +172,18 @@
 		{
 			var di = GetDiContainer();
 
-			var mediator = di.GetService<IMediator>();
+			var handler = di.GetService<FormRunner>();
 
-			var response = await mediator.Send(
-				new InvokeForm.Request
+			var response = await handler.RunForm(
+				typeof(Magic).GetFormId(),
+				new BaseForm.Request
 				{
-					Form = typeof(Magic).GetFormId(),
-					InputFieldValues = new BaseForm.Request
-					{
-						FirstName = "John",
-						Height = 1,
-						DateOfBirth = DateTime.Now,
-						IsRegistered = true,
-						Weight = 2
-					}.ToDictionary()
-				},
+					FirstName = "John",
+					Height = 1,
+					DateOfBirth = DateTime.Now,
+					IsRegistered = true,
+					Weight = 2
+				}.ToDictionary(),
 				CancellationToken.None);
 
 			Assert.NotNull(response);
@@ -198,18 +196,17 @@
 
 			var mediator = di.GetService<IMediator>();
 
-			var response = await mediator.Send(
-				new InvokeForm.Request
+			var handler = di.GetService<FormRunner>();
+
+			var response = await handler.RunForm(
+				typeof(Magic).GetFormId(),
+				new BaseForm.Request
 				{
-					Form = typeof(Magic).GetFormId(),
-					InputFieldValues = new
-					{
-						FirstName = "John",
-						Height = 1,
-						DateOfBirth = DateTime.Now,
-						IsRegistered = true,
-						Weight = 2
-					}
+					FirstName = "John",
+					Height = 1,
+					DateOfBirth = DateTime.Now,
+					IsRegistered = true,
+					Weight = 2
 				},
 				CancellationToken.None);
 
