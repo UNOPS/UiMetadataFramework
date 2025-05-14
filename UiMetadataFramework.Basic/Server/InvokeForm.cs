@@ -52,7 +52,7 @@ namespace UiMetadataFramework.Basic.Server
 				.Single(t => t.ReturnType.Name.Contains("Task`"))
 				.MakeGenericMethod(formType.ResponseType);
 
-			var result = await method.InvokeAsync(this.mediator, request, default(CancellationToken));
+			var result = await method.InvokeAsync(this.mediator, request, CancellationToken.None);
 
 			return new Response
 			{
