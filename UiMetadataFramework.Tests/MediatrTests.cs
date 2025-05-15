@@ -13,6 +13,7 @@
 	using UiMetadataFramework.Basic.Server;
 	using UiMetadataFramework.Core;
 	using UiMetadataFramework.Core.Binding;
+	using UiMetadataFramework.Tests.Utilities;
 	using Xunit;
 
 	public class MediatrTests
@@ -116,31 +117,6 @@
 			}
 		}
 
-		private static IServiceProvider GetDiContainer()
-		{
-			var di = new DefaultDependencyInjectionContainer();
-			var binder = new MetadataBinder(di);
-			binder.RegisterAssembly(typeof(StringOutputComponentBinding).GetTypeInfo().Assembly);
-
-			var formRegister = new FormRegister(binder);
-			formRegister.RegisterForm(typeof(Magic));
-
-			var services = new ServiceCollection();
-
-			services.AddSingleton(di);
-			services.AddSingleton(binder);
-			services.AddSingleton(formRegister);
-			services.AddTransient<FormRunner>();
-
-			services.AddMediatR(
-				typeof(MediatrTests).Assembly,
-				typeof(FormRunner).Assembly,
-				typeof(StringOutputComponentBinding).Assembly);
-
-			var provider = new DefaultServiceProviderFactory().CreateServiceProvider(services);
-			return provider;
-		}
-
 		[Fact]
 		public void CanGetFormsFromRegistry()
 		{
@@ -170,9 +146,9 @@
 		[Fact]
 		public async Task CanInvokeFormWithDictionaryRequest()
 		{
-			var di = GetDiContainer();
+			var sp = ServiceProviderFactory.CreateServiceProvider();
 
-			var handler = di.GetService<FormRunner>();
+			var handler = sp.GetRequiredService<FormRunner>();
 
 			var response = await handler.RunForm(
 				typeof(Magic).GetFormId(),
@@ -192,11 +168,9 @@
 		[Fact]
 		public async Task CanInvokeFormWithObjectRequest()
 		{
-			var di = GetDiContainer();
+			var di = ServiceProviderFactory.CreateServiceProvider();
 
-			var mediator = di.GetService<IMediator>();
-
-			var handler = di.GetService<FormRunner>();
+			var handler = di.GetRequiredService<FormRunner>();
 
 			var response = await handler.RunForm(
 				typeof(Magic).GetFormId(),
