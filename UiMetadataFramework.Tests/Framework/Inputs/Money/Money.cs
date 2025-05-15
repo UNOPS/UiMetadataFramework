@@ -1,5 +1,6 @@
 ﻿namespace UiMetadataFramework.Tests.Framework.Inputs.Money;
 
+using System;
 using UiMetadataFramework.Basic.Inputs;
 using UiMetadataFramework.Core.Binding;
 
@@ -10,8 +11,9 @@ public class Money
 	public decimal Amount { get; set; }
 
 	[ComponentFunction("half")]
-	public static decimal Half(Money amount)
+	public static string Half(Money amount, IServiceProvider sp)
 	{
-		return amount.Amount / 2;
+		var binder = sp.GetService(typeof(MetadataBinder));
+		return amount.Amount / 2 + binder.GetType().ToString();
 	}
 }

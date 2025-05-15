@@ -71,6 +71,15 @@ public class ComponentBinding : IComponentBinding
 				.Where(t => t.Attribute != null)
 				.Select(t => new ComponentFunctionBinding(t.Method, t.Attribute))
 				.ToArray();
+
+			var uniqueFunctionNames = this.Functions.Select(t => t.Attribute.Name).Count();
+
+			if (uniqueFunctionNames != this.Functions.Length)
+			{
+				throw new BindingException(
+					$"Component functions with duplicate " +
+					$"names found in `{this.Category}.{this.ComponentType}`.");
+			}
 		}
 		else
 		{
@@ -132,7 +141,7 @@ public class ComponentBinding : IComponentBinding
 		IDictionary<string, object?> args,
 		IServiceProvider sp)
 	{
-		var function = this.Functions.FirstOrDefault(t => t.Method.Name == name);
+		var function = this.Functions.FirstOrDefault(t => t.Attribute.Name == name);
 
 		if (function == null)
 		{
