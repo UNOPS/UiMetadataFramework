@@ -173,7 +173,7 @@ namespace UiMetadataFramework.Core.Binding
 
 			var bindings = assembly
 				.GetBindings<ComponentBinding>()
-				.Select(t => this.Container.GetService(t))
+				.Select(Activator.CreateInstance)
 				.Cast<ComponentBinding>()
 				.ToList();
 
