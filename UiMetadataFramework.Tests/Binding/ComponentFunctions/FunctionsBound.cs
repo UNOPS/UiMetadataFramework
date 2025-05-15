@@ -1,42 +1,54 @@
 ﻿namespace UiMetadataFramework.Tests.Binding.ComponentFunctions;
 
+using System;
 using System.Collections.Generic;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
+using UiMetadataFramework.Basic.Server;
 using UiMetadataFramework.Core.Binding;
+using UiMetadataFramework.Tests.Framework.App.Inputs;
 using UiMetadataFramework.Tests.Framework.Inputs.Money;
 using UiMetadataFramework.Tests.Utilities;
 using Xunit;
 
 public class FunctionsBound
 {
-	private readonly MetadataBinder binder = MetadataBinderFactory.CreateMetadataBinder();
+	private readonly IServiceProvider sp = ServiceProviderFactory.CreateServiceProvider();
 
 	[Fact]
 	public void CanInvokeFunction()
 	{
-		var binding = this.binder.Inputs.Bindings.GetBinding(typeof(Money));
+		var runner = this.sp.GetRequiredService<ComponentFunctionRunner>();
 
-		var sp = ServiceProviderFactory.CreateServiceProvider();
-
-		var result = binding.RunFunction(
+		var result = runner.RunFunction(
+			typeof(Money).FullName!,
 			"half",
 			new Dictionary<string, object?> { { "amount", new Money { Amount = 100 } } },
-			sp);
+			this.sp);
 
 		result.Should().Be(50m + typeof(MetadataBinder).ToString());
 	}
 
 	[Fact]
-	public void GetBindings()
+	public void CanUseInDerivedComponent()
 	{
-		var binding = this.binder.Inputs.Bindings.GetBinding(typeof(Money));
+		var runner = this.sp.GetRequiredService<ComponentFunctionRunner>();
 
-		binding.Functions.Length.Should().Be(1);
+		var result = runner.RunFunction(
+			typeof(AddressInput).FullName!,
+			"get-description",
+			new Dictionary<string, object?>
+			{
+				{
+					"address", new AddressInput
+					{
+						City = "Tokyo",
+						Country = "Japan"
+					}
+				}
+			},
+			this.sp);
 
-		var parameters = binding.Functions[0].Method.GetParameters();
-		parameters.Length.Should().Be(2);
-		parameters[0].Name.Should().Be("amount");
-
-		Assert.NotNull(binding);
+		result.Should().Be("Tokyo, Japan");
 	}
 }

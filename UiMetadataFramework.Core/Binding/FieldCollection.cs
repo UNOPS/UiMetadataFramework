@@ -50,12 +50,12 @@ public class FieldCollection(
 	/// Builds metadata for the component with the given configurations. 
 	/// </summary>
 	/// <param name="type">Component type or a derived component (aka pre-configured component).</param>
-	/// <param name="location"></param>
+	/// <param name="field">Field using the component.</param>
 	/// <param name="configurations">Configurations to apply. Highest priority configs should come first.</param>
 	/// <returns>Metadata for the component.</returns>
 	public Component BuildComponent(
 		Type type,
-		string? location = null,
+		string? field = null,
 		params ComponentConfigurationAttribute[] configurations)
 	{
 		var binding = this.Bindings.GetBinding(type);
@@ -63,7 +63,7 @@ public class FieldCollection(
 		return this.BuildComponent(
 			type,
 			binding,
-			location,
+			field,
 			configurations);
 	}
 
@@ -96,7 +96,7 @@ public class FieldCollection(
 	/// </summary>
 	/// <param name="type">Component type or a derived component (aka pre-configured component).</param>
 	/// <param name="binding">Component's binding.</param>
-	/// <param name="location">Path to the field where the component is located. This parameter will
+	/// <param name="field">Path to the field where the component is located. This parameter will
 	/// be used to generate a meaningful exception message if the metadata cannot be constructed.</param>
 	/// <param name="configurations">Configurations to apply. Highest priority configs should come first.</param>
 	/// <returns><see cref="Component"/> instance.</returns>
@@ -104,7 +104,7 @@ public class FieldCollection(
 	private Component BuildComponent(
 		Type type,
 		ComponentBinding binding,
-		string? location = null,
+		string? field = null,
 		params ComponentConfigurationAttribute[] configurations)
 	{
 		var effectiveConfigurationData = configurations;
@@ -133,14 +133,19 @@ public class FieldCollection(
 				binder,
 				effectiveConfigurationData);
 
+			var serverType = type.FullName ?? throw new BindingException(
+				$"Cannot determine server type " +
+				$"for component `{binding.Category}.{binding.ComponentType}`.");
+
 			return new Component(
 				binding.ComponentType,
+				serverType,
 				metadata);
 		}
 		catch (Exception e)
 		{
-			var message = !string.IsNullOrWhiteSpace(location)
-				? $"Failed to construct metadata for '{location}'."
+			var message = !string.IsNullOrWhiteSpace(field)
+				? $"Failed to construct metadata for '{field}'."
 				: $"Failed to construct metadata for '{type.Name}'.";
 
 			throw new BindingException(message, e);

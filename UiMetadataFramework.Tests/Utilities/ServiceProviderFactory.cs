@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using UiMetadataFramework.Basic.Output.Text;
 using UiMetadataFramework.Basic.Server;
 using UiMetadataFramework.Core.Binding;
+using UiMetadataFramework.Tests.Framework.App.Inputs;
 
 public class ServiceProviderFactory
 {
@@ -30,6 +31,13 @@ public class ServiceProviderFactory
 			formRegister.RegisterForm(typeof(MediatrTests.Magic));
 
 			return formRegister;
+		});
+
+		services.AddSingleton<ComponentFunctionRunner>(_ =>
+		{
+			var runner = new ComponentFunctionRunner();
+			runner.RegisterAssembly(typeof(AddressInput).Assembly);
+			return runner;
 		});
 
 		services.AddTransient<FormRunner>();
