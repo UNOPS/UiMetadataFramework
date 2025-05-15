@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using Newtonsoft.Json;
 
 /// <summary>
 /// Represents a mapping between server types and a component.
@@ -56,6 +58,24 @@ public class ComponentBinding : IComponentBinding
 		this.ComponentType = componentType;
 		this.MetadataFactory = metadataFactory;
 		this.AllowedConfigurations = allowedConfigurations;
+
+		if (this.serverTypes.Count == 1)
+		{
+			this.Functions = this.serverTypes[0]
+				.GetMethods()
+				.Select(t => new
+				{
+					Method = t,
+					Attribute = t.GetCustomAttribute<ComponentFunctionAttribute>()
+				})
+				.Where(t => t.Attribute != null)
+				.Select(t => new ComponentFunctionBinding(t.Method, t.Attribute))
+				.ToArray();
+		}
+		else
+		{
+			this.Functions = [];
+		}
 	}
 
 	/// <summary>
@@ -95,6 +115,69 @@ public class ComponentBinding : IComponentBinding
 
 	/// <inheritdoc />
 	public IEnumerable<Type> ServerTypes => this.serverTypes;
+
+	/// <inheritdoc />
+	public ComponentFunctionBinding[] Functions { get; }
+
+	/// <summary>
+	/// Runs a component function with the specified name and arguments.
+	/// </summary>
+	/// <param name="name">Name of the function to run.</param>
+	/// <param name="args">Args to be passed to the function.</param>
+	/// <param name="sp"><see cref="IServiceProvider"/> to be used for resolving function's parameters.</param>
+	/// <returns>Return value of the invoked function.</returns>
+	/// <exception cref="BindingException">Thrown if function cannot be found in <see cref="Functions"/>.</exception>
+	public object RunFunction(
+		string name,
+		IDictionary<string, object?> args,
+		IServiceProvider sp)
+	{
+		var function = this.Functions.FirstOrDefault(t => t.Method.Name == name);
+
+		if (function == null)
+		{
+			throw new BindingException(
+				$"Function `{name}` not found in component " +
+				$"`{this.Category}.{this.ComponentType}`.");
+		}
+
+		var parameters = function.Method.GetParameters();
+
+		var argsList = new List<object?>(parameters.Length);
+
+		foreach (var parameter in parameters)
+		{
+			if (args.TryGetValue(parameter.Name!, out var value))
+			{
+				if (value == null)
+				{
+					argsList.Add(null);
+				}
+				else
+				{
+					if (value.GetType() != parameter.ParameterType)
+					{
+						var convertedValue = JsonConvert.DeserializeObject(
+							JsonConvert.SerializeObject(value),
+							parameter.ParameterType);
+
+						argsList.Add(convertedValue);
+					}
+					else
+					{
+						argsList.Add(value);
+					}
+				}
+			}
+			else
+			{
+				var injectedValue = sp.GetService(parameter.ParameterType);
+				argsList.Add(injectedValue);
+			}
+		}
+
+		return function.Method.Invoke(null, argsList.ToArray());
+	}
 
 	/// <inheritdoc />
 	public override bool Equals(object? obj)
