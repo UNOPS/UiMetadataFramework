@@ -17,6 +17,6 @@ public class FlexboxMetadataFactory : DefaultMetadataFactory
 	{
 		Debug.Assert(derivedType != null);
 
-		result["Fields"] = binder.Outputs.GetFields(derivedType).ToArray();
+		result["Fields"] = binder.Outputs.GetFields(derivedType!).ToArray();
 	}
 }

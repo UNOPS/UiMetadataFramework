@@ -25,6 +25,7 @@ public class FieldCollection(
 	public readonly IServiceProvider Container = container;
 
 	private readonly ConcurrentDictionary<Type, IEnumerable<FieldMetadata>> fieldCache = new();
+	private readonly ConcurrentDictionary<string, Component> componentCache = new();
 
 	/// <summary>
 	/// Registered bindings.
@@ -109,6 +110,19 @@ public class FieldCollection(
 	{
 		var effectiveConfigurationData = configurations;
 
+		// Get unique identifier for this particular component instance.
+		// It has to be unique enough to support different instances for 
+		// different fields/configurations.
+		var componentInstanceKey = 
+			type.FullName + 
+			(field ?? "#null#") + 
+			configurations.Select(t => t.GetHashCode());
+		
+		if (this.componentCache.TryGetValue(componentInstanceKey, out var cachedComponent))
+		{
+			return cachedComponent;
+		}
+
 		var baseComponentType = MetadataBinder.GetBaseComponent<ComponentAttribute>(type);
 
 		if (baseComponentType != null)
@@ -126,24 +140,40 @@ public class FieldCollection(
 
 		try
 		{
+			var serverType = type.FullName ?? throw new BindingException(
+				$"Cannot determine server type " +
+				$"for component `{binding.Category}.{binding.ComponentType}`.");
+
+			// Add a temporary component to support recursive components.
+			var component = new Component(
+				binding.ComponentType,
+				serverType);
+			
+			this.componentCache.TryAdd(componentInstanceKey, component);
+			
 			var metadata = metadataFactory.CreateMetadata(
 				baseComponentType ?? type,
 				baseComponentType != type ? type : null,
 				binding,
 				binder,
 				effectiveConfigurationData);
-
-			var serverType = type.FullName ?? throw new BindingException(
-				$"Cannot determine server type " +
-				$"for component `{binding.Category}.{binding.ComponentType}`.");
-
-			return new Component(
+			
+			// Now that we have the actual configuration, update the cache.
+			component = new Component(
 				binding.ComponentType,
 				serverType,
 				metadata);
+			
+			this.componentCache.AddOrUpdate(componentInstanceKey, component, (_, _) => component);
+			
+			return component;
 		}
 		catch (Exception e)
 		{
+			// If we failed to construct the metadata, then remove the temporary component.
+			// This is important to avoid returning a partially constructed component.
+			this.componentCache.TryRemove(componentInstanceKey, out _);
+			
 			var message = !string.IsNullOrWhiteSpace(field)
 				? $"Failed to construct metadata for '{field}'."
 				: $"Failed to construct metadata for '{type.Name}'.";
