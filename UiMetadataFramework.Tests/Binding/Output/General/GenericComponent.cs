@@ -17,10 +17,10 @@ public class GenericComponent
 	private class Outputs
 	{
 		[Flexbox(Style = "fancy")]
-		public Flexbox<Item>? Values { get; set; }
+		public Item? Values { get; set; }
 	}
 
-	public class Item
+	public class Item : Flexbox
 	{
 		public int Counter { get; set; }
 		public FormLink? Link { get; set; }

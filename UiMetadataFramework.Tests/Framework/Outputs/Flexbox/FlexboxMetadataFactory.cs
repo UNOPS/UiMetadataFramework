@@ -15,10 +15,8 @@ public class FlexboxMetadataFactory : DefaultMetadataFactory
 		ComponentConfigurationAttribute[] configurations,
 		Dictionary<string, object?> result)
 	{
-		var value = type.GetProperty(nameof(Flexbox<object>.Value));
+		Debug.Assert(derivedType != null);
 
-		Debug.Assert(value != null, nameof(value) + " != null");
-
-		result["Fields"] = binder.Outputs.GetFields(value!.PropertyType).ToArray();
+		result["Fields"] = binder.Outputs.GetFields(derivedType).ToArray();
 	}
 }
