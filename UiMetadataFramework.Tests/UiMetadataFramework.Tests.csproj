@@ -23,5 +23,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Framework\Form\" />
+	  <Folder Include="Framework\Outputs.Composite\" />
 	</ItemGroup>
 </Project>

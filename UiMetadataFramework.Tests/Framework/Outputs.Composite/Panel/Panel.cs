@@ -1,4 +1,4 @@
-﻿namespace UiMetadataFramework.Tests.Framework.Outputs.Panel;
+﻿namespace UiMetadataFramework.Tests.Framework.Outputs.Composite.Panel;
 
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Framework.Outputs.ComplexOutput;

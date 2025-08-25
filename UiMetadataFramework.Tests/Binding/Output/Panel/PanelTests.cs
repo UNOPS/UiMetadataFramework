@@ -6,7 +6,7 @@ using System.Linq;
 using FluentAssertions;
 using UiMetadataFramework.Core.Binding;
 using UiMetadataFramework.Tests.Framework.Outputs.ComplexOutput;
-using UiMetadataFramework.Tests.Framework.Outputs.Panel;
+using UiMetadataFramework.Tests.Framework.Outputs.Composite.Panel;
 using UiMetadataFramework.Tests.Utilities;
 using Xunit;
 
