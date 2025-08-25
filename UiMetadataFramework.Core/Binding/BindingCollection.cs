@@ -62,8 +62,8 @@ public class BindingCollection
 		if (binding == null)
 		{
 			var message = !string.IsNullOrWhiteSpace(location)
-				? $"Cannot retrieve metadata for '{location}', because type '{type.FullName}' is not bound to any input component."
-				: $"Type '{type.FullName}' is not bound to any input component.";
+				? $"Cannot retrieve metadata for '{location}', because type '{type.FullName}' is not bound to any component."
+				: $"Type '{type.FullName}' is not bound to any component.";
 
 			throw new BindingException(message);
 		}
