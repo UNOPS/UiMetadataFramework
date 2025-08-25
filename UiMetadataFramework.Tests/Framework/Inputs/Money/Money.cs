@@ -13,6 +13,6 @@ public class Money
 	public static string Half(Money amount, IServiceProvider sp)
 	{
 		var binder = sp.GetService(typeof(MetadataBinder));
-		return amount.Amount / 2 + binder.GetType().ToString();
+		return amount.Amount / 2 + binder!.GetType().ToString();
 	}
 }
