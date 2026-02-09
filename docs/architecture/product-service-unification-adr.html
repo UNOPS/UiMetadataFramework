@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architectural Decision Record: Product and Service Schema Unification</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 8px;
+        }
+        h3 {
+            color: #446080;
+            margin-top: 20px;
+        }
+        h4 {
+            color: #556b8f;
+        }
+        .status {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .critical {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .success {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+        code {
+            background-color: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table th {
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        table td {
+            border: 1px solid #dee2e6;
+            padding: 10px;
+        }
+        table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        ul, ol {
+            margin: 10px 0;
+            padding-left: 30px;
+        }
+        .checklist {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        .checklist li:before {
+            content: "☐ ";
+            margin-right: 5px;
+        }
+        .metadata {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .timeline {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .risk-high {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .risk-medium {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        .risk-low {
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Architectural Decision Record: Product and Service Schema Unification</h1>
+        
+        <div class="status">
+            <strong>Status:</strong> Proposed - Pending dependency audit and readiness assessment<br>
+            <strong>Date:</strong> 2026-02-09<br>
+            <strong>Decision Makers:</strong> [Team Lead, System Architects]<br>
+            <strong>Stakeholders:</strong> Engineering Team, Product Management, Operations
+        </div>
+
+        <hr>
+
+        <h2>Executive Summary</h2>
+        
+        <p>This document presents an architectural decision for unifying the Product and Service data models in our ecommerce platform. Currently, these entities exist in separate tables with distinct schemas, creating operational complexity and limiting our ability to build a unified catalog experience.</p>
+
+        <div class="info">
+            <strong>Key Decision:</strong> Recommend unified schema approach (Plan A) over maintaining separate tables (Plan B).
+        </div>
+
+        <div class="critical">
+            <strong>Critical Context:</strong> This is a <strong>platform-wide behavioral change</strong>, not merely a schema refactor. The impact extends across cart logic, order processing, shipping, taxation, reporting, search, and integrations.
+        </div>
+
+        <div class="critical">
+            <strong>Readiness Status:</strong> <strong>We are not ready to begin implementation.</strong> A comprehensive dependency audit must be completed first to identify all systems that assume <code>Product == physical item</code>.
+        </div>
+
+        <div class="timeline">
+            <strong>Timeline:</strong> 4–8+ weeks for implementation, depending on findings from the mandatory dependency audit.
+        </div>
+
+        <hr>
+
+        <h2>Background</h2>
+
+        <h3>Current State</h3>
+
+        <p>Our system maintains two separate entity tables:</p>
+
+        <h4>Product Table (Physical Items)</h4>
+        <ul>
+            <li>Primary physical product data</li>
+            <li>Shipping-specific fields (Weight, Dimensions, PackageType)</li>
+            <li>Inventory tracking</li>
+            <li>Physical product lifecycle</li>
+        </ul>
+
+        <h4>Service Table (Non-Physical Offerings)</h4>
+        <ul>
+            <li>Service-specific data</li>
+            <li>No physical attributes</li>
+            <li>Different pricing model</li>
+            <li>Separate management workflows</li>
+        </ul>
+
+        <h3>Problem Statement</h3>
+
+        <p>The current separation creates several challenges:</p>
+
+        <ol>
+            <li><strong>Catalog Fragmentation:</strong> Cannot build unified product catalog</li>
+            <li><strong>Mixed Cart Complexity:</strong> Handling physical + service in same order requires dual logic paths</li>
+            <li><strong>Code Duplication:</strong> Similar business logic exists in parallel for both types</li>
+            <li><strong>Reporting Gaps:</strong> Difficulty in unified revenue and analytics reporting</li>
+            <li><strong>Search Limitations:</strong> Cannot provide unified search experience</li>
+            <li><strong>Integration Overhead:</strong> External systems must handle two different data models</li>
+        </ol>
+
+        <hr>
+
+        <h2>Architecture Options</h2>
+
+        <h3>Plan A: Unified Schema (Recommended)</h3>
+
+        <p>Merge both Product and Service into a single <code>Product</code> table with a <code>ProductType</code> discriminator.</p>
+
+        <h4>Schema Design:</h4>
+        <pre><code>CREATE TABLE Product (
+    ProductId INT PRIMARY KEY,
+    ProductType INT NOT NULL, -- 1=Physical, 2=Service
+    Name NVARCHAR(500) NOT NULL,
+    Description NVARCHAR(MAX),
+    Price DECIMAL(18,2) NOT NULL,
+    
+    -- Physical-only fields with constraints
+    ShippingWeight DECIMAL(10,2) NULL,
+    DimensionLength DECIMAL(10,2) NULL,
+    DimensionWidth DECIMAL(10,2) NULL,
+    DimensionHeight DECIMAL(10,2) NULL,
+    PackageType NVARCHAR(100) NULL,
+    
+    -- Add CHECK constraints to enforce required fields for physical products
+    CONSTRAINT CK_Physical_RequiredFields CHECK (
+        ProductType != 1 OR (
+            ShippingWeight IS NOT NULL AND
+            DimensionLength IS NOT NULL AND
+            DimensionWidth IS NOT NULL AND
+            DimensionHeight IS NOT NULL AND
+            PackageType IS NOT NULL
+        )
+    ),
+    
+    CreatedDate DATETIME NOT NULL DEFAULT GETDATE(),
+    ModifiedDate DATETIME NOT NULL DEFAULT GETDATE()
+);
+
+CREATE INDEX IX_Product_ProductType ON Product(ProductType);</code></pre>
+
+        <h4>Advantages:</h4>
+        <ul>
+            <li>Unified catalog and search</li>
+            <li>Simplified cart and checkout logic (single code path)</li>
+            <li>Easier reporting and analytics</li>
+            <li>Better long-term platform evolution</li>
+            <li>Reduced code duplication</li>
+        </ul>
+
+        <h4>Disadvantages:</h4>
+        <ul>
+            <li>Migration complexity for large database</li>
+            <li>Risk of regression in existing physical product flows</li>
+            <li>NULL columns for service products (mitigated by CHECK constraints)</li>
+            <li>Requires comprehensive testing of all product-related code</li>
+        </ul>
+
+        <h3>Plan B: Maintain Separate Tables</h3>
+
+        <p>Keep Product and Service tables separate with improved integration layer.</p>
+
+        <h4>Advantages:</h4>
+        <ul>
+            <li>Lower immediate risk</li>
+            <li>Isolated changes</li>
+            <li>Faster to implement</li>
+            <li>Clear separation of concerns</li>
+        </ul>
+
+        <h4>Disadvantages:</h4>
+        <ul>
+            <li>Continues catalog fragmentation</li>
+            <li>Requires dual logic paths indefinitely</li>
+            <li>Code duplication persists</li>
+            <li>Complex mixed-cart handling</li>
+            <li>Long-term technical debt</li>
+        </ul>
+
+        <hr>
+
+        <h2>Decision Logic</h2>
+
+        <h3>Choose Unified Approach (Plan A) IF:</h3>
+
+        <ul>
+            <li>✓ <strong>Services are core to business strategy</strong> (not experimental)</li>
+            <li>✓ <strong>Unified catalog experience is required</strong></li>
+            <li>✓ <strong>Mixed checkout (physical + service) is needed</strong></li>
+            <li>✓ <strong>Long-term platform evolution expected</strong></li>
+            <li>✓ <strong>Team capacity exists for thorough migration</strong></li>
+            <li>✓ <strong>Risk can be managed through phased rollout</strong></li>
+        </ul>
+
+        <h3>Choose Separate Approach (Plan B) IF:</h3>
+
+        <ul>
+            <li>✓ <strong>Services are experimental/minimal</strong></li>
+            <li>✓ <strong>Quick delivery is critical priority</strong></li>
+            <li>✓ <strong>High production risk sensitivity</strong></li>
+            <li>✓ <strong>Limited team capacity for complex migration</strong></li>
+            <li>✓ <strong>Mixed cart is not required</strong></li>
+            <li>✓ <strong>Short-term tactical solution acceptable</strong></li>
+        </ul>
+
+        <h3>Our Recommendation: Plan A (Unified)</h3>
+
+        <h4>Rationale:</h4>
+        <ul>
+            <li>Services are expected to grow significantly</li>
+            <li>Unified catalog is strategic requirement</li>
+            <li>Mixed checkout capability provides competitive advantage</li>
+            <li>Platform modernization aligns with 2026+ roadmap</li>
+            <li>Technical debt of separation compounds over time</li>
+        </ul>
+
+        <div class="info">
+            <strong>However:</strong> This recommendation is <strong>conditional</strong> on completing the dependency audit and confirming readiness (see Readiness Assessment section).
+        </div>
+
+        <hr>
+
+        <h2>System-Wide Impact Analysis</h2>
+
+        <div class="critical">
+            <strong>Critical Recognition:</strong> This is a <strong>platform behavioral change</strong>, not just a schema modification.
+        </div>
+
+        <h3>Systems Requiring Changes</h3>
+
+        <h4>1. Cart Logic</h4>
+        <ul>
+            <li><strong>Current Assumption:</strong> Cart items are always physical products</li>
+            <li><strong>Required Changes:</strong>
+                <ul>
+                    <li>Remove physical-only validation in cart service</li>
+                    <li>Handle service items without shipping attributes</li>
+                    <li>Update cart line item display logic</li>
+                    <li>Modify cart totals calculation</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h4>2. Order Processing Pipeline</h4>
+        <ul>
+            <li><strong>Current Assumption:</strong> All orders contain shippable items</li>
+            <li><strong>Required Changes:</strong>
+                <ul>
+                    <li>Separate fulfillment flows for physical vs. service</li>
+                    <li>Update order status transitions</li>
+                    <li>Modify fulfillment logic to handle non-shippable items</li>
+                    <li>Update order confirmation emails</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h4>3. Shipping & Fulfillment</h4>
+        <ul>
+            <li><strong>Current Assumption:</strong> Every line item has weight/dimensions</li>
+            <li><strong>Required Changes:</strong>
+                <ul>
+                    <li>Skip shipping calculations for service items</li>
+                    <li>Filter service items from pick lists</li>
+                    <li>Update warehouse management system integration</li>
+                    <li>Modify shipping label generation</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h4>4. Tax Calculation</h4>
+        <ul>
+            <li><strong>Current Assumption:</strong> Tax rules based on physical product shipping</li>
+            <li><strong>Required Changes:</strong>
+                <ul>
+                    <li>Implement service-specific tax rules</li>
+                    <li>Handle mixed physical/service tax calculation</li>
+                    <li>Update tax reporting</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h4>5. Inventory Management</h4>
+        <ul>
+            <li><strong>Current Assumption:</strong> All products have inventory levels</li>
+            <li><strong>Required Changes:</strong>
+                <ul>
+                    <li>Exclude services from inventory tracking</li>
+                    <li>Update stock level checks</li>
+                    <li>Modify reorder point calculations</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h4>6. Reporting & Analytics</h4>
+        <ul>
+            <li><strong>Current Assumption:</strong> Revenue reports assume physical product metrics</li>
+            <li><strong>Required Changes:</strong>
+                <ul>
+                    <li>Separate revenue by product type</li>
+                    <li>Update KPI dashboards</li>
+                    <li>Modify sales reports to distinguish physical vs. service</li>
+                    <li>Update margin analysis reports</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h4>7. Search & Catalog</h4>
+        <ul>
+            <li><strong>Current Assumption:</strong> Product search includes physical attributes</li>
+            <li><strong>Required Changes:</strong>
+                <ul>
+                    <li>Update search indexing to handle product type</li>
+                    <li>Modify faceted navigation</li>
+                    <li>Update product detail page templates</li>
+                    <li>Adjust search ranking algorithms</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h4>8. Integrations</h4>
+        <ul>
+            <li><strong>Current Assumption:</strong> External systems expect physical product data</li>
+            <li><strong>Required Changes:</strong>
+                <ul>
+                    <li>Update ERP integration</li>
+                    <li>Modify accounting system exports</li>
+                    <li>Update marketplace integrations (Amazon, eBay, etc.)</li>
+                    <li>Adjust CRM data synchronization</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h4>9. Admin Forms & Management</h4>
+        <ul>
+            <li><strong>Current Assumption:</strong> Product admin forms require physical attributes</li>
+            <li><strong>Required Changes:</strong>
+                <ul>
+                    <li>Conditional form rendering based on product type</li>
+                    <li>Update validation rules</li>
+                    <li>Modify bulk import/export</li>
+                    <li>Update product creation workflows</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h4>10. Validations & Business Rules</h4>
+        <ul>
+            <li><strong>Current Assumption:</strong> Business rules enforce physical product constraints</li>
+            <li><strong>Required Changes:</strong>
+                <ul>
+                    <li>Product type-specific validation</li>
+                    <li>Pricing rule updates</li>
+                    <li>Promotion eligibility logic</li>
+                    <li>Return/refund policy handling</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>Estimated File Impact</h3>
+
+        <p>Based on similar platform migrations:</p>
+
+        <ul>
+            <li><strong>Conservative Estimate:</strong> 200–400 files modified</li>
+            <li><strong>Realistic Estimate:</strong> 400–600 files modified</li>
+            <li><strong>Large System Estimate:</strong> 600–800+ files modified</li>
+        </ul>
+
+        <hr>
+
+        <h2>Migration Safety Strategy</h2>
+
+        <h3>Migration Approach</h3>
+
+        <h4>Phase 1: Schema Preparation (Week 1-2)</h4>
+        <ol>
+            <li>Add <code>ProductType</code> column to existing Product table (default = 1 for physical)</li>
+            <li>Add CHECK constraints for physical-only fields</li>
+            <li>Create comprehensive data validation scripts</li>
+            <li>Perform dry-run migration on production database copy</li>
+        </ol>
+
+        <h4>Phase 2: Data Migration (Week 2-3)</h4>
+        <ol>
+            <li><strong>Batch Migration Strategy</strong> (migrate in batches of 1000)</li>
+            <li><strong>Maintain Permanent Mapping Table</strong> for auditing and rollback capability</li>
+            <li><strong>Dual-Write Period</strong> (2-4 weeks) to enable safe rollback if issues discovered</li>
+        </ol>
+
+        <h4>Phase 3: Code Migration (Week 3-6)</h4>
+        <ol>
+            <li>Update code in priority order: Core cart logic, Order processing, Admin interfaces, Reporting, Integrations</li>
+            <li>Deploy behind feature flags</li>
+            <li>Gradual rollout by user cohort</li>
+        </ol>
+
+        <h4>Phase 4: Validation & Stabilization (Week 6-8)</h4>
+        <ol>
+            <li>Verify data consistency</li>
+            <li>Performance testing</li>
+            <li>User acceptance testing</li>
+            <li>Monitor error rates</li>
+            <li>Address edge cases</li>
+        </ol>
+
+        <h3>Rollback Strategy</h3>
+
+        <h4>Rollback Triggers:</h4>
+        <ul>
+            <li>Data integrity violations detected</li>
+            <li>&gt;5% error rate in critical flows</li>
+            <li>Performance degradation &gt;20%</li>
+            <li>Critical business process failure</li>
+        </ul>
+
+        <h4>Prerequisites for Safe Rollback:</h4>
+        <ul>
+            <li>Maintain ServiceToProductMapping table permanently</li>
+            <li>Keep Service table until system stable (4+ weeks)</li>
+            <li>Comprehensive backups at each phase</li>
+            <li>Detailed rollback runbook</li>
+        </ul>
+
+        <hr>
+
+        <h2>Readiness Assessment</h2>
+
+        <div class="critical">
+            <h3>Current Status: NOT READY</h3>
+            <strong>Critical Finding:</strong> We should <strong>NOT begin implementation</strong> until mandatory preconditions are met.
+        </div>
+
+        <h3>Why We Are Not Ready</h3>
+
+        <ol>
+            <li><strong>No Dependency Audit Completed</strong> - Unknown how many places assume <code>Product == physical</code></li>
+            <li><strong>Service Pricing Model Unclear</strong> - How do services get priced?</li>
+            <li><strong>Checkout Behavior Undefined</strong> - Can physical + service exist in same cart?</li>
+            <li><strong>Migration Testing Not Validated</strong> - No test migration on production copy performed</li>
+            <li><strong>Feature Flag Strategy Not Confirmed</strong> - Feature flag framework exists?</li>
+        </ol>
+
+        <h3>Required Preconditions (MANDATORY)</h3>
+
+        <p>Before starting implementation, we <strong>MUST complete</strong>:</p>
+
+        <h4>1. Full Dependency Audit</h4>
+        <ul class="checklist">
+            <li>Identify all code files that reference Product table</li>
+            <li>Find all queries assuming physical product attributes</li>
+            <li>Map all stored procedures using Product</li>
+            <li>Document all external integrations consuming Product data</li>
+            <li>Identify reporting dependencies</li>
+            <li><strong>Deliverable:</strong> Dependency map with estimated change effort per component</li>
+        </ul>
+
+        <h4>2. Service Requirements Definition</h4>
+        <ul class="checklist">
+            <li>Confirm service pricing model</li>
+            <li>Define service fulfillment workflow</li>
+            <li>Clarify refund/return policies for services</li>
+            <li>Determine tax calculation approach</li>
+            <li><strong>Deliverable:</strong> Service product requirements document</li>
+        </ul>
+
+        <h4>3. Checkout Behavior Specification</h4>
+        <ul class="checklist">
+            <li>Confirm mixed cart requirements</li>
+            <li>Define checkout flow modifications</li>
+            <li>Specify payment processing differences</li>
+            <li>Clarify order confirmation and fulfillment separation</li>
+            <li><strong>Deliverable:</strong> Checkout flow specification document</li>
+        </ul>
+
+        <h4>4. Production Database Migration Test</h4>
+        <ul class="checklist">
+            <li>Create production database copy</li>
+            <li>Execute migration scripts on copy</li>
+            <li>Measure migration duration</li>
+            <li>Validate data integrity</li>
+            <li>Test rollback procedures</li>
+            <li><strong>Deliverable:</strong> Migration test results and performance data</li>
+        </ul>
+
+        <h4>5. Feature Flag Framework Confirmation</h4>
+        <ul class="checklist">
+            <li>Verify feature flag system exists and is production-ready</li>
+            <li>Define flag strategy for gradual rollout</li>
+            <li>Document flag removal plan</li>
+            <li>Test flag toggle in staging</li>
+            <li><strong>Deliverable:</strong> Feature flag implementation plan</li>
+        </ul>
+
+        <h4>6. Risk Mitigation Plan</h4>
+        <ul class="checklist">
+            <li>Define success metrics</li>
+            <li>Establish monitoring and alerting</li>
+            <li>Create detailed rollback runbook</li>
+            <li>Plan user communication strategy</li>
+            <li><strong>Deliverable:</strong> Risk register and mitigation playbook</li>
+        </ul>
+
+        <h3>Go/No-Go Criteria</h3>
+
+        <div class="success">
+            <h4>GO Decision Requires:</h4>
+            <ul>
+                <li>✅ All 6 preconditions completed</li>
+                <li>✅ Dependency audit shows &lt;500 files impacted</li>
+                <li>✅ Migration test completes in &lt;4 hours</li>
+                <li>✅ Stakeholder alignment on requirements</li>
+                <li>✅ Engineering team has capacity for 4-8 week project</li>
+                <li>✅ Feature flags tested and validated</li>
+            </ul>
+        </div>
+
+        <div class="critical">
+            <h4>NO-GO if:</h4>
+            <ul>
+                <li>❌ Dependency audit incomplete</li>
+                <li>❌ &gt;800 files impacted (suggests 12+ week project)</li>
+                <li>❌ Critical requirements unclear</li>
+                <li>❌ No feature flag capability</li>
+                <li>❌ Insufficient team capacity</li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <h2>Timeline & Resource Estimate</h2>
+
+        <div class="timeline">
+            <h3>Realistic Timeline: 4–8+ Weeks</h3>
+            <p><strong>Important:</strong> This is a conditional estimate based on unknowns discovered during dependency audit.</p>
+        </div>
+
+        <h3>Phase Breakdown</h3>
+
+        <table>
+            <tr>
+                <th>Phase</th>
+                <th>Duration</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><strong>Phase 0: Readiness Assessment</strong></td>
+                <td>2-3 weeks</td>
+                <td>MUST COMPLETE FIRST - Dependency audit, Requirements finalization, Production migration test</td>
+            </tr>
+            <tr>
+                <td><strong>Phase 1: Schema & Infrastructure</strong></td>
+                <td>1-2 weeks</td>
+                <td>Database schema changes, Feature flag setup, Monitoring configuration</td>
+            </tr>
+            <tr>
+                <td><strong>Phase 2: Core Implementation</strong></td>
+                <td>2-4 weeks</td>
+                <td>Cart logic, Order processing, Shipping/fulfillment, Admin interfaces</td>
+            </tr>
+            <tr>
+                <td><strong>Phase 3: Supporting Systems</strong></td>
+                <td>1-2 weeks</td>
+                <td>Reporting, Search re-indexing, Integrations, Documentation</td>
+            </tr>
+            <tr>
+                <td><strong>Phase 4: Testing & Validation</strong></td>
+                <td>1-2 weeks</td>
+                <td>Integration, Performance, UAT, Security review</td>
+            </tr>
+            <tr>
+                <td><strong>Phase 5: Gradual Rollout</strong></td>
+                <td>1-2 weeks</td>
+                <td>Deploy 5% → 25% → 100% with monitoring</td>
+            </tr>
+        </table>
+
+        <h3>Total Timeline: 7-13 Weeks</h3>
+
+        <ul>
+            <li><strong>Minimum:</strong> 7 weeks (with perfect execution, no unknowns)</li>
+            <li><strong>Realistic:</strong> 9-11 weeks (accounting for typical issues)</li>
+            <li><strong>Conservative:</strong> 11-13 weeks (with unknown complexity from audit)</li>
+        </ul>
+
+        <h3>Why Previous 3-4 Week Estimate Was Unrealistic</h3>
+
+        <p>For a mature ecommerce system with large database, many forms, cart and order processing, reports, and integrations, a unified ProductType refactor typically impacts:</p>
+
+        <ul>
+            <li><strong>200-800 files</strong> across codebase</li>
+            <li><strong>50-200 database queries/procedures</strong></li>
+            <li><strong>10-50 integration points</strong></li>
+            <li><strong>20-100 test files</strong></li>
+        </ul>
+
+        <p><strong>Our system requires:</strong></p>
+        <ul>
+            <li>Comprehensive dependency audit (2-3 weeks)</li>
+            <li>Staged migration for large database</li>
+            <li>Extensive testing of critical flows</li>
+            <li>Integration updates</li>
+            <li>Gradual rollout with monitoring</li>
+        </ul>
+
+        <h3>Resource Requirements</h3>
+
+        <ul>
+            <li><strong>Backend Engineers:</strong> 2-3 FTE</li>
+            <li><strong>Frontend Engineers:</strong> 1-2 FTE (admin UI changes)</li>
+            <li><strong>QA Engineers:</strong> 1-2 FTE</li>
+            <li><strong>Database Administrator:</strong> 0.5 FTE</li>
+            <li><strong>DevOps Engineer:</strong> 0.5 FTE (monitoring, deployment)</li>
+            <li><strong>Product Owner:</strong> 0.25 FTE (requirements, UAT)</li>
+        </ul>
+
+        <hr>
+
+        <h2>Risk Analysis</h2>
+
+        <h3>High Risks</h3>
+
+        <table>
+            <tr>
+                <th>Risk</th>
+                <th>Impact</th>
+                <th>Probability</th>
+                <th>Mitigation</th>
+            </tr>
+            <tr>
+                <td class="risk-high">Regression in existing checkout</td>
+                <td class="risk-high">Critical</td>
+                <td>Medium</td>
+                <td>Comprehensive testing, feature flags, gradual rollout</td>
+            </tr>
+            <tr>
+                <td class="risk-high">Data migration failure</td>
+                <td class="risk-high">Critical</td>
+                <td>Low</td>
+                <td>Test on production copy, idempotent scripts, rollback plan</td>
+            </tr>
+            <tr>
+                <td class="risk-high">Performance degradation</td>
+                <td class="risk-high">High</td>
+                <td>Medium</td>
+                <td>Performance testing, query optimization, index strategy</td>
+            </tr>
+            <tr>
+                <td class="risk-high">Integration breakage</td>
+                <td class="risk-high">High</td>
+                <td>Medium</td>
+                <td>Integration testing, versioned APIs, backward compatibility</td>
+            </tr>
+            <tr>
+                <td class="risk-high">Incomplete dependency discovery</td>
+                <td class="risk-high">High</td>
+                <td>High</td>
+                <td>Thorough audit, code analysis tools, staged rollout</td>
+            </tr>
+        </table>
+
+        <hr>
+
+        <h2>Anticipated Challenge Questions</h2>
+
+        <h3>1. "How many places assume product = physical?"</h3>
+        <p><strong>Answer after audit:</strong> [To be determined in dependency audit]<br>
+        <strong>Current assumption:</strong> Significant - likely 100+ code locations based on system age</p>
+
+        <h3>2. "Can cart handle service with no shipping?"</h3>
+        <p><strong>Answer:</strong> Cart currently assumes all items are physical. Changes required in cart validation logic, shipping calculation service, cart totals calculation, and cart display components.</p>
+
+        <h3>3. "Can order pipeline handle non-shippable items?"</h3>
+        <p><strong>Answer:</strong> Current order pipeline assumes all items require fulfillment. Changes required: Separate fulfillment workflow for services, order status state machine updates, fulfillment service logic, warehouse system integration filtering.</p>
+
+        <h3>4. "How will reporting separate revenue types?"</h3>
+        <p><strong>Answer:</strong> Add <code>ProductType</code> dimension to all revenue reports: Sales by product type, revenue mix analysis, margin analysis by type, inventory turnover (physical only).</p>
+
+        <h3>5. "Rollback if migration fails?"</h3>
+        <p><strong>Answer:</strong> Phase 1-2: Full rollback possible (mapping table maintained). Phase 3+: Forward-fix preferred (code deployed, but flags can revert behavior). Service table kept for 4+ weeks post-migration. Detailed rollback runbook documented.</p>
+
+        <h3>6. "Mixed cart needed or separate?"</h3>
+        <p><strong>Answer:</strong> [Requires product team input]<br>
+        - <strong>If mixed cart required:</strong> Unified approach strongly preferred<br>
+        - <strong>If separate checkout acceptable:</strong> Could simplify initial implementation</p>
+
+        <h3>7. "Why unify now instead of phase later?"</h3>
+        <p><strong>Answer:</strong> Service growth is strategic priority for 2026, catalog unification provides competitive advantage, technical debt of separate systems compounds, unified approach enables future capabilities (subscriptions, bundles). <strong>However:</strong> Decision pending dependency audit results.</p>
+
+        <hr>
+
+        <h2>Decision Recommendation</h2>
+
+        <div class="success">
+            <h3>Recommended Path: Plan A (Unified Schema) - CONDITIONAL</h3>
+            
+            <h4>Conditions:</h4>
+            <ol>
+                <li>✅ Dependency audit completed</li>
+                <li>✅ All readiness preconditions met</li>
+                <li>✅ Audit reveals manageable scope (&lt;600 files)</li>
+                <li>✅ Stakeholder alignment achieved</li>
+                <li>✅ Team capacity confirmed</li>
+            </ol>
+            
+            <p><strong>If conditions NOT met:</strong> Re-evaluate or choose Plan B.</p>
+        </div>
+
+        <h3>Rationale for Recommendation</h3>
+
+        <ol>
+            <li><strong>Strategic Alignment:</strong> Services are core to 2026+ business strategy</li>
+            <li><strong>Competitive Advantage:</strong> Unified catalog differentiates our platform</li>
+            <li><strong>Long-term Value:</strong> Reduces technical debt, enables future capabilities</li>
+            <li><strong>User Experience:</strong> Better search, browsing, and purchase experience</li>
+            <li><strong>Operational Efficiency:</strong> Single code path reduces maintenance burden</li>
+        </ol>
+
+        <h3>Next Steps</h3>
+
+        <ol>
+            <li><strong>Immediate:</strong> Begin dependency audit (highest priority)</li>
+            <li><strong>Week 1-2:</strong> Complete audit and readiness assessment</li>
+            <li><strong>Week 3:</strong> Finalize requirements and test migration</li>
+            <li><strong>Week 3 End:</strong> Go/No-Go decision point</li>
+            <li><strong>Week 4+:</strong> Begin implementation if GO</li>
+        </ol>
+
+        <hr>
+
+        <h2>Appendix: Additional Considerations</h2>
+
+        <h3>Database Constraint Strategy</h3>
+
+        <div class="critical">
+            <strong>DO NOT make physical columns NULL globally without constraints.</strong>
+        </div>
+
+        <p>This is risky because existing queries may assume <code>ShippingWeight NOT NULL</code>, validation logic may break, and reports may fail.</p>
+
+        <p><strong>Instead, use CHECK constraints:</strong></p>
+
+        <pre><code>ALTER TABLE Product
+ADD CONSTRAINT CK_Physical_ShippingWeight 
+CHECK (ProductType != 1 OR ShippingWeight IS NOT NULL);
+
+ALTER TABLE Product
+ADD CONSTRAINT CK_Physical_Dimensions
+CHECK (ProductType != 1 OR (
+    DimensionLength IS NOT NULL AND
+    DimensionWidth IS NOT NULL AND
+    DimensionHeight IS NOT NULL
+));</code></pre>
+
+        <p>This enforces: Physical products MUST have shipping data, services can have NULL shipping data, database maintains referential integrity.</p>
+
+        <hr>
+
+        <div class="metadata">
+            <h2>Document Revision History</h2>
+            <table>
+                <tr>
+                    <th>Version</th>
+                    <th>Date</th>
+                    <th>Author</th>
+                    <th>Changes</th>
+                </tr>
+                <tr>
+                    <td>1.0</td>
+                    <td>2026-02-09</td>
+                    <td>Architecture Team</td>
+                    <td>Initial senior-level submission</td>
+                </tr>
+            </table>
+        </div>
+
+        <hr>
+
+        <div class="metadata">
+            <h2>Approval Signatures</h2>
+            
+            <p><strong>Prepared by:</strong> Architecture Team</p>
+            
+            <p><strong>Reviewed by:</strong></p>
+            <ul class="checklist">
+                <li>Engineering Lead</li>
+                <li>System Architect</li>
+                <li>Product Owner</li>
+                <li>DevOps Lead</li>
+            </ul>
+            
+            <p><strong>Approved by:</strong></p>
+            <ul class="checklist">
+                <li>CTO / VP Engineering</li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <p><strong>Classification:</strong> Internal Use Only<br>
+        <strong>Next Review Date:</strong> [After dependency audit completion]</p>
+
+    </div>
+</body>
+</html>
